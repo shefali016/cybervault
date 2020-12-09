@@ -4,9 +4,9 @@ import { generateUid } from "../../utils/index";
 import firebase from "firebase";
 
 const initialUploadState = {
-  state: null,
+  state: '',
   progress: 0,
-  task: null
+  task: null as any
 };
 
 function AssetUploader() {
@@ -48,7 +48,7 @@ function AssetUploader() {
     setUploadState(state => ({ ...state, task: uploadTask }));
   };
 
-  const handleFileChange = event => {
+  const handleFileChange = (event: any) => {
     console.log(event.target.files[0])
     setFile(event.target.files[0]);
   };

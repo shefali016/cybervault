@@ -1,10 +1,9 @@
-// @flow
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
-import { Asset } from "../utils/types/";
+import { Asset } from "../utils/types";
 
-const buildAssetPath = id => `${id}/${id}-original`;
+const buildAssetPath = (id: string) => `${id}/${id}-original`;
 
 export const createAsset = async (asset: Asset) => {
   return firebase
@@ -14,7 +13,7 @@ export const createAsset = async (asset: Asset) => {
     .set(asset);
 };
 
-export const uploadMedia = (id: string, file: *) => {
+export const uploadMedia = (id: string, file: any) => {
   const childRef = firebase
     .storage()
     .ref()
@@ -23,7 +22,7 @@ export const uploadMedia = (id: string, file: *) => {
   return childRef.put(file);
 };
 
-export const getDownloadUrl = id => {
+export const getDownloadUrl = (id: string) => {
   return firebase
     .storage()
     .ref()

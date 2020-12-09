@@ -11,7 +11,7 @@ function App() {
     <div className="App">
       <AssetUploader />
       <AssetList />
-    </div>add_app_badge_if_required.sh
+    </div>
   );
 }
 
