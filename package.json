@@ -8,12 +8,18 @@
     "@testing-library/user-event": "^12.1.10",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/redux-localstorage": "^1.0.8",
     "axios": "^0.21.0",
     "firebase": "^8.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-player": "^2.6.2",
+    "react-redux": "^7.2.2",
     "react-scripts": "4.0.0",
+    "redux": "^4.0.5",
+    "redux-form": "^8.3.7",
+    "redux-localstorage": "^0.4.1",
+    "redux-saga": "^1.1.3",
     "ts-loader": "^8.0.11",
     "typescript": "^4.1.2",
     "web-vitals": "^0.2.4"
@@ -41,5 +47,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-redux": "^7.1.11",
+    "@types/redux-devtools-extension": "^2.13.2",
+    "@types/redux-form": "^8.3.0"
   }
 }

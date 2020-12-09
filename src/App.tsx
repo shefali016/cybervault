@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useEffect } from "react";
 import AssetUploader from "./components/Assets/AssetUploader";
 import AssetList from "./components/Assets/AssetList";
-import { initFirebase } from "./firebase";
+import { initFirebase } from "./firebaseConfig";
 
 initFirebase();
 

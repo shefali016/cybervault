@@ -12,3 +12,4 @@ const config = {
 };
 
 export const initFirebase = () => app.initializeApp(config);
+export default config;
