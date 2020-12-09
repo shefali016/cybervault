@@ -1,6 +1,6 @@
-.App {
+.background {
   text-align: center;
-  background-color: #282c34;
+  background-color: #3687b6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,7 +18,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #78c5cf;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -45,4 +45,30 @@ button {
   to {
     transform: rotate(360deg);
   }
+}
+.container {
+  background-color: #f2f5f7d8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  color: rgb(12, 12, 12);
+  width: 70vh;
+}
+
+.center-content {
+  align-items: center;
+  justify-content: center;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  width: 60vh;
 }
