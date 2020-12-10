@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
-import firebase from "firebase/app";
-import "firebase/auth";
+import { connect } from 'react-redux';
+import { login } from "../firebase/auth";
 import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
 import ReactLoading from "react-loading";
@@ -20,15 +20,13 @@ export const LoginScreen = (props: any) => {
   const [state, setState] = useState(initialState);
   const { email, password, loading } = state;
 
-  const login = (email: string, password: string, ) => {
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        loggedIn(props);
-      });
-      
-  };
+  useEffect(()=>{
+    if(props.isLoggedIn)
+    {
+    loggedIn(props);
+    }
+  },[props.isLoggedIn]);
+ 
 
   const loggedIn = (props: any) => {
     props.history.push("/signup");
@@ -39,6 +37,7 @@ export const LoginScreen = (props: any) => {
 
   const handleLogin = () => {
     setState(state => ({ ...state, loading: true }));
+    console.log(props);
     login(email.trim(), password.trim());
     
   };
@@ -92,4 +91,11 @@ export const LoginScreen = (props: any) => {
   );
 };
 
-export default LoginScreen;
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: state.isLoggedIn
+})
+
+export default connect(
+  mapStateToProps,
+  null,
+)(LoginScreen)

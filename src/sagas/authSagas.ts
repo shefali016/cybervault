@@ -1,5 +1,5 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects'
-import { GET_LIST } from 'actions/Auth/actionTypes'
+//import {  } from 'actions/Auth/actionTypes'
 // import { getListSuccess, getListFailure } from 'actions/Auth'
 // import { getRequest } from './request'
 // import { pushNotification } from 'utils/notifications'
@@ -19,7 +19,7 @@ function* getJsonData() {
 }
 
 function* watchGetRequest() {
-  yield takeLatest(GET_LIST, getJsonData)
+ // yield takeLatest(GET_LIST, getJsonData)
 }
 
 export default function* sagas() {

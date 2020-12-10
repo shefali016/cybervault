@@ -1,19 +1,32 @@
 import {
-  GET_LIST,
-  GET_LIST_SUCCESS,
-  GET_LIST_FAILURE
+  SIGNUP_SUCCESS,
+SIGNUP_FAILURE,
+LOGIN_SUCCESS,
+LOGIN_FAILURE
 } from './actionTypes'
 
 
-export const getList = () => ({
-  type: GET_LIST
+export const SignUpSuccess = () => ({
+  type: SIGNUP_SUCCESS
 })
 
-export const getListSuccess = (data: any) => ({
-  type: GET_LIST_SUCCESS,
-  payload: data
+export const SignUpFailure = () => ({
+  type: SIGNUP_FAILURE
 })
 
-export const getListFailure = () => ({
-  type: GET_LIST_FAILURE
+export const LoginSuccess = (activeUser: any) => {
+  return {
+  type: LOGIN_SUCCESS,
+  activeUser: activeUser,
+  };
+  };
+
+// export const LoginSuccess = (data: any) => {  console.log("jahsdfkj");
+// return{
+//   type: LOGIN_SUCCESS,
+//   payload: data
+// }}
+
+export const LoginFailure = () => ({
+  type: LOGIN_FAILURE 
 })

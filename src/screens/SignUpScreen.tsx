@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import "../App.css";
 import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
-import firebase from "firebase/app";
-import "firebase/auth";
+import { signUp } from "../firebase/auth";
 import ReactLoading from "react-loading";
 
 const initialState = {
@@ -17,16 +16,7 @@ export const SignUpScreen = (props: any) => {
   const [state, setState] = useState(initialState);
   const { email, password, passwordConfirm, loading } = state;
 
-const signUp = (email: string, password: string) =>{
-  setState(state => ({ ...state, loading: true }));
-  return firebase
-    .auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then(async () => {
-      props.history.replace("/");
-    });
 
-}
 
   const handleInputChange = (key: any) => (e: any) =>
     setState(state => ({ ...state, [key]: e.target.value }));
@@ -36,6 +26,7 @@ const signUp = (email: string, password: string) =>{
       alert("Passwords do not match");
       return;
     }
+    setState(state => ({ ...state, loading: true }));
     signUp(email.trim(), password.trim());
 
   };

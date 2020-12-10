@@ -1,48 +1,66 @@
 import {
-  GET_LIST,
-  GET_LIST_SUCCESS,
-  GET_LIST_FAILURE
+  SIGNUP_SUCCESS,
+SIGNUP_FAILURE,
+LOGIN_SUCCESS,
+LOGIN_FAILURE
 } from 'actions/Auth/actionTypes'
 
 type State = {
-  getListLoading: Boolean,
-  posts: Array<any>,
+  isLoggedIn: Boolean,
+  user: any,
+  error: any
 };
 
 type Action = {
   type: string,
   payload: {},
+  error: any
 };
 
 const initialState = {
-  getListLoading: false,
-  posts: []
+  user: null,
+  isLoggedIn: false,
+  error: null
 }
 
-const getList = (state: State, action: Action) => ({
+const signUpFailure = (state: State, action: Action) => ({
   ...state,
-  getListLoading: true
+  isLoggedIn: false,
+  user: null,
+  error: action.error
+
 })
 
-const getListSuccess = (state: State, action: Action) => {
+const signUpSuccess = (state: State, action: Action) => {
   return ({
     ...state,
-    getListLoading: false,
-    posts: action.payload
+    isLoggedIn: true,
+    user: action.payload
   })
 }
 
-const getListFailed = (state: State, action: Action) => ({
+const loginFailure = (state: State, action: Action) => ({
   ...state,
-  getListLoading: false,
-  posts: []
+  isLoggedIn: false,
+  user: null,
+  error: action.error
 })
+
+const loginSuccess = (state: State, action: Action) => {
+  console.log("reducer");
+  return ({
+    ...state,
+    isLoggedIn: true,
+    user: action.payload
+  })
+}
 
 const authReducer = (state = initialState, action: Action) => {
   switch (action.type) {
-    case GET_LIST: return getList(state, action)
-    case GET_LIST_SUCCESS: return getListSuccess(state, action)
-    case GET_LIST_FAILURE: return getListFailed(state, action)
+    case SIGNUP_SUCCESS: return signUpSuccess(state, action)
+    case SIGNUP_FAILURE: return signUpFailure(state, action)
+    case LOGIN_SUCCESS: return loginSuccess(state, action)
+    case LOGIN_FAILURE: return loginFailure(state, action)
     default: return state
   }
 }
