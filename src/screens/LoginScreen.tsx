@@ -6,6 +6,9 @@ import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
 import ReactLoading from "react-loading";
 import * as Types from '../utils/types';
+import googleIcon from '../assets/googleSignInButton.png';
+import firebase from "firebase/app";
+import "firebase/auth";
 
 const initialState = {
   email: "",
@@ -13,6 +16,15 @@ const initialState = {
   loading: false
 };
 
+function googleSignIn(){
+  const auth = firebase.auth();
+const googleProvider = new firebase.auth.GoogleAuthProvider()
+  auth.signInWithPopup(googleProvider).then((res: any) => {
+    console.log(res.user);
+  }).catch((error: any) => {
+    console.log(error.message)
+  });
+}
 
 export const LoginScreen = (props: any) => {
   const [state, setState] = useState(initialState);
@@ -68,10 +80,16 @@ export const LoginScreen = (props: any) => {
         variant="contained"
         onClick={handleLogin}
         color="primary"
-        style={{ width: "100%", maxWidth: 170 }}
+        style={{ width: "100%", maxWidth: 185 }}
       >
         Login
       </Button>
+        <Button className="login-provider-button" variant="contained"
+        style={{ width: "100%", maxWidth: 185, maxHeight:40,marginTop:10, borderRadius:0.8 }}
+        onClick={googleSignIn}>
+        <img src={googleIcon} alt="google icon"/>
+       </Button>
+   
       <Typography style={{ margin: 20 }} variant={"body1"}>
         OR
       </Typography>
@@ -79,7 +97,7 @@ export const LoginScreen = (props: any) => {
         variant="contained"
         onClick={navigateToSignUp}
         color="primary"
-        style={{ width: "100%", maxWidth: 170 }}
+        style={{ width: "100%", maxWidth: 185 }}
       >
         Sign up
       </Button>
