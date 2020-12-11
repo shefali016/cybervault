@@ -1,30 +1,20 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
 import { connect } from 'react-redux';
-import { login } from "../actions/authActions";
+import { login, googleLogin } from "../actions/authActions";
 import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
 import ReactLoading from "react-loading";
 import * as Types from '../utils/types';
-import googleIcon from '../assets/googleSignInButton.png';
 import firebase from "firebase/app";
 import "firebase/auth";
+import GoogleAuthComponent from '../components/SocialAuth/GoogleAuthComponent';
 
 const initialState = {
   email: "",
   password: "",
   loading: false
 };
-
-function googleSignIn(){
-  const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider()
-  auth.signInWithPopup(googleProvider).then((res: any) => {
-    console.log(res.user);
-  }).catch((error: any) => {
-    console.log(error.message)
-  });
-}
 
 export const LoginScreen = (props: any) => {
   const [state, setState] = useState(initialState);
@@ -36,7 +26,6 @@ export const LoginScreen = (props: any) => {
       loggedIn(props);
     }
   },[props.isLoggedIn, props.user]);
- 
 
   const loggedIn = (props: any) => {
     setState(state => ({ ...state, loading: false }));
@@ -84,12 +73,7 @@ export const LoginScreen = (props: any) => {
       >
         Login
       </Button>
-        <Button className="login-provider-button" variant="contained"
-        style={{ width: "100%", maxWidth: 185, maxHeight:40,marginTop:10, borderRadius:0.8 }}
-        onClick={googleSignIn}>
-        <img src={googleIcon} alt="google icon"/>
-       </Button>
-   
+      <GoogleAuthComponent props={props}/>
       <Typography style={{ margin: 20 }} variant={"body1"}>
         OR
       </Typography>
@@ -115,6 +99,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   auth: (user: Types.User) => {
     return dispatch(login(user));
   },
+  googleAuth: () => {
+    return dispatch(googleLogin())
+  }
 });
 
 export default connect(

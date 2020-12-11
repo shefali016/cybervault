@@ -43,3 +43,18 @@ export const logoutRequest = async () =>
             }).catch((error) =>{
                 return false;
             });
+
+export const googleLoginRequest = async () => {
+    const googleProvider = await new firebase.auth.GoogleAuthProvider()
+    const userRes = await firebase.auth().signInWithPopup(googleProvider)
+    if(userRes) {
+        let userData = {
+            name: userRes.user?.displayName,
+            email: userRes.user?.email,
+            uid: userRes.user?.uid
+        }
+        return userData;
+    } else {
+        return null
+    }
+}

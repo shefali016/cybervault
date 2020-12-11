@@ -4,7 +4,9 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   LOGOUT_SUCCESS,
-  LOGOUT_FAILURE
+  LOGOUT_FAILURE,
+  GOOGLE_LOGIN_SUCCESS,
+  GOOGLE_LOGIN_FAILURE
 } from 'actions/actionTypes'
 
 type State = {
@@ -71,6 +73,21 @@ const logoutSuccess = (state: State, action: Action) => {
   })
 }
 
+const googleLoginFailure = (state: State, action: Action) => ({
+  ...state,
+  isLoggedIn: false,
+  user: null,
+  error: action.error
+})
+
+const googleLoginSuccess = (state: State, action: Action) => {
+  return ({
+    ...state,
+    isLoggedIn: true,
+    user: action.activeUser
+  })
+}
+
 const authReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case SIGNUP_SUCCESS: return signUpSuccess(state, action)
@@ -79,6 +96,8 @@ const authReducer = (state = initialState, action: Action) => {
     case LOGIN_FAILURE: return loginFailure(state, action)
     case LOGOUT_SUCCESS: return logoutSuccess(state, action)
     case LOGOUT_FAILURE: return logoutFailure(state, action)
+    case GOOGLE_LOGIN_SUCCESS: return googleLoginSuccess(state, action)
+    case GOOGLE_LOGIN_FAILURE: return googleLoginFailure(state, action)
     default: return state
   }
 }

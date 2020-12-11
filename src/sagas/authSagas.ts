@@ -1,8 +1,9 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects'
-import {loginSuccess, loginFailure, signUpFailure, signUpSuccess, logoutSuccess, logoutFailure} from "../actions/authActions";
+import {loginSuccess, loginFailure, signUpFailure, signUpSuccess, logoutSuccess, logoutFailure, googleLoginSuccess, googleLoginFailure} from "../actions/authActions";
 import * as Types from '../utils/types';
 import * as ActionTypes from '../actions/actionTypes';
-import { authRequest, signUpRequest, logoutRequest } from './authRequest'
+import { authRequest, signUpRequest, logoutRequest, googleLoginRequest } from './authRequest';
+
 type Params = { user: Types.User, type: string }
 
 function* login({ user }: Params) {
@@ -17,8 +18,8 @@ function* login({ user }: Params) {
     yield put(loginFailure(error))
   }
 }
-function* signUp({user} : Params)
-{console.log("in SAGA");
+
+function* signUp({user} : Params){
   try{
     const signUpResponse = yield call(signUpRequest, user);
     if (signUpResponse) {
@@ -31,8 +32,7 @@ function* signUp({user} : Params)
   }
 }
 
-function* logout()
-{
+function* logout() {
   try{
     const logoutResponse = yield call(logoutRequest);
     if (logoutResponse) {
@@ -40,10 +40,23 @@ function* logout()
     } else {
       yield put(logoutFailure())
     }
+  }
+  catch(error : any)
+    {
+      yield put (logoutFailure())
+    }
+}
 
-  }catch(error : any)
-  {
-    yield put (logoutFailure())
+function* googleLogin() {
+  try {
+    const loginResponse = yield call(googleLoginRequest);
+    if (loginResponse) {
+      yield put(googleLoginSuccess(loginResponse))
+    } else {
+      yield put(googleLoginFailure(loginResponse))
+    }
+  } catch (error: any) {
+    yield put(googleLoginFailure(error))
   }
 }
 
@@ -51,6 +64,7 @@ function* watchGetRequest() {
  yield takeLatest(ActionTypes.LOGIN_REQUEST, login)
  yield takeLatest(ActionTypes.SIGNUP_REQUEST, signUp)
  yield takeLatest(ActionTypes.LOGOUT, logout)
+ yield takeLatest(ActionTypes.GOOGLE_LOGIN_REQUEST, googleLogin)
 }
 
 export default function* sagas() {

@@ -22,12 +22,12 @@ export function loginFailure (error: any) {
     };
   }
 
-  export function signUp(user: Types.User){
-    return{
-      type: ActionTypes.SIGNUP_REQUEST,
-      user
-    };
-  }
+export function signUp(user: Types.User){
+  return{
+    type: ActionTypes.SIGNUP_REQUEST,
+    user
+  };
+}
 
 export function signUpSuccess (activeUser: Types.User) {
   console.log("user", activeUser);
@@ -53,10 +53,30 @@ export function logoutSuccess () {
   return {
     type: ActionTypes.LOGOUT_SUCCESS,
     };
-  };
+};
 
 export function logoutFailure () {
   return {
     type: ActionTypes.LOGOUT_FAILURE,
+    };
+}
+
+export function googleLogin() {
+  return {
+    type: ActionTypes.GOOGLE_LOGIN_REQUEST
+  };
+}
+
+export function googleLoginSuccess (activeUser: any) {
+  return {
+    type: ActionTypes.GOOGLE_LOGIN_SUCCESS,
+    activeUser: activeUser,
+    };
+  };
+
+export function googleLoginFailure (error: any) {
+  return {
+    type: ActionTypes.GOOGLE_LOGIN_FAILURE,
+    error
     };
   }
