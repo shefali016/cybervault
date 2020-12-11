@@ -1,25 +1,25 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects'
-//import {  } from 'actions/Auth/actionTypes'
-// import { getListSuccess, getListFailure } from 'actions/Auth'
-// import { getRequest } from './request'
-// import { pushNotification } from 'utils/notifications'
-// import URls from 'constants/urls'
+import {loginSuccess, loginFailure} from "../actions/authActions";
+import * as Types from '../utils/types';
+import * as ActionTypes from '../actions/actionTypes';
+import { authRequest } from './authRequest'
+type Params = { user: Types.User, type: string }
 
-function* getJsonData() {
-  // try {
-  //   const response = yield call(getRequest, URls.GET_LIST)
-  //   if (response.data) {
-  //     pushNotification('Get data success', 'success', 'TOP_CENTER', 1000)
-  //     yield put(getListSuccess(response.data))
-  //   }
-  // } catch (error) {
-  //   pushNotification('Get data failure', 'error', 'TOP_CENTER', 1000)
-  //   yield put(getListFailure())
-  // }
+function* login({ user }: Params) {
+  try {
+    const loginResponse = yield call(authRequest, user);
+    if (loginResponse) {
+      yield put(loginSuccess(loginResponse))
+    } else {
+      yield put(loginFailure(loginResponse))
+    }
+  } catch (error: any) {
+    yield put(loginFailure(error))
+  }
 }
 
 function* watchGetRequest() {
- // yield takeLatest(GET_LIST, getJsonData)
+ yield takeLatest(ActionTypes.LOGIN_REQUEST, login)
 }
 
 export default function* sagas() {

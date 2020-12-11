@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../App.css";
 import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
-import { signUp } from "../firebase/auth";
+// import { signUp } from "../firebase/auth";
 import ReactLoading from "react-loading";
 
 const initialState = {
@@ -16,8 +16,6 @@ export const SignUpScreen = (props: any) => {
   const [state, setState] = useState(initialState);
   const { email, password, passwordConfirm, loading } = state;
 
-
-
   const handleInputChange = (key: any) => (e: any) =>
     setState(state => ({ ...state, [key]: e.target.value }));
 
@@ -27,7 +25,7 @@ export const SignUpScreen = (props: any) => {
       return;
     }
     setState(state => ({ ...state, loading: true }));
-    signUp(email.trim(), password.trim());
+    // signUp(email.trim(), password.trim());
 
   };
 

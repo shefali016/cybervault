@@ -1,9 +1,9 @@
 import {
   SIGNUP_SUCCESS,
-SIGNUP_FAILURE,
-LOGIN_SUCCESS,
-LOGIN_FAILURE
-} from 'actions/Auth/actionTypes'
+  SIGNUP_FAILURE,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE
+} from 'actions/actionTypes'
 
 type State = {
   isLoggedIn: Boolean,
@@ -14,7 +14,8 @@ type State = {
 type Action = {
   type: string,
   payload: {},
-  error: any
+  error: any,
+  activeUser: {}
 };
 
 const initialState = {
@@ -35,7 +36,7 @@ const signUpSuccess = (state: State, action: Action) => {
   return ({
     ...state,
     isLoggedIn: true,
-    user: action.payload
+    user: action.activeUser
   })
 }
 
@@ -47,11 +48,11 @@ const loginFailure = (state: State, action: Action) => ({
 })
 
 const loginSuccess = (state: State, action: Action) => {
-  console.log("reducer");
+  console.log("reducer", action.activeUser);
   return ({
     ...state,
     isLoggedIn: true,
-    user: action.payload
+    user: action.activeUser
   })
 }
 
