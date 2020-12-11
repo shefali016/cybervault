@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
 import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
-// import { signUp } from "../firebase/auth";
+import { signUp } from "../actions/authActions";
+import { connect } from 'react-redux';
 import ReactLoading from "react-loading";
+import * as Types from '../utils/types';
 
 const initialState = {
   email: "",
@@ -16,6 +18,20 @@ export const SignUpScreen = (props: any) => {
   const [state, setState] = useState(initialState);
   const { email, password, passwordConfirm, loading } = state;
 
+  useEffect(()=>{
+    console.log("in use Effect", props.isLoggedIn);
+    if(props.isLoggedIn && props.user)
+    {
+      signUpCompleted(props);
+    }
+  },[props.isLoggedIn, props.user]);
+
+  const signUpCompleted = (props: any) => {
+    setState(state => ({ ...state, loading: false }));
+    props.history.push("/home");
+  }
+
+
   const handleInputChange = (key: any) => (e: any) =>
     setState(state => ({ ...state, [key]: e.target.value }));
 
@@ -25,7 +41,7 @@ export const SignUpScreen = (props: any) => {
       return;
     }
     setState(state => ({ ...state, loading: true }));
-    // signUp(email.trim(), password.trim());
+    props.signUp({email: email.trim(), password: password.trim()});
 
   };
 
@@ -68,4 +84,18 @@ export const SignUpScreen = (props: any) => {
   );
 };
 
-export default SignUpScreen;
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: state.auth.isLoggedIn,
+  user: state.auth.user
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  signUp: (user: Types.User) => {
+    return dispatch(signUp(user));
+  },
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignUpScreen)

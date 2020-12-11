@@ -1,17 +1,14 @@
 import "./App.css";
 import React, { useEffect, useState }from "react";
-import AssetUploader from "./components/Assets/AssetUploader";
-import AssetList from "./components/Assets/AssetList";
+import { connect } from 'react-redux';
 import { initFirebase } from "./firebaseConfig";
 import { Router, Switch, Route } from "react-router-dom";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import { createBrowserHistory } from "history";
+import HomeScreen from "./screens/HomeScreen";
 
 initFirebase();
-
-
-
 const rootHistory = createBrowserHistory();
 
 function App() {
@@ -36,9 +33,16 @@ function App() {
           )}
         />
         <Route path="/signup" component={SignUpScreen} />
+        <Route path="/home" component={HomeScreen} />
       </Switch>
     </Router>
   );
 }
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: state.auth.isLoggedIn,
+})
 
-export default App;
+export default connect(
+  mapStateToProps,
+  null,
+)(App)

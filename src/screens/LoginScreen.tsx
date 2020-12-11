@@ -20,7 +20,7 @@ export const LoginScreen = (props: any) => {
 
   useEffect(()=>{
     if(props.isLoggedIn && props.user)
-    {
+    { 
       loggedIn(props);
     }
   },[props.isLoggedIn, props.user]);
@@ -28,7 +28,7 @@ export const LoginScreen = (props: any) => {
 
   const loggedIn = (props: any) => {
     setState(state => ({ ...state, loading: false }));
-    props.history.push("/signup");
+    props.history.push("/home");
   }
 
   const handleInputChange = (key: any) => (e: any) =>

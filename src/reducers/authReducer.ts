@@ -2,7 +2,9 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
   LOGIN_SUCCESS,
-  LOGIN_FAILURE
+  LOGIN_FAILURE,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE
 } from 'actions/actionTypes'
 
 type State = {
@@ -48,11 +50,24 @@ const loginFailure = (state: State, action: Action) => ({
 })
 
 const loginSuccess = (state: State, action: Action) => {
-  console.log("reducer", action.activeUser);
   return ({
     ...state,
     isLoggedIn: true,
     user: action.activeUser
+  })
+}
+
+const logoutFailure = (state: State, action: Action) => ({
+  ...state,
+  isLoggedIn: false,
+  user: null,
+})
+
+const logoutSuccess = (state: State, action: Action) => {
+  return ({
+    ...state,
+    isLoggedIn: false,
+    user: null
   })
 }
 
@@ -62,6 +77,8 @@ const authReducer = (state = initialState, action: Action) => {
     case SIGNUP_FAILURE: return signUpFailure(state, action)
     case LOGIN_SUCCESS: return loginSuccess(state, action)
     case LOGIN_FAILURE: return loginFailure(state, action)
+    case LOGOUT_SUCCESS: return logoutSuccess(state, action)
+    case LOGOUT_FAILURE: return logoutFailure(state, action)
     default: return state
   }
 }

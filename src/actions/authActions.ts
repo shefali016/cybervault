@@ -22,10 +22,41 @@ export function loginFailure (error: any) {
     };
   }
 
-// export function SignUpSuccess () ({
-//   type: SIGNUP_SUCCESS
-// })
+  export function signUp(user: Types.User){
+    return{
+      type: ActionTypes.SIGNUP_REQUEST,
+      user
+    };
+  }
 
-// export function SignUpFailure () ({
-//   type: SIGNUP_FAILURE
-// })
+export function signUpSuccess (activeUser: Types.User) {
+  console.log("user", activeUser);
+  return {
+  type: ActionTypes.SIGNUP_SUCCESS,
+  activeUser: activeUser
+  };
+}
+
+export function signUpFailure (error: any) {
+  return {
+  type: ActionTypes.SIGNUP_FAILURE,
+  error
+  };
+}
+
+export function logout(){
+  return{
+    type: ActionTypes.LOGOUT,
+  };
+}
+export function logoutSuccess () {
+  return {
+    type: ActionTypes.LOGOUT_SUCCESS,
+    };
+  };
+
+export function logoutFailure () {
+  return {
+    type: ActionTypes.LOGOUT_FAILURE,
+    };
+  }
