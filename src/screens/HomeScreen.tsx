@@ -3,6 +3,7 @@ import "../App.css";
 import { connect } from 'react-redux';
 import { logout } from "../actions/authActions";
 import { Button, Typography } from "@material-ui/core";
+import SideBarComponent from '../components/Common/SideBar';
 
 export const HomeScreen = (props: any) => {
 
@@ -40,6 +41,11 @@ export const HomeScreen = (props: any) => {
     </div>
   </div>
   );
+  // return (
+  //   <div className="background">
+  //     <SideBarComponent />
+  //   </div>
+  // );
 };
 
 const mapStateToProps = (state: any) => ({
