@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "../App.css";
 import { connect } from 'react-redux';
 import { logout } from "../actions/authActions";
 import { Button, Typography } from "@material-ui/core";
+import Toolbar from "../components/Layout/Header/header";
+import ProjectCard from "../components/Cards/ProjectDescriptionCard";
+import UnpaidInvoices from "../components/Cards/UnpaidInvoices";
+import PendingInvoices from "../components/Cards/PendingInvoices";
+import IncomeThisMonth from "../components/Cards/IncomeThisMonth";
+import ProjectCount from "../components/Cards/ProjectCount";
+import ProfitsExpenses from "../components/Cards/ProfitsExpenses";
 
 export const HomeScreen = (props: any) => {
 
-  useEffect(()=>{
-    if(!props.isLoggedIn && !props.user)
-    {
+  useEffect(() => {
+    if (!props.isLoggedIn && !props.user) {
       loggedOut(props);
     }
-  },[props.isLoggedIn]);
- 
+  }, [props.isLoggedIn]);
+
   const loggedOut = (props: any) => {
     props.history.push("/");
   }
@@ -20,30 +26,69 @@ export const HomeScreen = (props: any) => {
   const handleLogout = () => {
     props.logout();
   };
-
+  const projectData = [1, 2, 23, 5];
   return (
-  <div>
-      <Button
-        variant="contained"
-        onClick={handleLogout}
-        color="primary"
-        style={{ width: "100%", 
-        maxWidth: 170, 
-        position: "absolute", right: 10, top:10}}
-      >
-        Logout
+    <div className="background">
+      <Toolbar />
+      <div style={{ marginTop: 40 }}>
+        <Button
+          variant="contained"
+          onClick={handleLogout}
+          color="primary"
+          style={{
+            width: "100%",
+            maxWidth: 170,
+            position: "absolute", right: 10, top: 60
+          }}
+        >
+          Logout
       </Button>
-      <div className="background" >
-      <Typography variant={"h4"} style={{ fontWeight: "bold", margin: 20 }}>
-        Home Screen
-      </Typography>
+        <div>
+          <Typography variant={"body2"} style={{ fontWeight: "bold", marginTop: 30, marginLeft: 10 }}>
+            Active Projects {'>'}
+          </Typography>
+          <div style={{ overflow: "auto", marginLeft: 10, marginTop: 20 }} >
+            {projectData && projectData.length > 0 ?
+              projectData.map((project: any, index: number) => {
+                return (
+                  <ProjectCard projectDetails={project} />
+                )
+              }) : <Typography>No Projects found</Typography>
+            }
+          </div>
+        </div>
+        <div>
+          <Typography variant={"body2"} style={{ fontWeight: "bold", marginTop: 30, marginLeft: 10 }}>
+            Invoicing and Analytics {'>'}
+          </Typography>
+          <div style={{ overflow: "auto", marginLeft: 10, marginTop: 20, display: "flex" }} >
+            <PendingInvoices />
+            <ProfitsExpenses />
+            <ProjectCount />
+            <IncomeThisMonth />
+          </div>
+        </div>
+
+        <Typography variant={"body2"} style={{ fontWeight: "bold", marginTop: 30, marginLeft: 10 }}>
+          Unpaid Invoices {'>'}
+        </Typography>
+        <div style={{ marginLeft: 10, marginTop: 20, overflow: "scroll" }} >
+          {projectData && projectData.length > 0 ?
+            projectData.map((project: any, index: number) => {
+              return (
+                <UnpaidInvoices projectDetails={project} />
+              )
+            }) : <Typography>No Projects found</Typography>
+          }
+        </div>
+      </div>
     </div>
-  </div>
   );
 };
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
+  //projectData : state.projects.projectData
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

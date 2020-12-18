@@ -1,11 +1,10 @@
 .background {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  justify-content: center;
+  display: grid;
+  color: #fff8f8;
+  background-color: #141814;
+  margin-top:50px;
+  height: 800px;
+  width: 1250px;
 }
 .login-provider-button {
   max-width: 190;
@@ -25,12 +24,12 @@ button {
   }
 }
 .container {
-  background-color: #f2f5f7d8;
+  background-color: #1a8be0d8;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-size: calc(10px + 2vmin);
-  color: rgb(12, 12, 12);
+  color: rgb(29, 24, 24);
   width: 70vh;
 }
 
