@@ -161,14 +161,15 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 20,
     },
     storageDetails: {
+        marginLeft: 18,
     },
     linearProgress: {
         marginLeft: 18,
         marginRight: 18
     },
     listItem: {
-        paddingTop: 5,
-        paddingBottom: 5
+        paddingTop: 3,
+        paddingBottom: 3
     }
   }));
 

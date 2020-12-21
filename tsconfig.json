@@ -2,7 +2,7 @@
   "compilerOptions": {
     "noFallthroughCasesInSwitch": true,
     "target": "es6",
-    "jsx": "react-jsx",
+    "jsx": "react",
     "module": "esnext",
     "lib": [
       "dom",
