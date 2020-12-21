@@ -14,9 +14,6 @@ import HomeScreen from "../screens/HomeScreen";
           path="/"
           exact
           component={LoginScreen}
-              
-              
-            
         />
         <Route path="/signup" component={SignUpScreen} />
         <Route path="/home" component={HomeScreen} />

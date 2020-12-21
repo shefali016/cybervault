@@ -3,9 +3,12 @@ import "../App.css";
 import { connect } from 'react-redux';
 import { logout } from "../actions/authActions";
 import { Button, Typography } from "@material-ui/core";
-import SideBarComponent from '../components/Common/SideBar';
+import Layout from '../components/Common/Layout/index';
+import { useTheme } from "@material-ui/styles";
 
 export const HomeScreen = (props: any) => {
+
+  const theme = useTheme();
 
   useEffect(()=>{
     if(!props.isLoggedIn && !props.user)
@@ -23,29 +26,28 @@ export const HomeScreen = (props: any) => {
   };
 
   return (
-  <div>
-      <Button
-        variant="contained"
-        onClick={handleLogout}
-        color="primary"
-        style={{ width: "100%", 
-        maxWidth: 170, 
-        position: "absolute", right: 10, top:10}}
-      >
-        Logout
-      </Button>
-      <div className="background" >
-      <Typography variant={"h4"} style={{ fontWeight: "bold", margin: 20 }}>
-        Home Screen
-      </Typography>
+    <div className="background">
+      <Layout {...props}>
+        <div className="pageContainer">
+          <Button
+            variant="contained"
+            onClick={handleLogout}
+            color="primary"
+            style={{ width: "100%", 
+            maxWidth: 170, 
+            position: "absolute", right: 10, top:10}}
+          >
+            Logout
+          </Button>
+          <div  >
+            <Typography variant={"h4"} style={{ fontWeight: "bold", margin: 20 }}>
+              Home Screen
+            </Typography>
+          </div>
+        </div>
+      </Layout>
     </div>
-  </div>
   );
-  // return (
-  //   <div className="background">
-  //     <SideBarComponent />
-  //   </div>
-  // );
 };
 
 const mapStateToProps = (state: any) => ({
