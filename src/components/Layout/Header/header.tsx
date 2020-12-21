@@ -10,17 +10,12 @@ const Toolbar = (props: {
     profilePictureIcon?: any,
     title?: string
 }): JSX.Element => (
-        <header className={classes.Toolbar}>
-            <div className={classes.Logo}>
-                <img src={logo} style={{ height: 30, width: 30, marginTop: 10 }} />
-            </div>
-
-            <div style={{ position: "absolute", left: 90 }}>
-                <h2 style={{ color: 'white' }}>
-                    {props.title ? props.title : "DashBoard"}
+        <div className={classes.Toolbar}>
+            <div style={{ marginLeft: 50 }}>
+                <h2 style={{ color: 'white', fontWeight: 'normal' }}>
+                    {props.title ? props.title : "Dashboard"}
                 </h2>
             </div>
-
             <div>
                 {props.isNotificationIcon ? (<IconButton
                     style={{ borderRadius: 100, width: 10, marginRight: 20 }}
@@ -33,7 +28,7 @@ const Toolbar = (props: {
                     <img src={props.profilePictureIcon ? props.profilePictureIcon : profileIcon} />
                 </IconButton>
             </div>
-        </header>
+        </div>
     )
 
 export default Toolbar;

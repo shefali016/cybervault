@@ -7,9 +7,9 @@ const PendingInvoices = (props: {
     paidAmount?: number
 }): JSX.Element => (
 
-        <Card style={{ display: "grid", width: '10rem', height: '10rem' }}>
+        <Card style={{ display: "grid", width: '10rem', height: '10rem', borderRadius: 15 }}>
             <CardContent>
-                <Title varient={"h3"}> Invoices Pending</ Title>
+                <Title> Invoices Pending</ Title>
                 <BodyText style={{ marginTop: 8 }}> $ {props.unpaidAmount ? props.unpaidAmount : 0}  Unpaid</BodyText>
                 <LinearProgress variant="determinate" value={props.unpaidAmount ? props.unpaidAmount : 50} style={{ width: 120, height: 18, borderRadius: 25, alignSelf: "center", marginTop: 8 }} />
                 <BodyText style={{ marginTop: 8 }}> $ {props.paidAmount ? props.paidAmount : 0}  Paid</BodyText>

@@ -7,7 +7,7 @@ const IncomeThisMonth = (props: {
      paidAmount?: number
 }): JSX.Element => (
 
-          <Card style={{ display: "grid", width: 250, height: '10rem', marginLeft: 10 }}>
+          <Card style={{ display: "grid", width: 250, height: '10rem', marginLeft: 10, borderRadius: 15 }}>
                <CardContent>
                     <Title> Income This Month</ Title>
                     <BodyText style={{ marginTop: 8 }}> $ {props.unpaidAmount ? props.unpaidAmount : 0}  Unpaid</BodyText>

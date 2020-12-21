@@ -5,8 +5,8 @@ const ProjectCount = (props: {
   projectCount?: any,
   openProject?: any,
 }): JSX.Element => (
-    <Button onClick={props.openProject} style={{ marginLeft: 10, padding: 0 }}>
-      <Card style={{ width: '10rem', height: '10rem' }}>
+    <Button onClick={props.openProject} style={{ marginLeft: 10, padding: 0, borderRadius: 15 }}>
+      <Card style={{ width: '10rem', height: '10rem', borderRadius: 15 }}>
         <CardContent>
           <Title>
             Projects This Month

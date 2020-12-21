@@ -3,13 +3,13 @@ import "../App.css";
 import { connect } from 'react-redux';
 import { logout } from "../actions/authActions";
 import { Button, Typography } from "@material-ui/core";
-import Toolbar from "../components/Layout/Header/header";
 import ProjectCard from "../components/Cards/ProjectDescriptionCard";
 import UnpaidInvoices from "../components/Cards/UnpaidInvoices";
 import PendingInvoices from "../components/Cards/PendingInvoices";
 import IncomeThisMonth from "../components/Cards/IncomeThisMonth";
 import ProjectCount from "../components/Cards/ProjectCount";
 import ProfitsExpenses from "../components/Cards/ProfitsExpenses";
+import Layout from '../components/Common/Layout';
 
 export const HomeScreen = (props: any) => {
 
@@ -29,8 +29,8 @@ export const HomeScreen = (props: any) => {
   const projectData = [1, 2, 23, 5];
   return (
     <div className="background">
-      <Toolbar />
-      <div style={{ marginTop: 40 }}>
+      <Layout {...props}>
+      <div className="dashboardContainer">
         <Button
           variant="contained"
           onClick={handleLogout}
@@ -38,13 +38,13 @@ export const HomeScreen = (props: any) => {
           style={{
             width: "100%",
             maxWidth: 170,
-            position: "absolute", right: 10, top: 60
+            position: "absolute", right: 15, top: 90
           }}
         >
           Logout
       </Button>
         <div>
-          <Typography variant={"body2"} style={{ fontWeight: "bold", marginTop: 30, marginLeft: 10 }}>
+          <Typography variant={"body2"} style={{ marginLeft: 10 }}>
             Active Projects {'>'}
           </Typography>
           <div style={{ overflow: "auto", marginLeft: 10, marginTop: 20 }} >
@@ -58,21 +58,21 @@ export const HomeScreen = (props: any) => {
           </div>
         </div>
         <div>
-          <Typography variant={"body2"} style={{ fontWeight: "bold", marginTop: 30, marginLeft: 10 }}>
+          <Typography variant={"body2"} style={{ marginTop: 30, marginLeft: 10 }}>
             Invoicing and Analytics {'>'}
           </Typography>
-          <div style={{ overflow: "auto", marginLeft: 10, marginTop: 20, display: "flex" }} >
+          <div style={{ overflow: "auto", marginLeft: 20, marginTop: 20, display: "flex" }} >
             <PendingInvoices />
             <ProfitsExpenses />
             <ProjectCount />
             <IncomeThisMonth />
           </div>
         </div>
-
-        <Typography variant={"body2"} style={{ fontWeight: "bold", marginTop: 30, marginLeft: 10 }}>
+        <div>
+        <Typography variant={"body2"} style={{ marginTop: 30, marginLeft: 10 }}>
           Unpaid Invoices {'>'}
         </Typography>
-        <div style={{ marginLeft: 10, marginTop: 20, overflow: "scroll" }} >
+        <div style={{ marginLeft: 10, marginTop: 10, paddingBottom: 20 }} >
           {projectData && projectData.length > 0 ?
             projectData.map((project: any, index: number) => {
               return (
@@ -81,7 +81,9 @@ export const HomeScreen = (props: any) => {
             }) : <Typography>No Projects found</Typography>
           }
         </div>
+        </div>
       </div>
+      </Layout>
     </div>
   );
 };

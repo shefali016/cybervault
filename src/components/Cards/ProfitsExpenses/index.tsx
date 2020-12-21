@@ -3,7 +3,7 @@ import { Card, CardContent } from "@material-ui/core";
 // @ts-ignore
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import Chart from '../../common/Chart';
+import Chart from '../../Common/Chart';
 import { Title } from "./style";
 
 export default function ProfitExpenses(props: any) {
@@ -12,9 +12,9 @@ export default function ProfitExpenses(props: any) {
     const handleChange = (event: React.MouseEvent<HTMLElement>, nextView: string) => {
         setView(nextView);
     };
-    return (<Card style={{ display: "grid", width: '20rem', height: '10rem', marginLeft: 10 }}>
+    return (<Card style={{ display: "grid", width: '20rem', height: '10rem', marginLeft: 10, borderRadius: 15 }}>
         <CardContent>
-            <Title variant={"body2"} style={{ fontWeight: "bold", margin: 2 }}>
+            <Title style={{ fontWeight: "bold", margin: 2 }}>
                 Profit/Expenses
           </Title>
             <div style={{ flexDirection: "row-reverse", }}>
