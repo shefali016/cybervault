@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import SideBarComponent from '../SideBar';
-import ToolBar from '../../Layout/Header/header'
+import ToolBar from '../Header/header'
 
 const Layout = (props: any) => {
   return (
