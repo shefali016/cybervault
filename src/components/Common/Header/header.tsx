@@ -8,12 +8,12 @@ import notificationIcon from '../../../assets/notificationIcon.png';
 const Toolbar = (props: {
     isNotificationIcon?: boolean,
     profilePictureIcon?: any,
-    title?: string
+    headerTitle?: string
 }): JSX.Element => (
         <div className={classes.Toolbar}>
             <div style={{ marginLeft: 50 }}>
                 <h2 style={{ color: 'white', fontWeight: 'normal' }}>
-                    {props.title ? props.title : "Dashboard"}
+                    {props.headerTitle ? props.headerTitle : "Dashboard"}
                 </h2>
             </div>
             <div>

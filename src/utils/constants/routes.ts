@@ -1,7 +1,8 @@
-export const LANDING = '/';
-export const SIGN_UP = '/signup';
-export const LOGIN = '/login';
-export const HOME = '/home';
-export const ACCOUNT = '/account';
-export const ADMIN = '/admin';
-export const PASSWORD_FORGET = '/pw-forget';
+const ROUTES = {
+    ROOT: '/',
+    SIGN_UP: '/signup',
+    DASHBOARD: '/home',
+    PROJECTS: '/projects'
+}
+
+export default ROUTES

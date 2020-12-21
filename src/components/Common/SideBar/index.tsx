@@ -1,25 +1,20 @@
-import React, { useState } from "react";
-import { Button, Typography, Drawer, Box, List, ListItem, LinearProgress, IconButton, CssBaseline, AppBar, Toolbar, Divider, ListItemIcon, ListItemText } from "@material-ui/core";
+import React from "react";
+import { Button, Typography, Drawer, List, ListItem, LinearProgress, CssBaseline, Divider, ListItemIcon, ListItemText } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp';
 import AddIcon from '@material-ui/icons/Add';
-
-const drawerWidth = 200;
-const APP_BAR_HEIGHT = 70;
-const PRIMARY_COLOR = '#5ea5fc'
+import { SIDE_DRAWER_WIDTH, APP_BAR_HEIGHT, CENTER } from '../../../utils/constants/stringConstants';
+import { WHITE_COLOR, BORDER_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_DARK_COLOR } from '../../../utils/constants/colorsConstants';
+import ROUTES from '../../../utils/constants/routes';
 
 const SideBarComponent = (props: any) => {
     const { user, history } = props;
-    const [sidebarOpen, setSideBarOpen] = useState(false)
     const classes = useStyles();
 
-	const handleSideBar = (open: boolean) => {
-		setSideBarOpen(open)
-	}
-
-	const handleOptionClick = (url: string) => {
+	const handleOptionClick = (index: Number) => {
+        const url = index === 0 ? ROUTES.DASHBOARD : ROUTES.PROJECTS;
 		history.push(url);
     }
 
@@ -37,8 +32,8 @@ const SideBarComponent = (props: any) => {
             <div className={classes.storageContainer}>
                 <LinearProgress variant="determinate" value={70} className={classes.linearProgress}/>
                 <div className={classes.storageDetails}>
-                    <Typography style={{ color: '#FFFFFF', fontSize: 8, marginTop: 5 }}>{'430GB of 500GB used'}</Typography>
-                    <Typography style={{ color: '#FFFFFF', fontSize: 8 }}>{'Buy more storage'}</Typography>
+                    <Typography style={{ color: WHITE_COLOR, fontSize: 8, marginTop: 5 }}>{'430GB of 500GB used'}</Typography>
+                    <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>{'Buy more storage'}</Typography>
                 </div>
             </div>
         );
@@ -67,9 +62,9 @@ const SideBarComponent = (props: any) => {
             <Divider className={classes.divider}/>
             <List>
                 {['DashBoard', 'Projects', 'Portfolio', 'Setting', 'Storage'].map((text, index) => (
-                <ListItem button key={text} onClick={() => handleOptionClick('')} className={classes.listItem}>
+                <ListItem button key={text} onClick={() => handleOptionClick(index)} className={classes.listItem}>
                     <ListItemIcon>{getListItemIcon(text)}</ListItemIcon>
-                    <ListItemText disableTypography primary={<Typography style={{ color: '#FFFFFF', fontSize: 14 }}>{text}</Typography>} className={classes.sideBarText}/>
+                    <ListItemText disableTypography primary={<Typography style={{ color: WHITE_COLOR, fontSize: 14 }}>{text}</Typography>} className={classes.sideBarText}/>
                 </ListItem>
                 ))}
             </List>
@@ -77,9 +72,9 @@ const SideBarComponent = (props: any) => {
             <Divider className={classes.divider}/>
             <List>
                 {['Invoices', 'Payment', 'Security'].map((text, index) => (
-                <ListItem button key={text} onClick={() => handleOptionClick('')} className={classes.listItem}>
+                <ListItem button key={text} onClick={() => handleOptionClick(2)} className={classes.listItem}>
                     <ListItemIcon>{getListItemIcon(text)}</ListItemIcon>
-                    <ListItemText disableTypography primary={<Typography style={{ color: '#FFFFFF', fontSize: 14 }}>{text}</Typography>} className={classes.sideBarText} />
+                    <ListItemText disableTypography primary={<Typography style={{ color: WHITE_COLOR, fontSize: 14 }}>{text}</Typography>} className={classes.sideBarText} />
                 </ListItem>
                 ))}
             </List>
@@ -94,11 +89,11 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
     },
     appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
+      width: `calc(100% - ${SIDE_DRAWER_WIDTH}px)`,
+      marginLeft: SIDE_DRAWER_WIDTH,
     },
     drawer: {
-      width: drawerWidth,
+      width: SIDE_DRAWER_WIDTH,
       flexShrink: 0,
       '&:hover': {
         overflowY: 'auto',
@@ -108,9 +103,9 @@ const useStyles = makeStyles((theme) => ({
       }
     },
     drawerPaper: {
-      width: drawerWidth,
-      backgroundColor: 'rgb(36, 38, 43)',
-      borderRightColor: 'rgb(62, 64, 68)'
+      width: SIDE_DRAWER_WIDTH,
+      backgroundColor: SECONDARY_COLOR,
+      borderRightColor: BORDER_COLOR
     },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
@@ -120,24 +115,24 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
     divider: {
-        backgroundColor: 'rgb(62, 64, 68)'
+        backgroundColor: BORDER_COLOR
     },
     appIconContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: CENTER,
+        justifyContent: CENTER,
         height: APP_BAR_HEIGHT,
-        backgroundColor: 'rgb(51, 51, 51)'
+        backgroundColor: SECONDARY_DARK_COLOR
     },
     appIcon: {
         color: 'green',
         fontSize: 60
     },
     sideBarText: {
-        color: 'white',
+        color: WHITE_COLOR,
         fontSize: 8
     },
     addProjectButton: {
-        width: drawerWidth - 25,
+        width: SIDE_DRAWER_WIDTH - 25,
         background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
         // boxShadow: '0 1px 2px 0.5px #5ea5fc',
         borderTopRightRadius: 15,
@@ -149,12 +144,12 @@ const useStyles = makeStyles((theme) => ({
     },
     menuIconStyle: {
         marginRight: 15,
-        color: 'white',
+        color: WHITE_COLOR,
         fontSize: 18
     },
     listIconStyle: {
         marginRight: 15,
-        color: 'white',
+        color: PRIMARY_COLOR,
         fontSize: 18
     },
     storageContainer: {

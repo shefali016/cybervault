@@ -7,7 +7,7 @@ const Layout = (props: any) => {
     <Fragment>
       <SideBarComponent {...props}/>
       <div className="toolBarContainer">
-        <ToolBar />
+        <ToolBar {...props}/>
       </div>
       <div className="pageContainer">
         {props.children}

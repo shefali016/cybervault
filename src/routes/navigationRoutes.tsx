@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import LoginScreen from "../screens/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import HomeScreen from "../screens/HomeScreen";
+import ProjectScreen from "../screens/projects/ProjectsScreen";
 
 function Routes(): JSX.Element {
 
@@ -17,6 +18,7 @@ function Routes(): JSX.Element {
       />
       <Route path="/signup" component={SignUpScreen} />
       <Route path="/home" component={HomeScreen} />
+      <Route path="/projects" component={ProjectScreen} />
       <Route component={LoginScreen} />
     </Switch>
   );
