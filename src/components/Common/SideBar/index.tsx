@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { SIDE_DRAWER_WIDTH, APP_BAR_HEIGHT, CENTER } from '../../../utils/constants/stringConstants';
 import { WHITE_COLOR, BORDER_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_DARK_COLOR } from '../../../utils/constants/colorsConstants';
 import ROUTES from '../../../utils/constants/routes';
+import { Link } from 'react-router-dom';
 
 const SideBarComponent = (props: any) => {
     const { user, history } = props;
@@ -17,6 +18,10 @@ const SideBarComponent = (props: any) => {
         const url = index === 0 ? ROUTES.DASHBOARD : ROUTES.PROJECTS;
 		history.push(url);
     }
+
+    const handleLogout = () => {
+        props.logout();
+      };
 
     const getListItemIcon = (text: string) => {
         switch (text) {
@@ -35,6 +40,15 @@ const SideBarComponent = (props: any) => {
                     <Typography style={{ color: WHITE_COLOR, fontSize: 8, marginTop: 5 }}>{'430GB of 500GB used'}</Typography>
                     <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>{'Buy more storage'}</Typography>
                 </div>
+            </div>
+        );
+    }
+
+    const renderTermsView = () => {
+        return(
+            <div className={classes.termsContainer}>
+                <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>See our <Link to={`/forgot-password`} className={classes.linkText}>{'Terms & Condition'}</Link>{` & `}<Link to={`/forgot-password`} className={classes.linkText}>{'Privacy Policy'}</Link></Typography>
+                <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>{'Content Vault 2020@. All rights reserved'}</Typography>
             </div>
         );
     }
@@ -78,6 +92,12 @@ const SideBarComponent = (props: any) => {
                 </ListItem>
                 ))}
             </List>
+            <ListItem button key={'Log Out'} onClick={() => handleLogout()} className={classes.listItemLogout}>
+                    <ListItemIcon>{getListItemIcon('Log Out')}</ListItemIcon>
+                    <ListItemText disableTypography primary={<Typography style={{ color: WHITE_COLOR, fontSize: 14 }}>{'Log Out'}</Typography>} className={classes.sideBarText} />
+            </ListItem>
+            <Divider className={classes.divider}/>
+            {renderTermsView()}
         </Drawer>
       </div>
       )
@@ -165,6 +185,18 @@ const useStyles = makeStyles((theme) => ({
     listItem: {
         paddingTop: 3,
         paddingBottom: 3
+    },
+    listItemLogout: {
+        marginTop: 50
+    },
+    termsContainer: {
+        marginBottom: 20,
+        marginLeft: 18,
+        marginTop: 10
+    },
+    linkText: {
+        color: PRIMARY_COLOR,
+        fontSize: 8
     }
   }));
 
