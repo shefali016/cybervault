@@ -6,9 +6,10 @@ import AppTextField from "../components/AppTextField";
 import { Button, Typography } from "@material-ui/core";
 import ReactLoading from "react-loading";
 import * as Types from '../utils/types';
-import firebase from "firebase/app";
+import { makeStyles } from '@material-ui/core/styles';
 import "firebase/auth";
 import GoogleAuthComponent from '../components/SocialAuth/GoogleAuthComponent';
+import { BOLD } from "utils/constants/stringConstants";
 
 const initialState = {
   email: "",
@@ -43,11 +44,11 @@ export const LoginScreen = (props: any) => {
   const navigateToSignUp = () => {
     props.history.push("/signup");
   };
-
+  const classes = useStyles();
   return (
-  <div className= "background">
+  <div className= "authScreenContainer">
     <div className={"container center-content"}>
-      <Typography variant={"h4"} style={{ fontWeight: "bold", margin: 20 }}>
+      <Typography variant={"h4"} className={classes.title}>
         Welcome
       </Typography>
       <form className={"col"}>
@@ -55,7 +56,7 @@ export const LoginScreen = (props: any) => {
           label="Email"
           variant="filled"
           onChange={handleInputChange("email")}
-          style={{ marginBottom: 10 }}
+          className={classes.generalMargin}
         />
         <AppTextField
           label="Password"
@@ -69,19 +70,19 @@ export const LoginScreen = (props: any) => {
         variant="contained"
         onClick={handleLogin}
         color="primary"
-        style={{ width: "100%", maxWidth: 185 }}
+        className={classes.button}
       >
         Login
       </Button>
       <GoogleAuthComponent props={props}/>
-      <Typography style={{ margin: 20 }} variant={"body1"}>
+      <Typography className={classes.bottomText} variant={"body1"}>
         OR
       </Typography>
       <Button
         variant="contained"
         onClick={navigateToSignUp}
         color="primary"
-        style={{ width: "100%", maxWidth: 185 }}
+        className={classes.button}
       >
         Sign up
       </Button>
@@ -103,7 +104,24 @@ const mapDispatchToProps = (dispatch: any) => ({
     return dispatch(googleLogin())
   }
 });
-
+const useStyles = makeStyles((theme) => ({
+  title: {
+      margin: 20, 
+      fontWeight: BOLD,
+  },
+  generalMargin: {
+    marginBottom: 10 
+  },
+ 
+  bottomText:
+  {
+    marginBottom: 20 
+  },
+button:{
+  width: "100%", 
+  maxWidth: 185 
+   }
+}));
 export default connect(
   mapStateToProps,
   mapDispatchToProps,

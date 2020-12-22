@@ -6,6 +6,8 @@ import { signUp } from "../actions/authActions";
 import { connect } from 'react-redux';
 import ReactLoading from "react-loading";
 import * as Types from '../utils/types';
+import { makeStyles } from '@material-ui/core/styles';
+import { BOLD } from "utils/constants/stringConstants";
 
 const initialState = {
   email: "",
@@ -44,38 +46,38 @@ export const SignUpScreen = (props: any) => {
     props.signUp({email: email.trim(), password: password.trim()});
 
   };
-
+  const classes = useStyles();
   return (
-    <div className= "background">
+    <div className= "authScreenContainer">
     <div className={"container center-content"}>
-      <Typography variant={"h4"} style={{ margin: 20, fontWeight: "bold" }}>
+      <Typography variant={"h4"} className={classes.title}>
         Create your account
       </Typography>
       <form className={"col"}>
       <AppTextField
         label={"Email"}
         onChange={handleInputChange("email")}
-        style={{ marginBottom: 10 }}
+        className={classes.generalMargin}
       />
       <AppTextField
         label={"Password"}
         onChange={handleInputChange("password")}
         type={"password"}
-        style={{ marginBottom: 10 }}
+        className={classes.generalMargin}
       />
       <AppTextField
         label={"Confirm Password"}
         onChange={handleInputChange("passwordConfirm")}
         type={"password"}
-        style={{ marginBottom: 20 }}
+        className={classes.bottomTextField}
       />
       </form>
       <ReactLoading type={loading ? "bubbles" : "blank"} color={"#fff"} />
       <Button
         variant="contained"
         color="primary"
-        style={{ width: 170 }}
         onClick={handleLogin}
+        className={classes.button}
       >
         Sign up
       </Button>
@@ -94,7 +96,23 @@ const mapDispatchToProps = (dispatch: any) => ({
     return dispatch(signUp(user));
   },
 });
-
+const useStyles = makeStyles((theme) => ({
+  title: {
+      margin: 20, 
+      fontWeight: BOLD,
+  },
+  generalMargin: {
+    marginBottom: 10 
+  },
+ 
+  bottomTextField:
+  {
+    marginBottom: 20 
+  },
+button:{
+   width: 170,
+   }
+}));
 export default connect(
   mapStateToProps,
   mapDispatchToProps,

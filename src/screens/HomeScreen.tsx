@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "../App.css";
 import { connect } from 'react-redux';
 import { logout } from "../actions/authActions";
-import { Button, Typography } from "@material-ui/core";
+import { Typography, Grid } from "@material-ui/core";
 import ProjectCard from "../components/Cards/ProjectDescriptionCard";
 import UnpaidInvoices from "../components/Cards/UnpaidInvoices";
 import PendingInvoices from "../components/Cards/PendingInvoices";
@@ -10,6 +10,8 @@ import IncomeThisMonth from "../components/Cards/IncomeThisMonth";
 import ProjectCount from "../components/Cards/ProjectCount";
 import ProfitsExpenses from "../components/Cards/ProfitsExpenses";
 import Layout from '../components/Common/Layout';
+import { makeStyles } from '@material-ui/core/styles';
+import { AUTO, FLEX } from "utils/constants/stringConstants";
 
 export const HomeScreen = (props: any) => {
 
@@ -22,32 +24,17 @@ export const HomeScreen = (props: any) => {
   const loggedOut = (props: any) => {
     props.history.push("/");
   }
-
-  const handleLogout = () => {
-    props.logout();
-  };
+  const classes = useStyles();
   const projectData = [1, 2, 23, 5];
   return (
     <div className="background">
       <Layout {...props}>
       <div className="dashboardContainer">
-        <Button
-          variant="contained"
-          onClick={handleLogout}
-          color="primary"
-          style={{
-            width: "100%",
-            maxWidth: 170,
-            position: "absolute", right: 15, top: 90
-          }}
-        >
-          Logout
-      </Button>
         <div>
-          <Typography variant={"body2"} style={{ marginLeft: 10 }}>
+          <Typography variant={"body2"} className={classes.generalMarginLeft}>
             Active Projects {'>'}
           </Typography>
-          <div style={{ overflow: "auto", marginLeft: 10, marginTop: 20 }} >
+          <Grid container className={classes.topCardsWrapper} >
             {projectData && projectData.length > 0 ?
               projectData.map((project: any, index: number) => {
                 return (
@@ -55,13 +42,13 @@ export const HomeScreen = (props: any) => {
                 )
               }) : <Typography>No Projects found</Typography>
             }
-          </div>
+          </Grid>
         </div>
         <div>
-          <Typography variant={"body2"} style={{ marginTop: 30, marginLeft: 10 }}>
+          <Typography variant={"body2"} className={classes.styledText}>
             Invoicing and Analytics {'>'}
           </Typography>
-          <div style={{ overflow: "auto", marginLeft: 20, marginTop: 20, display: "flex" }} >
+          <div className={classes.middleCardsWrapper} >
             <PendingInvoices />
             <ProfitsExpenses />
             <ProjectCount />
@@ -69,10 +56,10 @@ export const HomeScreen = (props: any) => {
           </div>
         </div>
         <div>
-        <Typography variant={"body2"} style={{ marginTop: 30, marginLeft: 10 }}>
+        <Typography variant={"body2"} className={classes.styledText}>
           Unpaid Invoices {'>'}
         </Typography>
-        <div style={{ marginLeft: 10, marginTop: 10, paddingBottom: 20 }} >
+        <div className={classes.bottomCardsWrapper} >
           {projectData && projectData.length > 0 ?
             projectData.map((project: any, index: number) => {
               return (
@@ -98,7 +85,33 @@ const mapDispatchToProps = (dispatch: any) => ({
     return dispatch(logout());
   },
 });
-
+const useStyles = makeStyles((theme) => ({
+  topCardsWrapper: {
+    overflow: AUTO, 
+    marginLeft: 10, 
+    marginTop: 20,
+  },
+  middleCardsWrapper:
+  {
+    overflow: AUTO, 
+    marginLeft: 20, 
+    marginTop: 20, 
+    display: FLEX,
+  },
+  bottomCardsWrapper:
+  {
+    marginLeft: 10, 
+    marginTop: 10, 
+    paddingBottom: 20,
+  },
+  generalMarginLeft:{
+     marginLeft: 10, 
+  },
+ styledText:{
+   marginTop: 30,
+   marginLeft: 10,
+ }
+}));
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
