@@ -49,7 +49,7 @@ export const LoginScreen = (props: any) => {
   <div className= "authScreenContainer">
     <div className={"container center-content"}>
       <Typography variant={"h4"} className={classes.title}>
-        Welcome
+        Cyber Vault
       </Typography>
       <form className={"col"}>
         <AppTextField
@@ -115,7 +115,8 @@ const useStyles = makeStyles((theme) => ({
  
   bottomText:
   {
-    marginBottom: 20 
+    marginTop: 10,
+    marginBottom: 10 
   },
 button:{
   width: "100%", 

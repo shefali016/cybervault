@@ -11,7 +11,7 @@ function ProjectCard(props: {
     const classes = useStyles();
       return ( <Button onClick={props.openProject}>
             <Card className={classes.card}>
-                <Grid container spacing={6} direction={'column'}>
+                <Grid container spacing={4} direction={'column'}>
                     <Grid item xs={12} className={classes.imageWrapper}>
                         <img className={classes.img} src={(props.projectDetails && props.projectDetails.image) ? props.projectDetails.image : logo} alt="Logo" />
                     </Grid>
@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
     display: BLOCK, 
     maxWidth:300, 
     maxHeight:200,
+    marginTop: 10
  }
 
 }));
