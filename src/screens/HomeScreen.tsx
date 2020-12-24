@@ -38,7 +38,7 @@ export const HomeScreen = (props: any) => {
             {projectData && projectData.length > 0 ?
               projectData.map((project: any, index: number) => {
                 return (
-                  <ProjectCard projectDetails={project} />
+                  <ProjectCard projectDetails={project} isPopover={true} />
                 )
               }) : <Typography>No Projects found</Typography>
             }

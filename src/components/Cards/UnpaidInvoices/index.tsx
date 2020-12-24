@@ -3,7 +3,7 @@ import { Button, Card, CardContent, Typography } from "@material-ui/core";
 import logo from '../../../assets/logo.png';
 import { makeStyles } from '@material-ui/core/styles';
 import { BLOCK, BOLD, CENTER, GRID, FLEX, AUTO } from "utils/constants/stringConstants";
-import { GREY_COLOR, WHITE_COLOR } from "utils/constants/colorsConstants";
+import { GREY_COLOR, SECONDARY_COLOR, WHITE_COLOR } from "utils/constants/colorsConstants";
 
 function UnpaidInvoices(props: {
   projectDetails?: any,
@@ -35,12 +35,12 @@ const useStyles = makeStyles((theme) => ({
   button:{
     height: '4rem', 
     marginTop: 10, 
-    background: '#141814',
+    background: SECONDARY_COLOR,
   },
   card: {
     width: '16rem', 
     height: '4rem', 
-    background: '#141814', 
+    background: SECONDARY_COLOR, 
     zIndex: 2,
   },
   imgWrapper: { 
