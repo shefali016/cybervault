@@ -21,10 +21,7 @@ export const ProjectsScreen = (props: any) => {
           <div className={classes.topCardsWrapper} >
             <ProjectDescriptionWithButtons />
             {projectData && projectData.length > 0 ?
-              projectData.map((project: any, index: number) => {
-                if (index < 1) {
-                  return;
-                }
+              projectData.map((project: any) => {
                 return (
                   <ProjectCard projectDetails={project} />
                 )
