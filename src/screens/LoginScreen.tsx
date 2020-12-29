@@ -9,7 +9,8 @@ import * as Types from '../utils/types';
 import { makeStyles } from '@material-ui/core/styles';
 import "firebase/auth";
 import GoogleAuthComponent from '../components/SocialAuth/GoogleAuthComponent';
-import { BOLD } from "utils/constants/stringConstants";
+import { BOLD, CENTER } from "utils/constants/stringConstants";
+import { PRIMARY_COLOR } from "utils/constants/colorsConstants";
 
 const initialState = {
   email: "",
@@ -47,20 +48,22 @@ export const LoginScreen = (props: any) => {
   const classes = useStyles();
   return (
   <div className= "authScreenContainer">
-    <div className={"container center-content"}>
-      <Typography variant={"h4"} className={classes.title}>
+          <Typography variant={"h2"} className={classes.title}>
         Cyber Vault
       </Typography>
+    <div className={"container center-content"}>
+
       <form className={"col"}>
+        <Typography variant={"h4"} className={classes.text}>
+          Login
+        </Typography>
         <AppTextField
           label="Email"
-          variant="filled"
           onChange={handleInputChange("email")}
           className={classes.generalMargin}
         />
         <AppTextField
           label="Password"
-          variant="filled"
           onChange={handleInputChange("password")}
           type={"password"}
         />
@@ -106,6 +109,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 const useStyles = makeStyles((theme) => ({
   title: {
+      color: PRIMARY_COLOR,
       margin: 20, 
       fontWeight: BOLD,
   },
@@ -121,6 +125,14 @@ const useStyles = makeStyles((theme) => ({
 button:{
   width: "100%", 
   maxWidth: 185 
+   },
+   text:{
+     alignSelf:CENTER,
+     fontWeight:600,
+     marginBottom: 20
+   },
+   label:{
+     backgroundColor: '#ffffff'
    }
 }));
 export default connect(

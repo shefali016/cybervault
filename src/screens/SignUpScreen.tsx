@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import ReactLoading from "react-loading";
 import * as Types from '../utils/types';
 import { makeStyles } from '@material-ui/core/styles';
-import { BOLD } from "utils/constants/stringConstants";
+import { BOLD, CENTER } from "utils/constants/stringConstants";
+import { PRIMARY_COLOR } from "utils/constants/colorsConstants";
 
 const initialState = {
   email: "",
@@ -49,9 +50,12 @@ export const SignUpScreen = (props: any) => {
   const classes = useStyles();
   return (
     <div className= "authScreenContainer">
+     <Typography variant={"h2"} className={classes.title}>
+        Cyber Vault
+      </Typography>
     <div className={"container center-content"}>
-      <Typography variant={"h4"} className={classes.title}>
-        Create your account
+      <Typography variant={"h4"} className={classes.text}>
+        Sign Up
       </Typography>
       <form className={"col"}>
       <AppTextField
@@ -98,8 +102,10 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 const useStyles = makeStyles((theme) => ({
   title: {
-      margin: 20, 
-      fontWeight: BOLD,
+    color: PRIMARY_COLOR,
+    marginBottom: 20, 
+    marginTop:0,
+    fontWeight: BOLD,
   },
   generalMargin: {
     marginBottom: 10 
@@ -109,9 +115,14 @@ const useStyles = makeStyles((theme) => ({
   {
     marginBottom: 20 
   },
-button:{
+  button:{
    width: 170,
-   }
+   },
+  text:{
+    alignSelf:CENTER,
+    fontWeight:600,
+    marginBottom: 20
+  }
 }));
 export default connect(
   mapStateToProps,

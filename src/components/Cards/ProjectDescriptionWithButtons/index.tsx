@@ -43,12 +43,10 @@ const useStyles = makeStyles((theme) => ({
         width: '10rem',
         height: '10rem',
         borderRadius: 15,
-        flexGrow: 1,
         margin: 10,
         padding: 0,
         backgroundColor: WHITE_COLOR,
         display: FLEX,
-        flex: 1,
 
     },
     imageWrapper: {

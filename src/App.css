@@ -1,6 +1,5 @@
 .background {
   display: grid;
-  color: #fff8f8;
   background-color: rgb(36, 38, 43);
   height: 100%;
   width: 100%;
@@ -25,13 +24,16 @@ button {
   }
 }
 .container {
-  background-color: #ffffffd8;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-size: calc(10px + 2vmin);
-  color: rgb(29, 24, 24);
+  background-color: #ffffff;
   width: 70vh;
+  z-index: 2;
+  border-radius: 20px;
+  padding: 10px;
+
+
 }
 
 .center-content {
@@ -49,6 +51,8 @@ button {
   display: flex;
   flex-direction: column;
   width: 60vh;
+  border-top: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)';
+  border-width: 10;
 }
 
 .dashboardContainer {
@@ -57,7 +61,9 @@ button {
 .authScreenContainer {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   align-items: center;
-  color: #fff8f8;
-  background-color: #141814;
+  justify-content: center;
+  background-color: #ffffff;
+  color: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)';
 }

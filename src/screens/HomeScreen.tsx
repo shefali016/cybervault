@@ -27,9 +27,9 @@ export const HomeScreen = (props: any) => {
   const classes = useStyles();
   const projectData = [1, 2, 23, 5];
   return (
-    <div className="background">
+    <div className={classes.background}>
       <Layout {...props}>
-      <div className="dashboardContainer">
+      <div className={classes.dashboardContainer}>
         <div>
           <Typography variant={"body2"} className={classes.generalMarginLeft}>
             Active Projects {'>'}
@@ -110,7 +110,19 @@ const useStyles = makeStyles((theme) => ({
  styledText:{
    marginTop: 30,
    marginLeft: 10,
- }
+ },
+ background: {
+  display: 'grid',
+  backgroundColor: '#24262B',
+  height: '100%',
+  width: '100%',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  color: '#ffffff'
+},
+dashboardContainer :{
+  marginTop: '50px'
+}
 }));
 export default connect(
   mapStateToProps,
