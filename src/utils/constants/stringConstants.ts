@@ -25,3 +25,4 @@ export const ROW_REVERSE = "row-reverse";
 export const FLEX = 'flex';
 export const AUTO = 'auto';
 export const BLOCK = 'block';
+export const NONE = 'none';
