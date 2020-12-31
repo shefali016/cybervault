@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import SideBarComponent from '../SideBar';
-import ToolBar from '../Header/header'
+import ToolBar from '../Header/header';
+import NewProjectModal from '../../Projects/NewProjectModal';
 
 const Layout = (props: any) => {
   return (
@@ -12,6 +13,7 @@ const Layout = (props: any) => {
       <div className="pageContainer">
         {props.children}
       </div>
+      {/* <NewProjectModal /> */}
     </Fragment>
   )
 }
