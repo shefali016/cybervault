@@ -1,66 +1,24 @@
-import React, { useState } from "react";
-import {  Modal, makeStyles, Typography, Button, TextField, IconButton } from '@material-ui/core';
-import { PRIMARY_COLOR, TRANSPARENT, WHITE_COLOR, PRIMARY_DARK_COLOR, GREY_COLOR } from "utils/constants/colorsConstants";
+import React, {ChangeEvent}  from "react";
+import {  makeStyles, Typography, Button } from '@material-ui/core';
+import { PRIMARY_COLOR, TRANSPARENT, PRIMARY_DARK_COLOR, GREY_COLOR } from "utils/constants/colorsConstants";
 import { BOLD, CENTER, COLUMN, FLEX, FLEX_END, NONE, POSITION_ABSOLUTE, ROW } from "utils/constants/stringConstants";
 import profileIcon from '../../../assets/userAvatar.png';
-import { ProjectData, StepOne } from '../../../utils/types/index';
+import AppTextField from "../../Common/Core/AppTextField";
 
 const NewProjectStepOne = (props: any) => {
-
     const classes = useStyles();
-    const { projectData: {stepOne}, projectData, setProjectData } = props;
+    const { projectData, setProjectData } = props;
     let imageInputRef: any = React.useRef();
 
     const handleChange = (event: any) => {
         if(event.target && event.target.files && event.target.files.length > 0) {
-            const newData = {...projectData, stepOne: {...stepOne, logo: URL.createObjectURL(event.target.files[0])}}//{...stepOne, logo: URL.createObjectURL(event.target.files[0])}
-            setProjectData(newData);
+            setProjectData({...projectData, logo: URL.createObjectURL(event.target.files[0])});
         }
       }
-
-    const onProjectDataChange = (stepOne: StepOne) => {
-        const newData = {...projectData, stepOne: {...stepOne}}
-        setProjectData(newData);
-    }
     
-    const handleInputChange = (event: any, label: string) => {
-        let newStepOne: StepOne = stepOne;
-        switch (label) {
-            case 'Campaign Name':
-                newStepOne = {...stepOne, campaignName: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'Campaign Date':
-                newStepOne = {...stepOne, campaignDate: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'Client Name':
-                newStepOne = {...stepOne, clientName: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'Client Email':
-                newStepOne = {...stepOne, clientEmail: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'Address':
-                newStepOne = {...stepOne, address: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'City':
-                newStepOne = {...stepOne, city: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'State/Province':
-                newStepOne = {...stepOne, state: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'Country':
-                newStepOne = {...stepOne, country: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            default:
-                break;
-        }
+    const handleInputChange = (event: any) => (key: string) => {
+        const value = event.target.value
+        setProjectData({...projectData, [key]: value});
     }
 
     const renderClientLogoView = () => {
@@ -79,7 +37,7 @@ const NewProjectStepOne = (props: any) => {
                             ref={(input) => { imageInputRef = input; }}
                             onChange={handleChange}
                         />
-                        <img src={(stepOne.logo !== '') ? stepOne.logo : profileIcon } className={classes.clientLogoImg}/>
+                        <img src={(projectData.logo !== '') ? projectData.logo : profileIcon } className={classes.clientLogoImg}/>
                     </Button>
                     <Typography variant={'caption'} className={classes.addLogoText}>
                         Add Client Logo
@@ -104,64 +62,42 @@ const NewProjectStepOne = (props: any) => {
         );
     }
 
-    const renderInputField = (_type: string, label: string, _value: string) => {
-        return (
-            <TextField
-                id={_type}
-                label={label}
-                variant="outlined"
-                size="small"
-                type={_type}
-                className={classes.textField}
-                margin="normal"
-                onChange={(e) => handleInputChange(e, label)}//{handleInputChange}
-                value={_value}
-                InputProps={{ classes: { root: classes.inputRoot} }}
-                InputLabelProps={{
-                classes: {
-                    root: (_value === '') ? classes.labelRoot : classes.labelRootFilled,
-                    focused: classes.labelFocused
-                }
-                }}
-            />
-        );
-    }
-
     const renderMiddleView = () => {
         return (
             <div className={classes.middleView}>
                 <div className={classes.textFiledContainer}>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('', 'Campaign Name', stepOne.campaignName)}
+                    <div style={{ flex: 1, marginRight: 15 }}>
+                        <AppTextField  type={""} label={'Campaign Name'} value={projectData.campaignName} onChange={(e: ChangeEvent) => handleInputChange(e)("campaignName")} />
                     </div>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('date', 'Campaign Date', stepOne.campaignDate)}
+                    <div style={{flex: 1}}>
+
+                        <AppTextField type={"date"} label={'Campaign Date'} value={projectData.campaignDate} onChange={(e: ChangeEvent) => handleInputChange(e)("campaignDate")} />
+                    </div>
+                    </div>
+                <div className={classes.textFiledContainer}>
+                    <div style={{ flex: 1, marginRight: 15 }}>
+                        <AppTextField type={""} label={'Client Name'} value={projectData.clientName} onChange={(e: ChangeEvent) => handleInputChange(e)("clientName")} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <AppTextField type={""} label={'Client Email'} value={projectData.clientEmail} onChange={(e: ChangeEvent) => handleInputChange(e)("clientEmail")} />
                     </div>
                 </div>
                 <div className={classes.textFiledContainer}>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('', 'Client Name', stepOne.clientName)}
+                    <div style={{ flex: 1, marginRight: 15 }}>
+                    <AppTextField type={""} label={'Address'} value={projectData.address} onChange={(e: ChangeEvent) => handleInputChange(e)("address")} />
                     </div>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('', 'Client Email', stepOne.clientEmail)}
+                    <div style={{ flex: 1 }}>
+                        <AppTextField type={""} label={'City'} value={projectData.city} onChange={(e: ChangeEvent) => handleInputChange(e)("city")} />
                     </div>
-                </div>
+                    </div>
                 <div className={classes.textFiledContainer}>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('', 'Address', stepOne.address)}
+                    <div style={{ flex: 1, marginRight: 15 }}>
+                        <AppTextField type={""} label={'State/Province'} value={projectData.state} onChange={(e: ChangeEvent) => handleInputChange(e)("state")} />
                     </div>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('', 'City', stepOne.city)}
+                    <div style={{ flex: 1 }}>
+                        <AppTextField type={""} label={'Country'} value={projectData.country} onChange={(e: ChangeEvent) => handleInputChange(e)("country")} />
                     </div>
-                </div>
-                <div className={classes.textFiledContainer}>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('number', 'State/Province', stepOne.state)}
                     </div>
-                    <div style={{ flex: 0.5 }}>
-                        {renderInputField('', 'Country', stepOne.country)}
-                    </div>
-                </div>
             </div>
         )
     }
@@ -170,15 +106,15 @@ const NewProjectStepOne = (props: any) => {
         return (
             <div className={classes.bottomView}>
                     <Typography variant={'caption'} className={classes.stepLabel}>
-                        Step {'1'} of 5
+                        Step 1 of 5
                     </Typography>
                     <Button
                         variant="contained"
-                        onClick={() => props.setCurrentStep(2)}
+                        onClick={props.onNext}
                         color="primary"
                         className={classes.button}
                     >
-                        Continue
+                        <Typography variant={"button"} >Continue</Typography>
                     </Button>
             </div>
         );
@@ -210,9 +146,10 @@ const useStyles = makeStyles((theme) => ({
         display: FLEX,
         flex: 1,
         marginTop: -30,
+        marginBottom: 40,
         alignItems: CENTER,
         justifyContent: CENTER,
-        flexDirection: COLUMN
+        flexDirection: COLUMN,
     },
     clientLogo: {
         height: 80,
@@ -238,8 +175,10 @@ const useStyles = makeStyles((theme) => ({
     },
     textFiledContainer: {
         display: FLEX,
-        flex: 0.25,
+        flex: 1,
         flexDirection: ROW,
+        justifyContent: CENTER,
+        marginBottom: 20,
     },
     textField: {
         width: '90%',
@@ -297,17 +236,17 @@ const useStyles = makeStyles((theme) => ({
         display: FLEX,
         alignItems: CENTER,
         justifyContent: FLEX_END,
+        marginTop: 20
     },
     stepLabel: {
         color: GREY_COLOR,
-        fontSize: 10,
-        marginRight: 30
+        marginRight: 20
     },
     button:{
-        width: 70,
-        height: 25,
+        width: 100,
+        height: 40,
         fontSize: 8,
-        borderRadius: 15,
+        borderRadius: 20,
         background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
         textTransform: NONE
     },

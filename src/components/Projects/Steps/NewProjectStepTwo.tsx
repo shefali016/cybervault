@@ -1,40 +1,20 @@
-import React, { useState } from "react";
+import React, {ChangeEvent, useState} from "react";
 import { makeStyles, Typography, Button, TextField, IconButton } from '@material-ui/core';
 import { PRIMARY_COLOR, TRANSPARENT, PRIMARY_DARK_COLOR, GREY_COLOR } from "utils/constants/colorsConstants";
 import { BOLD, CENTER, COLUMN, FLEX, FLEX_END, NONE, POSITION_ABSOLUTE, ROW } from "utils/constants/stringConstants";
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import AddIcon from '@material-ui/icons/Add';
-import { StepTwo, StretegyTask } from '../../../utils/types/index';
+import { StretegyTask } from '../../../utils/types/index';
+import AppTextField from "../../Common/Core/AppTextField";
 
 const NewProjectStepTwo = (props: any) => {
-
     const classes = useStyles();
-    const { projectData: {stepTwo}, projectData, setProjectData } = props;
+    const { projectData, setProjectData } = props;
     const [tasksData, setTasks] = useState([1]);
 
-    const onProjectDataChange = (stepTwo: StepTwo) => {
-        const newData = {...projectData, stepTwo: {...stepTwo}}
-        setProjectData(newData);
-    }
-    
-    const handleInputChange = (event: any, label: string) => {
-        let newStepOne: StepTwo = stepTwo;
-        switch (label) {
-            case 'Campaign Objective':
-                newStepOne = {...stepTwo, campaignObjective: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'Campaign DadeLine':
-                newStepOne = {...stepTwo, campaignDeadLine: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            case 'description':
-                newStepOne = {...stepTwo, description: event.target.value}
-                onProjectDataChange(newStepOne)
-                break;
-            default:
-                break;
-        }
+    const handleInputChange = (event: any) =>  (key: string) => {
+        const value = event.target.value
+        setProjectData({...projectData, [key]: value})
     }
 
     const addMoreClicked = () => {
@@ -46,7 +26,7 @@ const NewProjectStepTwo = (props: any) => {
     const renderTopView = () => {
         return (
             <div className={classes.headerView}>
-                <div style={{  }}>
+                <div style={{ marginBottom: 40 }}>
                     <Typography variant={'h6'} className={classes.headerTitle}>
                         Plan The Strategy.
                     </Typography>
@@ -58,48 +38,18 @@ const NewProjectStepTwo = (props: any) => {
         );
     }
 
-    const renderInputField = (_type: string, label: string, _value: string) => {
-        return (
-            <TextField
-                id={_type}
-                label={label}
-                variant="outlined"
-                size="small"
-                type={_type}
-                className={classes.textField}
-                margin="normal"
-                onChange={(e) => handleInputChange(e, label)}
-                value={_value}
-                InputProps={{ classes: { root: classes.inputRoot} }}
-                InputLabelProps={(_type === 'date') ? {
-                    shrink: true,
-                    classes: {
-                        root: (_value === '') ? classes.dateRoot : classes.dateRootFilled,
-                        focused: classes.labelFocused
-                    }
-                    } : {
-                        classes: {
-                            root: (_value === '') ? classes.labelRoot : classes.labelRootFilled,
-                            focused: classes.labelFocused
-                        }
-                }}
-            />
-        );
-    }
-
     const renderTasksView = (data: StretegyTask, index: number) => {
         return (
             <div className={classes.tasksContainer}>
-            <div style={{ flex: 0.4 }}>
-                {renderInputField('', 'Task One   ie; preplan', data.task)}
+            <div style={{ flex: 0.5, marginRight: 15 }}>
+                <AppTextField type={""} label={'Task One   ie: preplan'} value={data.task} onChange={(e: ChangeEvent) => handleInputChange(e)("task")} />
+            </div>
+            <div style={{ flex: 0.2, marginRight: 15 }}>
+                <AppTextField type={"date"} label={'Campaign DadeLine'} value={data.startDay} onChange={(e: ChangeEvent) => handleInputChange(e)("startDay")} />
             </div>
             <div style={{ flex: 0.2 }}>
-                {renderInputField('date', 'Campaign DadeLine', data.startDay)}
+                <AppTextField type={"date"} label={'Campaign DadeLine'} value={data.deadLine} onChange={(e: ChangeEvent) => handleInputChange(e)("deadLine")} />
             </div>
-            <div style={{ flex: 0.2 }}>
-                {renderInputField('date', 'Campaign DadeLine', data.deadLine)}
-            </div>
-            <div style={{ flex: 0.2 }}/>
         </div>
         );
     }
@@ -127,12 +77,12 @@ const NewProjectStepTwo = (props: any) => {
                 type={'text'}
                 className={classes.textFieldDes}
                 margin="normal"
-                onChange={(e) => handleInputChange(e, 'description')}
-                value={stepTwo.description}
+                onChange={(e) => handleInputChange(e)("description")}
+                value={projectData.description}
                 InputProps={{ classes: { root: classes.inputRootDes} }}
                 InputLabelProps={{
                 classes: {
-                    root: (stepTwo.description === '') ? classes.labelRoot : classes.labelRootFilled,
+                    root: (projectData.description === '') ? classes.labelRoot : classes.labelRootFilled,
                     focused: classes.labelFocused
                 }
                 }}
@@ -144,17 +94,16 @@ const NewProjectStepTwo = (props: any) => {
         return (
             <div className={classes.middleView}>
                 <div className={classes.textFiledContainer}>
-                    <div style={{ flex: 0.4 }}>
-                        {renderInputField('', 'Campaign Objective', stepTwo.campaignObjective)}
+                    <div style={{ flex: 1, marginRight: 15 }}>
+                        <AppTextField type={""} label={'Campaign Objective'} value={projectData.campaignObjective} onChange={(e: ChangeEvent) => handleInputChange(e)("campaignObjective")} />
                     </div>
-                    <div style={{ flex: 0.4 }}>
-                        {renderInputField('date', 'Campaign DadeLine', stepTwo.campaignDeadLine)}
+                    <div style={{ flex: 1 }}>
+                        <AppTextField type={"date"} label={'Campaign DadeLine'} value={projectData.campaignDeadLine} onChange={(e: ChangeEvent) => handleInputChange(e)("campaignDeadLine")} />
                     </div>
-                    <div style={{ flex: 0.2 }}/>
                 </div>
-                <div style={{ height: '120px', overflowY: 'scroll', marginTop: 5, paddingTop: 5, paddingBottom: 10 }}>
-                    {stepTwo.tasks && stepTwo.tasks.length > 0 ? 
-                        stepTwo.tasks.map((data: StretegyTask, index: number) => {
+                <div style={{marginTop: 20}}>
+                    {projectData.tasks && projectData.tasks.length > 0 ?
+                        projectData.tasks.map((data: StretegyTask, index: number) => {
                             return renderTasksView(data, index);
                         })
                         : null
@@ -168,7 +117,7 @@ const NewProjectStepTwo = (props: any) => {
 
     const renderBackButton = () => {
         return (
-            <IconButton aria-label="back" className={classes.backButton} onClick={() => props.setCurrentStep(1)}>
+            <IconButton aria-label="back" className={classes.backButton} onClick={() => props.onBack()}>
                 <ArrowBackIosIcon className={classes.backButton}/>
             </IconButton>
         );
@@ -179,11 +128,11 @@ const NewProjectStepTwo = (props: any) => {
             <div className={classes.bottomView}>
                     {renderBackButton()}
                     <Typography variant={'caption'} className={classes.stepLabel}>
-                        Step {'2'} of 5
+                        Step 2 of 5
                     </Typography>
                     <Button
                         variant="contained"
-                        onClick={() => props.setCurrentStep(3)}
+                        onClick={() => props.onNext()}
                         color="primary"
                         className={classes.button}
                     >
@@ -247,15 +196,15 @@ const useStyles = makeStyles((theme) => ({
     },
     textFiledContainer: {
         display: FLEX,
-        flex: 0.25,
+        flex: 1,
         flexDirection: ROW,
+        marginBottom: 20
     },
     tasksContainer: {
         display: FLEX,
-        flex: 0.25,
+        flex: 1,
         flexDirection: ROW,
-        marginTop: 15,
-        marginBottom: 15
+        marginBottom: 20
     },
     textField: {
         width: '90%',
@@ -282,8 +231,6 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 8
     },
     textFieldDes: {
-        marginTop: 10,
-        marginBottom: 0,
         fontWeight: 500,
         fontSize: 8,
         "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
@@ -299,7 +246,7 @@ const useStyles = makeStyles((theme) => ({
     },
     inputRootDes: {
         fontSize: 10,
-        height: 80
+        minHeight: 80
     },
     inputRoot: {
         fontSize: 10,
@@ -310,37 +257,14 @@ const useStyles = makeStyles((theme) => ({
         color: GREY_COLOR,
         "&$labelFocused": {
             color: PRIMARY_DARK_COLOR,
-            marginTop: 2,
         },
-        height: 25,
-        marginTop: -5
     },
     labelRootFilled: {
         fontSize: 10,
         color: GREY_COLOR,
         "&$labelFocused": {
             color: PRIMARY_DARK_COLOR,
-            marginTop: 2,
         },
-        height: 25,
-        marginTop: 0
-    },
-    dateRoot: {
-        fontSize: 10,
-        color: GREY_COLOR,
-        "&$labelFocused": {
-            color: PRIMARY_DARK_COLOR
-        },
-        height: 25
-    },
-    dateRootFilled: {
-        fontSize: 10,
-        color: GREY_COLOR,
-        "&$labelFocused": {
-            color: PRIMARY_DARK_COLOR,
-        },
-        height: 25,
-        marginTop: 0
     },
     labelFocused: {
     
@@ -350,11 +274,11 @@ const useStyles = makeStyles((theme) => ({
         display: FLEX,
         alignItems: CENTER,
         justifyContent: FLEX_END,
+        marginTop: 20
     },
     addMore: {
-        flex: 0.1,
-        display: FLEX,
-        alignItems: CENTER
+        marginTop: -10,
+        marginBottom : 20
     },
     stepLabel: {
         color: GREY_COLOR,
@@ -364,7 +288,6 @@ const useStyles = makeStyles((theme) => ({
     addMoreLabel: {
         color: GREY_COLOR,
         fontSize: 10,
-        marginRight: 10
     },
     button:{
         width: 70,

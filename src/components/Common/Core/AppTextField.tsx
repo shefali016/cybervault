@@ -1,0 +1,100 @@
+import {makeStyles, TextField} from "@material-ui/core";
+import React, {ChangeEvent} from "react";
+import {GREY_COLOR, PRIMARY_COLOR, PRIMARY_DARK_COLOR} from "../../../utils/constants/colorsConstants";
+
+type Props = {
+type: string,
+    label: string,
+    value: any, onChange:(e: ChangeEvent) => void,
+}
+
+const AppTextField = ({type, label, value, onChange}: Props) => {
+    const classes = useStyles()
+    return (
+        <TextField
+            id={type}
+            label={label}
+            variant="outlined"
+            size="small"
+            type={type}
+            className={classes.textField}
+            onChange={onChange}
+            value={value}
+            InputProps={{ classes: { root: classes.inputRoot} }}
+            InputLabelProps={(type === 'date') ? {
+                shrink: true,
+                classes: {
+                    root: (!value) ? classes.dateRoot : classes.dateRootFilled,
+                    focused: classes.labelFocused
+                }
+            } : {
+                classes: {
+                    root: (!value) ? classes.labelRoot : classes.labelRootFilled,
+                    focused: classes.labelFocused
+                }
+            }}
+        />
+    );
+}
+
+const useStyles = makeStyles((theme) => ({
+    dateRoot: {
+        fontSize: 10,
+        color: GREY_COLOR,
+        "&$labelFocused": {
+            color: PRIMARY_DARK_COLOR
+        },
+        height: 31
+    },
+    dateRootFilled: {
+        fontSize: 10,
+        color: GREY_COLOR,
+        "&$labelFocused": {
+            color: PRIMARY_DARK_COLOR,
+        },
+        height: 31,
+        marginTop: 0
+    },
+    labelFocused: {
+
+    },
+    textField: {
+        width: '100%',
+        paddingBottom: 0,
+        fontWeight: 500,
+        fontSize: 8,
+        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+            borderColor: GREY_COLOR,
+            borderRadius: 20,
+        },
+        "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+            borderColor: PRIMARY_COLOR
+        },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: PRIMARY_COLOR
+        }
+    },
+    inputRoot: {
+        fontSize: 10,
+        height: 31,
+    },
+    labelRoot: {
+        fontSize: 10,
+        color: GREY_COLOR,
+        "&$labelFocused": {
+            color: PRIMARY_DARK_COLOR,
+        },
+        marginTop: -1
+    },
+    labelRootFilled: {
+        marginTop: -1,
+        fontSize: 10,
+        color: GREY_COLOR,
+        "&$labelFocused": {
+            color: PRIMARY_DARK_COLOR,
+        },
+    },
+}));
+
+
+export default AppTextField

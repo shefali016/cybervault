@@ -25,7 +25,7 @@ const NewProjectStepThree = (props: any) => {
                 onProjectDataChange(newStepThree)
                 break;
             case 'Campaign Expences':
-                newStepThree = {...stepThree, campaignExpences: event.target.value}
+                newStepThree = {...stepThree, campaignExpenses: event.target.value}
                 onProjectDataChange(newStepThree)
                 break;
             default:
@@ -44,7 +44,7 @@ const NewProjectStepThree = (props: any) => {
             <div className={classes.headerView}>
                 <>
                     <Typography variant={'h6'} className={classes.headerTitle}>
-                        Budget & expences.
+                        Budget & expenses.
                     </Typography>
                     <Typography variant={'body2'}>
                         Set your campaign budget & estimated expenses.
@@ -87,7 +87,7 @@ const NewProjectStepThree = (props: any) => {
         return (
             <div className={classes.tasksContainer}>
             <div style={{ flex: 0.4 }}>
-                {renderInputField('', 'Expenses One   ie; Equipment Rental', data.expence)}
+                {renderInputField('', 'Expenses One   ie; Equipment Rental', data.expense)}
             </div>
             <div style={{ flex: 0.3 }}>
                 {renderInputField('number', 'Estimated Cost $', data.cost)}
@@ -118,7 +118,7 @@ const NewProjectStepThree = (props: any) => {
                         {renderInputField('', 'Campaign Budget', stepThree.campaignBudget)}
                     </div>
                     <div style={{ flex: 0.45 }}>
-                        {renderInputField('', 'Campaign Expences', stepThree.campaignExpences)}
+                        {renderInputField('', 'Campaign Expences', stepThree.campaignExpenses)}
                     </div>
                     <div style={{ flex: 0.1 }}/>
                 </div>

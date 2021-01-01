@@ -25,7 +25,7 @@ const NewProjectStepFour = (props: any) => {
                 onProjectDataChange(newStepThree)
                 break;
             case 'Campaign Expences':
-                newStepThree = {...stepFour, campaignExpences: event.target.value}
+                newStepThree = {...stepFour, campaignExpenses: event.target.value}
                 onProjectDataChange(newStepThree)
                 break;
             default:

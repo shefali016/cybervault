@@ -8,7 +8,6 @@ import NewProjectStepOne from './Steps/NewProjectStepOne';
 import NewProjectStepTwo from './Steps/NewProjectStepTwo';
 import NewProjectStepThree from './Steps/NewProjectStepThree';
 import NewProjectStepFour from './Steps/NewProjectStepFour';
-import { ProjectData } from '../../utils/types/index';
 import { getProductData } from '../../utils/index';
   
   function getModalStyle() {
@@ -23,13 +22,12 @@ import { getProductData } from '../../utils/index';
   }
 
 const NewProjectModal = (props: any) => {
-
     const classes = useStyles();
-    const [modalStyle] = React.useState(getModalStyle);
     const [currentStep, setCurrentStep] = useState(1);
     const [projectData, setProjectData] = useState(getProductData());
 
     const handleClose = () => {
+
     }
 
     const renderCloseButton = () => {
@@ -41,19 +39,24 @@ const NewProjectModal = (props: any) => {
     }
 
     const renderStepsView = () => {
+        const props =  {
+            projectData, setProjectData, onNext:() => setCurrentStep(step => step + 1), onBack: () => setCurrentStep(step => step -1)
+        }
         switch (currentStep) {
             case 1:
-                return (<NewProjectStepOne projectData={projectData} setProjectData={(newData: ProjectData) => setProjectData(newData)} setCurrentStep={(step: number) => setCurrentStep(step)}/>)
+                return (<NewProjectStepOne {...props} />)
             case 2:
-                return (<NewProjectStepTwo projectData={projectData} setProjectData={(newData: ProjectData) => setProjectData(newData)} setCurrentStep={(step: number) => setCurrentStep(step)}/>)
+                return (<NewProjectStepTwo {...props} />)
             case 3:
-                return (<NewProjectStepThree projectData={projectData} setProjectData={(newData: ProjectData) => setProjectData(newData)} setCurrentStep={(step: number) => setCurrentStep(step)}/>)
+                return (<NewProjectStepThree {...props} />)
             case 4:
-                return (<NewProjectStepFour projectData={projectData} setProjectData={(newData: ProjectData) => setProjectData(newData)} setCurrentStep={(step: number) => setCurrentStep(step)}/>)
+                return (<NewProjectStepFour {...props} />)
             default:
-                return (<NewProjectStepOne projectData={projectData} setProjectData={(newData: ProjectData) => setProjectData(newData)} setCurrentStep={(step: number) => setCurrentStep(step)}/>)
+                return (<NewProjectStepOne {...props} />)
         }
     }
+
+    console.log(projectData)
 
     return (
         <div className="background">
@@ -63,12 +66,10 @@ const NewProjectModal = (props: any) => {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 >
-                    <>
-                        <div style={modalStyle} className={classes.paper}>
+                        <div style={getModalStyle()} className={classes.paper}>
                             {renderStepsView()}
                             {renderCloseButton()}
                         </div>
-                    </>
             </Modal>
         </div>
         );
@@ -77,8 +78,8 @@ const NewProjectModal = (props: any) => {
 const useStyles = makeStyles((theme) => ({
     paper: {
         position: POSITION_ABSOLUTE,
-        width: 650,
-        height: 450,
+        width: "50vw",
+        // height: 450,
         backgroundColor: WHITE_COLOR,
         boxShadow: theme.shadows[5],
         outline: NONE,

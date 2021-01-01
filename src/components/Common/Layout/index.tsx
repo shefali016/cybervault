@@ -13,7 +13,7 @@ const Layout = (props: any) => {
       <div className="pageContainer">
         {props.children}
       </div>
-      {/* <NewProjectModal /> */}
+       <NewProjectModal />
     </Fragment>
   )
 }

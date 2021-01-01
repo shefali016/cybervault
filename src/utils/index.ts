@@ -21,8 +21,7 @@ export function generateUid() {
 }
 
 export function getProductData() {
-    const _data: ProjectData = {
-        stepOne: {
+    return {
             logo: '',
             campaignName: '',
             campaignDate: '',
@@ -31,9 +30,7 @@ export function getProductData() {
             address: '',
             city: '',
             state: '',
-            country: ''
-        },
-        stepTwo: {
+            country: '',
             campaignObjective: '',
             campaignDeadLine: '',
             description: '',
@@ -47,23 +44,19 @@ export function getProductData() {
                     startDay: '',
                     deadLine: ''
                 }
-            ]
-        },
-        stepThree: {
+            ],
             campaignBudget: '',
-            campaignExpences: '',
+            campaignExpenses: '',
             expenses: [
                 {
-                    expence: '',
+                    expense: '',
                     cost: 0,
                 },
                 {
-                    expence: '',
+                    expense: '',
                     cost: 0,
                 }
-            ]
-        },
-        stepFour: {
+            ],
             milestone: [
                 {
                     milestone: '',
@@ -74,7 +67,5 @@ export function getProductData() {
                     payment: 0,
                 }
             ]
-        }
     }
-    return _data;
 }

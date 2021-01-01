@@ -17,7 +17,7 @@ export type StretegyTask = {
 }
 
 export type StretegyExpenses = {
-  expence: string,
+  expense: string,
   cost: number,
 }
 
@@ -47,7 +47,7 @@ export type StepTwo = {
 
 export type StepThree = {
   campaignBudget: String,
-  campaignExpences: String,
+  campaignExpenses: String,
   expenses: Array<StretegyExpenses>
 }
 
