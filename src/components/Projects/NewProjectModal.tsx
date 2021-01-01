@@ -78,8 +78,8 @@ const NewProjectModal = (props: any) => {
 const useStyles = makeStyles((theme) => ({
     paper: {
         position: POSITION_ABSOLUTE,
-        width: "50vw",
-        // height: 450,
+        width: "60vw",
+        maxHeight: "90vh",
         backgroundColor: WHITE_COLOR,
         boxShadow: theme.shadows[5],
         outline: NONE,
@@ -88,7 +88,8 @@ const useStyles = makeStyles((theme) => ({
         padding: 20,
         flexDirection: COLUMN,
         paddingLeft: 30,
-        paddingRight: 30
+        paddingRight: 30,
+        overflowY: "scroll"
     },
     closeButton: {
         position: POSITION_ABSOLUTE,

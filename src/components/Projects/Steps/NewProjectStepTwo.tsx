@@ -1,11 +1,11 @@
 import React, {ChangeEvent, useState} from "react";
-import { makeStyles, Typography, Button, TextField, IconButton } from '@material-ui/core';
+import { makeStyles, Typography, Button, TextField } from '@material-ui/core';
 import { PRIMARY_COLOR, TRANSPARENT, PRIMARY_DARK_COLOR, GREY_COLOR } from "utils/constants/colorsConstants";
-import { BOLD, CENTER, COLUMN, FLEX, FLEX_END, NONE, POSITION_ABSOLUTE, ROW } from "utils/constants/stringConstants";
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { BOLD, CENTER, COLUMN, FLEX, NONE, POSITION_ABSOLUTE, ROW } from "utils/constants/stringConstants";
 import AddIcon from '@material-ui/icons/Add';
 import { StretegyTask } from '../../../utils/types/index';
 import AppTextField from "../../Common/Core/AppTextField";
+import NewProjectFooter from "./NewProjectFooter";
 
 const NewProjectStepTwo = (props: any) => {
     const classes = useStyles();
@@ -40,9 +40,9 @@ const NewProjectStepTwo = (props: any) => {
 
     const renderTasksView = (data: StretegyTask, index: number) => {
         return (
-            <div className={classes.tasksContainer}>
-            <div style={{ flex: 0.5, marginRight: 15 }}>
-                <AppTextField type={""} label={'Task One   ie: preplan'} value={data.task} onChange={(e: ChangeEvent) => handleInputChange(e)("task")} />
+            <div className={classes.tasksContainer} key={`task-${index}`}>
+            <div style={{ flex: 2, marginRight: 15 }}>
+                <AppTextField type={""} label={`Task ${index + 1}`} value={data.task} onChange={(e: ChangeEvent) => handleInputChange(e)("task")} />
             </div>
             <div style={{ flex: 0.2, marginRight: 15 }}>
                 <AppTextField type={"date"} label={'Campaign DadeLine'} value={data.startDay} onChange={(e: ChangeEvent) => handleInputChange(e)("startDay")} />
@@ -56,13 +56,15 @@ const NewProjectStepTwo = (props: any) => {
 
     const renderAddMoreView = () => {
         return (
-            <div className={classes.addMore}>
-                <Typography variant={'caption'} className={classes.addMoreLabel}>
+            <div style={{marginBottom: 20}}>
+            <Button  variant="contained"
+                    onClick={addMoreClicked}
+                    className={classes.moreButton}>
+                <Typography variant={'button'} className={classes.addMoreLabel}>
                     Add More
                 </Typography>
-                <IconButton aria-label="back" className={classes.backButton} onClick={() => addMoreClicked()}>
-                    <AddIcon className={classes.addMoreButton}/>
-                </IconButton>
+                <AddIcon className={classes.addMoreButton}/>
+            </Button>
             </div>
         );
     }
@@ -86,6 +88,7 @@ const NewProjectStepTwo = (props: any) => {
                     focused: classes.labelFocused
                 }
                 }}
+                multiline={true}
             />
         );
     }
@@ -94,7 +97,7 @@ const NewProjectStepTwo = (props: any) => {
         return (
             <div className={classes.middleView}>
                 <div className={classes.textFiledContainer}>
-                    <div style={{ flex: 1, marginRight: 15 }}>
+                    <div style={{ flex: 4, marginRight: 15 }}>
                         <AppTextField type={""} label={'Campaign Objective'} value={projectData.campaignObjective} onChange={(e: ChangeEvent) => handleInputChange(e)("campaignObjective")} />
                     </div>
                     <div style={{ flex: 1 }}>
@@ -115,32 +118,7 @@ const NewProjectStepTwo = (props: any) => {
         )
     }
 
-    const renderBackButton = () => {
-        return (
-            <IconButton aria-label="back" className={classes.backButton} onClick={() => props.onBack()}>
-                <ArrowBackIosIcon className={classes.backButton}/>
-            </IconButton>
-        );
-    }
-
-    const renderBottomView = () => {
-        return (
-            <div className={classes.bottomView}>
-                    {renderBackButton()}
-                    <Typography variant={'caption'} className={classes.stepLabel}>
-                        Step 2 of 5
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        onClick={() => props.onNext()}
-                        color="primary"
-                        className={classes.button}
-                    >
-                        Continue
-                    </Button>
-            </div>
-        );
-    }
+    const renderBottomView = () => <NewProjectFooter title={"Step 2 of 5"} onBack={props.onBack} onNext={props.onNext} />
 
     return (
         <div className={classes.container}>
@@ -242,25 +220,26 @@ const useStyles = makeStyles((theme) => ({
           },
           "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: PRIMARY_COLOR
-          }
+          },
+        marginBottom: 20
     },
     inputRootDes: {
-        fontSize: 10,
-        minHeight: 80
+        fontSize: 12,
+        minHeight: 31
     },
     inputRoot: {
-        fontSize: 10,
-        height: 25
+        fontSize: 12,
+        height: 31
       },
     labelRoot: {
-        fontSize: 10,
+        fontSize: 12,
         color: GREY_COLOR,
         "&$labelFocused": {
             color: PRIMARY_DARK_COLOR,
         },
     },
     labelRootFilled: {
-        fontSize: 10,
+        fontSize: 12,
         color: GREY_COLOR,
         "&$labelFocused": {
             color: PRIMARY_DARK_COLOR,
@@ -269,32 +248,19 @@ const useStyles = makeStyles((theme) => ({
     labelFocused: {
     
     },
-    bottomView: {
-        flex: 0.1,
-        display: FLEX,
-        alignItems: CENTER,
-        justifyContent: FLEX_END,
-        marginTop: 20
-    },
     addMore: {
         marginTop: -10,
         marginBottom : 20
-    },
-    stepLabel: {
-        color: GREY_COLOR,
-        fontSize: 10,
-        marginRight: 30
     },
     addMoreLabel: {
         color: GREY_COLOR,
         fontSize: 10,
     },
-    button:{
-        width: 70,
-        height: 25,
+    moreButton:{
+        width: 120,
+        height: 30,
         fontSize: 8,
-        borderRadius: 15,
-        background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
+        borderRadius: 20,
         textTransform: NONE
     },
     closeButton: {
@@ -302,13 +268,10 @@ const useStyles = makeStyles((theme) => ({
         top: 10,
         right: 10
     },
-    backButton: {
-        width: 12,
-        height: 18
-    },
     addMoreButton: {
-        width: 13,
-        height: 13
+        width: 20,
+        height: 20,
+        marginLeft: 10
     }
     }));
 

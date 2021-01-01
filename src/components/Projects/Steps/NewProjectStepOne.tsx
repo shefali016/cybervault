@@ -4,6 +4,7 @@ import { PRIMARY_COLOR, TRANSPARENT, PRIMARY_DARK_COLOR, GREY_COLOR } from "util
 import { BOLD, CENTER, COLUMN, FLEX, FLEX_END, NONE, POSITION_ABSOLUTE, ROW } from "utils/constants/stringConstants";
 import profileIcon from '../../../assets/userAvatar.png';
 import AppTextField from "../../Common/Core/AppTextField";
+import NewProjectFooter from "./NewProjectFooter";
 
 const NewProjectStepOne = (props: any) => {
     const classes = useStyles();
@@ -65,7 +66,7 @@ const NewProjectStepOne = (props: any) => {
     const renderMiddleView = () => {
         return (
             <div className={classes.middleView}>
-                <div className={classes.textFiledContainer}>
+                <div className={classes.textFiledContainer} style={{marginBottom: 40}}>
                     <div style={{ flex: 1, marginRight: 15 }}>
                         <AppTextField  type={""} label={'Campaign Name'} value={projectData.campaignName} onChange={(e: ChangeEvent) => handleInputChange(e)("campaignName")} />
                     </div>
@@ -102,23 +103,7 @@ const NewProjectStepOne = (props: any) => {
         )
     }
 
-    const renderBottomView = () => {
-        return (
-            <div className={classes.bottomView}>
-                    <Typography variant={'caption'} className={classes.stepLabel}>
-                        Step 1 of 5
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        onClick={props.onNext}
-                        color="primary"
-                        className={classes.button}
-                    >
-                        <Typography variant={"button"} >Continue</Typography>
-                    </Button>
-            </div>
-        );
-    }
+    const renderBottomView = () =>  <NewProjectFooter title={"Step 1 of 5"} onNext={props.onNext} />
 
     return (
         <div className={classes.container}>
@@ -230,25 +215,6 @@ const useStyles = makeStyles((theme) => ({
     },
     labelFocused: {
     
-    },
-    bottomView: {
-        flex: 0.1,
-        display: FLEX,
-        alignItems: CENTER,
-        justifyContent: FLEX_END,
-        marginTop: 20
-    },
-    stepLabel: {
-        color: GREY_COLOR,
-        marginRight: 20
-    },
-    button:{
-        width: 100,
-        height: 40,
-        fontSize: 8,
-        borderRadius: 20,
-        background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
-        textTransform: NONE
     },
     closeButton: {
         position: POSITION_ABSOLUTE,

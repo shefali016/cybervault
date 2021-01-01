@@ -75,20 +75,19 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     inputRoot: {
-        fontSize: 10,
-        height: 31,
+        fontSize: 12,
+        height: 35,
     },
     labelRoot: {
-        fontSize: 10,
+        fontSize: 12,
         color: GREY_COLOR,
         "&$labelFocused": {
             color: PRIMARY_DARK_COLOR,
         },
-        marginTop: -1
     },
     labelRootFilled: {
         marginTop: -1,
-        fontSize: 10,
+        fontSize: 12,
         color: GREY_COLOR,
         "&$labelFocused": {
             color: PRIMARY_DARK_COLOR,
