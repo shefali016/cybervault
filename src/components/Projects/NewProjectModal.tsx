@@ -37,7 +37,7 @@ const NewProjectModal = (props: any) => {
   const renderCloseButton = () => {
     return (
       <IconButton aria-label='delete' className={classes.closeButton}>
-        <ClearIcon fontSize='large' />
+        <ClearIcon fontSize='small' />
       </IconButton>
     )
   }
