@@ -44,8 +44,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "validate": "yarn standard --fix",
-    "prettier": "prettier \"**/*.+(js|jsx|json)\"",
+    "validate": "yarn standard",
+    "fix": "yarn standard --fix",
+    "prettier": "prettier --write \"src/**/*.+(js|jsx|json)\"",
     "prettier-staged": "pretty-quick --staged --pattern \"**/*.+(js|jsx|json)\""
   },
   "eslintConfig": {
