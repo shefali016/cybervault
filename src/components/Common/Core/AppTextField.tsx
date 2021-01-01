@@ -11,19 +11,20 @@ type Props = {
   label: string
   value: any
   onChange: (e: ChangeEvent) => void
+  multiline?: boolean
 }
 
-const AppTextField = ({ type, label, value, onChange }: Props) => {
+const AppTextField = ({ type, label, value, onChange, multiline }: Props) => {
   const classes = useStyles()
   return (
     <TextField
-      id={type}
       label={label}
       variant='outlined'
       size='small'
       type={type}
       className={classes.textField}
       onChange={onChange}
+      multiline={multiline}
       value={value}
       InputProps={{ classes: { root: classes.inputRoot } }}
       InputLabelProps={

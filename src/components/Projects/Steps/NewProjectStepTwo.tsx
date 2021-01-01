@@ -19,6 +19,7 @@ import AddIcon from '@material-ui/icons/Add'
 import { StretegyTask } from '../../../utils/types/index'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from './NewProjectFooter'
+import NewProjectTitle from '../NewProjectTitle'
 
 const NewProjectStepTwo = (props: any) => {
   const classes = useStyles()
@@ -98,28 +99,15 @@ const NewProjectStepTwo = (props: any) => {
 
   const renderProjectDescriptionView = () => {
     return (
-      <TextField
-        id={'description'}
-        label={'Project Description'}
-        variant='outlined'
-        size='small'
-        type={'text'}
-        className={classes.textFieldDes}
-        margin='normal'
-        onChange={(e) => handleInputChange(e)('description')}
-        value={projectData.description}
-        InputProps={{ classes: { root: classes.inputRootDes } }}
-        InputLabelProps={{
-          classes: {
-            root:
-              projectData.description === ''
-                ? classes.labelRoot
-                : classes.labelRootFilled,
-            focused: classes.labelFocused,
-          },
-        }}
-        multiline={true}
-      />
+      <div style={{ marginTop: 20 }}>
+        <AppTextField
+          label={'Project Description'}
+          type={'text'}
+          onChange={(e) => handleInputChange(e)('description')}
+          value={projectData.description}
+          multiline={true}
+        />
+      </div>
     )
   }
 
@@ -161,19 +149,15 @@ const NewProjectStepTwo = (props: any) => {
     )
   }
 
-  const renderBottomView = () => (
-    <NewProjectFooter
-      title={'Step 2 of 5'}
-      onBack={props.onBack}
-      onNext={props.onNext}
-    />
-  )
-
   return (
     <div className={classes.container}>
-      {renderTopView()}
+      <NewProjectTitle title={'Plan The Strategy.'} subtitle={'Work scope.'} />
       {renderMiddleView()}
-      {renderBottomView()}
+      <NewProjectFooter
+        title={'Step 2 of 5'}
+        onBack={props.onBack}
+        onNext={props.onNext}
+      />
     </div>
   )
 }

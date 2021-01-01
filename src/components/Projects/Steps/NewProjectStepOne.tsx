@@ -11,14 +11,13 @@ import {
   CENTER,
   COLUMN,
   FLEX,
-  FLEX_END,
-  NONE,
   POSITION_ABSOLUTE,
   ROW,
 } from 'utils/constants/stringConstants'
-import profileIcon from '../../../assets/userAvatar.png'
+import nikeLogo from '../../../assets/nike.png'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from './NewProjectFooter'
+import NewProjectTitle from '../NewProjectTitle'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
@@ -57,27 +56,13 @@ const NewProjectStepOne = (props: any) => {
             onChange={handleChange}
           />
           <img
-            src={projectData.logo !== '' ? projectData.logo : profileIcon}
+            src={projectData.logo !== '' ? projectData.logo : nikeLogo}
             className={classes.clientLogoImg}
           />
         </Button>
         <Typography variant={'caption'} className={classes.addLogoText}>
           Add Client Logo
         </Typography>
-      </div>
-    )
-  }
-
-  const renderTopView = () => {
-    return (
-      <div className={classes.headerView}>
-        <div style={{}}>
-          <Typography variant={'h6'} className={classes.headerTitle}>
-            New Project
-          </Typography>
-          <Typography variant={'body2'}>Get Started</Typography>
-        </div>
-        {renderClientLogoView()}
       </div>
     )
   }
@@ -167,15 +152,12 @@ const NewProjectStepOne = (props: any) => {
     )
   }
 
-  const renderBottomView = () => (
-    <NewProjectFooter title={'Step 1 of 5'} onNext={props.onNext} />
-  )
-
   return (
     <div className={classes.container}>
-      {renderTopView()}
+      <NewProjectTitle title={'New Project'} subtitle={'Get Started'} />
+      {renderClientLogoView()}
       {renderMiddleView()}
-      {renderBottomView()}
+      <NewProjectFooter title={'Step 1 of 5'} onNext={props.onNext} />
     </div>
   )
 }
@@ -186,17 +168,13 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     flexDirection: COLUMN,
   },
-  headerView: {
-    flex: 0.4,
-    marginTop: 20,
-  },
   headerTitle: {
     fontWeight: BOLD,
   },
   clientLogoContainer: {
     display: FLEX,
     flex: 1,
-    marginTop: -30,
+    marginTop: -60,
     marginBottom: 40,
     alignItems: CENTER,
     justifyContent: CENTER,

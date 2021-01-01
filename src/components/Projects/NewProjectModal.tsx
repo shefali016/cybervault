@@ -14,7 +14,7 @@ import NewProjectStepOne from './Steps/NewProjectStepOne'
 import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
-import { getProductData } from '../../utils/index'
+import { getProductData } from '../../utils'
 
 function getModalStyle() {
   const top = APP_BAR_HEIGHT - 10
@@ -63,8 +63,6 @@ const NewProjectModal = (props: any) => {
     }
   }
 
-  console.log(projectData)
-
   return (
     <div className='background'>
       <Modal
@@ -91,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     outline: NONE,
     borderRadius: 20,
     display: FLEX,
-    padding: 20,
+    padding: 40,
     flexDirection: COLUMN,
     paddingLeft: 30,
     paddingRight: 30,
