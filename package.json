@@ -43,7 +43,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "validate": "yarn standard --fix",
+    "prettier": "prettier \"**/*.+(js|jsx|json)\"",
+    "prettier-staged": "pretty-quick --staged --pattern \"**/*.+(js|jsx|json)\""
   },
   "eslintConfig": {
     "extends": [
@@ -67,6 +70,15 @@
     "@types/react-redux": "^7.1.11",
     "@types/react-router-dom": "^5.1.6",
     "@types/redux-devtools-extension": "^2.13.2",
-    "@types/redux-form": "^8.3.0"
+    "@types/redux-form": "^8.3.0",
+    "husky": "^4.3.6",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0",
+    "standard": "^16.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier-staged && yarn validate"
+    }
   }
 }
