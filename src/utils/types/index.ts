@@ -1,3 +1,7 @@
+import {ChangeEvent} from "react";
+
+export type InputChangeEvent = ChangeEvent<HTMLInputElement>
+
 export type Asset = {
   id: string,
   width?: number,

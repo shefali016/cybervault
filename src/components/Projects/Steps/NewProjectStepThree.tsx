@@ -4,7 +4,7 @@ import {
   PRIMARY_COLOR,
   TRANSPARENT,
   PRIMARY_DARK_COLOR,
-  GREY_COLOR,
+  GREY_COLOR
 } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -14,7 +14,7 @@ import {
   FLEX_END,
   NONE,
   POSITION_ABSOLUTE,
-  ROW,
+  ROW
 } from 'utils/constants/stringConstants'
 import AddIcon from '@material-ui/icons/Add'
 import { StretegyExpenses } from '../../../utils/types'
@@ -22,6 +22,7 @@ import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks'
+import AddMoreButton from '../../Common/Button/MoreButton'
 
 const NewProjectStepThree = (props: any) => {
   const isTablet = useTabletLayout()
@@ -64,22 +65,6 @@ const NewProjectStepThree = (props: any) => {
     )
   }
 
-  const renderAddMoreView = () => {
-    return (
-      <div style={{ marginTop: isTablet ? 5 : 10 }}>
-        <Button
-          variant='contained'
-          onClick={addMoreClicked}
-          className={classes.moreButton}>
-          <Typography variant={'button'} className={classes.addMoreLabel}>
-            Add More
-          </Typography>
-          <AddIcon className={classes.addMoreButton} />
-        </Button>
-      </div>
-    )
-  }
-
   const renderMiddleView = () => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
@@ -113,10 +98,10 @@ const NewProjectStepThree = (props: any) => {
           ? projectData.expenses.map(
               (data: StretegyExpenses, index: number) => {
                 return renderTasksView(data, index)
-              },
+              }
             )
           : null}
-        {renderAddMoreView()}
+        <AddMoreButton onClick={addMoreClicked} title={'Add Expense'} />
       </div>
     )
   }
@@ -144,14 +129,14 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: FLEX,
     flex: 1,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   headerView: {
     flex: 0.2,
-    marginTop: 20,
+    marginTop: 20
   },
   headerTitle: {
-    fontWeight: BOLD,
+    fontWeight: BOLD
   },
   clientLogoContainer: {
     display: FLEX,
@@ -159,42 +144,42 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -30,
     alignItems: CENTER,
     justifyContent: CENTER,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   clientLogo: {
     height: 80,
     width: 80,
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
-    marginBottom: 5,
+    marginBottom: 5
   },
   clientLogoImg: {
     height: 80,
     width: 80,
     borderRadius: 40,
-    position: POSITION_ABSOLUTE,
+    position: POSITION_ABSOLUTE
   },
   addLogoText: {
     fontSize: 10,
-    color: GREY_COLOR,
+    color: GREY_COLOR
   },
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   textFiledContainer: {
     display: FLEX,
     flex: 0.25,
     flexDirection: ROW,
-    marginTop: 20,
+    marginTop: 20
   },
   tasksContainer: {
     display: FLEX,
     flex: 0.25,
     flexDirection: ROW,
     marginTop: 15,
-    marginBottom: 15,
+    marginBottom: 15
   },
   textField: {
     width: '90%',
@@ -207,18 +192,18 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
-      borderRadius: 20,
+      borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
-    },
+      borderColor: PRIMARY_COLOR
+    }
   },
   input: {
     color: PRIMARY_COLOR,
-    fontSize: 8,
+    fontSize: 8
   },
   textFieldDes: {
     marginTop: 10,
@@ -227,88 +212,88 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
-      borderRadius: 20,
+      borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
-    },
+      borderColor: PRIMARY_COLOR
+    }
   },
   inputRootDes: {
     fontSize: 10,
-    height: 80,
+    height: 80
   },
   inputRoot: {
     fontSize: 10,
-    height: 25,
+    height: 25
   },
   labelRoot: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR,
-      marginTop: 2,
+      marginTop: 2
     },
     height: 25,
-    marginTop: -5,
+    marginTop: -5
   },
   labelRootFilled: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR,
-      marginTop: 2,
+      marginTop: 2
     },
     height: 25,
-    marginTop: 0,
+    marginTop: 0
   },
   dateRoot: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
+      color: PRIMARY_DARK_COLOR
     },
-    height: 25,
+    height: 25
   },
   dateRootFilled: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
+      color: PRIMARY_DARK_COLOR
     },
     height: 25,
-    marginTop: 0,
+    marginTop: 0
   },
   labelFocused: {},
   bottomView: {
     flex: 0.1,
     display: FLEX,
-    alignItems: CENTER,
+    alignItems: CENTER
   },
   stepLabel: {
     color: GREY_COLOR,
     fontSize: 10,
-    marginRight: 30,
+    marginRight: 30
   },
   bottomLeftView: {
     flex: 0.65,
     display: FLEX,
     alignItems: CENTER,
     color: GREY_COLOR,
-    fontSize: 10,
+    fontSize: 10
   },
   bottomRightView: {
     flex: 0.35,
     display: FLEX,
     alignItems: CENTER,
-    justifyContent: FLEX_END,
+    justifyContent: FLEX_END
   },
   estimatedCostLabel: {
     color: GREY_COLOR,
     fontSize: 10,
-    marginBottom: 5,
+    marginBottom: 5
   },
   button: {
     width: 70,
@@ -316,28 +301,28 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     borderRadius: 15,
     background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
-    textTransform: NONE,
+    textTransform: NONE
   },
   addMore: {
     marginTop: -10,
-    marginBottom: 20,
+    marginBottom: 20
   },
   addMoreLabel: {
     color: GREY_COLOR,
-    fontSize: 10,
+    fontSize: 10
   },
   moreButton: {
     width: 120,
     height: 30,
     fontSize: 8,
     borderRadius: 20,
-    textTransform: NONE,
+    textTransform: NONE
   },
   addMoreButton: {
     width: 20,
     height: 20,
-    marginLeft: 10,
-  },
+    marginLeft: 10
+  }
 }))
 
 export default NewProjectStepThree

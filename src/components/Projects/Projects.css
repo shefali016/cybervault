@@ -49,6 +49,7 @@
   .task-row {
     flex-direction: column;
     margin-bottom: 15px;
+    flex: 0;
   }
   .new-project-modal-content {
     padding: 20px;

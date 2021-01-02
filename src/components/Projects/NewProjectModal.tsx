@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import '../../App.css'
 import './Projects.css'
 import { Modal, makeStyles, IconButton } from '@material-ui/core'
@@ -22,6 +22,8 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
 
+  const modalContentRef = useRef<HTMLDivElement>(null)
+
   const handleClose = () => {}
 
   const renderCloseButton = () => {
@@ -42,12 +44,26 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
     const props = {
       projectData,
       setProjectData,
-      onNext: () => setCurrentStep((step) => step + 1),
-      onBack: () => setCurrentStep((step) => step - 1),
+      onNext: () => {
+        setCurrentStep((step) => step + 1)
+        if (modalContentRef.current) {
+          modalContentRef.current.scrollTop = 0
+        }
+      },
+      onBack: () => {
+        setCurrentStep((step) => step - 1)
+        if (modalContentRef.current) {
+          modalContentRef.current.scrollTop = 0
+        }
+      }
     }
     switch (currentStep) {
       case 1:
-        return <NewProjectStepOne {...props} />
+        return (
+          <Fade in={open} timeout={4000}>
+            <NewProjectStepOne {...props} />
+          </Fade>
+        )
       case 2:
         return <NewProjectStepTwo {...props} />
       case 3:
@@ -69,10 +85,10 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500,
+        timeout: 500
       }}>
       <Fade in={open}>
-        <div className='new-project-modal-content'>
+        <div className='new-project-modal-content' ref={modalContentRef}>
           {renderStepsView()}
           {renderCloseButton()}
         </div>
@@ -85,8 +101,8 @@ const useStyles = makeStyles((theme) => ({
   closeButton: {
     position: POSITION_ABSOLUTE,
     top: 10,
-    right: 10,
-  },
+    right: 10
+  }
 }))
 
 export default NewProjectModal

@@ -5,7 +5,7 @@ import {
   PRIMARY_COLOR,
   TRANSPARENT,
   PRIMARY_DARK_COLOR,
-  GREY_COLOR,
+  GREY_COLOR
 } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -14,7 +14,7 @@ import {
   FLEX,
   NONE,
   POSITION_ABSOLUTE,
-  ROW,
+  ROW
 } from 'utils/constants/stringConstants'
 import AddIcon from '@material-ui/icons/Add'
 import { StretegyTask } from '../../../utils/types/index'
@@ -22,6 +22,7 @@ import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks'
+import AddMoreButton from '../../Common/Button/MoreButton'
 
 const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
@@ -72,22 +73,6 @@ const NewProjectStepTwo = (props: any) => {
     )
   }
 
-  const renderAddMoreView = () => {
-    return (
-      <div style={{ marginTop: isTablet ? 5 : 10 }}>
-        <Button
-          variant='contained'
-          onClick={addMoreClicked}
-          className={classes.moreButton}>
-          <Typography variant={'button'} className={classes.addMoreLabel}>
-            Add More
-          </Typography>
-          <AddIcon className={classes.addMoreButton} />
-        </Button>
-      </div>
-    )
-  }
-
   const renderProjectDescriptionView = () => {
     return (
       <div style={{ marginTop: 30 }}>
@@ -133,7 +118,7 @@ const NewProjectStepTwo = (props: any) => {
               return renderTasksView(data, index)
             })
           : null}
-        {renderAddMoreView()}
+        <AddMoreButton onClick={addMoreClicked} title={'Add Task'} />
         {renderProjectDescriptionView()}
       </div>
     )
@@ -156,14 +141,14 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: FLEX,
     flex: 1,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   headerView: {
     flex: 0.2,
-    marginTop: 20,
+    marginTop: 20
   },
   headerTitle: {
-    fontWeight: BOLD,
+    fontWeight: BOLD
   },
   clientLogoContainer: {
     display: FLEX,
@@ -171,41 +156,41 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -30,
     alignItems: CENTER,
     justifyContent: CENTER,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   clientLogo: {
     height: 80,
     width: 80,
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
-    marginBottom: 5,
+    marginBottom: 5
   },
   clientLogoImg: {
     height: 80,
     width: 80,
     borderRadius: 40,
-    position: POSITION_ABSOLUTE,
+    position: POSITION_ABSOLUTE
   },
   addLogoText: {
     fontSize: 10,
-    color: GREY_COLOR,
+    color: GREY_COLOR
   },
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   textFiledContainer: {
     display: FLEX,
     flex: 1,
     flexDirection: ROW,
-    marginBottom: 20,
+    marginBottom: 20
   },
   tasksContainer: {
     display: FLEX,
     flex: 1,
     flexDirection: ROW,
-    marginBottom: 20,
+    marginBottom: 20
   },
   textField: {
     width: '90%',
@@ -218,77 +203,77 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
-      borderRadius: 20,
+      borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
-    },
+      borderColor: PRIMARY_COLOR
+    }
   },
   input: {
     color: PRIMARY_COLOR,
-    fontSize: 8,
+    fontSize: 8
   },
   textFieldDes: {
     fontWeight: 500,
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
-      borderRadius: 20,
+      borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
-    marginBottom: 20,
+    marginBottom: 20
   },
   inputRootDes: {
     fontSize: 12,
-    minHeight: 31,
+    minHeight: 31
   },
   inputRoot: {
     fontSize: 12,
-    height: 31,
+    height: 31
   },
   labelRoot: {
     fontSize: 12,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-    },
+      color: PRIMARY_DARK_COLOR
+    }
   },
   labelRootFilled: {
     fontSize: 12,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-    },
+      color: PRIMARY_DARK_COLOR
+    }
   },
   labelFocused: {},
   addMore: {
     marginTop: -10,
-    marginBottom: 20,
+    marginBottom: 20
   },
   addMoreLabel: {
     color: GREY_COLOR,
-    fontSize: 10,
+    fontSize: 10
   },
   moreButton: {
     width: 120,
     height: 30,
     fontSize: 8,
     borderRadius: 20,
-    textTransform: NONE,
+    textTransform: NONE
   },
   addMoreButton: {
     width: 20,
     height: 20,
-    marginLeft: 10,
-  },
+    marginLeft: 10
+  }
 }))
 
 export default NewProjectStepTwo

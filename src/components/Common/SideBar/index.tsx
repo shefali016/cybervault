@@ -9,7 +9,7 @@ import {
   CssBaseline,
   Divider,
   ListItemIcon,
-  ListItemText,
+  ListItemText
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import InboxIcon from '@material-ui/icons/MoveToInbox'
@@ -19,14 +19,14 @@ import AddIcon from '@material-ui/icons/Add'
 import {
   SIDE_DRAWER_WIDTH,
   APP_BAR_HEIGHT,
-  CENTER,
+  CENTER
 } from '../../../utils/constants/stringConstants'
 import {
   WHITE_COLOR,
   BORDER_COLOR,
   PRIMARY_COLOR,
   SECONDARY_COLOR,
-  SECONDARY_DARK_COLOR,
+  SECONDARY_DARK_COLOR
 } from '../../../utils/constants/colorsConstants'
 import ROUTES from '../../../utils/constants/routes'
 import { Link } from 'react-router-dom'
@@ -107,7 +107,7 @@ const SideBarComponent = (props: Props) => {
         className={classes.drawer}
         variant='permanent'
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaper
         }}
         anchor='left'>
         <ListItemIcon className={classes.appIconContainer}>
@@ -119,7 +119,7 @@ const SideBarComponent = (props: Props) => {
           className={classes.addProjectButton}
           startIcon={<AddIcon className={classes.menuIconStyle} />}
           onClick={onActionButtonPress}>
-          {actionButtonTitle}
+          <Typography variant={'button'}>{actionButtonTitle}</Typography>
         </Button>
         <Divider className={classes.divider} />
         <List>
@@ -141,7 +141,7 @@ const SideBarComponent = (props: Props) => {
                   className={classes.sideBarText}
                 />
               </ListItem>
-            ),
+            )
           )}
         </List>
         {renderStorageView()}
@@ -191,50 +191,50 @@ const SideBarComponent = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: 'flex'
   },
   appBar: {
     width: `calc(100% - ${SIDE_DRAWER_WIDTH}px)`,
-    marginLeft: SIDE_DRAWER_WIDTH,
+    marginLeft: SIDE_DRAWER_WIDTH
   },
   drawer: {
     width: SIDE_DRAWER_WIDTH,
     flexShrink: 0,
     '&:hover': {
-      overflowY: 'auto',
+      overflowY: 'auto'
     },
     '&::-webkit-scrollbar': {
-      display: 'none',
-    },
+      display: 'none'
+    }
   },
   drawerPaper: {
     width: SIDE_DRAWER_WIDTH,
     backgroundColor: SECONDARY_COLOR,
-    borderRightColor: BORDER_COLOR,
+    borderRightColor: BORDER_COLOR
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(3),
+    padding: theme.spacing(3)
   },
   divider: {
-    backgroundColor: BORDER_COLOR,
+    backgroundColor: BORDER_COLOR
   },
   appIconContainer: {
     alignItems: CENTER,
     justifyContent: CENTER,
     height: APP_BAR_HEIGHT,
-    backgroundColor: SECONDARY_DARK_COLOR,
+    backgroundColor: SECONDARY_DARK_COLOR
   },
   appIcon: {
     color: 'green',
-    fontSize: 60,
+    fontSize: 60
   },
   sideBarText: {
     color: WHITE_COLOR,
-    fontSize: 8,
+    fontSize: 8
   },
   addProjectButton: {
     width: SIDE_DRAWER_WIDTH - 25,
@@ -245,44 +245,44 @@ const useStyles = makeStyles((theme) => ({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     marginTop: 25,
-    marginBottom: 30,
+    marginBottom: 30
   },
   menuIconStyle: {
     marginRight: 15,
     color: WHITE_COLOR,
-    fontSize: 18,
+    fontSize: 18
   },
   listIconStyle: {
     marginRight: 15,
     color: PRIMARY_COLOR,
-    fontSize: 18,
+    fontSize: 18
   },
   storageContainer: {
-    marginBottom: 20,
+    marginBottom: 20
   },
   storageDetails: {
-    marginLeft: 18,
+    marginLeft: 18
   },
   linearProgress: {
     marginLeft: 18,
-    marginRight: 18,
+    marginRight: 18
   },
   listItem: {
     paddingTop: 3,
-    paddingBottom: 3,
+    paddingBottom: 3
   },
   listItemLogout: {
-    marginTop: 50,
+    marginTop: 50
   },
   termsContainer: {
     marginBottom: 20,
     marginLeft: 18,
-    marginTop: 10,
+    marginTop: 10
   },
   linkText: {
     color: PRIMARY_COLOR,
-    fontSize: 8,
-  },
+    fontSize: 8
+  }
 }))
 
 export default SideBarComponent

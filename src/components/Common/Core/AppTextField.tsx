@@ -1,16 +1,17 @@
 import { makeStyles, TextField } from '@material-ui/core'
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import {
   GREY_COLOR,
   PRIMARY_COLOR,
-  PRIMARY_DARK_COLOR,
+  PRIMARY_DARK_COLOR
 } from '../../../utils/constants/colorsConstants'
+import { InputChangeEvent } from '../../../utils/types'
 
 type Props = {
   type: string
   label: string
   value: any
-  onChange: (e: ChangeEvent) => void
+  onChange: (e: InputChangeEvent) => void
   multiline?: boolean
   style?: {}
 }
@@ -21,7 +22,7 @@ const AppTextField = ({
   value,
   onChange,
   multiline,
-  style = {},
+  style = {}
 }: Props) => {
   const classes = useStyles()
   return (
@@ -36,8 +37,8 @@ const AppTextField = ({
       value={value}
       InputProps={{
         classes: {
-          root: multiline ? classes.multilineInputRoot : classes.inputRoot,
-        },
+          root: multiline ? classes.multilineInputRoot : classes.inputRoot
+        }
       }}
       InputLabelProps={
         type === 'date'
@@ -45,14 +46,14 @@ const AppTextField = ({
               shrink: true,
               classes: {
                 root: !value ? classes.dateRoot : classes.dateRootFilled,
-                focused: classes.labelFocused,
-              },
+                focused: classes.labelFocused
+              }
             }
           : {
               classes: {
                 root: !value ? classes.labelRoot : classes.labelRootFilled,
-                focused: classes.labelFocused,
-              },
+                focused: classes.labelFocused
+              }
             }
       }
       style={{ marginTop: 8, marginBottom: 8, ...style }}
@@ -65,18 +66,18 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
+      color: PRIMARY_DARK_COLOR
     },
-    height: 31,
+    height: 31
   },
   dateRootFilled: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
+      color: PRIMARY_DARK_COLOR
     },
     height: 31,
-    marginTop: 0,
+    marginTop: 0
   },
   labelFocused: {},
   textField: {
@@ -86,37 +87,37 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
-      borderRadius: 20,
+      borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
-    },
+      borderColor: PRIMARY_COLOR
+    }
   },
   inputRoot: {
     fontSize: 12,
-    height: 35,
+    height: 35
   },
   multilineInputRoot: {
-    fontSize: 12,
+    fontSize: 12
   },
   labelRoot: {
     fontSize: 12,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-    },
+      color: PRIMARY_DARK_COLOR
+    }
   },
   labelRootFilled: {
     marginTop: -1,
     fontSize: 12,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-    },
-  },
+      color: PRIMARY_DARK_COLOR
+    }
+  }
 }))
 
 export default AppTextField

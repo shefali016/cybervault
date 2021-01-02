@@ -23,6 +23,19 @@ button {
   user-select: none;
 }
 
+/* Buttons */
+
+.add-more-button {
+  padding: 15px 20px;
+  font-size: 8px;
+  border-radius: 20px !important;
+  text-transform: NONE;
+}
+.add-more-label {
+  color: #626262;
+  font-size: 10px!important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
