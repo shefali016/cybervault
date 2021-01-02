@@ -1,0 +1,55 @@
+.input-row {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.new-project-modal-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(36, 38, 43, 0.3);
+  height: 100%;
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.new-project-modal {
+  padding: 40px;
+  width: 60vw;
+  max-height: 90vh;
+  background-color: #ffffff;
+  outline: none;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  position: relative;
+}
+
+.client-logo-container {
+  display: flex;
+  flex: 1;
+  margin-top: -60px;
+  margin-bottom: 40px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@media only screen and (max-width: 800px) {
+  .input-row {
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .new-project-modal {
+    padding: 20px;
+    width: 90vw;
+    height: 100vh;
+  }
+  .client-logo-container {
+    margin-top: -20px;
+  }
+}

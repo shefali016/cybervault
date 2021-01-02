@@ -1,5 +1,8 @@
+import '../Projects.css'
 import React, { ChangeEvent } from 'react'
 import { makeStyles, Typography, Button } from '@material-ui/core'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@material-ui/core/styles'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -18,9 +21,11 @@ import nikeLogo from '../../../assets/nike.png'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from './NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
+import { useTabletLayout } from '../../../utils/hooks/'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
+  const isTablet = useTabletLayout()
   const { projectData, setProjectData } = props
   let imageInputRef: any = React.useRef()
 
@@ -40,7 +45,7 @@ const NewProjectStepOne = (props: any) => {
 
   const renderClientLogoView = () => {
     return (
-      <div className={classes.clientLogoContainer}>
+      <div className={'client-logo-container'}>
         <Button
           variant='contained'
           onClick={() => imageInputRef.click()}
@@ -68,13 +73,18 @@ const NewProjectStepOne = (props: any) => {
   }
 
   const renderMiddleView = () => {
+    const leftInputMargin = !isTablet ? 15 : 0
+    const verticalMargin = 8
+    const inputStyle = {
+      marginTop: verticalMargin,
+      marginBottom: verticalMargin,
+    }
     return (
       <div className={classes.middleView}>
-        <div
-          className={classes.textFiledContainer}
-          style={{ marginBottom: 40 }}>
-          <div style={{ flex: 1, marginRight: 15 }}>
+        <div className={'input-row'} style={{ marginBottom: 40 }}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'Campaign Name'}
               value={projectData.campaignName}
@@ -85,6 +95,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              style={inputStyle}
               type={'date'}
               label={'Campaign Date'}
               value={projectData.campaignDate}
@@ -94,9 +105,10 @@ const NewProjectStepOne = (props: any) => {
             />
           </div>
         </div>
-        <div className={classes.textFiledContainer}>
-          <div style={{ flex: 1, marginRight: 15 }}>
+        <div className={'input-row'}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'Client Name'}
               value={projectData.clientName}
@@ -105,6 +117,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'Client Email'}
               value={projectData.clientEmail}
@@ -112,9 +125,10 @@ const NewProjectStepOne = (props: any) => {
             />
           </div>
         </div>
-        <div className={classes.textFiledContainer}>
-          <div style={{ flex: 1, marginRight: 15 }}>
+        <div className={'input-row'}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'Address'}
               value={projectData.address}
@@ -123,6 +137,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'City'}
               value={projectData.city}
@@ -130,9 +145,10 @@ const NewProjectStepOne = (props: any) => {
             />
           </div>
         </div>
-        <div className={classes.textFiledContainer}>
-          <div style={{ flex: 1, marginRight: 15 }}>
+        <div className={'input-row'}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'State/Province'}
               value={projectData.state}
@@ -141,6 +157,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              style={inputStyle}
               type={''}
               label={'Country'}
               value={projectData.country}
@@ -170,15 +187,6 @@ const useStyles = makeStyles((theme) => ({
   },
   headerTitle: {
     fontWeight: BOLD,
-  },
-  clientLogoContainer: {
-    display: FLEX,
-    flex: 1,
-    marginTop: -60,
-    marginBottom: 40,
-    alignItems: CENTER,
-    justifyContent: CENTER,
-    flexDirection: COLUMN,
   },
   clientLogo: {
     height: 80,

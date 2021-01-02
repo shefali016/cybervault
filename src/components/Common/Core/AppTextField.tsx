@@ -12,9 +12,17 @@ type Props = {
   value: any
   onChange: (e: ChangeEvent) => void
   multiline?: boolean
+  style?: {}
 }
 
-const AppTextField = ({ type, label, value, onChange, multiline }: Props) => {
+const AppTextField = ({
+  type,
+  label,
+  value,
+  onChange,
+  multiline,
+  style,
+}: Props) => {
   const classes = useStyles()
   return (
     <TextField
@@ -43,6 +51,7 @@ const AppTextField = ({ type, label, value, onChange, multiline }: Props) => {
               },
             }
       }
+      style={style}
     />
   )
 }

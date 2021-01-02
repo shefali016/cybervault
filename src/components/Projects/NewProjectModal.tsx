@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import '../../App.css'
+import './Projects.css'
 import { Modal, makeStyles, IconButton } from '@material-ui/core'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import {
@@ -15,17 +16,6 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import { getProductData } from '../../utils'
-
-function getModalStyle() {
-  const top = APP_BAR_HEIGHT - 10
-  const left = APP_BAR_HEIGHT - 10
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  }
-}
 
 const NewProjectModal = (props: any) => {
   const classes = useStyles()
@@ -64,37 +54,22 @@ const NewProjectModal = (props: any) => {
   }
 
   return (
-    <div className='background'>
-      <Modal
-        open={true}
-        onClose={handleClose}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
-        <div style={getModalStyle()} className={classes.paper}>
+    <Modal
+      open={true}
+      onClose={handleClose}
+      aria-labelledby='simple-modal-title'
+      aria-describedby='simple-modal-description'>
+      <div className='new-project-modal-background'>
+        <div className={'new-project-modal'}>
           {renderStepsView()}
           {renderCloseButton()}
         </div>
-      </Modal>
-    </div>
+      </div>
+    </Modal>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: POSITION_ABSOLUTE,
-    width: '60vw',
-    maxHeight: '90vh',
-    backgroundColor: WHITE_COLOR,
-    boxShadow: theme.shadows[5],
-    outline: NONE,
-    borderRadius: 20,
-    display: FLEX,
-    padding: 40,
-    flexDirection: COLUMN,
-    paddingLeft: 30,
-    paddingRight: 30,
-    overflowY: 'scroll',
-  },
   closeButton: {
     position: POSITION_ABSOLUTE,
     top: 10,
