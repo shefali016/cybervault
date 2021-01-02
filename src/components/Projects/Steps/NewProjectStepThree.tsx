@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useState } from 'react'
-import { makeStyles, Typography, Button } from '@material-ui/core'
+import React from 'react'
+import { makeStyles, Typography } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -16,7 +16,6 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import AddIcon from '@material-ui/icons/Add'
 import { Expense, InputChangeEvent } from '../../../utils/types'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'

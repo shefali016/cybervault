@@ -1,13 +1,11 @@
 import '../Projects.css'
 import React, { ChangeEvent } from 'react'
 import { makeStyles, Typography, Button } from '@material-ui/core'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
-import { useTheme } from '@material-ui/core/styles'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
   PRIMARY_DARK_COLOR,
-  GREY_COLOR,
+  GREY_COLOR
 } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -15,7 +13,7 @@ import {
   COLUMN,
   FLEX,
   POSITION_ABSOLUTE,
-  ROW,
+  ROW
 } from 'utils/constants/stringConstants'
 import nikeLogo from '../../../assets/nike.png'
 import AppTextField from '../../Common/Core/AppTextField'
@@ -33,7 +31,7 @@ const NewProjectStepOne = (props: any) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
       setProjectData({
         ...projectData,
-        logo: URL.createObjectURL(event.target.files[0]),
+        logo: URL.createObjectURL(event.target.files[0])
       })
     }
   }
@@ -63,6 +61,7 @@ const NewProjectStepOne = (props: any) => {
           <img
             src={projectData.logo !== '' ? projectData.logo : nikeLogo}
             className={classes.clientLogoImg}
+            alt={'client-logo'}
           />
         </Button>
         <Typography variant={'caption'} className={classes.addLogoText}>
@@ -170,39 +169,39 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: FLEX,
     flex: 1,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   headerTitle: {
-    fontWeight: BOLD,
+    fontWeight: BOLD
   },
   clientLogo: {
     height: 80,
     width: 80,
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
-    marginBottom: 5,
+    marginBottom: 5
   },
   clientLogoImg: {
     height: 80,
     width: 80,
     borderRadius: 40,
-    position: POSITION_ABSOLUTE,
+    position: POSITION_ABSOLUTE
   },
   addLogoText: {
     fontSize: 10,
-    color: GREY_COLOR,
+    color: GREY_COLOR
   },
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   textFiledContainer: {
     display: FLEX,
     flex: 1,
     flexDirection: ROW,
     justifyContent: CENTER,
-    marginBottom: 20,
+    marginBottom: 20
   },
   textField: {
     width: '90%',
@@ -215,49 +214,49 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
-      borderRadius: 20,
+      borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
+      borderColor: PRIMARY_COLOR
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR,
-    },
+      borderColor: PRIMARY_COLOR
+    }
   },
   input: {
     color: PRIMARY_COLOR,
-    fontSize: 8,
+    fontSize: 8
   },
   inputRoot: {
     fontSize: 10,
-    height: 25,
+    height: 25
   },
   labelRoot: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR,
-      marginTop: 2,
+      marginTop: 2
     },
     height: 25,
-    marginTop: -5,
+    marginTop: -5
   },
   labelRootFilled: {
     fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR,
-      marginTop: 2,
+      marginTop: 2
     },
     height: 25,
-    marginTop: 0,
+    marginTop: 0
   },
   labelFocused: {},
   closeButton: {
     position: POSITION_ABSOLUTE,
     top: 10,
-    right: 10,
-  },
+    right: 10
+  }
 }))
 
 export default NewProjectStepOne

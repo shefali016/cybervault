@@ -30,11 +30,11 @@ export const HomeScreen = (props: any) => {
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
-    [],
+    []
   )
   const closeNewProjectModal = useCallback(
     () => setNewProjectModalOpen(false),
-    [],
+    []
   )
   return (
     <div className={classes.background}>
@@ -55,7 +55,11 @@ export const HomeScreen = (props: any) => {
               {projectData && projectData.length > 0 ? (
                 projectData.map((project: any, index: number) => {
                   return (
-                    <ProjectCard projectDetails={project} isPopover={true} />
+                    <ProjectCard
+                      projectDetails={project}
+                      isPopover={true}
+                      key={`project-card-${index}`}
+                    />
                   )
                 })
               ) : (
@@ -81,7 +85,12 @@ export const HomeScreen = (props: any) => {
             <div className={classes.bottomCardsWrapper}>
               {projectData && projectData.length > 0 ? (
                 projectData.map((project: any, index: number) => {
-                  return <UnpaidInvoices projectDetails={project} />
+                  return (
+                    <UnpaidInvoices
+                      projectDetails={project}
+                      key={`unpaid-invoices-${index}`}
+                    />
+                  )
                 })
               ) : (
                 <Typography>No Projects found</Typography>
@@ -95,32 +104,32 @@ export const HomeScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn,
+  isLoggedIn: state.auth.isLoggedIn
 })
 
 const useStyles = makeStyles((theme) => ({
   topCardsWrapper: {
     overflow: AUTO,
     marginLeft: 10,
-    marginTop: 20,
+    marginTop: 20
   },
   middleCardsWrapper: {
     overflow: AUTO,
     marginLeft: 20,
     marginTop: 20,
-    display: FLEX,
+    display: FLEX
   },
   bottomCardsWrapper: {
     marginLeft: 10,
     marginTop: 10,
-    paddingBottom: 20,
+    paddingBottom: 20
   },
   generalMarginLeft: {
-    marginLeft: 10,
+    marginLeft: 10
   },
   styledText: {
     marginTop: 30,
-    marginLeft: 10,
+    marginLeft: 10
   },
   background: {
     display: 'grid',
@@ -129,10 +138,10 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     overflowY: 'auto',
     overflowX: 'hidden',
-    color: '#ffffff',
+    color: '#ffffff'
   },
   dashboardContainer: {
-    marginTop: '50px',
-  },
+    marginTop: '50px'
+  }
 }))
 export default connect(mapStateToProps)(HomeScreen)

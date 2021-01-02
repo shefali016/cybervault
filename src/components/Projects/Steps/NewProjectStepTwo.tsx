@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React from 'react'
 import '../Projects.css'
 import { makeStyles } from '@material-ui/core'
 import {
@@ -29,7 +29,6 @@ const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
   const { projectData, setProjectData } = props
-  const [tasksData, setTasks] = useState([1])
 
   const handleInputChange = (event: InputChangeEvent) => (key: string) => {
     const value = event.target.value

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { makeStyles, Typography, Button } from '@material-ui/core'
+import React from 'react'
+import { makeStyles } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -16,8 +16,7 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import AddIcon from '@material-ui/icons/Add'
-import { Expense, Milestone } from '../../../utils/types'
+import { Milestone } from '../../../utils/types'
 import { useTabletLayout } from '../../../utils/hooks'
 import NewProjectTitle from '../NewProjectTitle'
 import AppTextField from '../../Common/Core/AppTextField'
