@@ -1,11 +1,5 @@
-import React, { useState } from 'react'
-import {
-  makeStyles,
-  Typography,
-  Button,
-  TextField,
-  IconButton,
-} from '@material-ui/core'
+import React, { ChangeEvent, useState } from 'react'
+import { makeStyles, Typography, Button } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -22,38 +16,22 @@ import {
   POSITION_ABSOLUTE,
   ROW,
 } from 'utils/constants/stringConstants'
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import AddIcon from '@material-ui/icons/Add'
-import { StepTwo, StretegyExpenses } from '../../../utils/types/index'
+import { StretegyExpenses } from '../../../utils/types'
+import AppTextField from '../../Common/Core/AppTextField'
+import NewProjectFooter from '../NewProjectFooter'
+import NewProjectTitle from '../NewProjectTitle'
+import { useTabletLayout } from '../../../utils/hooks'
 
 const NewProjectStepThree = (props: any) => {
+  const isTablet = useTabletLayout()
   const classes = useStyles()
-  const {
-    projectData: { stepThree },
-    projectData,
-    setProjectData,
-  } = props
+  const { projectData, setProjectData } = props
   const [tasksData, setTasks] = useState([1])
 
-  const onProjectDataChange = (stepThree: StepTwo) => {
-    const newData = { ...projectData, stepThree: { ...stepThree } }
-    setProjectData(newData)
-  }
-
-  const handleInputChange = (event: any, label: string) => {
-    let newStepThree: StepTwo = stepThree
-    switch (label) {
-      case 'Campaign Budget':
-        newStepThree = { ...stepThree, campaignBudget: event.target.value }
-        onProjectDataChange(newStepThree)
-        break
-      case 'Campaign Expences':
-        newStepThree = { ...stepThree, campaignExpenses: event.target.value }
-        onProjectDataChange(newStepThree)
-        break
-      default:
-        break
-    }
+  const handleInputChange = (event: any, key: string) => {
+    const value = event.target.value
+    setProjectData({ ...projectData, [key]: value })
   }
 
   const addMoreClicked = () => {
@@ -62,173 +40,102 @@ const NewProjectStepThree = (props: any) => {
     setTasks(newData)
   }
 
-  const renderTopView = () => {
-    return (
-      <div className={classes.headerView}>
-        <>
-          <Typography variant={'h6'} className={classes.headerTitle}>
-            Budget & expenses.
-          </Typography>
-          <Typography variant={'body2'}>
-            Set your campaign budget & estimated expenses.
-          </Typography>
-        </>
-      </div>
-    )
-  }
-
-  const renderInputField = (_type: string, label: string, _value: any) => {
-    return (
-      <TextField
-        id={_type}
-        label={label}
-        variant='outlined'
-        size='small'
-        type={_type}
-        className={classes.textField}
-        margin='normal'
-        onChange={(e) => handleInputChange(e, label)}
-        value={_value}
-        InputProps={{ classes: { root: classes.inputRoot } }}
-        InputLabelProps={
-          _type === 'date'
-            ? {
-                shrink: true,
-                classes: {
-                  root:
-                    _value === '' ? classes.dateRoot : classes.dateRootFilled,
-                  focused: classes.labelFocused,
-                },
-              }
-            : {
-                classes: {
-                  root:
-                    _value == undefined || _value === ''
-                      ? classes.labelRoot
-                      : classes.labelRootFilled,
-                  focused: classes.labelFocused,
-                },
-              }
-        }
-      />
-    )
-  }
-
   const renderTasksView = (data: StretegyExpenses, index: number) => {
+    const leftInputMargin = !isTablet ? 15 : 0
     return (
-      <div className={classes.tasksContainer}>
-        <div style={{ flex: 0.4 }}>
-          {renderInputField(
-            '',
-            'Expenses One   ie; Equipment Rental',
-            data.expense,
-          )}
+      <div className={'task-row'}>
+        <div style={{ flex: 1, marginRight: leftInputMargin }}>
+          <AppTextField
+            type={''}
+            label={`Expense ${index + 1}`}
+            value={projectData.expense}
+            onChange={(e: ChangeEvent) => handleInputChange(e, 'expense')}
+          />
         </div>
-        <div style={{ flex: 0.3 }}>
-          {renderInputField('number', 'Estimated Cost $', data.cost)}
+        <div style={{ flex: 1 }}>
+          <AppTextField
+            type={'number'}
+            label={`Estimated Cost $`}
+            value={projectData.cost}
+            onChange={(e: ChangeEvent) => handleInputChange(e, 'cost')}
+          />
         </div>
-        <div style={{ flex: 0.3 }} />
       </div>
     )
   }
 
   const renderAddMoreView = () => {
     return (
-      <div className={classes.addMore}>
-        <Typography variant={'caption'} className={classes.addMoreLabel}>
-          Add More
-        </Typography>
-        <IconButton
-          aria-label='back'
-          className={classes.backButton}
-          onClick={() => addMoreClicked()}>
+      <div style={{ marginTop: isTablet ? 5 : 10 }}>
+        <Button
+          variant='contained'
+          onClick={addMoreClicked}
+          className={classes.moreButton}>
+          <Typography variant={'button'} className={classes.addMoreLabel}>
+            Add More
+          </Typography>
           <AddIcon className={classes.addMoreButton} />
-        </IconButton>
+        </Button>
       </div>
     )
   }
 
   const renderMiddleView = () => {
+    const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        <div className={classes.textFiledContainer}>
-          <div style={{ flex: 0.45 }}>
-            {renderInputField('', 'Campaign Budget', stepThree.campaignBudget)}
+        <div className={'input-row'} style={{ marginBottom: 30 }}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
+            <AppTextField
+              type={''}
+              label={'Campaign Budget'}
+              value={projectData.campaignBudget}
+              onChange={(e: ChangeEvent) =>
+                handleInputChange(e, 'campaignBudget')
+              }
+            />
           </div>
-          <div style={{ flex: 0.45 }}>
-            {renderInputField(
-              '',
-              'Campaign Expences',
-              stepThree.campaignExpenses,
-            )}
+          <div style={{ flex: 1 }}>
+            <AppTextField
+              type={''}
+              label={'Campaign Expenses'}
+              value={projectData.campaignExpenses}
+              onChange={(e: ChangeEvent) =>
+                handleInputChange(e, 'campaignExpenses')
+              }
+            />
           </div>
-          <div style={{ flex: 0.1 }} />
         </div>
         <Typography variant={'caption'} className={classes.estimatedCostLabel}>
           Add your estimated cost of expenses:
         </Typography>
-        <div
-          style={{
-            height: '120px',
-            overflowY: 'scroll',
-            marginTop: 5,
-            paddingTop: 5,
-            paddingBottom: 10,
-          }}>
-          {stepThree.expenses && stepThree.expenses.length > 0
-            ? stepThree.expenses.map(
-                (data: StretegyExpenses, index: number) => {
-                  return renderTasksView(data, index)
-                },
-              )
-            : null}
-        </div>
+        {projectData.expenses && projectData.expenses.length > 0
+          ? projectData.expenses.map(
+              (data: StretegyExpenses, index: number) => {
+                return renderTasksView(data, index)
+              },
+            )
+          : null}
         {renderAddMoreView()}
-      </div>
-    )
-  }
-
-  const renderBackButton = () => {
-    return (
-      <IconButton
-        aria-label='back'
-        className={classes.backButton}
-        onClick={() => props.setCurrentStep(2)}>
-        <ArrowBackIosIcon className={classes.backButton} />
-      </IconButton>
-    )
-  }
-
-  const renderBottomView = () => {
-    return (
-      <div className={classes.bottomView}>
-        <Typography variant={'caption'} className={classes.bottomLeftView}>
-          *This will be added to the final invoice sent to client. The campaign
-          budget will be the total amount due to the client. You can go back and
-          edit this page again if needed.
-        </Typography>
-        <div className={classes.bottomRightView}>
-          {renderBackButton()}
-          <Typography variant={'caption'} className={classes.stepLabel}>
-            Step {'3'} of 5
-          </Typography>
-          <Button
-            variant='contained'
-            onClick={() => props.setCurrentStep(4)}
-            color='primary'
-            className={classes.button}>
-            Continue
-          </Button>
-        </div>
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      {renderTopView()}
+      <NewProjectTitle
+        title={'Budget & expenses.'}
+        subtitle={'Set your campaign budget & estimated expenses.'}
+      />
       {renderMiddleView()}
-      {renderBottomView()}
+      <NewProjectFooter
+        title={'Step 3 of 5'}
+        onNext={props.onNext}
+        onBack={props.onBack}
+        description={
+          '*This will be added to the final invoice sent to client. The campaign budget will be the total amount due to the client. You can go back and edit this page again if needed.'
+        }
+      />
     </div>
   )
 }
@@ -272,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
     color: GREY_COLOR,
   },
   middleView: {
-    flex: 0.7,
+    flex: 1,
     display: FLEX,
     flexDirection: COLUMN,
   },
@@ -380,11 +287,6 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     alignItems: CENTER,
   },
-  addMore: {
-    flex: 0.1,
-    display: FLEX,
-    alignItems: CENTER,
-  },
   stepLabel: {
     color: GREY_COLOR,
     fontSize: 10,
@@ -403,15 +305,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: CENTER,
     justifyContent: FLEX_END,
   },
-  addMoreLabel: {
-    color: GREY_COLOR,
-    fontSize: 10,
-    marginRight: 10,
-  },
   estimatedCostLabel: {
     color: GREY_COLOR,
     fontSize: 10,
-    marginTop: 30,
+    marginBottom: 5,
   },
   button: {
     width: 70,
@@ -421,18 +318,25 @@ const useStyles = makeStyles((theme) => ({
     background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
     textTransform: NONE,
   },
-  closeButton: {
-    position: POSITION_ABSOLUTE,
-    top: 10,
-    right: 10,
+  addMore: {
+    marginTop: -10,
+    marginBottom: 20,
   },
-  backButton: {
-    width: 12,
-    height: 18,
+  addMoreLabel: {
+    color: GREY_COLOR,
+    fontSize: 10,
+  },
+  moreButton: {
+    width: 120,
+    height: 30,
+    fontSize: 8,
+    borderRadius: 20,
+    textTransform: NONE,
   },
   addMoreButton: {
-    width: 13,
-    height: 13,
+    width: 20,
+    height: 20,
+    marginLeft: 10,
   },
 }))
 

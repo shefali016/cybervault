@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from 'react'
+import '../Projects.css'
 import { makeStyles, Typography, Button, TextField } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
@@ -20,8 +21,10 @@ import { StretegyTask } from '../../../utils/types/index'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
+import { useTabletLayout } from '../../../utils/hooks'
 
 const NewProjectStepTwo = (props: any) => {
+  const isTablet = useTabletLayout()
   const classes = useStyles()
   const { projectData, setProjectData } = props
   const [tasksData, setTasks] = useState([1])
@@ -37,23 +40,11 @@ const NewProjectStepTwo = (props: any) => {
     setTasks(newData)
   }
 
-  const renderTopView = () => {
-    return (
-      <div className={classes.headerView}>
-        <div style={{ marginBottom: 40 }}>
-          <Typography variant={'h6'} className={classes.headerTitle}>
-            Plan The Strategy.
-          </Typography>
-          <Typography variant={'body2'}>Work scope.</Typography>
-        </div>
-      </div>
-    )
-  }
-
   const renderTasksView = (data: StretegyTask, index: number) => {
+    const leftInputMargin = !isTablet ? 15 : 0
     return (
-      <div className={classes.tasksContainer} key={`task-${index}`}>
-        <div style={{ flex: 2, marginRight: 15 }}>
+      <div className={'task-row'} key={`task-${index}`}>
+        <div style={{ flex: 2, marginRight: leftInputMargin }}>
           <AppTextField
             type={''}
             label={`Task ${index + 1}`}
@@ -61,7 +52,7 @@ const NewProjectStepTwo = (props: any) => {
             onChange={(e: ChangeEvent) => handleInputChange(e)('task')}
           />
         </div>
-        <div style={{ flex: 0.2, marginRight: 15 }}>
+        <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
           <AppTextField
             type={'date'}
             label={'Campaign DadeLine'}
@@ -83,7 +74,7 @@ const NewProjectStepTwo = (props: any) => {
 
   const renderAddMoreView = () => {
     return (
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginTop: isTablet ? 5 : 10 }}>
         <Button
           variant='contained'
           onClick={addMoreClicked}
@@ -99,7 +90,7 @@ const NewProjectStepTwo = (props: any) => {
 
   const renderProjectDescriptionView = () => {
     return (
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: 30 }}>
         <AppTextField
           label={'Project Description'}
           type={'text'}
@@ -112,10 +103,11 @@ const NewProjectStepTwo = (props: any) => {
   }
 
   const renderMiddleView = () => {
+    const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        <div className={classes.textFiledContainer}>
-          <div style={{ flex: 4, marginRight: 15 }}>
+        <div className={'input-row'} style={{ marginBottom: 30 }}>
+          <div style={{ flex: 4, marginRight: leftInputMargin }}>
             <AppTextField
               type={''}
               label={'Campaign Objective'}
@@ -136,13 +128,11 @@ const NewProjectStepTwo = (props: any) => {
             />
           </div>
         </div>
-        <div style={{ marginTop: 20 }}>
-          {projectData.tasks && projectData.tasks.length > 0
-            ? projectData.tasks.map((data: StretegyTask, index: number) => {
-                return renderTasksView(data, index)
-              })
-            : null}
-        </div>
+        {projectData.tasks && projectData.tasks.length > 0
+          ? projectData.tasks.map((data: StretegyTask, index: number) => {
+              return renderTasksView(data, index)
+            })
+          : null}
         {renderAddMoreView()}
         {renderProjectDescriptionView()}
       </div>
@@ -201,7 +191,7 @@ const useStyles = makeStyles((theme) => ({
     color: GREY_COLOR,
   },
   middleView: {
-    flex: 0.7,
+    flex: 1,
     display: FLEX,
     flexDirection: COLUMN,
   },
@@ -293,11 +283,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     borderRadius: 20,
     textTransform: NONE,
-  },
-  closeButton: {
-    position: POSITION_ABSOLUTE,
-    top: 10,
-    right: 10,
   },
   addMoreButton: {
     width: 20,

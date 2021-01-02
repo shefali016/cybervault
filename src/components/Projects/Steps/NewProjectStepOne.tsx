@@ -74,17 +74,11 @@ const NewProjectStepOne = (props: any) => {
 
   const renderMiddleView = () => {
     const leftInputMargin = !isTablet ? 15 : 0
-    const verticalMargin = 8
-    const inputStyle = {
-      marginTop: verticalMargin,
-      marginBottom: verticalMargin,
-    }
     return (
       <div className={classes.middleView}>
-        <div className={'input-row'} style={{ marginBottom: 40 }}>
+        <div className={'input-row'} style={{ marginBottom: 30 }}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'Campaign Name'}
               value={projectData.campaignName}
@@ -95,7 +89,6 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
-              style={inputStyle}
               type={'date'}
               label={'Campaign Date'}
               value={projectData.campaignDate}
@@ -108,7 +101,6 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'Client Name'}
               value={projectData.clientName}
@@ -117,7 +109,6 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'Client Email'}
               value={projectData.clientEmail}
@@ -128,7 +119,6 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'Address'}
               value={projectData.address}
@@ -137,7 +127,6 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'City'}
               value={projectData.city}
@@ -148,7 +137,6 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'State/Province'}
               value={projectData.state}
@@ -157,7 +145,6 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
-              style={inputStyle}
               type={''}
               label={'Country'}
               value={projectData.country}
@@ -206,7 +193,7 @@ const useStyles = makeStyles((theme) => ({
     color: GREY_COLOR,
   },
   middleView: {
-    flex: 0.5,
+    flex: 1,
     display: FLEX,
     flexDirection: COLUMN,
   },

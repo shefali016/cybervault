@@ -21,7 +21,7 @@ const AppTextField = ({
   value,
   onChange,
   multiline,
-  style,
+  style = {},
 }: Props) => {
   const classes = useStyles()
   return (
@@ -55,7 +55,7 @@ const AppTextField = ({
               },
             }
       }
-      style={style}
+      style={{ marginTop: 8, marginBottom: 8, ...style }}
     />
   )
 }

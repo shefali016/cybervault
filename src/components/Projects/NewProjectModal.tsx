@@ -73,10 +73,8 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
       }}>
       <Fade in={open}>
         <div className='new-project-modal-content'>
-          <div className={'new-project-modal'}>
-            {renderStepsView()}
-            {renderCloseButton()}
-          </div>
+          {renderStepsView()}
+          {renderCloseButton()}
         </div>
       </Fade>
     </Modal>

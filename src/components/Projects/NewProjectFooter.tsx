@@ -13,9 +13,10 @@ type Props = {
   onBack?: () => void
   onNext?: () => void
   title: string
+  description?: string
 }
 
-const NewProjectFooter = ({ onBack, onNext, title }: Props) => {
+const NewProjectFooter = ({ onBack, onNext, title, description }: Props) => {
   const classes = useStyles()
 
   const renderBackButton = () => {
@@ -30,20 +31,25 @@ const NewProjectFooter = ({ onBack, onNext, title }: Props) => {
   }
 
   return (
-    <div className={classes.bottomView}>
-      {typeof onBack === 'function' && renderBackButton()}
-      <Typography variant={'caption'} className={classes.stepLabel}>
-        {title}
-      </Typography>
-      {typeof onNext === 'function' && (
-        <Button
-          variant='contained'
-          onClick={onNext}
-          color='primary'
-          className={classes.button}>
-          <Typography variant={'button'}>Continue</Typography>
-        </Button>
+    <div style={{ marginTop: 40 }}>
+      {!!description && (
+        <Typography variant={'caption'}>{description}</Typography>
       )}
+      <div className={classes.bottomView} style={{ marginTop: 10 }}>
+        {typeof onBack === 'function' && renderBackButton()}
+        <Typography variant={'caption'} className={classes.stepLabel}>
+          {title}
+        </Typography>
+        {typeof onNext === 'function' && (
+          <Button
+            variant='contained'
+            onClick={onNext}
+            color='primary'
+            className={classes.button}>
+            <Typography variant={'button'}>Continue</Typography>
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
@@ -73,7 +79,6 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     alignItems: CENTER,
     justifyContent: FLEX_END,
-    marginTop: 20,
   },
 }))
 
