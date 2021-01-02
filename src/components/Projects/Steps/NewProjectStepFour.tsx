@@ -17,13 +17,15 @@ import {
   ROW
 } from 'utils/constants/stringConstants'
 import AddIcon from '@material-ui/icons/Add'
-import { StretegyMilestone } from '../../../utils/types'
+import { Expense, Milestone } from '../../../utils/types'
 import { useTabletLayout } from '../../../utils/hooks'
 import NewProjectTitle from '../NewProjectTitle'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import { InputChangeEvent } from '../../../utils/types'
 import AddMoreButton from '../../Common/Button/MoreButton'
+import { generateUid } from '../../../utils'
+import CloseButton from '../../Common/Button/CloseButton'
 
 const NewProjectStepFour = (props: any) => {
   const isTablet = useTabletLayout()
@@ -31,10 +33,12 @@ const NewProjectStepFour = (props: any) => {
   const { projectData, setProjectData } = props
   const [tasksData, setTasks] = useState([1])
 
-  const addMoreClicked = () => {
-    let newData: Array<number> = [...tasksData]
-    newData.push(1)
-    setTasks(newData)
+  const addMilestone = () => {
+    const milestones: Array<Milestone> = [
+      ...projectData.milestones,
+      { id: generateUid(), title: '', cost: 0 }
+    ]
+    setProjectData({ ...projectData, milestones })
   }
 
   const onMilestoneChange = (
@@ -43,14 +47,28 @@ const NewProjectStepFour = (props: any) => {
     index: number
   ) => {
     const value = event.target.value
-    const updatedMilestones = ([...projectData.milestones][index][key] = value)
+    const updatedMilestones = [...projectData.milestones]
+    updatedMilestones[index][key] = value
     setProjectData({ ...projectData, milestones: updatedMilestones })
   }
 
-  const renderTasksView = (data: StretegyMilestone, index: number) => {
+  const deleteMilestone = (id: string) => {
+    const milestones = projectData.milestones.filter(
+      (expense: Milestone) => expense.id !== id
+    )
+    setProjectData({ ...projectData, milestones })
+  }
+
+  const renderTasksView = (data: Milestone, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
+    const closeButton = (
+      <div style={isTablet ? { alignSelf: 'flex-start' } : { marginLeft: 10 }}>
+        <CloseButton onClick={() => deleteMilestone(data.id)} />
+      </div>
+    )
     return (
-      <div className={'task-row'}>
+      <div className={'task-row'} key={`milestone-${data.id}`}>
+        {isTablet && closeButton}
         <div style={{ flex: 1, marginRight: leftInputMargin }}>
           <AppTextField
             type={''}
@@ -63,7 +81,7 @@ const NewProjectStepFour = (props: any) => {
         </div>
         <div style={{ flex: 1 }}>
           <AppTextField
-            type={'number'}
+            type={''}
             label={`Payment`}
             value={projectData.milestones[index].payment}
             onChange={(e: InputChangeEvent) =>
@@ -71,6 +89,7 @@ const NewProjectStepFour = (props: any) => {
             }
           />
         </div>
+        {!isTablet && closeButton}
       </div>
     )
   }
@@ -79,13 +98,11 @@ const NewProjectStepFour = (props: any) => {
     return (
       <div className={classes.middleView}>
         {projectData.milestones && projectData.milestones.length > 0
-          ? projectData.milestones.map(
-              (data: StretegyMilestone, index: number) => {
-                return renderTasksView(data, index)
-              }
-            )
+          ? projectData.milestones.map((data: Milestone, index: number) => {
+              return renderTasksView(data, index)
+            })
           : null}
-        <AddMoreButton onClick={addMoreClicked} title={'Add Milestone'} />
+        <AddMoreButton onClick={addMilestone} title={'Add Milestone'} />
       </div>
     )
   }

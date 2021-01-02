@@ -1,67 +1,50 @@
-import {ChangeEvent} from "react";
+import { ChangeEvent } from 'react'
 
 export type InputChangeEvent = ChangeEvent<HTMLInputElement>
 
 export type Asset = {
-  id: string,
-  width?: number,
-  height?: number,
+  id: string
+  width?: number
+  height?: number
   original?: any
-};
+}
 
 export type User = {
-  email: string,
+  email: string
   password: string
-};
-
-export type StretegyTask = {
-  task: string,
-  startDay: string,
-  deadLine: string
 }
 
-export type StretegyExpenses = {
-  expense: string,
-  cost: number,
+export type Task = {
+  id: string
+  title: string
+  startDate: string
+  endDate: string
 }
 
-export type StretegyMilestone = {
-  milestone: string,
-  payment: number,
+export type Expense = {
+  id: string
+  title: string
+  cost: number
 }
 
-export type StepOne = {
-  logo: String,
-  campaignName: String,
-  campaignDate: String,
-  clientName: String,
-  clientEmail: String,
-  address: String,
-  city: String,
-  state: String,
-  country: String
-}
-
-export type StepTwo = {
-  campaignObjective: String,
-  campaignDeadLine: String,
-  description: String,
-  tasks: Array<StretegyTask>
-}
-
-export type StepThree = {
-  campaignBudget: String,
-  campaignExpenses: String,
-  expenses: Array<StretegyExpenses>
-}
-
-export type StepFour = {
-  milestone: Array<StretegyMilestone>
+export type Milestone = {
+  id: string
+  title: string
+  cost: number
 }
 
 export type ProjectData = {
-  stepOne: StepOne,
-  stepTwo: StepTwo,
-  stepThree: StepThree,
-  stepFour: StepFour
+  name: string
+  startDate: Date
+  clientId: string
+  objective: string
+  deadline: Date
+  tasks: Array<Task>
+  description: string
+  budget: number
+  expensesEstimate: number
+  expenses: Array<Expense>
+  milestones: Array<Milestone>
+  createdAt: Date
+  updatedAt: Date
 }

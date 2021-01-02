@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react'
 import '../Projects.css'
-import { makeStyles, Typography, Button, TextField } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -16,13 +16,14 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import AddIcon from '@material-ui/icons/Add'
-import { StretegyTask } from '../../../utils/types/index'
+import { InputChangeEvent, Task } from '../../../utils/types'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks'
 import AddMoreButton from '../../Common/Button/MoreButton'
+import { generateUid } from '../../../utils'
+import CloseButton from '../../Common/Button/CloseButton'
 
 const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
@@ -30,45 +31,76 @@ const NewProjectStepTwo = (props: any) => {
   const { projectData, setProjectData } = props
   const [tasksData, setTasks] = useState([1])
 
-  const handleInputChange = (event: any) => (key: string) => {
+  const handleInputChange = (event: InputChangeEvent) => (key: string) => {
     const value = event.target.value
     setProjectData({ ...projectData, [key]: value })
   }
 
-  const addMoreClicked = () => {
-    let newData: Array<number> = [...tasksData]
-    newData.push(1)
-    setTasks(newData)
+  const addTask = () => {
+    const tasks = [
+      ...projectData.tasks,
+      { id: generateUid(), title: '', endDate: '', startDate: '' }
+    ]
+    setProjectData({ ...projectData, tasks })
   }
 
-  const renderTasksView = (data: StretegyTask, index: number) => {
+  const handleTaskChange = (
+    event: InputChangeEvent,
+    key: string,
+    index: number
+  ) => {
+    const value = event.target.value
+    const tasks = [...projectData.tasks]
+    tasks[index][key] = value
+    setProjectData({ ...projectData, tasks })
+  }
+
+  const deleteTask = (id: string) => {
+    const tasks = projectData.tasks.filter((task: Task) => task.id !== id)
+    setProjectData({ ...projectData, tasks })
+  }
+
+  const renderTasksView = (data: Task, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
+    const closeButton = (
+      <div style={isTablet ? { alignSelf: 'flex-start' } : { marginLeft: 10 }}>
+        <CloseButton onClick={() => deleteTask(data.id)} />
+      </div>
+    )
     return (
-      <div className={'task-row'} key={`task-${index}`}>
+      <div className={'task-row'} key={`task-${data.id}`}>
+        {isTablet && closeButton}
         <div style={{ flex: 2, marginRight: leftInputMargin }}>
           <AppTextField
             type={''}
             label={`Task ${index + 1}`}
-            value={data.task}
-            onChange={(e: ChangeEvent) => handleInputChange(e)('task')}
+            value={data.title}
+            onChange={(e: InputChangeEvent) =>
+              handleTaskChange(e, 'title', index)
+            }
           />
         </div>
         <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
           <AppTextField
             type={'date'}
             label={'Campaign DadeLine'}
-            value={data.startDay}
-            onChange={(e: ChangeEvent) => handleInputChange(e)('startDay')}
+            value={data.startDate}
+            onChange={(e: InputChangeEvent) =>
+              handleTaskChange(e, 'startDate', index)
+            }
           />
         </div>
         <div style={{ flex: 0.2 }}>
           <AppTextField
             type={'date'}
             label={'Campaign DadeLine'}
-            value={data.deadLine}
-            onChange={(e: ChangeEvent) => handleInputChange(e)('deadLine')}
+            value={data.endDate}
+            onChange={(e: InputChangeEvent) =>
+              handleTaskChange(e, 'endDate', index)
+            }
           />
         </div>
+        {!isTablet && closeButton}
       </div>
     )
   }
@@ -91,34 +123,36 @@ const NewProjectStepTwo = (props: any) => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        <div className={'input-row'} style={{ marginBottom: 30 }}>
-          <div style={{ flex: 4, marginRight: leftInputMargin }}>
-            <AppTextField
-              type={''}
-              label={'Campaign Objective'}
-              value={projectData.campaignObjective}
-              onChange={(e: ChangeEvent) =>
-                handleInputChange(e)('campaignObjective')
-              }
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <AppTextField
-              type={'date'}
-              label={'Campaign DadeLine'}
-              value={projectData.campaignDeadLine}
-              onChange={(e: ChangeEvent) =>
-                handleInputChange(e)('campaignDeadLine')
-              }
-            />
+        <div>
+          <div className={'input-row'} style={{ marginBottom: 30 }}>
+            <div style={{ flex: 4, marginRight: leftInputMargin }}>
+              <AppTextField
+                type={''}
+                label={'Campaign Objective'}
+                value={projectData.campaignObjective}
+                onChange={(e: InputChangeEvent) =>
+                  handleInputChange(e)('campaignObjective')
+                }
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <AppTextField
+                type={'date'}
+                label={'Campaign DadeLine'}
+                value={projectData.campaignDeadLine}
+                onChange={(e: InputChangeEvent) =>
+                  handleInputChange(e)('campaignDeadLine')
+                }
+              />
+            </div>
           </div>
         </div>
         {projectData.tasks && projectData.tasks.length > 0
-          ? projectData.tasks.map((data: StretegyTask, index: number) => {
+          ? projectData.tasks.map((data: Task, index: number) => {
               return renderTasksView(data, index)
             })
           : null}
-        <AddMoreButton onClick={addMoreClicked} title={'Add Task'} />
+        <AddMoreButton onClick={addTask} title={'Add Task'} />
         {renderProjectDescriptionView()}
       </div>
     )

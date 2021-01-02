@@ -34,36 +34,26 @@ export const getProductData = () => {
     description: '',
     tasks: [
       {
+        id: '0',
         task: '',
-        startDay: '',
-        deadLine: ''
-      },
-      {
-        task: '',
-        startDay: '',
-        deadLine: ''
+        startDate: '',
+        endDate: ''
       }
     ],
     campaignBudget: '',
     campaignExpenses: '',
     expenses: [
       {
+        id: '0',
         expense: '',
-        cost: 0
-      },
-      {
-        expense: '',
-        cost: 0
+        cost: ''
       }
     ],
     milestones: [
       {
+        id: '0',
         title: '',
-        payment: 0
-      },
-      {
-        title: '',
-        payment: 0
+        payment: ''
       }
     ]
   }

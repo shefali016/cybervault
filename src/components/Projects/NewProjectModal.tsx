@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import '../../App.css'
 import './Projects.css'
-import { makeStyles, IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import ClearIcon from '@material-ui/icons/Clear'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
@@ -10,28 +10,17 @@ import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import { getProductData } from '../../utils'
 import AppModal from '../Common/Modal'
+import CloseButton from '../Common/Button/CloseButton'
 
 type NewProjectProps = {
   onRequestClose: () => void
 }
 
 const NewProject = ({ onRequestClose }: NewProjectProps) => {
-  const classes = useStyles()
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
 
   const modalContentRef = useRef<HTMLDivElement>(null)
-
-  const renderCloseButton = () => {
-    return (
-      <IconButton
-        aria-label='delete'
-        className={classes.closeButton}
-        onClick={onRequestClose}>
-        <ClearIcon fontSize='small' />
-      </IconButton>
-    )
-  }
 
   const renderStepsView = () => {
     const props = {
@@ -67,7 +56,14 @@ const NewProject = ({ onRequestClose }: NewProjectProps) => {
   return (
     <div className='new-project-modal-content' ref={modalContentRef}>
       {renderStepsView()}
-      {renderCloseButton()}
+      <CloseButton
+        onClick={onRequestClose}
+        style={{
+          position: POSITION_ABSOLUTE,
+          top: 10,
+          right: 10
+        }}
+      />
     </div>
   )
 }
@@ -81,13 +77,5 @@ const NewProjectModal = ({ open, onRequestClose }: NewProjectModalProps) => {
     </AppModal>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  closeButton: {
-    position: POSITION_ABSOLUTE,
-    top: 10,
-    right: 10
-  }
-}))
 
 export default NewProjectModal
