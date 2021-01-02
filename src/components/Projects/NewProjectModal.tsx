@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import '../../App.css'
 import './Projects.css'
-import { Modal, makeStyles, IconButton } from '@material-ui/core'
+import { makeStyles, IconButton } from '@material-ui/core'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import ClearIcon from '@material-ui/icons/Clear'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
@@ -9,7 +9,7 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import { getProductData } from '../../utils'
-import AppModal, { ModalProps } from '../Common/Modal'
+import AppModal from '../Common/Modal'
 
 type NewProjectProps = {
   onRequestClose: () => void
