@@ -63,7 +63,12 @@ const NewProjectStepTwo = (props: any) => {
   const renderTasksView = (data: Task, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
     const closeButton = (
-      <div style={isTablet ? { alignSelf: 'flex-start' } : { marginLeft: 10 }}>
+      <div
+        style={
+          isTablet
+            ? { alignSelf: 'flex-start', marginLeft: -10 }
+            : { marginLeft: 10 }
+        }>
         <CloseButton onClick={() => deleteTask(data.id)} />
       </div>
     )

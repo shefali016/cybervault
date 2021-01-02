@@ -31,7 +31,6 @@ const NewProjectStepFour = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
   const { projectData, setProjectData } = props
-  const [tasksData, setTasks] = useState([1])
 
   const addMilestone = () => {
     const milestones: Array<Milestone> = [
@@ -62,7 +61,12 @@ const NewProjectStepFour = (props: any) => {
   const renderTasksView = (data: Milestone, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
     const closeButton = (
-      <div style={isTablet ? { alignSelf: 'flex-start' } : { marginLeft: 10 }}>
+      <div
+        style={
+          isTablet
+            ? { alignSelf: 'flex-start', marginLeft: -10 }
+            : { marginLeft: 10 }
+        }>
         <CloseButton onClick={() => deleteMilestone(data.id)} />
       </div>
     )

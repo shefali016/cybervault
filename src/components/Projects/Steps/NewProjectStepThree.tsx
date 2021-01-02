@@ -65,7 +65,12 @@ const NewProjectStepThree = (props: any) => {
   const renderTasksView = (data: Expense, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
     const closeButton = (
-      <div style={isTablet ? { alignSelf: 'flex-start' } : { marginLeft: 10 }}>
+      <div
+        style={
+          isTablet
+            ? { alignSelf: 'flex-start', marginLeft: -10 }
+            : { marginLeft: 10 }
+        }>
         <CloseButton onClick={() => deleteExpense(data.id)} />
       </div>
     )
