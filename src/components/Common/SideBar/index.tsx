@@ -31,8 +31,15 @@ import {
 import ROUTES from '../../../utils/constants/routes'
 import { Link } from 'react-router-dom'
 
-const SideBarComponent = (props: any) => {
-  const { user, history } = props
+type Props = {
+  actionButtonTitle: string
+  onActionButtonPress: () => void
+  history: any
+  onLogout?: () => void
+}
+
+const SideBarComponent = (props: Props) => {
+  const { history, actionButtonTitle, onActionButtonPress, onLogout } = props
   const classes = useStyles()
 
   const handleOptionClick = (index: Number) => {
@@ -41,7 +48,7 @@ const SideBarComponent = (props: any) => {
   }
 
   const handleLogout = () => {
-    props.logout()
+    onLogout && onLogout()
   }
 
   const getListItemIcon = (text: string) => {
@@ -110,8 +117,9 @@ const SideBarComponent = (props: any) => {
           variant='contained'
           color='secondary'
           className={classes.addProjectButton}
-          startIcon={<AddIcon className={classes.menuIconStyle} />}>
-          Add Project
+          startIcon={<AddIcon className={classes.menuIconStyle} />}
+          onClick={onActionButtonPress}>
+          {actionButtonTitle}
         </Button>
         <Divider className={classes.divider} />
         <List>

@@ -19,7 +19,7 @@ import {
 } from 'utils/constants/stringConstants'
 import nikeLogo from '../../../assets/nike.png'
 import AppTextField from '../../Common/Core/AppTextField'
-import NewProjectFooter from './NewProjectFooter'
+import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks/'
 

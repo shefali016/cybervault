@@ -34,7 +34,11 @@ const AppTextField = ({
       onChange={onChange}
       multiline={multiline}
       value={value}
-      InputProps={{ classes: { root: classes.inputRoot } }}
+      InputProps={{
+        classes: {
+          root: multiline ? classes.multilineInputRoot : classes.inputRoot,
+        },
+      }}
       InputLabelProps={
         type === 'date'
           ? {
@@ -94,6 +98,9 @@ const useStyles = makeStyles((theme) => ({
   inputRoot: {
     fontSize: 12,
     height: 35,
+  },
+  multilineInputRoot: {
+    fontSize: 12,
   },
   labelRoot: {
     fontSize: 12,

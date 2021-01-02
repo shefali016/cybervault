@@ -18,7 +18,7 @@ import {
 import AddIcon from '@material-ui/icons/Add'
 import { StretegyTask } from '../../../utils/types/index'
 import AppTextField from '../../Common/Core/AppTextField'
-import NewProjectFooter from './NewProjectFooter'
+import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 
 const NewProjectStepTwo = (props: any) => {

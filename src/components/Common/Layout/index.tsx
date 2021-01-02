@@ -1,19 +1,41 @@
 import React, { Fragment } from 'react'
 import SideBarComponent from '../SideBar'
 import ToolBar from '../Header/header'
-import NewProjectModal from '../../Projects/NewProjectModal'
+import { connect } from 'react-redux'
+import { logout } from '../../../actions/authActions'
 
-const Layout = (props: any) => {
+type Props = {
+  onActionButtonPress: () => void
+  actionButtonTitle: string
+  headerTitle?: string
+  children?: React.ReactNode
+  history: any
+  onLogout?: () => void
+}
+
+const Layout = (props: Props) => {
+  const {
+    onActionButtonPress,
+    actionButtonTitle,
+    history,
+    onLogout,
+    headerTitle,
+  } = props
   return (
     <Fragment>
-      <SideBarComponent {...props} />
+      <SideBarComponent
+        {...{ onActionButtonPress, actionButtonTitle, history, onLogout }}
+      />
       <div className='toolBarContainer'>
-        <ToolBar {...props} />
+        <ToolBar {...{ headerTitle }} />
       </div>
       <div className='pageContainer'>{props.children}</div>
-      <NewProjectModal />
     </Fragment>
   )
 }
 
-export default Layout
+const mapDispatchToProps = (dispatch: any) => ({
+  onLogout: () => dispatch(logout()),
+})
+
+export default connect(null, mapDispatchToProps)(Layout)

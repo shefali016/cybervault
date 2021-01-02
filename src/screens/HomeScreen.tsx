@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { logout } from '../actions/authActions'
@@ -12,6 +12,7 @@ import ProfitsExpenses from '../components/Cards/ProfitsExpenses'
 import Layout from '../components/Common/Layout'
 import { makeStyles } from '@material-ui/core/styles'
 import { AUTO, FLEX } from 'utils/constants/stringConstants'
+import NewProjectModal from '../components/Projects/NewProjectModal'
 
 export const HomeScreen = (props: any) => {
   useEffect(() => {
@@ -25,13 +26,30 @@ export const HomeScreen = (props: any) => {
   }
   const classes = useStyles()
   const projectData = [1, 2, 23, 5]
+
+  const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+  const openNewProjectModal = useCallback(
+    () => setNewProjectModalOpen(true),
+    [],
+  )
+  const closeNewProjectModal = useCallback(
+    () => setNewProjectModalOpen(false),
+    [],
+  )
   return (
     <div className={classes.background}>
-      <Layout {...props}>
+      <Layout
+        actionButtonTitle={'New Project'}
+        history={props.history}
+        onActionButtonPress={openNewProjectModal}>
         <div className={classes.dashboardContainer}>
+          <NewProjectModal
+            open={newProjectModalOpen}
+            onRequestClose={closeNewProjectModal}
+          />
           <div>
-            <Typography variant={'body2'} className={classes.generalMarginLeft}>
-              Active Projects {'>'}
+            <Typography variant={'body1'} className={classes.generalMarginLeft}>
+              Active Projects
             </Typography>
             <Grid container className={classes.topCardsWrapper}>
               {projectData && projectData.length > 0 ? (
@@ -46,8 +64,8 @@ export const HomeScreen = (props: any) => {
             </Grid>
           </div>
           <div>
-            <Typography variant={'body2'} className={classes.styledText}>
-              Invoicing and Analytics {'>'}
+            <Typography variant={'body1'} className={classes.styledText}>
+              Invoicing and Analytics
             </Typography>
             <div className={classes.middleCardsWrapper}>
               <PendingInvoices />
@@ -57,8 +75,8 @@ export const HomeScreen = (props: any) => {
             </div>
           </div>
           <div>
-            <Typography variant={'body2'} className={classes.styledText}>
-              Unpaid Invoices {'>'}
+            <Typography variant={'body1'} className={classes.styledText}>
+              Unpaid Invoices
             </Typography>
             <div className={classes.bottomCardsWrapper}>
               {projectData && projectData.length > 0 ? (
@@ -78,14 +96,8 @@ export const HomeScreen = (props: any) => {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
-  //projectData : state.projects.projectData
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
-  logout: () => {
-    return dispatch(logout())
-  },
-})
 const useStyles = makeStyles((theme) => ({
   topCardsWrapper: {
     overflow: AUTO,
@@ -123,4 +135,4 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '50px',
   },
 }))
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
+export default connect(mapStateToProps)(HomeScreen)

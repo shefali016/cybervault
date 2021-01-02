@@ -4,11 +4,13 @@ import { IconButton } from '@material-ui/core'
 import profileIcon from '../../../assets/userAvatar.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
 
-function Toolbar(props: {
+type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
   headerTitle?: string
-}) {
+}
+
+function Toolbar(props: Props) {
   return (
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 50 }}>

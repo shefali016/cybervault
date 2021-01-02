@@ -2,22 +2,22 @@ import React, { useState } from 'react'
 import '../../App.css'
 import './Projects.css'
 import { Modal, makeStyles, IconButton } from '@material-ui/core'
-import { WHITE_COLOR } from 'utils/constants/colorsConstants'
-import {
-  APP_BAR_HEIGHT,
-  COLUMN,
-  FLEX,
-  NONE,
-  POSITION_ABSOLUTE,
-} from 'utils/constants/stringConstants'
+import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import ClearIcon from '@material-ui/icons/Clear'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
 import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import { getProductData } from '../../utils'
+import Backdrop from '@material-ui/core/Backdrop'
+import Fade from '@material-ui/core/Fade'
 
-const NewProjectModal = (props: any) => {
+type Props = {
+  open: boolean
+  onRequestClose: () => void
+}
+
+const NewProjectModal = ({ open, onRequestClose }: Props) => {
   const classes = useStyles()
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
@@ -26,7 +26,13 @@ const NewProjectModal = (props: any) => {
 
   const renderCloseButton = () => {
     return (
-      <IconButton aria-label='delete' className={classes.closeButton}>
+      <IconButton
+        aria-label='delete'
+        className={classes.closeButton}
+        onClick={() => {
+          setCurrentStep(1)
+          onRequestClose()
+        }}>
         <ClearIcon fontSize='small' />
       </IconButton>
     )
@@ -55,16 +61,24 @@ const NewProjectModal = (props: any) => {
 
   return (
     <Modal
-      open={true}
+      open={open}
       onClose={handleClose}
-      aria-labelledby='simple-modal-title'
-      aria-describedby='simple-modal-description'>
-      <div className='new-project-modal-background'>
-        <div className={'new-project-modal'}>
-          {renderStepsView()}
-          {renderCloseButton()}
+      aria-labelledby='transition-modal-title'
+      aria-describedby='transition-modal-description'
+      className={'new-project-modal'}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}>
+      <Fade in={open}>
+        <div className='new-project-modal-content'>
+          <div className={'new-project-modal'}>
+            {renderStepsView()}
+            {renderCloseButton()}
+          </div>
         </div>
-      </div>
+      </Fade>
     </Modal>
   )
 }

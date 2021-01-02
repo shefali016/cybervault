@@ -6,8 +6,8 @@ import {
   FLEX,
   FLEX_END,
   NONE,
-} from '../../../utils/constants/stringConstants'
-import { GREY_COLOR } from '../../../utils/constants/colorsConstants'
+} from '../../utils/constants/stringConstants'
+import { GREY_COLOR } from '../../utils/constants/colorsConstants'
 
 type Props = {
   onBack?: () => void
