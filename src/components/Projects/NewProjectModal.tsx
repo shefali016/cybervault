@@ -9,8 +9,7 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import { getProductData } from '../../utils'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
+import AppModal, { ModalProps } from '../Common/Modal'
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -73,27 +72,13 @@ const NewProject = ({ onRequestClose }: NewProjectProps) => {
   )
 }
 
-type NewProjectModalProps = {
-  open: boolean
-  onRequestClose: () => void
-}
+type NewProjectModalProps = { open: boolean; onRequestClose: () => void }
 
 const NewProjectModal = ({ open, onRequestClose }: NewProjectModalProps) => {
   return (
-    <Modal
-      open={open}
-      aria-labelledby='transition-modal-title'
-      aria-describedby='transition-modal-description'
-      className={'new-project-modal'}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500
-      }}>
-      <Fade in={open}>
-        <NewProject onRequestClose={onRequestClose} />
-      </Fade>
-    </Modal>
+    <AppModal open={open} onRequestClose={onRequestClose}>
+      <NewProject onRequestClose={onRequestClose} />
+    </AppModal>
   )
 }
 
