@@ -12,29 +12,23 @@ import { getProductData } from '../../utils'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 
-type Props = {
-  open: boolean
+type NewProjectProps = {
   onRequestClose: () => void
 }
 
-const NewProjectModal = ({ open, onRequestClose }: Props) => {
+const NewProject = ({ onRequestClose }: NewProjectProps) => {
   const classes = useStyles()
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
 
   const modalContentRef = useRef<HTMLDivElement>(null)
 
-  const handleClose = () => {}
-
   const renderCloseButton = () => {
     return (
       <IconButton
         aria-label='delete'
         className={classes.closeButton}
-        onClick={() => {
-          setCurrentStep(1)
-          onRequestClose()
-        }}>
+        onClick={onRequestClose}>
         <ClearIcon fontSize='small' />
       </IconButton>
     )
@@ -59,11 +53,7 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
     }
     switch (currentStep) {
       case 1:
-        return (
-          <Fade in={open} timeout={4000}>
-            <NewProjectStepOne {...props} />
-          </Fade>
-        )
+        return <NewProjectStepOne {...props} />
       case 2:
         return <NewProjectStepTwo {...props} />
       case 3:
@@ -76,9 +66,22 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
   }
 
   return (
+    <div className='new-project-modal-content' ref={modalContentRef}>
+      {renderStepsView()}
+      {renderCloseButton()}
+    </div>
+  )
+}
+
+type NewProjectModalProps = {
+  open: boolean
+  onRequestClose: () => void
+}
+
+const NewProjectModal = ({ open, onRequestClose }: NewProjectModalProps) => {
+  return (
     <Modal
       open={open}
-      onClose={handleClose}
       aria-labelledby='transition-modal-title'
       aria-describedby='transition-modal-description'
       className={'new-project-modal'}
@@ -88,10 +91,7 @@ const NewProjectModal = ({ open, onRequestClose }: Props) => {
         timeout: 500
       }}>
       <Fade in={open}>
-        <div className='new-project-modal-content' ref={modalContentRef}>
-          {renderStepsView()}
-          {renderCloseButton()}
-        </div>
+        <NewProject onRequestClose={onRequestClose} />
       </Fade>
     </Modal>
   )
