@@ -6,11 +6,12 @@ import {
   List,
   ListItem,
   LinearProgress,
-  CssBaseline,
   Divider,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  IconButton
 } from '@material-ui/core'
+import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import InboxIcon from '@material-ui/icons/MoveToInbox'
 import MailIcon from '@material-ui/icons/Mail'
@@ -36,10 +37,19 @@ type Props = {
   onActionButtonPress: () => void
   history: any
   onLogout?: () => void
+  open: boolean
+  setOpen: (open: boolean) => void
 }
 
 const SideBarComponent = (props: Props) => {
-  const { history, actionButtonTitle, onActionButtonPress, onLogout } = props
+  const {
+    history,
+    actionButtonTitle,
+    onActionButtonPress,
+    onLogout,
+    open = false,
+    setOpen
+  } = props
   const classes = useStyles()
 
   const handleOptionClick = (index: Number) => {
@@ -68,7 +78,11 @@ const SideBarComponent = (props: Props) => {
           value={70}
           className={classes.linearProgress}
         />
-        <div className={classes.storageDetails}>
+        <div
+          className={clsx(classes.storageDetails, {
+            [classes.visible]: open,
+            [classes.hidden]: !open
+          })}>
           <Typography style={{ color: WHITE_COLOR, fontSize: 8, marginTop: 5 }}>
             {'430GB of 500GB used'}
           </Typography>
@@ -82,7 +96,11 @@ const SideBarComponent = (props: Props) => {
 
   const renderTermsView = () => {
     return (
-      <div className={classes.termsContainer}>
+      <div
+        className={clsx(classes.termsContainer, {
+          [classes.visible]: open,
+          [classes.hidden]: !open
+        })}>
         <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>
           See our{' '}
           <Link to={`/forgot-password`} className={classes.linkText}>
@@ -100,117 +118,103 @@ const SideBarComponent = (props: Props) => {
     )
   }
 
+  const renderListItem = (text: string, onClick: () => void) => (
+    <ListItem button key={text} onClick={onClick} className={classes.listItem}>
+      <ListItemIcon>{getListItemIcon(text)}</ListItemIcon>
+      <ListItemText
+        disableTypography
+        primary={
+          <Typography style={{ color: WHITE_COLOR, fontSize: 15 }}>
+            {text}
+          </Typography>
+        }
+        className={classes.sideBarText}
+      />
+    </ListItem>
+  )
+
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Drawer
-        className={classes.drawer}
-        variant='permanent'
-        classes={{
-          paper: classes.drawerPaper
-        }}
-        anchor='left'>
-        <ListItemIcon className={classes.appIconContainer}>
-          <PolymerSharpIcon className={classes.appIcon} />
-        </ListItemIcon>
-        <Button
-          variant='contained'
-          color='secondary'
-          className={classes.addProjectButton}
-          startIcon={<AddIcon className={classes.menuIconStyle} />}
-          onClick={onActionButtonPress}>
-          <Typography variant={'button'}>{actionButtonTitle}</Typography>
-        </Button>
-        <Divider className={classes.divider} />
-        <List>
-          {['DashBoard', 'Projects', 'Portfolio', 'Setting', 'Storage'].map(
-            (text, index) => (
-              <ListItem
-                button
-                key={text}
-                onClick={() => handleOptionClick(index)}
-                className={classes.listItem}>
-                <ListItemIcon>{getListItemIcon(text)}</ListItemIcon>
-                <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography style={{ color: WHITE_COLOR, fontSize: 14 }}>
-                      {text}
-                    </Typography>
-                  }
-                  className={classes.sideBarText}
-                />
-              </ListItem>
-            )
-          )}
-        </List>
-        {renderStorageView()}
-        <Divider className={classes.divider} />
-        <List>
-          {['Invoices', 'Payment', 'Security'].map((text, index) => (
-            <ListItem
-              button
-              key={text}
-              onClick={() => handleOptionClick(2)}
-              className={classes.listItem}>
-              <ListItemIcon>{getListItemIcon(text)}</ListItemIcon>
-              <ListItemText
-                disableTypography
-                primary={
-                  <Typography style={{ color: WHITE_COLOR, fontSize: 14 }}>
-                    {text}
-                  </Typography>
-                }
-                className={classes.sideBarText}
-              />
-            </ListItem>
-          ))}
-        </List>
-        <ListItem
-          button
-          key={'Log Out'}
-          onClick={() => handleLogout()}
-          className={classes.listItemLogout}>
-          <ListItemIcon>{getListItemIcon('Log Out')}</ListItemIcon>
-          <ListItemText
-            disableTypography
-            primary={
-              <Typography style={{ color: WHITE_COLOR, fontSize: 14 }}>
-                {'Log Out'}
-              </Typography>
-            }
-            className={classes.sideBarText}
-          />
-        </ListItem>
-        <Divider className={classes.divider} />
-        {renderTermsView()}
-      </Drawer>
-    </div>
+    <Drawer
+      variant='permanent'
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: open,
+        [classes.drawerClose]: !open
+      })}
+      classes={{
+        paper: clsx(classes.paper, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open
+        })
+      }}
+      anchor='left'>
+      <Button
+        className={classes.appIconContainer}
+        onClick={() => setOpen(!open)}>
+        <PolymerSharpIcon className={classes.appIcon} />
+      </Button>
+      <Button
+        variant='contained'
+        color='secondary'
+        className={classes.addProjectButton}
+        startIcon={<AddIcon className={classes.menuIconStyle} />}
+        onClick={onActionButtonPress}>
+        <Typography variant={'button'}>{actionButtonTitle}</Typography>
+      </Button>
+      <Divider className={classes.divider} />
+      <List>
+        {[
+          'DashBoard',
+          'Projects',
+          'Portfolio',
+          'Setting',
+          'Storage'
+        ].map((text, index) =>
+          renderListItem(text, () => handleOptionClick(index))
+        )}
+      </List>
+      {renderStorageView()}
+      <Divider className={classes.divider} />
+      <List>
+        {['Invoices', 'Payment', 'Security'].map((text, index) =>
+          renderListItem(text, () => handleOptionClick(2))
+        )}
+      </List>
+      <Divider className={classes.divider} />
+      <List>{renderListItem('Log Out', handleLogout)}</List>
+      <Divider className={classes.divider} />
+      {renderTermsView()}
+    </Drawer>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  drawer: {
+    width: SIDE_DRAWER_WIDTH,
+    flexShrink: 0,
+    whiteSpace: 'nowrap'
+  },
+  drawerOpen: {
+    width: SIDE_DRAWER_WIDTH,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  },
+  drawerClose: {
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    overflowX: 'hidden',
+    width: theme.spacing(8)
+  },
+  paper: { backgroundColor: SECONDARY_COLOR, borderRightColor: BORDER_COLOR },
   root: {
     display: 'flex'
   },
   appBar: {
     width: `calc(100% - ${SIDE_DRAWER_WIDTH}px)`,
     marginLeft: SIDE_DRAWER_WIDTH
-  },
-  drawer: {
-    width: SIDE_DRAWER_WIDTH,
-    flexShrink: 0,
-    '&:hover': {
-      overflowY: 'auto'
-    },
-    '&::-webkit-scrollbar': {
-      display: 'none'
-    }
-  },
-  drawerPaper: {
-    width: SIDE_DRAWER_WIDTH,
-    backgroundColor: SECONDARY_COLOR,
-    borderRightColor: BORDER_COLOR
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -229,8 +233,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: SECONDARY_DARK_COLOR
   },
   appIcon: {
-    color: 'green',
-    fontSize: 60
+    color: PRIMARY_COLOR,
+    fontSize: 45
   },
   sideBarText: {
     color: WHITE_COLOR,
@@ -238,27 +242,29 @@ const useStyles = makeStyles((theme) => ({
   },
   addProjectButton: {
     width: SIDE_DRAWER_WIDTH - 25,
+    padding: '10px 0px 10px 0px',
     background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
-    // boxShadow: '0 1px 2px 0.5px #5ea5fc',
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-    marginTop: 25,
-    marginBottom: 30
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3)
   },
   menuIconStyle: {
     marginRight: 15,
+    marginLeft: -30,
     color: WHITE_COLOR,
-    fontSize: 18
+    fontSize: 30
   },
   listIconStyle: {
-    marginRight: 15,
+    marginRight: 10,
     color: PRIMARY_COLOR,
-    fontSize: 18
+    fontSize: theme.spacing(3)
   },
   storageContainer: {
-    marginBottom: 20
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(4)
   },
   storageDetails: {
     marginLeft: 18
@@ -268,16 +274,32 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 18
   },
   listItem: {
-    paddingTop: 3,
-    paddingBottom: 3
+    paddingLeft: theme.spacing(2.4),
+    paddingRight: theme.spacing(2.4),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1)
   },
   listItemLogout: {
     marginTop: 50
   },
   termsContainer: {
-    marginBottom: 20,
-    marginLeft: 18,
-    marginTop: 10
+    marginBottom: theme.spacing(2.5),
+    marginLeft: theme.spacing(2.5),
+    marginTop: theme.spacing(2.5)
+  },
+  hidden: {
+    opacity: 0,
+    transition: theme.transitions.create('opacity', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  },
+  visible: {
+    opacity: 1,
+    transition: theme.transitions.create('opacity', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   linkText: {
     color: PRIMARY_COLOR,

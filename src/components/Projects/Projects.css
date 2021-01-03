@@ -42,7 +42,7 @@
   flex-direction: column;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 770px) {
   .input-row {
     flex-direction: column;
     margin-bottom: 0;
@@ -54,7 +54,7 @@
   }
   .new-project-modal-content {
     padding: 20px;
-    width: 90vw;
+    width: 80vw;
     height: 100vh;
   }
   .client-logo-container {

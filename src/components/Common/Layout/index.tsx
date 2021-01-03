@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import SideBarComponent from '../SideBar'
 import ToolBar from '../Header/header'
 import { connect } from 'react-redux'
@@ -19,12 +19,20 @@ const Layout = (props: Props) => {
     actionButtonTitle,
     history,
     onLogout,
-    headerTitle,
+    headerTitle
   } = props
+  const [drawerOpen, setDrawerOpen] = useState(true)
   return (
     <Fragment>
       <SideBarComponent
-        {...{ onActionButtonPress, actionButtonTitle, history, onLogout }}
+        {...{
+          onActionButtonPress,
+          actionButtonTitle,
+          history,
+          onLogout,
+          open: drawerOpen,
+          setOpen: setDrawerOpen
+        }}
       />
       <div className='toolBarContainer'>
         <ToolBar {...{ headerTitle }} />
@@ -35,7 +43,7 @@ const Layout = (props: Props) => {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-  onLogout: () => dispatch(logout()),
+  onLogout: () => dispatch(logout())
 })
 
 export default connect(null, mapDispatchToProps)(Layout)
