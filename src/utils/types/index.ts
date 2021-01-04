@@ -33,7 +33,8 @@ export type Milestone = {
   cost: number
 }
 
-export type ProjectData = {
+export type Project = {
+  logo: any
   name: string
   startDate: Date
   clientId: string

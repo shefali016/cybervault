@@ -230,7 +230,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: CENTER,
     justifyContent: CENTER,
     height: APP_BAR_HEIGHT,
-    backgroundColor: SECONDARY_DARK_COLOR
+    backgroundColor: SECONDARY_DARK_COLOR,
+    borderRadius: 0
   },
   appIcon: {
     color: PRIMARY_COLOR,

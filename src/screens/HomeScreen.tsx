@@ -10,9 +10,38 @@ import IncomeThisMonth from '../components/Cards/IncomeThisMonth'
 import ProjectCount from '../components/Cards/ProjectCount'
 import ProfitsExpenses from '../components/Cards/ProfitsExpenses'
 import Layout from '../components/Common/Layout'
-import { makeStyles } from '@material-ui/core/styles'
-import { AUTO, FLEX } from 'utils/constants/stringConstants'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { AUTO, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import NewProjectModal from '../components/Projects/NewProjectModal'
+import Widget from '../components/Common/Widget'
+
+const PROJECT_DATA = [
+  {
+    name: 'Nike Summer Campaign',
+    description: 'Doc 2016 campaign with audi Q6',
+    startDate: '2020-01-01',
+    budget: 10000
+  },
+  {
+    name: 'Nike Summer Campaign',
+    description: 'Doc 2016 campaign with audi Q6',
+    startDate: '2020-01-01',
+    budget: 10000
+  },
+  {
+    name: 'Nike Summer Campaign',
+    description: 'Doc 2016 campaign with audi Q6',
+    startDate: '2020-01-01',
+    budget: 10000
+  },
+  {
+    name: 'Nike Summer Campaign',
+    description: 'Doc 2016 campaign with audi Q6',
+    startDate: '2020-01-01',
+    budget: 10000
+  }
+]
+const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
 export const HomeScreen = (props: any) => {
   useEffect(() => {
@@ -25,7 +54,7 @@ export const HomeScreen = (props: any) => {
     props.history.push('/')
   }
   const classes = useStyles()
-  const projectData = [1, 2, 23, 5]
+  const theme = useTheme()
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
   const openNewProjectModal = useCallback(
@@ -42,61 +71,53 @@ export const HomeScreen = (props: any) => {
         actionButtonTitle={'New Project'}
         history={props.history}
         onActionButtonPress={openNewProjectModal}>
-        <div className={classes.dashboardContainer}>
+        <div className={'dashboardContainer'}>
           <NewProjectModal
             open={newProjectModalOpen}
             onRequestClose={closeNewProjectModal}
           />
-          <div>
-            <Typography variant={'body1'} className={classes.generalMarginLeft}>
-              Active Projects
-            </Typography>
-            <Grid container className={classes.topCardsWrapper}>
-              {projectData && projectData.length > 0 ? (
-                projectData.map((project: any, index: number) => {
-                  return (
-                    <ProjectCard
-                      projectDetails={project}
-                      isPopover={true}
-                      key={`project-card-${index}`}
-                    />
-                  )
-                })
-              ) : (
-                <Typography>No Projects found</Typography>
-              )}
-            </Grid>
-          </div>
-          <div>
-            <Typography variant={'body1'} className={classes.styledText}>
+          <Widget
+            data={PROJECT_DATA}
+            title={'Active Projects'}
+            emptyMessage={'No Projects found'}
+            renderItem={(item) => (
+              <ProjectCard
+                project={item}
+                isPopover={true}
+                key={`project-card-${item.id}`}
+                style={{ marginRight: theme.spacing(3) }}
+              />
+            )}
+          />
+          <div className={classes.invoicingWrapper}>
+            <Typography
+              variant={'body1'}
+              className={classes.sectionTitle}
+              color={'textPrimary'}>
               Invoicing and Analytics
             </Typography>
             <div className={classes.middleCardsWrapper}>
-              <PendingInvoices />
-              <ProfitsExpenses />
-              <ProjectCount />
+              <PendingInvoices className={classes.widgetItem} />
+              <ProfitsExpenses className={classes.widgetItem} />
+              <ProjectCount
+                className={classes.widgetItem}
+                projectCount={PROJECT_DATA.length}
+              />
               <IncomeThisMonth />
             </div>
           </div>
-          <div>
-            <Typography variant={'body1'} className={classes.styledText}>
-              Unpaid Invoices
-            </Typography>
-            <div className={classes.bottomCardsWrapper}>
-              {projectData && projectData.length > 0 ? (
-                projectData.map((project: any, index: number) => {
-                  return (
-                    <UnpaidInvoices
-                      projectDetails={project}
-                      key={`unpaid-invoices-${index}`}
-                    />
-                  )
-                })
-              ) : (
-                <Typography>No Projects found</Typography>
-              )}
-            </div>
-          </div>
+          <Widget
+            title={'Unpaid Invoices'}
+            data={UNPAID_INVOICES_DATA}
+            renderItem={(item) => (
+              <UnpaidInvoices
+                projectDetails={item}
+                key={`unpaid-invoices-${item.id}`}
+                style={{ marginRight: theme.spacing(3) }}
+              />
+            )}
+            emptyMessage={'No Projects found'}
+          />
         </div>
       </Layout>
     </div>
@@ -108,40 +129,32 @@ const mapStateToProps = (state: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
-  topCardsWrapper: {
-    overflow: AUTO,
-    marginLeft: 10,
-    marginTop: 20
-  },
+  invoicingWrapper: { marginBottom: theme.spacing(4) },
   middleCardsWrapper: {
-    overflow: AUTO,
-    marginLeft: 20,
-    marginTop: 20,
-    display: FLEX
+    display: FLEX,
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: COLUMN
+    }
   },
-  bottomCardsWrapper: {
-    marginLeft: 10,
-    marginTop: 10,
-    paddingBottom: 20
-  },
-  generalMarginLeft: {
-    marginLeft: 10
-  },
-  styledText: {
-    marginTop: 30,
-    marginLeft: 10
-  },
+  sectionTitle: { marginBottom: theme.spacing(1) },
   background: {
     display: 'grid',
     backgroundColor: '#24262B',
     height: '100%',
     width: '100%',
     overflowY: 'auto',
-    overflowX: 'hidden',
-    color: '#ffffff'
+    overflowX: 'hidden'
   },
   dashboardContainer: {
-    marginTop: '50px'
+    padding: theme.spacing(4)
+  },
+  widgetItem: {
+    [theme.breakpoints.up('sm')]: {
+      marginRight: theme.spacing(3)
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(3)
+    }
   }
 }))
 export default connect(mapStateToProps)(HomeScreen)

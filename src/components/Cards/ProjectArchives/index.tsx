@@ -7,105 +7,76 @@ import {
   CENTER,
   FLEX,
   AUTO,
-  COLUMN,
-  FLEX_END,
+  FLEX_END
 } from '../../../utils/constants/stringConstants'
 import { GREY_COLOR } from '../../../utils/constants/colorsConstants'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
-function ProjectArchives(props: { projectDetails?: any; openProject?: any }) {
+type Props = { projectDetails?: any; openProject?: any; style?: {} }
+
+const ProjectArchives = (props: Props) => {
   const classes = useStyles()
   return (
-    <Button style={{ display: 'inline-block', flex: 1 }}>
-      <Card className={classes.card}>
-        <CardContent className={classes.contentWrapper}>
-          <div className={classes.imgWrapper}>
-            <img
-              className={classes.img}
-              src={
-                props.projectDetails && props.projectDetails.image
-                  ? props.projectDetails.image
-                  : logo
-              }
-              alt='Logo'
-            />
-          </div>
-          <div className={classes.textWrapper}>
-            <Typography className={classes.bodyText}>
-              {props.projectDetails && props.projectDetails.name
-                ? props.projectDetails.name
-                : 'Nike Summer Campaign'}
-            </Typography>
-            <Typography className={classes.bottomText}>
-              {props.projectDetails && props.projectDetails.value
-                ? props.projectDetails.value
-                : 'Doc 2016 campaign with audi Q6'}
-            </Typography>
-          </div>
+    <Button
+      className={classes.button}
+      style={props.style}
+      variant={'contained'}>
+      <div className={classes.imgWrapper}>
+        <img
+          className={classes.img}
+          src={
+            props.projectDetails && props.projectDetails.image
+              ? props.projectDetails.image
+              : logo
+          }
+          alt='Logo'
+        />
+      </div>
+      <div className={classes.textWrapper}>
+        <Typography className={classes.title} noWrap={true}>
+          {props.projectDetails?.name}
+        </Typography>
+        <Typography className={classes.subTitle} noWrap={true}>
+          {props.projectDetails?.description}
+        </Typography>
+      </div>
 
-          <div className={classes.button}>
-            <ArrowForwardIosIcon fontSize='small' />
-          </div>
-        </CardContent>
-      </Card>
+      <ArrowForwardIosIcon fontSize='small' />
     </Button>
   )
 }
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginLeft: 10,
-    paddingTop: 0,
     display: FLEX,
     justifyContent: CENTER,
-    alignSelf: FLEX_END,
-  },
-  card: {
-    width: '13rem',
-    height: '3rem',
-    zIndex: 2,
-    display: FLEX,
-    flex: 1,
-    flexDirection: 'column',
-    borderRadius: 15,
-    margin: 5,
-    padding: 0,
-    alignItems: CENTER,
-    justifyContent: CENTER,
+    borderRadius: 20,
+    padding: `${theme.spacing(3)}px ${theme.spacing(1.5)}px`,
+    height: 70,
+    width: 300,
+    backgroundColor: 'white'
   },
   imgWrapper: {
     borderRadius: 10,
     display: FLEX,
-    alignContent: CENTER,
     justifyContent: CENTER,
+    alignItems: CENTER
   },
-  bodyText: {
+  title: {
     fontWeight: BOLD,
-    fontSize: 8,
+    fontSize: 12
   },
+  subTitle: { fontSize: 9, color: GREY_COLOR },
   img: {
     width: AUTO,
     height: AUTO,
-    maxWidth: 30,
-    maxHeight: 30,
+    maxWidth: 40,
+    maxHeight: 40
   },
   textWrapper: {
-    marginLeft: 5,
-    display: FLEX,
-    flexDirection: COLUMN,
-    flexWrap: 'nowrap',
-  },
-  bottomText: {
-    fontWeight: BOLD,
-    fontSize: 6,
-    color: GREY_COLOR,
-  },
-  contentWrapper: {
-    display: 'flex',
-    alignItems: CENTER,
-    justifyContent: CENTER,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     flex: 1,
-    alignSelf: CENTER,
-    marginTop: 8,
-  },
+    overflow: 'hidden'
+  }
 }))
 export default ProjectArchives

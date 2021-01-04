@@ -40,27 +40,26 @@ const useStyles = makeStyles((theme) => ({
     display: GRID,
     width: 250,
     height: '10rem',
-    marginLeft: 10,
-    borderRadius: 15,
+    borderRadius: 15
   },
   progressBar: {
     width: 200,
     height: 18,
     borderRadius: 25,
     alignSelf: CENTER,
-    marginTop: 8,
+    marginTop: 8
   },
   title: {
     fontSize: '14px',
     color: BLACK_COLOR,
     fontWeight: 600,
-    margin: 0,
+    margin: 0
   },
   bodyText: {
     fontSize: '12px',
     color: BLACK_COLOR,
     margin: 0,
-    marginTop: 8,
-  },
+    marginTop: 8
+  }
 }))
 export default IncomeThisMonth

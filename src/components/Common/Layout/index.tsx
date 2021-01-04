@@ -3,6 +3,7 @@ import SideBarComponent from '../SideBar'
 import ToolBar from '../Header/header'
 import { connect } from 'react-redux'
 import { logout } from '../../../actions/authActions'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 
 type Props = {
   onActionButtonPress: () => void
@@ -22,8 +23,11 @@ const Layout = (props: Props) => {
     headerTitle
   } = props
   const [drawerOpen, setDrawerOpen] = useState(true)
+
+  const classes = useStyles()
+
   return (
-    <Fragment>
+    <div className={classes.root}>
       <SideBarComponent
         {...{
           onActionButtonPress,
@@ -34,13 +38,18 @@ const Layout = (props: Props) => {
           setOpen: setDrawerOpen
         }}
       />
-      <div className='toolBarContainer'>
+      <div className={classes.main}>
         <ToolBar {...{ headerTitle }} />
+        <div style={{ flex: 1 }}>{props.children}</div>
       </div>
-      <div className='pageContainer'>{props.children}</div>
-    </Fragment>
+    </div>
   )
 }
+
+const useStyles = makeStyles((theme: any) => ({
+  root: { display: 'flex' },
+  main: { flexGrow: 1, height: '100vh' }
+}))
 
 const mapDispatchToProps = (dispatch: any) => ({
   onLogout: () => dispatch(logout())

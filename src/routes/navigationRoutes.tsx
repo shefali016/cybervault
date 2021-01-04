@@ -7,19 +7,28 @@ import SignUpScreen from '../screens/SignUpScreen'
 import HomeScreen from '../screens/HomeScreen'
 import ProjectScreen from '../screens/projects/ProjectsScreen'
 
-function Routes(): JSX.Element {
-  return (
-    <Switch>
-      <Route path='/' exact component={LoginScreen} />
-      <Route path='/signup' component={SignUpScreen} />
-      <Route path='/home' component={HomeScreen} />
-      <Route path='/projects' component={ProjectScreen} />
-      <Route component={LoginScreen} />
-    </Switch>
-  )
+type Props = { isLoggedIn?: boolean }
+
+const Routes = (props: Props): JSX.Element => {
+  return props.isLoggedIn ? MainRoutes() : AuthRoutes()
 }
-const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn,
+
+const MainRoutes = () => (
+  <Switch>
+    <Route path='/projects' component={ProjectScreen} />
+    <Route path='/home' component={HomeScreen} />
+  </Switch>
+)
+
+const AuthRoutes = () => (
+  <Switch>
+    <Route path='/signup' component={SignUpScreen} />
+    <Route component={LoginScreen} />
+  </Switch>
+)
+
+const mapStateToProps = (state: any): Props => ({
+  isLoggedIn: state.auth.isLoggedIn
 })
 
 export default connect(mapStateToProps, null)(Routes)

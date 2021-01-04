@@ -1,24 +1,29 @@
 import React from 'react'
 import './GoogleAuth.css'
-import { Button } from '@material-ui/core'
-import googleIcon from '../../assets/googleSignInButton.png'
+import { Button, Typography } from '@material-ui/core'
+import googleIcon from '../../assets/google-icon.jpg'
+import { makeStyles } from '@material-ui/core/styles'
+import { AUTO } from '../../utils/constants/stringConstants'
+import clsx from 'clsx'
 
-export const GoogleAuthComponent = (props: any) => {
+type Props = { title: string; onClick: () => void; className: any }
+
+export const GoogleAuthComponent = ({ onClick, title, className }: Props) => {
+  const classes = useStyles()
   return (
     <Button
-      className='login-provider-button'
+      className={clsx(classes.button, className)}
       variant='contained'
-      style={{
-        width: '100%',
-        maxWidth: 185,
-        maxHeight: 40,
-        marginTop: 10,
-        borderRadius: 0.8,
-      }}
-      onClick={() => props.props.googleAuth()}>
-      <img src={googleIcon} alt='google icon' />
+      onClick={onClick}>
+      <img src={googleIcon} alt='google icon' className={classes.icon} />
+      <Typography variant={'button'}>{title}</Typography>
     </Button>
   )
 }
+
+const useStyles = makeStyles((theme) => ({
+  button: { backgroundColor: '#fff' },
+  icon: { height: 24, width: AUTO, marginRight: 10, borderRadius: 12 }
+}))
 
 export default GoogleAuthComponent

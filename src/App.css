@@ -7,7 +7,7 @@
   overflow-x: hidden;
 }
 .login-provider-button {
-  max-width: 190;
+  max-width: 190px;
 }
 button {
   background-color: #7040ff;
@@ -75,7 +75,7 @@ button {
 }
 
 .dashboardContainer {
-  margin-top: 50px;
+  padding: 30px;
 }
 .authScreenContainer {
   display: flex;
@@ -86,3 +86,21 @@ button {
   background-color: #ffffff;
   color: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)';
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  /*border: 1px solid green;*/
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(88, 176, 253, 0.1) inset;
+  border-radius: 20px !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/*'input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,textarea:-webkit-autofill,textarea:-webkit-autofill:hover,textarea:-webkit-autofill:focus,select:-webkit-autofill,select:-webkit-autofill:hover,select:-webkit-autofill:focus'*/

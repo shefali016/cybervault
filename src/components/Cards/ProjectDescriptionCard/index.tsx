@@ -1,21 +1,32 @@
 import React from 'react'
-import { Button, Card, Grid, MenuItem, IconButton } from '@material-ui/core'
-import logo from '../../../assets/logo.png'
+import {
+  Button,
+  Card,
+  Grid,
+  MenuItem,
+  IconButton,
+  Typography
+} from '@material-ui/core'
+import logo from '../../../assets/nike.png'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
-import { AUTO, BLOCK, CENTER, FLEX } from 'utils/constants/stringConstants'
+import { AUTO, CENTER, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
+import { Project } from '../../../utils/types'
 
-function ProjectCard(props: {
-  projectDetails?: any
+type Props = {
+  project: Project
   openProject?: any
   isPopover?: boolean
-}) {
+  style?: {}
+}
+
+const ProjectCard = ({ project, openProject, isPopover, style }: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const [open, setOpen] = React.useState(false)
@@ -27,8 +38,8 @@ function ProjectCard(props: {
   const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (
-    <Button onClick={props.openProject}>
-      {props.isPopover ? (
+    <div className={classes.root} style={style}>
+      {isPopover ? (
         <Grid style={{ position: 'absolute', top: 0, right: 0 }}>
           <PopupState variant='popover' popupId='demo-popup-popover'>
             {(popupState) => (
@@ -45,11 +56,11 @@ function ProjectCard(props: {
                   anchorEl={anchorEl}
                   anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'right',
+                    horizontal: 'right'
                   }}
                   transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'left',
+                    horizontal: 'left'
                   }}
                   PaperProps={{
                     style: {
@@ -61,7 +72,8 @@ function ProjectCard(props: {
                       borderColor: 'black',
                       paddingTop: 8,
                       paddingBottom: 8,
-                    },
+                      color: '#000'
+                    }
                   }}
                   style={{ marginLeft: -20, marginTop: -20 }}
                   {...bindPopover(popupState)}>
@@ -95,73 +107,69 @@ function ProjectCard(props: {
           </PopupState>
         </Grid>
       ) : null}
-      <Card className={classes.card}>
-        <Grid container spacing={4} direction={'column'}>
-          <Grid item xs={12} className={classes.imageWrapper}>
-            <img
-              className={classes.img}
-              src={
-                props.projectDetails && props.projectDetails.image
-                  ? props.projectDetails.image
-                  : logo
-              }
-              alt='Logo'
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <h5 className={classes.title}>
-              {props.projectDetails && props.projectDetails.name
-                ? props.projectDetails.name
-                : 'Project Name'}
-            </h5>
-            <h6 className={classes.bodyText}>
-              Value:{' '}
-              {props.projectDetails && props.projectDetails.value
-                ? props.projectDetails.value
-                : 'value'}{' '}
-              .{' '}
-              {props.projectDetails && props.projectDetails.date
-                ? props.projectDetails.date
-                : 'Starting Date'}
-            </h6>
-          </Grid>
-        </Grid>
+      <Card className={classes.card} elevation={5}>
+        <div className={classes.imageWrapper}>
+          <img className={classes.img} src={project.logo || logo} alt='Logo' />
+        </div>
+        <div className={classes.footer}>
+          <Typography variant={'body1'} className={classes.title} noWrap={true}>
+            {project.name}
+          </Typography>
+          <Typography variant={'caption'} className={classes.bodyText}>
+            Value {project.budget}
+          </Typography>
+          <Typography variant={'caption'} className={classes.bodyText}>
+            {project.startDate}
+          </Typography>
+        </div>
       </Card>
-    </Button>
+    </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    position: 'relative'
+  },
+  footer: {
+    display: FLEX,
+    flexDirection: COLUMN,
+    justifyContent: CENTER,
+    textAlign: 'center',
+    height: 60,
+    overflow: 'hidden'
+  },
   card: {
     width: '10rem',
     height: '10rem',
     borderRadius: 15,
-    flexGrow: 1,
+    display: FLEX,
+    flexDirection: COLUMN
   },
   imageWrapper: {
-    boxShadow: '0 0px 1px 2px #DCDCDC',
     alignItems: CENTER,
     display: FLEX,
     justifyContent: CENTER,
+    flex: 1,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    borderBottomColor: theme.palette.grey[300],
+    overflow: 'hidden'
   },
   title: {
     fontSize: '12px',
     color: BLACK_COLOR,
-    fontWeight: 600,
-    margin: 0,
+    fontWeight: 600
   },
   bodyText: {
     fontSize: '8px',
-    color: BLACK_COLOR,
-    margin: 0,
+    color: BLACK_COLOR
   },
   img: {
     width: AUTO,
     height: AUTO,
-    display: BLOCK,
-    maxWidth: 300,
-    maxHeight: 200,
-    marginTop: 10,
-  },
+    maxHeight: '100%'
+  }
 }))
 export default ProjectCard

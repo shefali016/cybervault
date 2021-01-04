@@ -8,7 +8,7 @@ import {
 import { InputChangeEvent } from '../../../utils/types'
 
 type Props = {
-  type: string
+  type?: string
   label: string
   value: any
   onChange: (e: InputChangeEvent) => void
@@ -63,20 +63,16 @@ const AppTextField = ({
 
 const useStyles = makeStyles((theme) => ({
   dateRoot: {
-    fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
-    },
-    height: 31
+    }
   },
   dateRootFilled: {
-    fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     },
-    height: 31,
     marginTop: 0
   },
   labelFocused: {},
@@ -84,7 +80,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     paddingBottom: 0,
     fontWeight: 500,
-    fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: GREY_COLOR,
       borderRadius: 20
@@ -96,23 +91,15 @@ const useStyles = makeStyles((theme) => ({
       borderColor: PRIMARY_COLOR
     }
   },
-  inputRoot: {
-    fontSize: 12,
-    height: 35
-  },
-  multilineInputRoot: {
-    fontSize: 12
-  },
+  inputRoot: {},
+  multilineInputRoot: {},
   labelRoot: {
-    fontSize: 12,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }
   },
   labelRootFilled: {
-    marginTop: -1,
-    fontSize: 12,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR

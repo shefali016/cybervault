@@ -13,7 +13,7 @@ type Props = {
 function Toolbar(props: Props) {
   return (
     <div className={classes.Toolbar}>
-      <div style={{ marginLeft: 50 }}>
+      <div style={{ marginLeft: 25 }}>
         <h2 style={{ color: 'white', fontWeight: 'normal' }}>
           {props.headerTitle ? props.headerTitle : 'Dashboard'}
         </h2>
