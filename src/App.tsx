@@ -19,7 +19,10 @@ const theme = createMuiTheme({
   palette: {
     primary: { main: '#2D7ED4', light: '#58B0FD', dark: '#0852B1' },
     background: { default: '#0F0F0F', paper: '#ffffff' },
-    text: { primary: '#ffffff', secondary: '#e6e6e6' }
+    text: {
+      primary: '#ffffff',
+      secondary: '#e6e6e6'
+    }
   },
   shape: { borderRadius: 12 }
 })

@@ -75,7 +75,7 @@ button {
 }
 
 .dashboardContainer {
-  padding: 30px;
+  padding: 30px 35px;
 }
 .authScreenContainer {
   display: flex;
