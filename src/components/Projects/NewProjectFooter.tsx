@@ -6,6 +6,7 @@ import {
   FLEX,
   FLEX_END,
   NONE,
+  POSITION_ABSOLUTE
 } from '../../utils/constants/stringConstants'
 import { GREY_COLOR } from '../../utils/constants/colorsConstants'
 
@@ -14,9 +15,16 @@ type Props = {
   onNext?: () => void
   title: string
   description?: string
+  onStartProject?: () => void
 }
 
-const NewProjectFooter = ({ onBack, onNext, title, description }: Props) => {
+const NewProjectFooter = ({
+  onBack,
+  onNext,
+  title,
+  description,
+  onStartProject
+}: Props) => {
   const classes = useStyles()
 
   const renderBackButton = () => {
@@ -34,6 +42,17 @@ const NewProjectFooter = ({ onBack, onNext, title, description }: Props) => {
     <div style={{ marginTop: 40 }}>
       {!!description && (
         <Typography variant={'caption'}>{description}</Typography>
+      )}
+      {typeof onStartProject === 'function' && (
+        <div className={classes.startProjectButtonContainer}>
+          <Button
+            variant='contained'
+            onClick={onStartProject}
+            color='primary'
+            className={classes.buttonStartProject}>
+            <Typography variant={'button'}>Start Project</Typography>
+          </Button>
+        </div>
       )}
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
         {typeof onBack === 'function' && renderBackButton()}
@@ -58,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
   stepLabel: {
     color: GREY_COLOR,
     marginRight: 25,
-    marginLeft: 15,
+    marginLeft: 15
   },
   button: {
     width: 110,
@@ -66,20 +85,36 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     borderRadius: 20,
     background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
-    textTransform: NONE,
+    textTransform: NONE
   },
   backButton: { height: 40, width: 40 },
   backButtonIcon: {
     width: 15,
     height: 15,
-    margin: 0,
+    margin: 0
   },
   bottomView: {
     flex: 0.1,
     display: FLEX,
     alignItems: CENTER,
-    justifyContent: FLEX_END,
+    justifyContent: FLEX_END
   },
+  buttonStartProject: {
+    width: 180,
+    height: 40,
+    fontSize: 8,
+    borderRadius: 20,
+    background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
+    textTransform: NONE,
+    alignSelf: CENTER
+  },
+  startProjectButtonContainer: {
+    alignItems: CENTER,
+    justifyContent: CENTER,
+    position: POSITION_ABSOLUTE,
+    width: '100%',
+    display: FLEX
+  }
 }))
 
 export default NewProjectFooter

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { logout } from '../actions/authActions'
+import { createNewProjectRequest } from '../actions/projectActions'
 import { Typography, Grid } from '@material-ui/core'
 import ProjectCard from '../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../components/Cards/UnpaidInvoices'
@@ -14,6 +15,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { AUTO, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import NewProjectModal from '../components/Projects/NewProjectModal'
 import Widget from '../components/Common/Widget'
+import * as Types from 'utils/types'
 
 const PROJECT_DATA = [
   {
@@ -65,6 +67,10 @@ export const HomeScreen = (props: any) => {
     () => setNewProjectModalOpen(false),
     []
   )
+  const createNewProject = useCallback(
+    (projectData) => props.createNewProject(projectData),
+    []
+  )
   return (
     <div className={classes.background}>
       <Layout
@@ -75,6 +81,7 @@ export const HomeScreen = (props: any) => {
           <NewProjectModal
             open={newProjectModalOpen}
             onRequestClose={closeNewProjectModal}
+            onSubmitClicked={createNewProject}
           />
           <Widget
             data={PROJECT_DATA}
@@ -128,6 +135,12 @@ const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn
 })
 
+const mapDispatchToProps = (dispatch: any) => ({
+  createNewProject: (projectData: Types.Project) => {
+    return dispatch(createNewProjectRequest(projectData))
+  }
+})
+
 const useStyles = makeStyles((theme) => ({
   invoicingWrapper: { marginBottom: theme.spacing(4) },
   middleCardsWrapper: {
@@ -157,4 +170,4 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
-export default connect(mapStateToProps)(HomeScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

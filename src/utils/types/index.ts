@@ -47,5 +47,6 @@ export type Project = {
   expenses: Array<Expense>
   milestones: Array<Milestone>
   createdAt: Date
-  updatedAt: Date
+  updatedAt: Date,
+  pin: string
 }

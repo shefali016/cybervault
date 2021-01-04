@@ -1,6 +1,7 @@
 import { makeStyles, TextField } from '@material-ui/core'
 import React from 'react'
 import {
+  BLACK_COLOR,
   GREY_COLOR,
   PRIMARY_COLOR,
   PRIMARY_DARK_COLOR
@@ -91,8 +92,12 @@ const useStyles = makeStyles((theme) => ({
       borderColor: PRIMARY_COLOR
     }
   },
-  inputRoot: {},
-  multilineInputRoot: {},
+  inputRoot: {
+    color: BLACK_COLOR
+  },
+  multilineInputRoot: {
+    color: BLACK_COLOR
+  },
   labelRoot: {
     color: GREY_COLOR,
     '&$labelFocused': {
