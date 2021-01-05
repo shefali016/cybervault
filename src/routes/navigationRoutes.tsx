@@ -16,14 +16,14 @@ const Routes = (props: Props): JSX.Element => {
 const MainRoutes = () => (
   <Switch>
     <Route path='/projects' component={ProjectScreen} />
-    <Route path='/home' component={HomeScreen} />
+    <Route path='/' component={HomeScreen} />
   </Switch>
 )
 
 const AuthRoutes = () => (
   <Switch>
     <Route path='/signup' component={SignUpScreen} />
-    <Route component={LoginScreen} />
+    <Route path='/' component={LoginScreen} />
   </Switch>
 )
 

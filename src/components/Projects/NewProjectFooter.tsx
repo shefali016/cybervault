@@ -9,6 +9,7 @@ import {
   POSITION_ABSOLUTE
 } from '../../utils/constants/stringConstants'
 import { GREY_COLOR } from '../../utils/constants/colorsConstants'
+import { GradiantButton } from '../Common/Button/GradiantButton'
 
 type Props = {
   onBack?: () => void
@@ -39,34 +40,28 @@ const NewProjectFooter = ({
   }
 
   return (
-    <div style={{ marginTop: 40 }}>
+    <div className={classes.root}>
       {!!description && (
         <Typography variant={'caption'}>{description}</Typography>
       )}
-      {typeof onStartProject === 'function' && (
-        <div className={classes.startProjectButtonContainer}>
-          <Button
-            variant='contained'
-            onClick={onStartProject}
-            color='primary'
-            className={classes.buttonStartProject}>
-            <Typography variant={'button'}>Start Project</Typography>
-          </Button>
-        </div>
-      )}
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
+        {typeof onStartProject === 'function' && (
+          <div className={classes.startProjectButtonContainer}>
+            <GradiantButton
+              onClick={onStartProject}
+              className={classes.buttonStartProject}>
+              <Typography variant={'button'}>Start Project</Typography>
+            </GradiantButton>
+          </div>
+        )}
         {typeof onBack === 'function' && renderBackButton()}
         <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
         </Typography>
         {typeof onNext === 'function' && (
-          <Button
-            variant='contained'
-            onClick={onNext}
-            color='primary'
-            className={classes.button}>
+          <GradiantButton onClick={onNext} className={classes.continueButton}>
             <Typography variant={'button'}>Continue</Typography>
-          </Button>
+          </GradiantButton>
         )}
       </div>
     </div>
@@ -74,46 +69,43 @@ const NewProjectFooter = ({
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: { marginTop: 40 },
   stepLabel: {
-    color: GREY_COLOR,
-    marginRight: 25,
-    marginLeft: 15
+    color: theme.palette.grey[500]
   },
+  continueButton: { marginLeft: 25 },
   button: {
     width: 110,
     height: 40,
     fontSize: 8,
-    borderRadius: 20,
-    background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
     textTransform: NONE
   },
-  backButton: { height: 40, width: 40 },
+  backButton: { height: 40, width: 40, marginRight: 15 },
   backButtonIcon: {
     width: 15,
     height: 15,
     margin: 0
   },
   bottomView: {
-    flex: 0.1,
+    flex: 1,
     display: FLEX,
     alignItems: CENTER,
-    justifyContent: FLEX_END
+    justifyContent: FLEX_END,
+    position: 'relative'
   },
   buttonStartProject: {
     width: 180,
-    height: 40,
-    fontSize: 8,
-    borderRadius: 20,
-    background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
-    textTransform: NONE,
-    alignSelf: CENTER
+    height: 40
   },
   startProjectButtonContainer: {
-    alignItems: CENTER,
-    justifyContent: CENTER,
     position: POSITION_ABSOLUTE,
-    width: '100%',
-    display: FLEX
+    right: 0,
+    left: 0,
+    top: 0,
+    bottom: 0,
+    display: FLEX,
+    justifyContent: CENTER,
+    [theme.breakpoints.down('sm')]: { top: -55 }
   }
 }))
 

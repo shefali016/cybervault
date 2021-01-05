@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   countText: {
     fontSize: '56px',
-    color: BLACK_COLOR,
+    color: theme.palette.primary.main,
     fontWeight: 800
   }
 }))

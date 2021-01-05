@@ -10,14 +10,14 @@ const theme = createMuiTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 770,
-      md: 960,
+      sm: 500,
+      md: 770,
       lg: 1280,
       xl: 1920
     }
   },
   palette: {
-    primary: { main: '#2D7ED4', light: '#58B0FD', dark: '#0852B1' },
+    primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
     background: { default: '#0F0F0F', paper: '#ffffff' },
     text: { primary: '#ffffff', secondary: '#e6e6e6' }
   },

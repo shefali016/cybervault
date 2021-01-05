@@ -17,13 +17,12 @@ import NewProjectFooter from '../NewProjectFooter'
 import nikeLogo from '../../../assets/nike.png'
 
 const NewProjectStepFive = (props: any) => {
-  const isTablet = useTabletLayout()
   const classes = useStyles()
   const { projectData, onSubmit } = props
 
   const renderClientLogoView = () => {
     return (
-      <div className={'client-logo-container'} style={{ marginBottom: 0 }}>
+      <div className={'client-logo-container'} style={{ marginBottom: 20 }}>
         <Button
           variant='contained'
           onClick={() => {}}
@@ -120,7 +119,11 @@ const NewProjectStepFive = (props: any) => {
       <NewProjectTitle title={'New Project'} subtitle={'Review Details'} />
       {renderClientLogoView()}
       {renderMiddleView()}
-      <NewProjectFooter title={'Step 5 of 5'} onStartProject={onSubmit} />
+      <NewProjectFooter
+        title={'Step 5 of 5'}
+        onStartProject={onSubmit}
+        onBack={props.onBack}
+      />
     </div>
   )
 }
@@ -165,7 +168,10 @@ const useStyles = makeStyles((theme) => ({
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN
+    flexDirection: COLUMN,
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: 30
+    }
   },
   textFiledContainer: {
     display: FLEX,

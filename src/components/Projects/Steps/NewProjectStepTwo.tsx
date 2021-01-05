@@ -87,7 +87,7 @@ const NewProjectStepTwo = (props: any) => {
         <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
           <AppTextField
             type={'date'}
-            label={'Campaign DadeLine'}
+            label={'Start Date'}
             value={data.startDate}
             onChange={(e: InputChangeEvent) =>
               handleTaskChange(e, 'startDate', index)
@@ -97,7 +97,7 @@ const NewProjectStepTwo = (props: any) => {
         <div style={{ flex: 0.2 }}>
           <AppTextField
             type={'date'}
-            label={'Campaign DadeLine'}
+            label={'End Date'}
             value={data.endDate}
             onChange={(e: InputChangeEvent) =>
               handleTaskChange(e, 'endDate', index)
@@ -142,7 +142,7 @@ const NewProjectStepTwo = (props: any) => {
             <div style={{ flex: 1 }}>
               <AppTextField
                 type={'date'}
-                label={'Campaign DadeLine'}
+                label={'Campaign Deadline'}
                 value={projectData.campaignDeadLine}
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e)('campaignDeadLine')

@@ -2,7 +2,6 @@ import { makeStyles, TextField } from '@material-ui/core'
 import React from 'react'
 import {
   BLACK_COLOR,
-  GREY_COLOR,
   PRIMARY_COLOR,
   PRIMARY_DARK_COLOR
 } from '../../../utils/constants/colorsConstants'
@@ -64,13 +63,13 @@ const AppTextField = ({
 
 const useStyles = makeStyles((theme) => ({
   dateRoot: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }
   },
   dateRootFilled: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     },
@@ -82,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
+      borderColor: theme.palette.grey[500],
       borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
@@ -93,19 +92,19 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   inputRoot: {
-    color: BLACK_COLOR
+    color: theme.palette.grey[900]
   },
   multilineInputRoot: {
-    color: BLACK_COLOR
+    color: theme.palette.grey[900]
   },
   labelRoot: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }
   },
   labelRootFilled: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }
