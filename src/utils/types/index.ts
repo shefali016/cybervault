@@ -15,6 +15,11 @@ export type User = {
   mainAccount: string // Id of user's main account
 }
 
+export type UserLoginInfo = {
+  email: string
+  password: string
+}
+
 export type Task = {
   id: string
   title: string
