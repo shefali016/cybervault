@@ -24,7 +24,7 @@ import { useTabletLayout } from '../../../utils/hooks/'
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const isTablet = useTabletLayout()
-  const { projectData, setProjectData } = props
+  const { projectData, setProjectData, haveError } = props
   let imageInputRef: any = React.useRef()
 
   const handleChange = (event: any) => {
@@ -78,6 +78,9 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'} style={{ marginBottom: 30 }}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              error={
+                haveError && projectData.campaignName === '' ? true : false
+              }
               type={''}
               label={'Campaign Name'}
               value={projectData.campaignName}
@@ -88,6 +91,9 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              error={
+                haveError && projectData.campaignDate === '' ? true : false
+              }
               type={'date'}
               label={'Campaign Date'}
               value={projectData.campaignDate}
@@ -100,6 +106,7 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              error={haveError && projectData.clientName === '' ? true : false}
               type={''}
               label={'Client Name'}
               value={projectData.clientName}
@@ -108,6 +115,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              error={haveError && projectData.clientEmail === '' ? true : false}
               type={''}
               label={'Client Email'}
               value={projectData.clientEmail}
@@ -118,6 +126,7 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              error={haveError && projectData.address === '' ? true : false}
               type={''}
               label={'Address'}
               value={projectData.address}
@@ -126,6 +135,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              error={haveError && projectData.city === '' ? true : false}
               type={''}
               label={'City'}
               value={projectData.city}
@@ -136,6 +146,7 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              error={haveError && projectData.state === '' ? true : false}
               type={''}
               label={'State/Province'}
               value={projectData.state}
@@ -144,6 +155,7 @@ const NewProjectStepOne = (props: any) => {
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
+              error={haveError && projectData.country === '' ? true : false}
               type={''}
               label={'Country'}
               value={projectData.country}
@@ -160,7 +172,11 @@ const NewProjectStepOne = (props: any) => {
       <NewProjectTitle title={'New Project'} subtitle={'Get Started'} />
       {renderClientLogoView()}
       {renderMiddleView()}
-      <NewProjectFooter title={'Step 1 of 5'} onNext={props.onNext} />
+      <NewProjectFooter
+        title={'Step 1 of 5'}
+        onNext={props.onNext}
+        haveError={haveError ? haveError : false}
+      />
     </div>
   )
 }

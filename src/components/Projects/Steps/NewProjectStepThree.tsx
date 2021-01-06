@@ -28,7 +28,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepThree = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData } = props
+  const { projectData, setProjectData, haveError } = props
 
   const handleInputChange = (event: InputChangeEvent, key: string) => {
     const value = event.target.value
@@ -109,6 +109,9 @@ const NewProjectStepThree = (props: any) => {
           <div className={'input-row'} style={{ marginBottom: 30 }}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
+                error={
+                  haveError && projectData.campaignBudget === '' ? true : false
+                }
                 type={''}
                 label={'Campaign Budget'}
                 value={projectData.campaignBudget}
@@ -119,6 +122,11 @@ const NewProjectStepThree = (props: any) => {
             </div>
             <div style={{ flex: 1 }}>
               <AppTextField
+                error={
+                  haveError && projectData.campaignExpenses === ''
+                    ? true
+                    : false
+                }
                 type={''}
                 label={'Campaign Expenses'}
                 value={projectData.campaignExpenses}
@@ -156,6 +164,7 @@ const NewProjectStepThree = (props: any) => {
         description={
           '*This will be added to the final invoice sent to client. The campaign budget will be the total amount due to the client. You can go back and edit this page again if needed.'
         }
+        haveError={haveError ? haveError : false}
       />
     </div>
   )

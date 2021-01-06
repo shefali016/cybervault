@@ -14,6 +14,7 @@ type Props = {
   onChange: (e: InputChangeEvent) => void
   multiline?: boolean
   style?: {}
+  error?: boolean
 }
 
 const AppTextField = ({
@@ -22,11 +23,13 @@ const AppTextField = ({
   value,
   onChange,
   multiline,
-  style = {}
+  style = {},
+  error
 }: Props) => {
   const classes = useStyles()
   return (
     <TextField
+      error={error ? error : false}
       label={label}
       variant='outlined'
       size='small'
@@ -81,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.grey[500],
+      // borderColor: theme.palette.grey[500],
       borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {

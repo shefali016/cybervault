@@ -9,15 +9,19 @@ import 'firebase/firestore'
 export const createNewProjectRequest = async (
   newProjectData: Types.Project
 ) => {
-  await firebase
+  return new Promise((resolve, reject) => {
+    firebase
     .firestore()
     .collection('Projects')
-    .doc(newProjectData.pin)
+    .doc(newProjectData.id)
     .set(newProjectData)
     .then(() => {
-      return newProjectData
+      resolve (newProjectData);
     })
     .catch((error) => {
-      return error
+      reject (error);
     })
+  });
+   
 }
+

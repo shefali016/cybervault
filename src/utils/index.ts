@@ -56,6 +56,6 @@ export const getProductData = () => {
         payment: ''
       }
     ],
-    pin: ''
+    id: ''
   }
 }

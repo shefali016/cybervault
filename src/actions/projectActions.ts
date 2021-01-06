@@ -8,9 +8,10 @@ export function createNewProjectRequest(newProjectData: Types.Project) {
   };
 }
 
-export function createNewProjectSuccess (activeUser: any) {
+export function createNewProjectSuccess (newProjectData: Types.Project) {
   return {
-    type: ActionTypes.NEW_PROJECT_SUCCESS
+    type: ActionTypes.NEW_PROJECT_SUCCESS,
+    payload: newProjectData,
     };
   };
 
@@ -20,3 +21,9 @@ export function createNewProjectFailure (error: any) {
     error
     };
   }
+
+  export function clearNewProjectData () {
+    return {
+      type: ActionTypes.CLEAR_NEW_PROJECT_SUCCESS,
+      };
+    };

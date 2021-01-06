@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { logout } from '../actions/authActions'
-import { createNewProjectRequest } from '../actions/projectActions'
+import {
+  createNewProjectRequest,
+  clearNewProjectData
+} from '../actions/projectActions'
 import { Typography, Grid } from '@material-ui/core'
 import ProjectCard from '../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../components/Cards/UnpaidInvoices'
@@ -47,6 +50,10 @@ const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
 export const HomeScreen = (props: any) => {
   useEffect(() => {
+    if (props.newProjectData) {
+      setNewProjectModalOpen(false)
+      props.clearNewProjectData()
+    }
     if (!props.isLoggedIn && !props.user) {
       loggedOut(props)
     }
@@ -132,12 +139,17 @@ export const HomeScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn
+  isLoggedIn: state.auth.isLoggedIn,
+  newProjectData: state.project.newProjectData
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
   createNewProject: (projectData: Types.Project) => {
     return dispatch(createNewProjectRequest(projectData))
+  },
+
+  clearNewProjectData: () => {
+    return dispatch(clearNewProjectData())
   }
 })
 

@@ -98,7 +98,8 @@ const NewProjectStepFive = (props: any) => {
         {renderDetails('Production Expenses: ', projectData.campaignExpenses)}
         {renderDevider()}
         <Typography variant={'subtitle2'} style={{ marginTop: 10 }}>
-          Estimated Net Revenue: $12,300
+          Estimated Net Revenue: ${' '}
+          {projectData.campaignBudget - projectData.campaignExpenses}
         </Typography>
       </div>
     )
