@@ -12,7 +12,7 @@ export const createNewProjectRequest = async (
   await firebase
     .firestore()
     .collection('Projects')
-    .doc(newProjectData.pin)
+    .doc(newProjectData.id)
     .set(newProjectData)
     .then(() => {
       return newProjectData

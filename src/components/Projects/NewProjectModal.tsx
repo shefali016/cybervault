@@ -25,7 +25,7 @@ const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
 
   const onSubmitData = () => {
     // @ts-ignorets
-    onSubmitClicked({ ...projectData, pin: generateUid() })
+    onSubmitClicked({ ...projectData, id: generateUid() })
   }
 
   const renderStepsView = () => {
