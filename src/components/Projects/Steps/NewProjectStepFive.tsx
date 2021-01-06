@@ -37,13 +37,23 @@ const NewProjectStepFive = (props: any) => {
     )
   }
 
-  const renderDetails = (leftLabel: string, rightValue: string) => {
+  const renderDetails = (
+    leftLabel: string,
+    rightValue: string,
+    secondRightValue?: string
+  ) => {
+    console.log(leftLabel, rightValue, secondRightValue)
     return (
       <div style={{ display: FLEX, flexDirection: ROW }}>
         <Typography variant={'caption'} style={{ minWidth: 150 }}>
           {leftLabel}
         </Typography>
         <Typography variant={'caption'}>{rightValue}</Typography>
+        {secondRightValue ? (
+          <Typography style={{ marginLeft: 20 }} variant={'caption'}>
+            {secondRightValue}
+          </Typography>
+        ) : null}
       </div>
     )
   }
@@ -105,11 +115,56 @@ const NewProjectStepFive = (props: any) => {
     )
   }
 
+  const renderTaskDetails = () => {
+    return (
+      <div className={classes.clientDetailsContainer}>
+        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
+          Tasks Details:
+        </Typography>
+        {projectData.tasks.map((item: any, index: number) => {
+          return renderDetails(item.title, item.startDate, item.endDate)
+        })}
+        {renderDevider()}
+      </div>
+    )
+  }
+
+  const renderExpenseDetails = () => {
+    return (
+      <div className={classes.clientDetailsContainer}>
+        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
+          Expense Details:
+        </Typography>
+        {projectData.expenses.map((item: any, index: number) => {
+          return renderDetails(item.title, item.cost)
+        })}
+        {renderDevider()}
+      </div>
+    )
+  }
+
+  const renderMilestonesDetails = () => {
+    return (
+      <div className={classes.clientDetailsContainer}>
+        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
+          Milestones Details:
+        </Typography>
+        {projectData.milestones.map((item: any, index: number) => {
+          return renderDetails(item.title, item.payment)
+        })}
+        {renderDevider()}
+      </div>
+    )
+  }
+
   const renderMiddleView = () => {
     return (
       <div className={classes.middleView}>
         {renderClientDetails()}
         {renderProjectDetails()}
+        {projectData.tasks[0] ? renderTaskDetails() : null}
+        {projectData.expenses[0] ? renderExpenseDetails() : null}
+        {projectData.milestones[0] ? renderMilestonesDetails() : null}
         {renderBudgetDetails()}
       </div>
     )
