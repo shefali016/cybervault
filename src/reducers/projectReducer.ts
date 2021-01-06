@@ -9,7 +9,8 @@ import {
   type State = {
     projectData: any,
     error: any,
-    newProjectData: any
+    newProjectData: any,
+    isLoading: boolean
   };
   
   type Action = {
@@ -23,27 +24,30 @@ import {
   const initialState = {
     projectData: null,
     error: null,
-    newProjectData: null
+    newProjectData: null,
+    isLoading: false
   }
   
   const createNewProject = (state: State, action: Action) => ({
     ...state,
-    projectData: null
+    projectData: null,
+    isLoading: true
   })
   
   const createNewProjectSuccess = (state: State, action: Action) => {
     return ({
       ...state,
-      newProjectData: action.payload
+      newProjectData: action.payload,
+      isLoading: false
     })
   }
   
   const createNewProjectFailure = (state: State, action: Action) => ({
     ...state,
+    isLoading: false
   })
 
   const clearNewProjectData = (state: State) => {
-    console.log("In  clearNewProjectData")
     return ({
     ...state,
     newProjectData: null

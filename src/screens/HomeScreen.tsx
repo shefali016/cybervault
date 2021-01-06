@@ -57,7 +57,7 @@ export const HomeScreen = (props: any) => {
     if (!props.isLoggedIn && !props.user) {
       loggedOut(props)
     }
-  }, [props.isLoggedIn])
+  }, [props.isLoggedIn, props.newProjectData])
 
   const loggedOut = (props: any) => {
     props.history.push('/')
