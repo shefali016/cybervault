@@ -84,7 +84,7 @@ const NewProjectStepFour = (props: any) => {
         </div>
         <div style={{ flex: 1 }}>
           <AppTextField
-            type={''}
+            type={'number'}
             label={`Payment`}
             value={projectData.milestones[index].payment}
             onChange={(e: InputChangeEvent) =>

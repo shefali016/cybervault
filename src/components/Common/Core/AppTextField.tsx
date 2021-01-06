@@ -27,6 +27,7 @@ const AppTextField = ({
   error
 }: Props) => {
   const classes = useStyles()
+  const currentDate = new Date().toISOString().slice(0, 10)
   return (
     <TextField
       error={error ? error : false}
@@ -43,6 +44,7 @@ const AppTextField = ({
           root: multiline ? classes.multilineInputRoot : classes.inputRoot
         }
       }}
+      inputProps={type === 'date' ? { min: currentDate } : {}}
       InputLabelProps={
         type === 'date'
           ? {

@@ -88,7 +88,7 @@ const NewProjectStepThree = (props: any) => {
         </div>
         <div style={{ flex: 1 }}>
           <AppTextField
-            type={''}
+            type={'number'}
             label={`Estimated Cost $`}
             value={projectData.cost}
             onChange={(e: InputChangeEvent) =>
@@ -112,7 +112,7 @@ const NewProjectStepThree = (props: any) => {
                 error={
                   haveError && projectData.campaignBudget === '' ? true : false
                 }
-                type={''}
+                type={'number'}
                 label={'Campaign Budget'}
                 value={projectData.campaignBudget}
                 onChange={(e: InputChangeEvent) =>
@@ -127,7 +127,7 @@ const NewProjectStepThree = (props: any) => {
                     ? true
                     : false
                 }
-                type={''}
+                type={'number'}
                 label={'Campaign Expenses'}
                 value={projectData.campaignExpenses}
                 onChange={(e: InputChangeEvent) =>

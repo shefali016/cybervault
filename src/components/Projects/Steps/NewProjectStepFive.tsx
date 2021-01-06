@@ -40,18 +40,21 @@ const NewProjectStepFive = (props: any) => {
   const renderDetails = (
     leftLabel: string,
     rightValue: string,
-    secondRightValue?: string
+    nextRightValue?: string
   ) => {
-    console.log(leftLabel, rightValue, secondRightValue)
     return (
       <div style={{ display: FLEX, flexDirection: ROW }}>
         <Typography variant={'caption'} style={{ minWidth: 150 }}>
           {leftLabel}
         </Typography>
-        <Typography variant={'caption'}>{rightValue}</Typography>
-        {secondRightValue ? (
+        <Typography variant={'caption'}>
+          {' '}
+          {nextRightValue ? 'Start Date:  ' : ''}
+          {rightValue}
+        </Typography>
+        {nextRightValue ? (
           <Typography style={{ marginLeft: 20 }} variant={'caption'}>
-            {secondRightValue}
+            {'End Date:  '} {nextRightValue}
           </Typography>
         ) : null}
       </div>
@@ -162,9 +165,17 @@ const NewProjectStepFive = (props: any) => {
       <div className={classes.middleView}>
         {renderClientDetails()}
         {renderProjectDetails()}
-        {projectData.tasks[0] ? renderTaskDetails() : null}
-        {projectData.expenses[0] ? renderExpenseDetails() : null}
-        {projectData.milestones[0] ? renderMilestonesDetails() : null}
+        {projectData.tasks.length > 0 && projectData.tasks[0].task.trim() !== ''
+          ? renderTaskDetails()
+          : null}
+        {projectData.expenses.length > 0 &&
+        projectData.expenses[0].expense.trim() !== ''
+          ? renderExpenseDetails()
+          : null}
+        {projectData.milestones.length > 0 &&
+        projectData.milestones[0].title.trim() !== ''
+          ? renderMilestonesDetails()
+          : null}
         {renderBudgetDetails()}
       </div>
     )
