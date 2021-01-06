@@ -49,7 +49,6 @@ export const LoginScreen = (props: any) => {
   }
   const classes = useStyles()
   const theme = useTheme()
-  console.log(theme.palette.primary.light)
   return (
     <div className={classes.root}>
       <div className={classes.logoView}>
