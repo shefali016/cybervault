@@ -19,10 +19,11 @@ export function generateUid() {
 }
 
 export const getProductData = () => {
+  const currentDate = new Date().toISOString().slice(0, 10);
   return {
     logo: '',
     campaignName: '',
-    campaignDate: '',
+    campaignDate: currentDate,
     clientName: '',
     clientEmail: '',
     address: '',
@@ -30,7 +31,7 @@ export const getProductData = () => {
     state: '',
     country: '',
     campaignObjective: '',
-    campaignDeadLine: '',
+    campaignDeadLine: currentDate,
     description: '',
     tasks: [
       {
@@ -56,6 +57,6 @@ export const getProductData = () => {
         payment: ''
       }
     ],
-    pin: ''
+    id: ''
   }
 }

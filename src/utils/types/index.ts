@@ -13,6 +13,7 @@ export type User = {
   email: string
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
+  password: string
 }
 
 export type UserLoginInfo = {

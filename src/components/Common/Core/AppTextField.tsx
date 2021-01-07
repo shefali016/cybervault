@@ -14,6 +14,7 @@ type Props = {
   onChange: (e: InputChangeEvent) => void
   multiline?: boolean
   style?: {}
+  error?: boolean
 }
 
 const AppTextField = ({
@@ -22,11 +23,14 @@ const AppTextField = ({
   value,
   onChange,
   multiline,
-  style = {}
+  style = {},
+  error
 }: Props) => {
   const classes = useStyles()
+  const currentDate = new Date().toISOString().slice(0, 10)
   return (
     <TextField
+      error={error ? error : false}
       label={label}
       variant='outlined'
       size='small'
@@ -40,6 +44,7 @@ const AppTextField = ({
           root: multiline ? classes.multilineInputRoot : classes.inputRoot
         }
       }}
+      inputProps={type === 'date' ? { min: currentDate } : {}}
       InputLabelProps={
         type === 'date'
           ? {
@@ -81,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.grey[500],
+      // borderColor: theme.palette.grey[500],
       borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {

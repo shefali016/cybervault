@@ -37,13 +37,26 @@ const NewProjectStepFive = (props: any) => {
     )
   }
 
-  const renderDetails = (leftLabel: string, rightValue: string) => {
+  const renderDetails = (
+    leftLabel: string,
+    rightValue: string,
+    nextRightValue?: string
+  ) => {
     return (
       <div style={{ display: FLEX, flexDirection: ROW }}>
         <Typography variant={'caption'} style={{ minWidth: 150 }}>
           {leftLabel}
         </Typography>
-        <Typography variant={'caption'}>{rightValue}</Typography>
+        <Typography variant={'caption'}>
+          {' '}
+          {nextRightValue ? 'Start Date:  ' : ''}
+          {rightValue}
+        </Typography>
+        {nextRightValue ? (
+          <Typography style={{ marginLeft: 20 }} variant={'caption'}>
+            {'End Date:  '} {nextRightValue}
+          </Typography>
+        ) : null}
       </div>
     )
   }
@@ -98,8 +111,51 @@ const NewProjectStepFive = (props: any) => {
         {renderDetails('Production Expenses: ', projectData.campaignExpenses)}
         {renderDevider()}
         <Typography variant={'subtitle2'} style={{ marginTop: 10 }}>
-          Estimated Net Revenue: $12,300
+          Estimated Net Revenue: ${' '}
+          {projectData.campaignBudget - projectData.campaignExpenses}
         </Typography>
+      </div>
+    )
+  }
+
+  const renderTaskDetails = () => {
+    return (
+      <div className={classes.clientDetailsContainer}>
+        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
+          Tasks Details:
+        </Typography>
+        {projectData.tasks.map((item: any, index: number) => {
+          return renderDetails(item.title, item.startDate, item.endDate)
+        })}
+        {renderDevider()}
+      </div>
+    )
+  }
+
+  const renderExpenseDetails = () => {
+    return (
+      <div className={classes.clientDetailsContainer}>
+        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
+          Expense Details:
+        </Typography>
+        {projectData.expenses.map((item: any, index: number) => {
+          return renderDetails(item.title, item.cost)
+        })}
+        {renderDevider()}
+      </div>
+    )
+  }
+
+  const renderMilestonesDetails = () => {
+    return (
+      <div className={classes.clientDetailsContainer}>
+        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
+          Milestones Details:
+        </Typography>
+        {projectData.milestones.map((item: any, index: number) => {
+          return renderDetails(item.title, item.payment)
+        })}
+        {renderDevider()}
       </div>
     )
   }
@@ -109,6 +165,17 @@ const NewProjectStepFive = (props: any) => {
       <div className={classes.middleView}>
         {renderClientDetails()}
         {renderProjectDetails()}
+        {projectData.tasks.length > 0 && projectData.tasks[0].task.trim() !== ''
+          ? renderTaskDetails()
+          : null}
+        {projectData.expenses.length > 0 &&
+        projectData.expenses[0].expense.trim() !== ''
+          ? renderExpenseDetails()
+          : null}
+        {projectData.milestones.length > 0 &&
+        projectData.milestones[0].title.trim() !== ''
+          ? renderMilestonesDetails()
+          : null}
         {renderBudgetDetails()}
       </div>
     )

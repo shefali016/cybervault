@@ -11,6 +11,7 @@ import { getProductData, generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/types'
+import validate from '../../utils/helpers'
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -20,7 +21,7 @@ type NewProjectProps = {
 const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
-
+  const [haveError, setHaveError] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
 
   const onSubmitData = () => {
@@ -31,14 +32,23 @@ const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
   const renderStepsView = () => {
     const props = {
       projectData,
+      haveError,
+      setHaveError,
       setProjectData,
       onNext: () => {
-        setCurrentStep((step) => step + 1)
-        if (modalContentRef.current) {
-          modalContentRef.current.scrollTop = 0
+        const isError = validate(currentStep, projectData)
+        if (isError) {
+          setHaveError(true)
+        } else {
+          setHaveError(false)
+          setCurrentStep((step) => step + 1)
+          if (modalContentRef.current) {
+            modalContentRef.current.scrollTop = 0
+          }
         }
       },
       onBack: () => {
+        setHaveError(false)
         setCurrentStep((step) => step - 1)
         if (modalContentRef.current) {
           modalContentRef.current.scrollTop = 0

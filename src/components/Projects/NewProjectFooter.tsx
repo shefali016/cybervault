@@ -17,6 +17,7 @@ type Props = {
   title: string
   description?: string
   onStartProject?: () => void
+  haveError?: boolean
 }
 
 const NewProjectFooter = ({
@@ -24,7 +25,8 @@ const NewProjectFooter = ({
   onNext,
   title,
   description,
-  onStartProject
+  onStartProject,
+  haveError
 }: Props) => {
   const classes = useStyles()
 
@@ -54,6 +56,12 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
+        {haveError ? (
+          <Typography className={classes.warningText}>
+            {' '}
+            Please fill all the required fields.
+          </Typography>
+        ) : null}
         {typeof onBack === 'function' && renderBackButton()}
         <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
@@ -106,6 +114,13 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     justifyContent: CENTER,
     [theme.breakpoints.down('sm')]: { top: -55 }
+  },
+  warningText: {
+    color: 'red',
+    fontSize: 12,
+    position: 'absolute',
+    right: 0,
+    top: -20
   }
 }))
 

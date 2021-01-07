@@ -28,7 +28,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData } = props
+  const { projectData, setProjectData, haveError } = props
 
   const handleInputChange = (event: InputChangeEvent) => (key: string) => {
     const value = event.target.value
@@ -137,6 +137,11 @@ const NewProjectStepTwo = (props: any) => {
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e)('campaignObjective')
                 }
+                error={
+                  haveError && projectData.campaignObjective === ''
+                    ? true
+                    : false
+                }
               />
             </div>
             <div style={{ flex: 1 }}>
@@ -146,6 +151,11 @@ const NewProjectStepTwo = (props: any) => {
                 value={projectData.campaignDeadLine}
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e)('campaignDeadLine')
+                }
+                error={
+                  haveError && projectData.campaignDeadLine === ''
+                    ? true
+                    : false
                 }
               />
             </div>
@@ -170,6 +180,7 @@ const NewProjectStepTwo = (props: any) => {
         title={'Step 2 of 5'}
         onBack={props.onBack}
         onNext={props.onNext}
+        haveError={haveError ? haveError : false}
       />
     </div>
   )
