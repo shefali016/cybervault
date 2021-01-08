@@ -100,6 +100,7 @@ export const HomeScreen = (props: any) => {
                 isPopover={true}
                 key={`project-card-${item.id}`}
                 style={{ marginRight: theme.spacing(3) }}
+                history={props.history}
               />
             )}
           />

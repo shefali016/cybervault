@@ -36,7 +36,7 @@ export const getProductData = () => {
     tasks: [
       {
         id: '0',
-        task: '',
+        title: '',
         startDate: '',
         endDate: ''
       }
@@ -46,7 +46,7 @@ export const getProductData = () => {
     expenses: [
       {
         id: '0',
-        expense: '',
+        title: '',
         cost: ''
       }
     ],

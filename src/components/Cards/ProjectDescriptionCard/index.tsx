@@ -24,12 +24,23 @@ type Props = {
   openProject?: any
   isPopover?: boolean
   style?: {}
+  history?: any
 }
 
-const ProjectCard = ({ project, openProject, isPopover, style }: Props) => {
+const ProjectCard = ({
+  project,
+  openProject,
+  isPopover,
+  style,
+  history
+}: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const [open, setOpen] = React.useState(false)
+
+  const editProject = () => {
+    history.push('/editProjectInfo')
+  }
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -65,7 +76,6 @@ const ProjectCard = ({ project, openProject, isPopover, style }: Props) => {
                   PaperProps={{
                     style: {
                       maxHeight: ITEM_HEIGHT * 2.5,
-
                       borderRadius: 15,
                       border: 1,
                       fontSize: 12,
@@ -77,7 +87,7 @@ const ProjectCard = ({ project, openProject, isPopover, style }: Props) => {
                   }}
                   style={{ marginLeft: -20, marginTop: -20 }}
                   {...bindPopover(popupState)}>
-                  <MenuItem style={{ fontSize: 12 }}>
+                  <MenuItem style={{ fontSize: 12 }} onClick={editProject}>
                     <div style={{ display: FLEX }}>
                       <AddBoxIcon style={{ marginRight: 5 }} fontSize='small' />
                       Edit Project Info
