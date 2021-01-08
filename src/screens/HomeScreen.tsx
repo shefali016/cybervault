@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { logout } from '../actions/authActions'
 import {
   createNewProjectRequest,
-  clearNewProjectData
+  clearNewProjectData,
+  getAllProjectsRequest
 } from '../actions/projectActions'
 import { Typography, Grid } from '@material-ui/core'
 import ProjectCard from '../components/Cards/ProjectDescriptionCard'
@@ -20,35 +21,10 @@ import NewProjectModal from '../components/Projects/NewProjectModal'
 import Widget from '../components/Common/Widget'
 import * as Types from 'utils/types'
 
-const PROJECT_DATA = [
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  }
-]
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
 export const HomeScreen = (props: any) => {
+  const [allProjects, setAllProjects] = useState([])
   useEffect(() => {
     if (props.newProjectData) {
       setNewProjectModalOpen(false)
@@ -57,7 +33,14 @@ export const HomeScreen = (props: any) => {
     if (!props.isLoggedIn && !props.user) {
       loggedOut(props)
     }
-  }, [props.isLoggedIn, props.newProjectData])
+    if (props.allProjectsData && props.allProjectsData !== allProjects) {
+      setAllProjects(props.allProjectsData)
+    }
+  }, [props.isLoggedIn, props.newProjectData, props.allProjectsData])
+
+  useEffect(() => {
+    props.getAllProjectsData()
+  }, [])
 
   const loggedOut = (props: any) => {
     props.history.push('/')
@@ -91,14 +74,14 @@ export const HomeScreen = (props: any) => {
             onSubmitClicked={createNewProject}
           />
           <Widget
-            data={PROJECT_DATA}
+            data={allProjects}
             title={'Active Projects'}
             emptyMessage={'No Projects found'}
             renderItem={(item) => (
               <ProjectCard
                 project={item}
                 isPopover={true}
-                key={`project-card-${item.id}`}
+                key={`project-card-${item.projectId}`}
                 style={{ marginRight: theme.spacing(3) }}
               />
             )}
@@ -115,7 +98,7 @@ export const HomeScreen = (props: any) => {
               <ProfitsExpenses className={classes.widgetItem} />
               <ProjectCount
                 className={classes.widgetItem}
-                projectCount={PROJECT_DATA.length}
+                projectCount={allProjects.length}
               />
               <IncomeThisMonth />
             </div>
@@ -140,7 +123,8 @@ export const HomeScreen = (props: any) => {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
-  newProjectData: state.project.newProjectData
+  newProjectData: state.project.newProjectData,
+  allProjectsData: state.project.allProjectsData
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -150,6 +134,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 
   clearNewProjectData: () => {
     return dispatch(clearNewProjectData())
+  },
+  getAllProjectsData: () => {
+    return dispatch(getAllProjectsRequest())
   }
 })
 

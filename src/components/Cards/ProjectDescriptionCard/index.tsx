@@ -113,13 +113,13 @@ const ProjectCard = ({ project, openProject, isPopover, style }: Props) => {
         </div>
         <div className={classes.footer}>
           <Typography variant={'body1'} className={classes.title} noWrap={true}>
-            {project.name}
+            {project.campaignName}
           </Typography>
           <Typography variant={'caption'} className={classes.bodyText}>
-            Value {project.budget}
+            Value {project.campaignBudget}
           </Typography>
           <Typography variant={'caption'} className={classes.bodyText}>
-            {project.startDate}
+            {project.campaignDate}
           </Typography>
         </div>
       </Card>

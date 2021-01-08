@@ -22,6 +22,34 @@ export const createNewProjectRequest = async (
       reject (error);
     })
   });
-   
+}
+
+/**
+ * @getAllProjects
+ */
+export const getAllProjectsRequest = async (
+) => {
+  return new Promise((resolve, reject) => {
+    try {
+      firebase
+      .firestore()
+      .collection('Projects')
+      .onSnapshot((QuerySnapshot) => {
+        let allProjectsData: Array<{}> = [];
+        if (QuerySnapshot && QuerySnapshot.size > 0) {
+          QuerySnapshot.forEach(documentSnapshot => {
+            const data = {
+              projectId: documentSnapshot.id,
+              ...documentSnapshot.data(),
+            };
+            allProjectsData.push(data);
+          });
+        }
+        resolve(allProjectsData);
+        })
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
