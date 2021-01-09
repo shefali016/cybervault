@@ -3,6 +3,7 @@ import { LinearProgress, Card, CardContent } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { CENTER, GRID } from '../../../utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
+import { getCardHeight } from '../../../utils'
 function IncomeThisMonth(props: {
   unpaidAmount?: number
   paidAmount?: number
@@ -37,13 +38,11 @@ function IncomeThisMonth(props: {
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    display: GRID,
-    width: 250,
+    width: getCardHeight(theme),
     height: '10rem',
     borderRadius: 15
   },
   progressBar: {
-    width: 200,
     height: 18,
     borderRadius: 25,
     alignSelf: CENTER,

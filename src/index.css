@@ -12,14 +12,6 @@ code {
     monospace;
 }
 
-.pageContainer {
-  padding-left: 200px;
-  padding-top: 70px;
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-}
-
-.toolBarContainer {
-  padding-left: 200px;
+*::-webkit-scrollbar {
+  display: none;
 }

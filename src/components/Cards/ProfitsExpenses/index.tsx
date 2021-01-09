@@ -10,9 +10,16 @@ import {
   createStyles,
   Theme
 } from '@material-ui/core/styles'
-import { BOLD, CENTER, GRID } from 'utils/constants/stringConstants'
+import {
+  BOLD,
+  CENTER,
+  COLUMN,
+  FLEX,
+  GRID
+} from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import clsx from 'clsx'
+import { getCardHeight } from '../../../utils'
 
 export default function ProfitExpenses(props: any) {
   const [value, setValue] = React.useState(0)
@@ -24,41 +31,53 @@ export default function ProfitExpenses(props: any) {
   return (
     <Card className={clsx(classes.card, props.className)}>
       <CardContent>
-        <h5 className={classes.title}>Profit/Expenses</h5>
-        <div className={classes.root}>
-          <CustomTabs
-            value={value}
-            onChange={handleChange}
-            aria-label='ant example'>
-            <CustomTab label='This Year' />
-            <CustomTab label='This Month' />
-          </CustomTabs>
+        <div className={classes.inner}>
+          <div className={classes.header}>
+            <h5 className={classes.title}>Profit/Expenses</h5>
+            <div className={classes.root}>
+              <CustomTabs
+                value={value}
+                onChange={handleChange}
+                aria-label='ant example'>
+                <CustomTab label='This Year' />
+                <CustomTab label='This Month' />
+              </CustomTabs>
+            </div>
+          </div>
+          <Chart />
         </div>
-        {value == 0 ? <Chart /> : <Chart />}
       </CardContent>
     </Card>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  inner: {
+    display: FLEX,
+    flexDirection: COLUMN,
+    justifyContent: 'space-between'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
+  },
   card: {
-    display: GRID,
-    width: '20rem',
+    [theme.breakpoints.down('sm')]: {
+      width: getCardHeight(theme),
+      height: '12rem'
+    },
+    // width: '14rem',
     height: '10rem',
     borderRadius: 15
-  },
-  progressBar: {
-    width: 120,
-    height: 18,
-    borderRadius: 25,
-    alignSelf: CENTER,
-    marginTop: 8
   },
   title: {
     fontSize: '14px',
     color: BLACK_COLOR,
     fontWeight: BOLD,
-    margin: 2
+    margin: 2,
+    paddingBottom: 5,
+    [theme.breakpoints.up('sm')]: { paddingRight: 20, paddingBottom: 0 }
   },
   bodyText: {
     fontSize: 8,
@@ -71,14 +90,7 @@ const useStyles = makeStyles((theme) => ({
     width: 135,
     borderRadius: 50
   },
-  root: {
-    flexGrow: 1,
-    borderWidth: 1,
-    borderColor: 'black',
-    position: 'relative',
-    top: -20,
-    right: -150
-  },
+  root: {},
   padding: {
     padding: theme.spacing(0)
   },

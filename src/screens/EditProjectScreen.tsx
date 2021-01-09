@@ -102,9 +102,9 @@ export const EditProjectScreen = (props: any) => {
       <Layout
         actionButtonTitle={'New Project'}
         history={props.history}
-        headerTitle={'Edit Project-'}
+        headerTitle={'Edit Project'}
         onActionButtonPress={openNewProjectModal}>
-        <div className={classes.dashboardContainer}>
+        <div className={'dashboardContainer'}>
           <div className={classes.wrapper}>
             <div style={{ marginTop: 30, marginLeft: 30 }}>
               <RenderClientDetails projectData={projectData} editInfo />
@@ -185,9 +185,6 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'auto',
     overflowX: 'hidden'
   },
-  dashboardContainer: {
-    marginTop: '50px'
-  },
   generalMarginLeft: {
     marginLeft: 10,
     color: WHITE_COLOR
@@ -207,7 +204,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     flexDirection: COLUMN,
     borderRadius: 20,
-    margin: 20,
     heigth: '70vh'
   },
   title: {

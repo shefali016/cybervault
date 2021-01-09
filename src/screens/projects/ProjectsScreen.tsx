@@ -16,28 +16,28 @@ import * as Types from '../../utils/types'
 
 const PROJECT_DATA = [
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   },
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   },
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   },
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   }
 ]
 const ARCHIVE_DATA = [

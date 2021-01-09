@@ -229,7 +229,7 @@ const useStyles = makeStyles((theme) => ({
   appIconContainer: {
     alignItems: CENTER,
     justifyContent: CENTER,
-    height: theme.spacing(8),
+    minHeight: theme.spacing(8),
     backgroundColor: SECONDARY_DARK_COLOR,
     borderRadius: 0
   },

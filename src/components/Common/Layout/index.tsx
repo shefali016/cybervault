@@ -5,7 +5,12 @@ import { connect } from 'react-redux'
 import ReactLoading from 'react-loading'
 import { logout } from '../../../actions/authActions'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { POSITION_ABSOLUTE, CENTER } from 'utils/constants/stringConstants'
+import {
+  POSITION_ABSOLUTE,
+  CENTER,
+  FLEX,
+  COLUMN
+} from 'utils/constants/stringConstants'
 
 type Props = {
   onActionButtonPress: () => void
@@ -14,7 +19,6 @@ type Props = {
   children?: React.ReactNode
   history: any
   onLogout?: () => void
-  isLoading?: boolean
 }
 
 const Layout = (props: Props) => {
@@ -23,10 +27,9 @@ const Layout = (props: Props) => {
     actionButtonTitle,
     history,
     onLogout,
-    headerTitle,
-    isLoading
+    headerTitle
   } = props
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
   const classes = useStyles()
   const theme = useTheme()
@@ -45,44 +48,29 @@ const Layout = (props: Props) => {
       />
       <div className={classes.main}>
         <ToolBar {...{ headerTitle }} />
-        <div style={{ flex: 1 }}>{props.children}</div>
+        {props.children}
       </div>
-      {isLoading && (
-        <div className={classes.loader}>
-          <ReactLoading
-            type={'bubbles'}
-            color={theme.palette.primary.dark}
-            height={'12%'}
-            width={'12%'}
-          />
-        </div>
-      )}
     </div>
   )
 }
 
 const useStyles = makeStyles((theme: any) => ({
-  root: { display: 'flex' },
-  main: { flexGrow: 1, height: '100vh' },
-  loader: {
-    flexGrow: 1,
-    position: POSITION_ABSOLUTE,
-    display: 'flex',
-    flex: 1,
-    height: '100%',
-    width: '100%',
-    alignItems: CENTER,
-    justifyContent: CENTER,
-    zIndex: 10000
+  root: {
+    display: FLEX,
+    height: '100vh'
+  },
+  main: {
+    display: FLEX,
+    flexDirection: 'column',
+    height: '100vh',
+    width: '100vw',
+    overflowX: 'auto',
+    flexWrap: 'nowrap'
   }
 }))
-
-const mapStateToProps = (state: any) => ({
-  isLoading: state.project.isLoading
-})
 
 const mapDispatchToProps = (dispatch: any) => ({
   onLogout: () => dispatch(logout())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Layout)
+export default connect(null, mapDispatchToProps)(Layout)

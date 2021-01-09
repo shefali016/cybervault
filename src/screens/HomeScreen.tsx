@@ -20,6 +20,7 @@ import { AUTO, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import NewProjectModal from '../components/Projects/NewProjectModal'
 import Widget from '../components/Common/Widget'
 import * as Types from 'utils/types'
+import { getCardHeight, getWidgetCardHeight } from '../utils'
 
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
@@ -77,12 +78,16 @@ export const HomeScreen = (props: any) => {
             data={allProjects}
             title={'Active Projects'}
             emptyMessage={'No Projects found'}
+            loading={props.activeProjectsLoading}
+            itemHeight={getWidgetCardHeight(theme)}
             renderItem={(item) => (
               <ProjectCard
                 project={item}
                 isPopover={true}
                 key={`project-card-${item.projectId}`}
-                style={{ marginRight: theme.spacing(3) }}
+                style={{
+                  paddingRight: theme.spacing(3)
+                }}
                 history={props.history}
               />
             )}
@@ -111,7 +116,7 @@ export const HomeScreen = (props: any) => {
               <UnpaidInvoices
                 projectDetails={item}
                 key={`unpaid-invoices-${item.id}`}
-                style={{ marginRight: theme.spacing(3) }}
+                style={{ paddingRight: theme.spacing(3) }}
               />
             )}
             emptyMessage={'No Projects found'}
@@ -125,7 +130,8 @@ export const HomeScreen = (props: any) => {
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.newProjectData,
-  allProjectsData: state.project.allProjectsData
+  allProjectsData: state.project.allProjectsData,
+  activeProjectsLoading: state.project.isLoading
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -142,7 +148,10 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
-  invoicingWrapper: { marginBottom: theme.spacing(4) },
+  invoicingWrapper: {
+    marginBottom: theme.spacing(4),
+    paddingLeft: theme.spacing(4)
+  },
   middleCardsWrapper: {
     display: FLEX,
     [theme.breakpoints.down('sm')]: {
@@ -151,15 +160,10 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionTitle: { marginBottom: theme.spacing(1) },
   background: {
-    display: 'grid',
     backgroundColor: '#24262B',
     height: '100%',
     width: '100%',
-    overflowY: 'auto',
-    overflowX: 'hidden'
-  },
-  dashboardContainer: {
-    padding: theme.spacing(4)
+    overflowY: 'auto'
   },
   widgetItem: {
     [theme.breakpoints.up('sm')]: {

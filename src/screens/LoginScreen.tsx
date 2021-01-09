@@ -112,6 +112,11 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff'
   },
   logoView: {
+    [theme.breakpoints.down('sm')]: {
+      width: 0,
+      overflow: 'hidden',
+      display: 'none'
+    },
     background: `linear-gradient(${theme.palette.primary.light}, ${theme.palette.primary.dark})`,
     // backgroundColor: "red",
     display: FLEX,
@@ -126,7 +131,9 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: COLUMN,
     alignItems: CENTER,
-    justifyContent: CENTER
+    justifyContent: CENTER,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
   },
   title: {
     color: PRIMARY_COLOR,
