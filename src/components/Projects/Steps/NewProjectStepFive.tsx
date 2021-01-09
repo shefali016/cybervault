@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles, Typography, Button } from '@material-ui/core'
+import { makeStyles, Button } from '@material-ui/core'
 import { TRANSPARENT, GREY_COLOR } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -14,6 +14,12 @@ import {
 import NewProjectTitle from '../NewProjectTitle'
 import NewProjectFooter from '../NewProjectFooter'
 import nikeLogo from '../../../assets/nike.png'
+import { RenderClientDetails } from '../../Common/Widget/ClientDetailsWidget'
+import { RenderTaskDetails } from '../../Common/Widget/TaskDetailsWidget'
+import { RenderProjectDetails } from '../../Common/Widget/ProjectDetailWidget'
+import { RenderExpenseDetails } from '../../Common/Widget/ExpenseDetailsWidget'
+import { RenderMilestonesDetails } from '../../Common/Widget/MilestonesDetailWidget'
+import { RenderBudgetDetails } from '../../Common/Widget/BudgetDetailsWidget'
 
 const NewProjectStepFive = (props: any) => {
   const classes = useStyles()
@@ -36,146 +42,24 @@ const NewProjectStepFive = (props: any) => {
     )
   }
 
-  const renderDetails = (
-    leftLabel: string,
-    rightValue: string,
-    nextRightValue?: string
-  ) => {
-    return (
-      <div style={{ display: FLEX, flexDirection: ROW }}>
-        <Typography variant={'caption'} style={{ minWidth: 150 }}>
-          {leftLabel}
-        </Typography>
-        <Typography variant={'caption'}>
-          {' '}
-          {nextRightValue ? 'Start Date:  ' : ''}
-          {rightValue}
-        </Typography>
-        {nextRightValue ? (
-          <Typography style={{ marginLeft: 20 }} variant={'caption'}>
-            {'End Date:  '} {nextRightValue}
-          </Typography>
-        ) : null}
-      </div>
-    )
-  }
-
-  const renderDevider = () => {
-    return (
-      <div
-        style={{
-          height: 1,
-          backgroundColor: GREY_COLOR,
-          width: '100%',
-          marginTop: 20
-        }}
-      />
-    )
-  }
-
-  const renderClientDetails = () => {
-    return (
-      <div className={classes.clientDetailsContainer}>
-        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
-          Client Details:
-        </Typography>
-        {renderDetails('Client Name:', projectData.clientName)}
-        {renderDetails('Client Contact: ', projectData.clientEmail)}
-        {renderDevider()}
-      </div>
-    )
-  }
-
-  const renderProjectDetails = () => {
-    return (
-      <div className={classes.clientDetailsContainer}>
-        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
-          Project Details:
-        </Typography>
-        {renderDetails('Campaign Objective:', projectData.campaignObjective)}
-        {renderDetails('Deadline: ', projectData.campaignDeadLine)}
-        {renderDetails('Project Summary: ', projectData.description)}
-        {renderDevider()}
-      </div>
-    )
-  }
-
-  const renderBudgetDetails = () => {
-    return (
-      <div className={classes.clientDetailsContainer}>
-        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
-          Project Details:
-        </Typography>
-        {renderDetails('Production Budget:', projectData.campaignBudget)}
-        {renderDetails('Production Expenses: ', projectData.campaignExpenses)}
-        {renderDevider()}
-        <Typography variant={'subtitle2'} style={{ marginTop: 10 }}>
-          Estimated Net Revenue: ${' '}
-          {projectData.campaignBudget - projectData.campaignExpenses}
-        </Typography>
-      </div>
-    )
-  }
-
-  const renderTaskDetails = () => {
-    return (
-      <div className={classes.clientDetailsContainer}>
-        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
-          Tasks Details:
-        </Typography>
-        {projectData.tasks.map((item: any, index: number) => {
-          return renderDetails(item.title, item.startDate, item.endDate)
-        })}
-        {renderDevider()}
-      </div>
-    )
-  }
-
-  const renderExpenseDetails = () => {
-    return (
-      <div className={classes.clientDetailsContainer}>
-        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
-          Expense Details:
-        </Typography>
-        {projectData.expenses.map((item: any, index: number) => {
-          return renderDetails(item.title, item.cost)
-        })}
-        {renderDevider()}
-      </div>
-    )
-  }
-
-  const renderMilestonesDetails = () => {
-    return (
-      <div className={classes.clientDetailsContainer}>
-        <Typography variant={'body2'} style={{ marginBottom: 20 }}>
-          Milestones Details:
-        </Typography>
-        {projectData.milestones.map((item: any, index: number) => {
-          return renderDetails(item.title, item.payment)
-        })}
-        {renderDevider()}
-      </div>
-    )
-  }
-
   const renderMiddleView = () => {
     return (
       <div className={classes.middleView}>
-        {renderClientDetails()}
-        {renderProjectDetails()}
-        {projectData.tasks.length > 0 && projectData.tasks[0].task.trim() !== ''
-          ? renderTaskDetails()
-          : null}
+        <RenderClientDetails projectData={projectData} />
+        <RenderProjectDetails projectData={projectData} />
+        {projectData.tasks.length > 0 &&
+        projectData.tasks[0].title.trim() !== '' ? (
+          <RenderTaskDetails projectData={projectData} />
+        ) : null}
         {projectData.expenses.length > 0 &&
-        projectData.expenses[0].expense.trim() !== ''
-          ? renderExpenseDetails()
-          : null}
+        projectData.expenses[0].title.trim() !== '' ? (
+          <RenderExpenseDetails projectData={projectData} />
+        ) : null}
         {projectData.milestones.length > 0 &&
-        projectData.milestones[0].title.trim() !== ''
-          ? renderMilestonesDetails()
-          : null}
-        {renderBudgetDetails()}
+        projectData.milestones[0].title.trim() !== '' ? (
+          <RenderMilestonesDetails projectData={projectData} />
+        ) : null}
+        <RenderBudgetDetails projectData={projectData} />
       </div>
     )
   }
@@ -301,12 +185,6 @@ const useStyles = makeStyles((theme) => ({
   backButton: {
     width: 12,
     height: 18
-  },
-  clientDetailsContainer: {
-    marginBottom: 30,
-    display: FLEX,
-    flex: 1,
-    flexDirection: COLUMN
   }
 }))
 

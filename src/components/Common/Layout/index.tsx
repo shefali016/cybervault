@@ -14,7 +14,7 @@ type Props = {
   children?: React.ReactNode
   history: any
   onLogout?: () => void
-  isLoading: boolean
+  isLoading?: boolean
 }
 
 const Layout = (props: Props) => {

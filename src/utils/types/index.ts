@@ -42,20 +42,21 @@ export type Milestone = {
 
 export type Project = {
   logo: any
-  name: string
+  campaignName: string
   startDate: Date
   clientId: string
   objective: string
   deadline: Date
   tasks: Array<Task>
   description: string
-  budget: number
+  campaignBudget: number
   expensesEstimate: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
   createdAt: Date
   updatedAt: Date
-  id: string
+  id: string,
+  campaignDate: string
 }
 
 export type Account = {
@@ -63,3 +64,5 @@ export type Account = {
   owner: string // id of user
   type: 'creator' | 'client'
 }
+
+export type AllProjects = Array<Project>;
