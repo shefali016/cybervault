@@ -1,11 +1,12 @@
 import { makeStyles, TextField } from '@material-ui/core'
 import React from 'react'
 import {
-  GREY_COLOR,
+  BLACK_COLOR,
   PRIMARY_COLOR,
   PRIMARY_DARK_COLOR
 } from '../../../utils/constants/colorsConstants'
 import { InputChangeEvent } from '../../../utils/types'
+import clsx from 'clsx'
 
 type Props = {
   type?: string
@@ -14,6 +15,7 @@ type Props = {
   onChange: (e: InputChangeEvent) => void
   multiline?: boolean
   style?: {}
+  error?: boolean
 }
 
 const AppTextField = ({
@@ -22,16 +24,19 @@ const AppTextField = ({
   value,
   onChange,
   multiline,
-  style = {}
+  style = {},
+  error
 }: Props) => {
   const classes = useStyles()
+  const currentDate = new Date().toISOString().slice(0, 10)
   return (
     <TextField
+      error={error ? error : false}
       label={label}
       variant='outlined'
       size='small'
       type={type}
-      className={classes.textField}
+      className={error ? classes.errorTextField : classes.textField}
       onChange={onChange}
       multiline={multiline}
       value={value}
@@ -40,6 +45,7 @@ const AppTextField = ({
           root: multiline ? classes.multilineInputRoot : classes.inputRoot
         }
       }}
+      inputProps={type === 'date' ? { min: currentDate } : {}}
       InputLabelProps={
         type === 'date'
           ? {
@@ -63,25 +69,25 @@ const AppTextField = ({
 
 const useStyles = makeStyles((theme) => ({
   dateRoot: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }
   },
   dateRootFilled: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     },
     marginTop: 0
   },
   labelFocused: {},
-  textField: {
+  errorTextField: {
     width: '100%',
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
+      borderColor: theme.palette.error,
       borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
@@ -91,16 +97,35 @@ const useStyles = makeStyles((theme) => ({
       borderColor: PRIMARY_COLOR
     }
   },
-  inputRoot: {},
-  multilineInputRoot: {},
+  textField: {
+    width: '100%',
+    paddingBottom: 0,
+    fontWeight: 500,
+    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.grey[500],
+      borderRadius: 20
+    },
+    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: PRIMARY_COLOR
+    },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: PRIMARY_COLOR
+    }
+  },
+  inputRoot: {
+    color: theme.palette.grey[900]
+  },
+  multilineInputRoot: {
+    color: theme.palette.grey[900]
+  },
   labelRoot: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }
   },
   labelRootFilled: {
-    color: GREY_COLOR,
+    color: theme.palette.grey[500],
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
     }

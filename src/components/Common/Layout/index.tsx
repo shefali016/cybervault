@@ -2,8 +2,15 @@ import React, { Fragment, useState } from 'react'
 import SideBarComponent from '../SideBar'
 import ToolBar from '../Header/header'
 import { connect } from 'react-redux'
+import ReactLoading from 'react-loading'
 import { logout } from '../../../actions/authActions'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import {
+  POSITION_ABSOLUTE,
+  CENTER,
+  FLEX,
+  COLUMN
+} from 'utils/constants/stringConstants'
 
 type Props = {
   onActionButtonPress: () => void
@@ -22,10 +29,11 @@ const Layout = (props: Props) => {
     onLogout,
     headerTitle
   } = props
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
   const classes = useStyles()
-
+  const theme = useTheme()
+  console.log(theme.palette.primary.light)
   return (
     <div className={classes.root}>
       <SideBarComponent
@@ -40,15 +48,25 @@ const Layout = (props: Props) => {
       />
       <div className={classes.main}>
         <ToolBar {...{ headerTitle }} />
-        <div style={{ flex: 1 }}>{props.children}</div>
+        {props.children}
       </div>
     </div>
   )
 }
 
 const useStyles = makeStyles((theme: any) => ({
-  root: { display: 'flex' },
-  main: { flexGrow: 1, height: '100vh' }
+  root: {
+    display: FLEX,
+    height: '100vh'
+  },
+  main: {
+    display: FLEX,
+    flexDirection: 'column',
+    height: '100vh',
+    width: '100vw',
+    overflowX: 'auto',
+    flexWrap: 'nowrap'
+  }
 }))
 
 const mapDispatchToProps = (dispatch: any) => ({

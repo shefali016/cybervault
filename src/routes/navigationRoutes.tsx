@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen'
 import SignUpScreen from '../screens/SignUpScreen'
 import HomeScreen from '../screens/HomeScreen'
 import ProjectScreen from '../screens/projects/ProjectsScreen'
+import EditProjectScreen from '../screens/EditProjectScreen'
 
 type Props = { isLoggedIn?: boolean }
 
@@ -15,15 +16,16 @@ const Routes = (props: Props): JSX.Element => {
 
 const MainRoutes = () => (
   <Switch>
+    <Route path='/editProjectInfo' component={EditProjectScreen} />
     <Route path='/projects' component={ProjectScreen} />
-    <Route path='/home' component={HomeScreen} />
+    <Route path='/' component={HomeScreen} />
   </Switch>
 )
 
 const AuthRoutes = () => (
   <Switch>
     <Route path='/signup' component={SignUpScreen} />
-    <Route component={LoginScreen} />
+    <Route path='/' component={LoginScreen} />
   </Switch>
 )
 

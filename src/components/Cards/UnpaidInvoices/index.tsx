@@ -25,47 +25,45 @@ type Props = {
 function UnpaidInvoices(props: Props) {
   const classes = useStyles()
   return (
-    <Card className={classes.button} elevation={5} style={props.style}>
-      <CardContent style={{ display: 'flex' }}>
-        <div className={classes.imgWrapper}>
-          <img
-            className={classes.img}
-            src={
-              props.projectDetails && props.projectDetails.image
-                ? props.projectDetails.image
-                : logo
-            }
-            alt='Logo'
-          />
-        </div>
-        <div className={classes.textWrapper}>
-          <Typography className={classes.bodyText}>
-            {props.projectDetails && props.projectDetails.name
-              ? props.projectDetails.name
-              : 'Nike Summer Campaign'}
-          </Typography>
-          <Typography className={classes.bottomText}>
-            {props.projectDetails && props.projectDetails.value
-              ? props.projectDetails.value
-              : 'Doc 2016 campaign with audi Q6'}
-          </Typography>
-        </div>
-      </CardContent>
-    </Card>
+    <div style={props.style}>
+      <Card className={classes.button} elevation={5}>
+        <CardContent style={{ display: 'flex' }}>
+          <div className={classes.imgWrapper}>
+            <img
+              className={classes.img}
+              src={
+                props.projectDetails && props.projectDetails.image
+                  ? props.projectDetails.image
+                  : logo
+              }
+              alt='Logo'
+            />
+          </div>
+          <div className={classes.textWrapper}>
+            <Typography className={classes.bodyText}>
+              {props.projectDetails && props.projectDetails.name
+                ? props.projectDetails.name
+                : 'Nike Summer Campaign'}
+            </Typography>
+            <Typography className={classes.bottomText}>
+              {props.projectDetails && props.projectDetails.value
+                ? props.projectDetails.value
+                : 'Doc 2016 campaign with audi Q6'}
+            </Typography>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 const useStyles = makeStyles((theme) => ({
   button: {
     height: '4rem',
-    marginRight: theme.spacing(2),
+    minWidth: 200,
     background: SECONDARY_COLOR,
-    borderRadius: 10
-  },
-  card: {
-    width: '16rem',
-    height: '4rem',
-    background: SECONDARY_COLOR,
-    zIndex: 2
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10
   },
   imgWrapper: {
     backgroundColor: WHITE_COLOR,

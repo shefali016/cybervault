@@ -2,6 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { logout } from '../actions/authActions'
+import {
+  createNewProjectRequest,
+  clearNewProjectData,
+  getAllProjectsRequest
+} from '../actions/projectActions'
 import { Typography, Grid } from '@material-ui/core'
 import ProjectCard from '../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../components/Cards/UnpaidInvoices'
@@ -14,41 +19,29 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { AUTO, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import NewProjectModal from '../components/Projects/NewProjectModal'
 import Widget from '../components/Common/Widget'
+import * as Types from 'utils/types'
+import { getCardHeight, getWidgetCardHeight } from '../utils'
 
-const PROJECT_DATA = [
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
-  }
-]
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
 export const HomeScreen = (props: any) => {
+  const [allProjects, setAllProjects] = useState([])
   useEffect(() => {
+    if (props.newProjectData) {
+      setNewProjectModalOpen(false)
+      props.clearNewProjectData()
+    }
     if (!props.isLoggedIn && !props.user) {
       loggedOut(props)
     }
-  }, [props.isLoggedIn])
+    if (props.allProjectsData && props.allProjectsData !== allProjects) {
+      setAllProjects(props.allProjectsData)
+    }
+  }, [props.isLoggedIn, props.newProjectData, props.allProjectsData])
+
+  useEffect(() => {
+    props.getAllProjectsData()
+  }, [])
 
   const loggedOut = (props: any) => {
     props.history.push('/')
@@ -65,6 +58,10 @@ export const HomeScreen = (props: any) => {
     () => setNewProjectModalOpen(false),
     []
   )
+  const createNewProject = useCallback(
+    (projectData) => props.createNewProject(projectData),
+    []
+  )
   return (
     <div className={classes.background}>
       <Layout
@@ -75,17 +72,23 @@ export const HomeScreen = (props: any) => {
           <NewProjectModal
             open={newProjectModalOpen}
             onRequestClose={closeNewProjectModal}
+            onSubmitClicked={createNewProject}
           />
           <Widget
-            data={PROJECT_DATA}
+            data={allProjects}
             title={'Active Projects'}
             emptyMessage={'No Projects found'}
+            loading={props.activeProjectsLoading}
+            itemHeight={getWidgetCardHeight(theme)}
             renderItem={(item) => (
               <ProjectCard
                 project={item}
                 isPopover={true}
-                key={`project-card-${item.id}`}
-                style={{ marginRight: theme.spacing(3) }}
+                key={`project-card-${item.projectId}`}
+                style={{
+                  paddingRight: theme.spacing(3)
+                }}
+                history={props.history}
               />
             )}
           />
@@ -101,7 +104,7 @@ export const HomeScreen = (props: any) => {
               <ProfitsExpenses className={classes.widgetItem} />
               <ProjectCount
                 className={classes.widgetItem}
-                projectCount={PROJECT_DATA.length}
+                projectCount={allProjects.length}
               />
               <IncomeThisMonth />
             </div>
@@ -113,7 +116,7 @@ export const HomeScreen = (props: any) => {
               <UnpaidInvoices
                 projectDetails={item}
                 key={`unpaid-invoices-${item.id}`}
-                style={{ marginRight: theme.spacing(3) }}
+                style={{ paddingRight: theme.spacing(3) }}
               />
             )}
             emptyMessage={'No Projects found'}
@@ -125,11 +128,30 @@ export const HomeScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn
+  isLoggedIn: state.auth.isLoggedIn,
+  newProjectData: state.project.newProjectData,
+  allProjectsData: state.project.allProjectsData,
+  activeProjectsLoading: state.project.isLoading
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  createNewProject: (projectData: Types.Project) => {
+    return dispatch(createNewProjectRequest(projectData))
+  },
+
+  clearNewProjectData: () => {
+    return dispatch(clearNewProjectData())
+  },
+  getAllProjectsData: () => {
+    return dispatch(getAllProjectsRequest())
+  }
 })
 
 const useStyles = makeStyles((theme) => ({
-  invoicingWrapper: { marginBottom: theme.spacing(4) },
+  invoicingWrapper: {
+    marginBottom: theme.spacing(4),
+    paddingLeft: theme.spacing(4)
+  },
   middleCardsWrapper: {
     display: FLEX,
     [theme.breakpoints.down('sm')]: {
@@ -138,15 +160,10 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionTitle: { marginBottom: theme.spacing(1) },
   background: {
-    display: 'grid',
     backgroundColor: '#24262B',
     height: '100%',
     width: '100%',
-    overflowY: 'auto',
-    overflowX: 'hidden'
-  },
-  dashboardContainer: {
-    padding: theme.spacing(4)
+    overflowY: 'auto'
   },
   widgetItem: {
     [theme.breakpoints.up('sm')]: {
@@ -157,4 +174,4 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
-export default connect(mapStateToProps)(HomeScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { CENTER, GRID } from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import clsx from 'clsx'
+import { getCardHeight } from '../../../utils'
 
 type Props = {
   unpaidAmount?: number
@@ -42,12 +43,11 @@ function PendingInvoices(props: Props) {
 const useStyles = makeStyles((theme) => ({
   card: {
     display: GRID,
-    width: '10rem',
+    width: getCardHeight(theme),
     height: '10rem',
     borderRadius: 15
   },
   progressBar: {
-    width: 120,
     height: 18,
     borderRadius: 25,
     alignSelf: CENTER,

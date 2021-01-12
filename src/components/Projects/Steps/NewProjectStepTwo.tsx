@@ -28,7 +28,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData } = props
+  const { projectData, setProjectData, haveError } = props
 
   const handleInputChange = (event: InputChangeEvent) => (key: string) => {
     const value = event.target.value
@@ -87,7 +87,7 @@ const NewProjectStepTwo = (props: any) => {
         <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
           <AppTextField
             type={'date'}
-            label={'Campaign DadeLine'}
+            label={'Start Date'}
             value={data.startDate}
             onChange={(e: InputChangeEvent) =>
               handleTaskChange(e, 'startDate', index)
@@ -97,7 +97,7 @@ const NewProjectStepTwo = (props: any) => {
         <div style={{ flex: 0.2 }}>
           <AppTextField
             type={'date'}
-            label={'Campaign DadeLine'}
+            label={'End Date'}
             value={data.endDate}
             onChange={(e: InputChangeEvent) =>
               handleTaskChange(e, 'endDate', index)
@@ -137,15 +137,25 @@ const NewProjectStepTwo = (props: any) => {
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e)('campaignObjective')
                 }
+                error={
+                  haveError && projectData.campaignObjective === ''
+                    ? true
+                    : false
+                }
               />
             </div>
             <div style={{ flex: 1 }}>
               <AppTextField
                 type={'date'}
-                label={'Campaign DadeLine'}
+                label={'Campaign Deadline'}
                 value={projectData.campaignDeadLine}
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e)('campaignDeadLine')
+                }
+                error={
+                  haveError && projectData.campaignDeadLine === ''
+                    ? true
+                    : false
                 }
               />
             </div>
@@ -170,6 +180,7 @@ const NewProjectStepTwo = (props: any) => {
         title={'Step 2 of 5'}
         onBack={props.onBack}
         onNext={props.onNext}
+        haveError={haveError ? haveError : false}
       />
     </div>
   )

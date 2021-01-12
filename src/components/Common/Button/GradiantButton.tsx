@@ -6,7 +6,11 @@ import clsx from 'clsx'
 export const GradiantButton = (props: any) => {
   const classes = useStyles()
   return (
-    <Button className={clsx(classes.button, props.className)} {...props}>
+    <Button
+      color={'primary'}
+      variant={'contained'}
+      {...props}
+      className={clsx(classes.button, props.className)}>
       {props.children}
     </Button>
   )

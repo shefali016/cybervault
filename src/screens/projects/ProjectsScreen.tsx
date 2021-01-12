@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import '../../App.css'
 import { connect } from 'react-redux'
 import { logout } from '../../actions/authActions'
+import { createNewProjectRequest } from '../../actions/projectActions'
 import Layout from '../../components/Common/Layout'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
@@ -11,31 +12,32 @@ import { WHITE_COLOR } from '../../utils/constants/colorsConstants'
 import NewProjectModal from '../../components/Projects/NewProjectModal'
 import Widget from '../../components/Common/Widget'
 import { useTabletLayout } from '../../utils/hooks'
+import * as Types from '../../utils/types'
 
 const PROJECT_DATA = [
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   },
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   },
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   },
   {
-    name: 'Nike Summer Campaign',
+    campaignName: 'Nike Summer Campaign',
     description: 'Doc 2016 campaign with audi Q6',
-    startDate: '2020-01-01',
-    budget: 10000
+    campaignDate: '2020-01-01',
+    campaignBudget: 10000
   }
 ]
 const ARCHIVE_DATA = [
@@ -70,6 +72,10 @@ export const ProjectsScreen = (props: any) => {
     () => setNewProjectModalOpen(false),
     []
   )
+  const createNewProject = useCallback(
+    (projectData) => props.createNewProject(projectData),
+    []
+  )
   return (
     <div className='background'>
       <Layout
@@ -80,6 +86,7 @@ export const ProjectsScreen = (props: any) => {
         <NewProjectModal
           open={newProjectModalOpen}
           onRequestClose={closeNewProjectModal}
+          onSubmitClicked={createNewProject}
         />
         <div className='dashboardContainer'>
           <Widget
@@ -134,6 +141,9 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   logout: () => {
     return dispatch(logout())
+  },
+  createNewProject: (projectData: Types.Project) => {
+    return dispatch(createNewProjectRequest(projectData))
   }
 })
 

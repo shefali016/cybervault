@@ -11,6 +11,13 @@ export type Asset = {
 
 export type User = {
   email: string
+  accounts: Array<string> // ids of accounts,
+  mainAccount: string // Id of user's main account
+  password: string
+}
+
+export type UserLoginInfo = {
+  email: string
   password: string
 }
 
@@ -35,17 +42,27 @@ export type Milestone = {
 
 export type Project = {
   logo: any
-  name: string
+  campaignName: string
   startDate: Date
   clientId: string
   objective: string
   deadline: Date
   tasks: Array<Task>
   description: string
-  budget: number
+  campaignBudget: number
   expensesEstimate: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
   createdAt: Date
   updatedAt: Date
+  id: string,
+  campaignDate: string
 }
+
+export type Account = {
+  id: string
+  owner: string // id of user
+  type: 'creator' | 'client'
+}
+
+export type AllProjects = Array<Project>;

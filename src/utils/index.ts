@@ -1,3 +1,13 @@
+import { Theme } from '@material-ui/core/styles'
+
+export function getWidgetCardHeight(theme: Theme) {
+  return Math.min(window.outerWidth - theme.spacing(8) - 100, 200)
+}
+
+export function getCardHeight(theme: Theme) {
+  return Math.min(window.outerWidth - theme.spacing(16), 300)
+}
+
 export function generateUid() {
   let S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
@@ -19,10 +29,11 @@ export function generateUid() {
 }
 
 export const getProductData = () => {
+  const currentDate = new Date().toISOString().slice(0, 10)
   return {
     logo: '',
     campaignName: '',
-    campaignDate: '',
+    campaignDate: currentDate,
     clientName: '',
     clientEmail: '',
     address: '',
@@ -30,12 +41,12 @@ export const getProductData = () => {
     state: '',
     country: '',
     campaignObjective: '',
-    campaignDeadLine: '',
+    campaignDeadLine: currentDate,
     description: '',
     tasks: [
       {
         id: '0',
-        task: '',
+        title: '',
         startDate: '',
         endDate: ''
       }
@@ -45,7 +56,7 @@ export const getProductData = () => {
     expenses: [
       {
         id: '0',
-        expense: '',
+        title: '',
         cost: ''
       }
     ],
@@ -55,6 +66,7 @@ export const getProductData = () => {
         title: '',
         payment: ''
       }
-    ]
+    ],
+    id: ''
   }
 }

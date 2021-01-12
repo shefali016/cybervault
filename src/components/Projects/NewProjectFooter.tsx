@@ -3,20 +3,32 @@ import React from 'react'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import {
   CENTER,
+  COLUMN,
   FLEX,
   FLEX_END,
   NONE,
+  POSITION_ABSOLUTE
 } from '../../utils/constants/stringConstants'
 import { GREY_COLOR } from '../../utils/constants/colorsConstants'
+import { GradiantButton } from '../Common/Button/GradiantButton'
 
 type Props = {
   onBack?: () => void
   onNext?: () => void
   title: string
   description?: string
+  onStartProject?: () => void
+  haveError?: boolean
 }
 
-const NewProjectFooter = ({ onBack, onNext, title, description }: Props) => {
+const NewProjectFooter = ({
+  onBack,
+  onNext,
+  title,
+  description,
+  onStartProject,
+  haveError
+}: Props) => {
   const classes = useStyles()
 
   const renderBackButton = () => {
@@ -31,23 +43,33 @@ const NewProjectFooter = ({ onBack, onNext, title, description }: Props) => {
   }
 
   return (
-    <div style={{ marginTop: 40 }}>
+    <div className={classes.root}>
       {!!description && (
         <Typography variant={'caption'}>{description}</Typography>
       )}
+      {haveError ? (
+        <Typography className={classes.warningText}>
+          Please fill all the required fields.
+        </Typography>
+      ) : null}
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
+        {typeof onStartProject === 'function' && (
+          <div className={classes.startProjectButtonContainer}>
+            <GradiantButton
+              onClick={onStartProject}
+              className={classes.buttonStartProject}>
+              <Typography variant={'button'}>Start Project</Typography>
+            </GradiantButton>
+          </div>
+        )}
         {typeof onBack === 'function' && renderBackButton()}
         <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
         </Typography>
         {typeof onNext === 'function' && (
-          <Button
-            variant='contained'
-            onClick={onNext}
-            color='primary'
-            className={classes.button}>
+          <GradiantButton onClick={onNext} className={classes.continueButton}>
             <Typography variant={'button'}>Continue</Typography>
-          </Button>
+          </GradiantButton>
         )}
       </div>
     </div>
@@ -55,31 +77,49 @@ const NewProjectFooter = ({ onBack, onNext, title, description }: Props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: { marginTop: 40, display: FLEX, flexDirection: COLUMN },
   stepLabel: {
-    color: GREY_COLOR,
-    marginRight: 25,
-    marginLeft: 15,
+    color: theme.palette.grey[500]
   },
+  continueButton: { marginLeft: 25 },
   button: {
     width: 110,
     height: 40,
     fontSize: 8,
-    borderRadius: 20,
-    background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
-    textTransform: NONE,
+    textTransform: NONE
   },
-  backButton: { height: 40, width: 40 },
+  backButton: { height: 40, width: 40, marginRight: 15 },
   backButtonIcon: {
     width: 15,
     height: 15,
-    margin: 0,
+    margin: 0
   },
   bottomView: {
-    flex: 0.1,
+    flex: 1,
     display: FLEX,
     alignItems: CENTER,
     justifyContent: FLEX_END,
+    position: 'relative'
   },
+  buttonStartProject: {
+    width: 180,
+    height: 40
+  },
+  startProjectButtonContainer: {
+    position: POSITION_ABSOLUTE,
+    right: 0,
+    left: 0,
+    top: 0,
+    bottom: 0,
+    display: FLEX,
+    justifyContent: CENTER,
+    [theme.breakpoints.down('sm')]: { top: -55 }
+  },
+  warningText: {
+    color: 'red',
+    fontSize: 12,
+    alignSelf: 'flex-end'
+  }
 }))
 
 export default NewProjectFooter
