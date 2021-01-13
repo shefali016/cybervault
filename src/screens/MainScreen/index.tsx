@@ -1,19 +1,32 @@
 import React, { useState, useCallback, useMemo } from 'react'
+import { Route, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { makeStyles } from '@material-ui/core'
+
 import Layout, { LayoutProps } from 'components/Common/Layout'
 import HomeScreen from 'screens/HomeScreen'
-import { connect } from 'react-redux'
+import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import { ButtonConfig, Project, Tab } from 'utils/types'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import MailIcon from '@material-ui/icons/Mail'
-import { makeStyles } from '@material-ui/core'
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import { createNewProjectRequest } from 'actions/projectActions'
 import { ProjectsScreen } from 'screens/ProjectsScreen'
-import { Route, Switch } from 'react-router-dom'
 import { EditProjectScreen } from 'screens/EditProjectScreen'
+
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
-import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
+import DashboardIcon from '@material-ui/icons/Home'
+import ProjectIcon from '@material-ui/icons/Collections'
+import PortfolioIcon from '@material-ui/icons/FolderSpecial'
+import SettingsIcon from '@material-ui/icons/Settings'
+import StorageIcon from '@material-ui/icons/Storage'
+import InvoiceIcon from '@material-ui/icons/Receipt'
+import PaymentIcon from '@material-ui/icons/Payment'
+import SecurityIcon from '@material-ui/icons/Security'
+import ProfileIcon from '@material-ui/icons/Person'
+import ManageIcon from '@material-ui/icons/Apartment'
+import BrandingIcon from '@material-ui/icons/Brush'
+import SubscriptionIcon from '@material-ui/icons/LocalActivity'
+
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 
 const DashboardTabIds = {
@@ -72,81 +85,81 @@ const MainScreen = (props: any) => {
         return {
           id,
           text: 'Dashboard',
-          icon: <InboxIcon className={classes.listIconStyle} />
+          icon: <DashboardIcon className={classes.listIconStyle} />
         }
 
       case DashboardTabIds.projects:
         return {
           id,
           text: 'Projects',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <ProjectIcon className={classes.listIconStyle} />
         }
       case DashboardTabIds.portfolio:
         return {
           id,
           text: 'Portfolio',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <PortfolioIcon className={classes.listIconStyle} />
         }
       case DashboardTabIds.settings:
         return {
           id,
           text: 'Settings',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <SettingsIcon className={classes.listIconStyle} />
         }
       case DashboardTabIds.storage:
         return {
           id,
           text: 'Storage',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <StorageIcon className={classes.listIconStyle} />
         }
       case SharedTabIds.invoices:
         return {
           id,
           text: 'Invoices',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <InvoiceIcon className={classes.listIconStyle} />
         }
       case SharedTabIds.payments:
         return {
           id,
           text: 'Payments',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <PaymentIcon className={classes.listIconStyle} />
         }
       case SharedTabIds.security:
         return {
           id,
           text: 'Security',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <SecurityIcon className={classes.listIconStyle} />
         }
       // Account tabs
       case AccountTabIds.profile:
         return {
           id,
           text: 'Profile',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <ProfileIcon className={classes.listIconStyle} />
         }
       case AccountTabIds.manage:
         return {
           id,
           text: 'Manage Account',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <ManageIcon className={classes.listIconStyle} />
         }
       case AccountTabIds.branding:
         return {
           id,
           text: 'Branding',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <BrandingIcon className={classes.listIconStyle} />
         }
       case AccountTabIds.subscription:
         return {
           id,
           text: 'Subscription',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <SubscriptionIcon className={classes.listIconStyle} />
         }
       case AccountTabIds.storage:
         return {
           id,
           text: 'Storage',
-          icon: <MailIcon className={classes.listIconStyle} />
+          icon: <StorageIcon className={classes.listIconStyle} />
         }
 
       default:
