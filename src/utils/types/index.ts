@@ -2,6 +2,12 @@ import { ChangeEvent } from 'react'
 
 export type InputChangeEvent = ChangeEvent<HTMLInputElement>
 
+export type ButtonConfig = {
+  title: string
+  onClick: (params: any) => void
+  icon?: any
+}
+
 export type Tab = { id: string; icon: any; text: string }
 
 export type Asset = {

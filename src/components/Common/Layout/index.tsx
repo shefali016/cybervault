@@ -11,30 +11,30 @@ import {
   FLEX,
   COLUMN
 } from 'utils/constants/stringConstants'
-import { Tab } from 'utils/types'
+import { ButtonConfig, Tab } from 'utils/types'
 import { TabsProps } from '@material-ui/core'
 
 type ReduxProps = { onLogout: () => void }
 
 export type LayoutProps = {
-  onActionButtonPress: () => void
-  actionButtonTitle: string
+  actionButtonConfig: ButtonConfig
   headerTitle?: string
   children?: React.ReactNode
   tabs: Array<Tab>
   onTabPress: (tab: Tab) => void
   activeTab: Tab
+  onProfileClick: () => void
 }
 
 const Layout = (props: LayoutProps & ReduxProps) => {
   const {
-    onActionButtonPress,
-    actionButtonTitle,
+    actionButtonConfig,
     onLogout,
     headerTitle,
     tabs,
     onTabPress,
-    activeTab
+    activeTab,
+    onProfileClick
   } = props
   const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
@@ -45,8 +45,7 @@ const Layout = (props: LayoutProps & ReduxProps) => {
     <div className={classes.root}>
       <SideBarComponent
         {...{
-          onActionButtonPress,
-          actionButtonTitle,
+          actionButtonConfig,
           onLogout,
           open: drawerOpen,
           setOpen: setDrawerOpen,
@@ -56,7 +55,7 @@ const Layout = (props: LayoutProps & ReduxProps) => {
         }}
       />
       <div className={classes.main}>
-        <ToolBar {...{ headerTitle }} />
+        <ToolBar {...{ headerTitle, onProfileClick }} />
         {props.children}
       </div>
     </div>

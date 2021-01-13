@@ -1,13 +1,14 @@
 import React from 'react'
 import { IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import profileIcon from '../../../assets/userAvatar.png'
+import profileIcon from '../../../assets/default_user.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
 
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
   headerTitle?: string
+  onProfileClick: () => void
 }
 
 function Toolbar(props: Props) {
@@ -16,7 +17,7 @@ function Toolbar(props: Props) {
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25 }}>
         <h2 style={{ color: 'white', fontWeight: 'normal' }}>
-          {props.headerTitle ? props.headerTitle : 'Dashboard'}
+          {props.headerTitle}
         </h2>
       </div>
       <div>
@@ -25,12 +26,14 @@ function Toolbar(props: Props) {
             <img src={notificationIcon} alt='notification icon' />
           </IconButton>
         ) : null}
-        <IconButton style={{ borderRadius: 100, width: 60, marginRight: 20 }}>
+        <IconButton
+          style={{ borderRadius: 100, width: 60, marginRight: 20 }}
+          onClick={props.onProfileClick}>
           <img
             src={
               props.profilePictureIcon ? props.profilePictureIcon : profileIcon
             }
-            style={{ borderRadius: 100 }}
+            style={{ borderRadius: 20, height: 40, width: 40 }}
           />
         </IconButton>
       </div>
