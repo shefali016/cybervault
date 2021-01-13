@@ -14,6 +14,7 @@ import { EditProjectScreen } from 'screens/EditProjectScreen'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
+import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -237,7 +238,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.spacing(3)
   },
   screen: {
-    paddingTop: theme.spacing(4)
+    paddingTop: theme.spacing(5),
+    minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: window.outerWidth - theme.spacing(8)
+    }
   },
   buttonIcon: {
     marginRight: 15,

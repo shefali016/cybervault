@@ -3,6 +3,7 @@ import { IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
+import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -51,7 +52,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: window.outerWidth - theme.spacing(8)
+    }
   }
 }))
 

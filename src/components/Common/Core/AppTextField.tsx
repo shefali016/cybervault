@@ -87,8 +87,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.error,
-      borderRadius: 20
+      borderColor: theme.palette.error
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: PRIMARY_COLOR
@@ -102,8 +101,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.grey[500],
-      borderRadius: 20
+      borderColor: theme.palette.grey[500]
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: PRIMARY_COLOR
@@ -113,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   inputRoot: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     color: theme.palette.grey[900]
   },
   multilineInputRoot: {

@@ -53,7 +53,10 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
         className={classes.avatarPicker}
       />
 
-      <div className={classes.section}>
+      <div
+        className={classes.section}
+        style={{ marginBottom: theme.spacing(4) }}>
+        <Typography>Profile Info</Typography>
         <div className={classes.inputRow}>
           <AppTextField
             label='First Name'
@@ -71,9 +74,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             value={user.lastName}
           />
         </div>
-        <div
-          className={classes.inputRow}
-          style={{ marginBottom: theme.spacing(5) }}>
+        <div className={classes.inputRow}>
           <AppTextField
             label='Company'
             onChange={(event: InputChangeEvent) =>
@@ -93,6 +94,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
       </div>
 
       <div className={classes.section}>
+        <Typography>Social Links</Typography>
         <div className={classes.inputRow}>
           <AppTextField
             label='Instagram'
@@ -137,13 +139,29 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
-  container: { alignItems: 'center' },
+  container: {
+    color: theme.palette.text.background,
+    alignItems: 'center',
+    paddingBottom: theme.spacing(6),
+    justifyContent: 'center',
+    width: '100%'
+  },
   section: {
-    backgroundColor: theme.palette.background.default,
-    flexGrow: 1,
-    width: '100%',
-    maxWidth: 800,
-    [theme.breakpoints.down('sm')]: { width: '90%', maxWidth: undefined }
+    backgroundColor: theme.palette.background.secondary,
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(5),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+    borderRadius: theme.shape.borderRadius,
+    [theme.breakpoints.up('sm')]: {
+      width: '100%',
+      maxWidth: 800
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '90%',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2)
+    }
   },
   avatarPicker: { marginBottom: theme.spacing(5) },
   inputRow: {
