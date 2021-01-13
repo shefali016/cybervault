@@ -59,10 +59,15 @@ const ScreenViews = {
 const MainScreen = (props: any) => {
   const classes = useStyles()
 
-  const getInitialScreenView = () =>
-    Object.values(DashboardTabIds).includes(props.history.location)
+  const getInitialScreenView = () => {
+    return Object.values(DashboardTabIds).includes(
+      props.history.location.pathname.replace('/', '')
+    )
+      ? ScreenViews.dashboard
+      : ScreenViews.account
+  }
 
-  const [screenView, setScreenView] = useState(ScreenViews.dashboard)
+  const [screenView, setScreenView] = useState(getInitialScreenView())
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
   const openNewProjectModal = useCallback(
