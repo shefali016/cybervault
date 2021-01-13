@@ -9,7 +9,7 @@ import {
 } from 'actions/actionTypes'
 import * as Types from '../utils/types'
 
-type State = {
+export type State = {
   projectData: any
   error: any
   newProjectData: any
@@ -17,7 +17,7 @@ type State = {
   allProjectsData: Types.AllProjects
 }
 
-type Action = {
+export type Action = {
   type: string
   payload: {}
   error: any

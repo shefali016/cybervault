@@ -13,6 +13,7 @@ import { Route, Switch } from 'react-router-dom'
 import { EditProjectScreen } from 'screens/EditProjectScreen'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
+import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -44,6 +45,9 @@ const ScreenViews = {
 const MainScreen = (props: any) => {
   const classes = useStyles()
 
+  const getInitialScreenView = () =>
+    Object.values(DashboardTabIds).includes(props.history.location)
+
   const [screenView, setScreenView] = useState(ScreenViews.dashboard)
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
@@ -60,97 +64,99 @@ const MainScreen = (props: any) => {
     []
   )
 
+  const getTab = (id: string) => {
+    switch (id) {
+      // Dashboard tabs
+      case DashboardTabIds.dashboard:
+        return {
+          id,
+          text: 'Dashboard',
+          icon: <InboxIcon className={classes.listIconStyle} />
+        }
+
+      case DashboardTabIds.projects:
+        return {
+          id,
+          text: 'Projects',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case DashboardTabIds.portfolio:
+        return {
+          id,
+          text: 'Portfolio',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case DashboardTabIds.settings:
+        return {
+          id,
+          text: 'Settings',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case DashboardTabIds.storage:
+        return {
+          id,
+          text: 'Storage',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case SharedTabIds.invoices:
+        return {
+          id,
+          text: 'Invoices',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case SharedTabIds.payments:
+        return {
+          id,
+          text: 'Payments',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case SharedTabIds.security:
+        return {
+          id,
+          text: 'Security',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      // Account tabs
+      case AccountTabIds.profile:
+        return {
+          id,
+          text: 'Profile',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case AccountTabIds.manage:
+        return {
+          id,
+          text: 'Manage Account',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case AccountTabIds.branding:
+        return {
+          id,
+          text: 'Branding',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case AccountTabIds.subscription:
+        return {
+          id,
+          text: 'Subscription',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+      case AccountTabIds.storage:
+        return {
+          id,
+          text: 'Storage',
+          icon: <MailIcon className={classes.listIconStyle} />
+        }
+
+      default:
+        return { id: 'default', text: 'Default', icon: null }
+    }
+  }
+
   const tabs = useMemo<Array<Tab>>(() => {
     const tabids =
       screenView === ScreenViews.dashboard ? DashboardTabIds : AccountTabIds
-    return Object.values(tabids).map((id: string) => {
-      switch (id) {
-        // Dashboard tabs
-        case DashboardTabIds.dashboard:
-          return {
-            id,
-            text: 'Dashboard',
-            icon: <InboxIcon className={classes.listIconStyle} />
-          }
-
-        case DashboardTabIds.projects:
-          return {
-            id,
-            text: 'Projects',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case DashboardTabIds.portfolio:
-          return {
-            id,
-            text: 'Portfolio',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case DashboardTabIds.settings:
-          return {
-            id,
-            text: 'Settings',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case DashboardTabIds.storage:
-          return {
-            id,
-            text: 'Storage',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case SharedTabIds.invoices:
-          return {
-            id,
-            text: 'Invoices',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case SharedTabIds.payments:
-          return {
-            id,
-            text: 'Payments',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case SharedTabIds.security:
-          return {
-            id,
-            text: 'Security',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        // Account tabs
-        case AccountTabIds.profile:
-          return {
-            id,
-            text: 'Profile',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case AccountTabIds.manage:
-          return {
-            id,
-            text: 'Manage Account',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case AccountTabIds.branding:
-          return {
-            id,
-            text: 'Branding',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case AccountTabIds.subscription:
-          return {
-            id,
-            text: 'Subscription',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-        case AccountTabIds.storage:
-          return {
-            id,
-            text: 'Storage',
-            icon: <MailIcon className={classes.listIconStyle} />
-          }
-
-        default:
-          return { id: 'default', text: 'Default', icon: null }
-      }
-    })
+    return Object.values(tabids).map(getTab)
   }, [screenView])
 
   const [activeTab, setActiveTab] = useState(tabs[0])
@@ -184,11 +190,13 @@ const MainScreen = (props: any) => {
   const handleDashboardNavigation = () => {
     props.history.replace(`/${DashboardTabIds.dashboard}`)
     setScreenView(ScreenViews.dashboard)
+    setActiveTab(getTab(DashboardTabIds.dashboard))
   }
 
   const handleProfileNavigation = () => {
     props.history.replace(`/${AccountTabIds.profile}`)
     setScreenView(ScreenViews.account)
+    setActiveTab(getTab(AccountTabIds.profile))
   }
 
   const getLayoutProps = (): LayoutProps => {
@@ -213,6 +221,7 @@ const MainScreen = (props: any) => {
       <div className={classes.screen}>
         <Switch>
           <Route path='/projects' component={ProjectsScreen} />
+          <Route path='/profile' component={ProfileScreen} />
           <Route path='/project' component={EditProjectScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>

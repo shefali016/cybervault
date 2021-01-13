@@ -46,12 +46,6 @@ button {
 .container {
   display: flex;
   flex-direction: column;
-  font-size: calc(10px + 2vmin);
-  background-color: #ffffff;
-  width: 70vh;
-  z-index: 2;
-  border-radius: 20px;
-  padding: 10px;
 }
 
 .center-content {
@@ -64,6 +58,9 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
+}
+.row {
+  display: flex;
 }
 .col {
   display: flex;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import profileIcon from '../../../assets/default_user.png'
+import defaultProfileIcon from '../../../assets/default_user.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
 
 type Props = {
@@ -31,7 +31,9 @@ function Toolbar(props: Props) {
           onClick={props.onProfileClick}>
           <img
             src={
-              props.profilePictureIcon ? props.profilePictureIcon : profileIcon
+              props.profilePictureIcon
+                ? props.profilePictureIcon
+                : defaultProfileIcon
             }
             style={{ borderRadius: 20, height: 40, width: 40 }}
           />

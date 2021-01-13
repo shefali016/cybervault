@@ -9,13 +9,13 @@ import {
   GOOGLE_LOGIN_FAILURE
 } from 'actions/actionTypes'
 
-type State = {
+export type State = {
   isLoggedIn: Boolean,
   user: any,
   error: any
 };
 
-type Action = {
+export type Action = {
   type: string,
   payload: {},
   error: any,
