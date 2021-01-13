@@ -112,15 +112,24 @@ const NewProjectStepFour = (props: any) => {
 
   return (
     <div className={classes.container}>
-      <NewProjectTitle
-        title={'Set Milestone Payments.'}
-        subtitle={'Get paid upon completion of each task or date.'}
-      />
+      {!props.isEdit ? (
+        <NewProjectTitle
+          title={'Set Milestone Payments.'}
+          subtitle={'Get paid upon completion of each task or date.'}
+        />
+      ) : (
+        <NewProjectTitle
+          title={'Edit Milestone Payments.'}
+          subtitle={'Get paid upon completion of each task or date.'}
+        />
+      )}
       {renderMiddleView()}
       <NewProjectFooter
         onBack={props.onBack}
         onNext={props.onNext}
-        title={'Step 4 of 5'}
+        onUpdate={props.onUpdate}
+        title={props.isEdit ? '' : 'Step 1 of 5'}
+        projectData={projectData}
       />
     </div>
   )

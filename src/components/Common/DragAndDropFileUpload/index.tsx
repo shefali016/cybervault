@@ -1,50 +1,50 @@
-import React from 'react'
-import 'react-dropzone-uploader/dist/styles.css'
-import Dropzone from 'react-dropzone-uploader'
-import { Button } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { Typography } from '@material-ui/core'
+import { useStyles } from './style'
+import iconFolderUpload from '../../../assets/iconFolderUpload.png'
 
-export const DragAndDropUploader = () => {
-  // specify upload params and url for your files
-  const getUploadParams = ({ meta }: any) => {
-    return { url: 'https://httpbin.org/post' }
-  }
-
-  // called every time a file's `status` changes
-  const handleChangeStatus = ({ meta, file }: any, status: any) => {
-    console.log(status, meta, file)
-  }
+export const DragAndDropUploader = (props?: any) => {
+  const classes = useStyles()
+  const [image, setImageSource] = useState([])
+  const [isImage, setIsImage] = useState(false)
 
   // receives array of files that are done uploading when submit button is clicked
-  const handleSubmit = (files: any, allFiles: any) => {
-    console.log(files.map((f: any) => f.meta))
-    allFiles.forEach((f: any) => f.remove())
-  }
+  const onDrop = useCallback((acceptedFiles) => {
+    console.log(acceptedFiles)
+    setImageSource(acceptedFiles)
+    setIsImage(true)
+  }, [])
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: props.isVideo ? 'video/*' : 'image/jpeg, image/png'
+  })
   return (
-    <Button>
-      <Dropzone
-        getUploadParams={getUploadParams}
-        onChangeStatus={handleChangeStatus}
-        onSubmit={handleSubmit}
-        accept='image/*,video/*'
-        inputContent=' '
-        styles={{
-          dropzone: {
-            width: 100,
-            height: 60,
-            borderWidth: 1,
-            paddingBottom: 0,
-            paddingRight: 0,
-            paddingLeft: 0,
-            paddingTop: 0
-          },
-          dropzoneActive: { padding: 0 }
-        }}
-      />
-    </Button>
+    <div {...getRootProps({ className: classes.dropzone })}>
+      <input {...getInputProps()} />
+      <div className={classes.topContainer}>
+        {isImage
+          ? image.map((file: any, index: number) => {
+              return (
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt='icon'
+                  className={classes.addedImage}
+                />
+              )
+            })
+          : null}
+      </div>
+      <div className={classes.container}>
+        {!isImage ? (
+          <img src={iconFolderUpload} alt='icon' className={classes.image} />
+        ) : null}
+        <Typography className={classes.text}> Drag {`&`} Drop Media</Typography>
+        <Typography className={classes.bottomText}>
+          {!props.isVideo ? '.jpg or .png' : '.mp4 or .mov'}
+        </Typography>
+      </div>
+    </div>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  button: {}
-}))

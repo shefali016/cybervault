@@ -71,7 +71,7 @@ const NewProjectStepTwo = (props: any) => {
         <CloseButton onClick={() => deleteTask(data.id)} />
       </div>
     )
-    return (
+    return props.newProject || props.editTask ? (
       <div className={'task-row'} key={`task-${data.id}`}>
         {isTablet && closeButton}
         <div style={{ flex: 2, marginRight: leftInputMargin }}>
@@ -106,11 +106,11 @@ const NewProjectStepTwo = (props: any) => {
         </div>
         {!isTablet && closeButton}
       </div>
-    )
+    ) : null
   }
 
   const renderProjectDescriptionView = () => {
-    return (
+    return props.newProject || props.editCampaign ? (
       <div style={{ marginTop: 30 }}>
         <AppTextField
           label={'Project Description'}
@@ -120,7 +120,7 @@ const NewProjectStepTwo = (props: any) => {
           multiline={true}
         />
       </div>
-    )
+    ) : null
   }
 
   const renderMiddleView = () => {
@@ -128,45 +128,49 @@ const NewProjectStepTwo = (props: any) => {
     return (
       <div className={classes.middleView}>
         <div>
-          <div className={'input-row'} style={{ marginBottom: 30 }}>
-            <div style={{ flex: 4, marginRight: leftInputMargin }}>
-              <AppTextField
-                type={''}
-                label={'Campaign Objective'}
-                value={projectData.campaignObjective}
-                onChange={(e: InputChangeEvent) =>
-                  handleInputChange(e)('campaignObjective')
-                }
-                error={
-                  haveError && projectData.campaignObjective === ''
-                    ? true
-                    : false
-                }
-              />
+          {props.newProject || props.editCampaign ? (
+            <div className={'input-row'} style={{ marginBottom: 30 }}>
+              <div style={{ flex: 4, marginRight: leftInputMargin }}>
+                <AppTextField
+                  type={''}
+                  label={'Campaign Objective'}
+                  value={projectData.campaignObjective}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e)('campaignObjective')
+                  }
+                  error={
+                    haveError && projectData.campaignObjective === ''
+                      ? true
+                      : false
+                  }
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <AppTextField
+                  type={'date'}
+                  label={'Campaign Deadline'}
+                  value={projectData.campaignDeadLine}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e)('campaignDeadLine')
+                  }
+                  error={
+                    haveError && projectData.campaignDeadLine === ''
+                      ? true
+                      : false
+                  }
+                />
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                type={'date'}
-                label={'Campaign Deadline'}
-                value={projectData.campaignDeadLine}
-                onChange={(e: InputChangeEvent) =>
-                  handleInputChange(e)('campaignDeadLine')
-                }
-                error={
-                  haveError && projectData.campaignDeadLine === ''
-                    ? true
-                    : false
-                }
-              />
-            </div>
-          </div>
+          ) : null}
         </div>
         {projectData.tasks && projectData.tasks.length > 0
           ? projectData.tasks.map((data: Task, index: number) => {
               return renderTasksView(data, index)
             })
           : null}
-        <AddMoreButton onClick={addTask} title={'Add Task'} />
+        {props.newProject || props.editTask ? (
+          <AddMoreButton onClick={addTask} title={'Add Task'} />
+        ) : null}
         {renderProjectDescriptionView()}
       </div>
     )
@@ -177,9 +181,11 @@ const NewProjectStepTwo = (props: any) => {
       <NewProjectTitle title={'Plan The Strategy.'} subtitle={'Work scope.'} />
       {renderMiddleView()}
       <NewProjectFooter
-        title={'Step 2 of 5'}
+        title={props.isEdit ? '' : 'Step 1 of 5'}
         onBack={props.onBack}
         onNext={props.onNext}
+        onUpdate={props.onUpdate}
+        projectData={projectData}
         haveError={haveError ? haveError : false}
       />
     </div>

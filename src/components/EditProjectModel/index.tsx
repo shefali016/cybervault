@@ -1,61 +1,66 @@
 import React, { useState, useRef } from 'react'
 import '../../App.css'
-import './Projects.css'
+import '../Projects/Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
-import NewProjectStepOne from './Steps/NewProjectStepOne'
-import NewProjectStepTwo from './Steps/NewProjectStepTwo'
-import NewProjectStepThree from './Steps/NewProjectStepThree'
-import NewProjectStepFour from './Steps/NewProjectStepFour'
-import NewProjectStepFive from './Steps/NewProjectStepFive'
-import { getProductData, generateUid } from '../../utils'
+import NewProjectStepOne from '../Projects/Steps/NewProjectStepOne'
+import NewProjectStepTwo from '../Projects/Steps/NewProjectStepTwo'
+import NewProjectStepThree from '../Projects/Steps/NewProjectStepThree'
+import NewProjectStepFour from '../Projects/Steps/NewProjectStepFour'
+import NewProjectStepFive from '../Projects/Steps/NewProjectStepFive'
+import { generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/types'
-import validate from '../../utils/helpers'
 
-type NewProjectProps = {
+type EditProjectProps = {
   onRequestClose: () => void
   onSubmitClicked: (projectData: Types.Project) => void
+  currentStep: number
+  editTask?: boolean
+  editCampaign?: boolean
+  editExpenses?: boolean
+  editBudget?: boolean
+  currentProjectData?: Types.Project
 }
 
-const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [projectData, setProjectData] = useState(getProductData())
+const EditProject = ({
+  onRequestClose,
+  onSubmitClicked,
+  currentStep,
+  editTask,
+  editCampaign,
+  editExpenses,
+  editBudget,
+  currentProjectData
+}: EditProjectProps) => {
+  const [projectData, setProjectData] = useState(currentProjectData)
   const [haveError, setHaveError] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
+  const isEdit = true
 
   const onSubmitData = () => {
     // @ts-ignorets
     onSubmitClicked({ ...projectData, id: generateUid() })
   }
-  const newProject = true
+
+  const onUpdateData = (projectData: any) => {
+    // @ts-ignorets
+    onSubmitClicked({ ...projectData })
+  }
+
   const renderStepsView = () => {
     const props = {
       projectData,
+      onUpdate: (projectData: any) => onUpdateData(projectData),
       haveError,
       setHaveError,
-      newProject,
       setProjectData,
-      onNext: () => {
-        const isError = validate(currentStep, projectData)
-        if (isError) {
-          setHaveError(true)
-        } else {
-          setHaveError(false)
-          setCurrentStep((step) => step + 1)
-          if (modalContentRef.current) {
-            modalContentRef.current.scrollTop = 0
-          }
-        }
-      },
-      onBack: () => {
-        setHaveError(false)
-        setCurrentStep((step) => step - 1)
-        if (modalContentRef.current) {
-          modalContentRef.current.scrollTop = 0
-        }
-      },
-      onSubmit: () => onSubmitData()
+      onSubmit: () => onSubmitData(),
+      isEdit,
+      editTask,
+      editCampaign,
+      editExpenses,
+      editBudget
     }
     switch (currentStep) {
       case 1:
@@ -92,21 +97,39 @@ type NewProjectModalProps = {
   open: boolean
   onRequestClose: () => void
   onSubmitClicked: (projectData: Types.Project) => void
+  currentStep: number
+  isTaskEdit?: boolean
+  isCampaignEdit?: boolean
+  isExpensesEdit?: boolean
+  isBudgetEdit?: boolean
+  projectData?: any
 }
 
-const NewProjectModal = ({
+const EditProjectModal = ({
   open,
   onRequestClose,
-  onSubmitClicked
+  onSubmitClicked,
+  currentStep,
+  isTaskEdit,
+  isCampaignEdit,
+  isExpensesEdit,
+  isBudgetEdit,
+  projectData
 }: NewProjectModalProps) => {
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
-      <NewProject
+      <EditProject
         onRequestClose={onRequestClose}
         onSubmitClicked={onSubmitClicked}
+        currentStep={currentStep}
+        editTask={isTaskEdit}
+        editCampaign={isCampaignEdit}
+        editExpenses={isExpensesEdit}
+        editBudget={isBudgetEdit}
+        currentProjectData={projectData}
       />
     </AppModal>
   )
 }
 
-export default NewProjectModal
+export default EditProjectModal

@@ -75,34 +75,36 @@ const NewProjectStepOne = (props: any) => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        <div className={'input-row'} style={{ marginBottom: 30 }}>
-          <div style={{ flex: 1, marginRight: leftInputMargin }}>
-            <AppTextField
-              error={
-                haveError && projectData.campaignName === '' ? true : false
-              }
-              type={''}
-              label={'Campaign Name'}
-              value={projectData.campaignName}
-              onChange={(e: ChangeEvent) =>
-                handleInputChange(e)('campaignName')
-              }
-            />
+        {!props.isEdit ? (
+          <div className={'input-row'} style={{ marginBottom: 30 }}>
+            <div style={{ flex: 1, marginRight: leftInputMargin }}>
+              <AppTextField
+                error={
+                  haveError && projectData.campaignName === '' ? true : false
+                }
+                type={''}
+                label={'Campaign Name'}
+                value={projectData.campaignName}
+                onChange={(e: ChangeEvent) =>
+                  handleInputChange(e)('campaignName')
+                }
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <AppTextField
+                error={
+                  haveError && projectData.campaignDate === '' ? true : false
+                }
+                type={'date'}
+                label={'Campaign Date'}
+                value={projectData.campaignDate}
+                onChange={(e: ChangeEvent) =>
+                  handleInputChange(e)('campaignDate')
+                }
+              />
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <AppTextField
-              error={
-                haveError && projectData.campaignDate === '' ? true : false
-              }
-              type={'date'}
-              label={'Campaign Date'}
-              value={projectData.campaignDate}
-              onChange={(e: ChangeEvent) =>
-                handleInputChange(e)('campaignDate')
-              }
-            />
-          </div>
-        </div>
+        ) : null}
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
@@ -123,59 +125,69 @@ const NewProjectStepOne = (props: any) => {
             />
           </div>
         </div>
-        <div className={'input-row'}>
-          <div style={{ flex: 1, marginRight: leftInputMargin }}>
-            <AppTextField
-              error={haveError && projectData.address === '' ? true : false}
-              type={''}
-              label={'Address'}
-              value={projectData.address}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
-            />
+        {!props.isEdit ? (
+          <div className={'input-row'}>
+            <div style={{ flex: 1, marginRight: leftInputMargin }}>
+              <AppTextField
+                error={haveError && projectData.address === '' ? true : false}
+                type={''}
+                label={'Address'}
+                value={projectData.address}
+                onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <AppTextField
+                error={haveError && projectData.city === '' ? true : false}
+                type={''}
+                label={'City'}
+                value={projectData.city}
+                onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
+              />
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <AppTextField
-              error={haveError && projectData.city === '' ? true : false}
-              type={''}
-              label={'City'}
-              value={projectData.city}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
-            />
+        ) : null}
+        {!props.isEdit ? (
+          <div className={'input-row'}>
+            <div style={{ flex: 1, marginRight: leftInputMargin }}>
+              <AppTextField
+                error={haveError && projectData.state === '' ? true : false}
+                type={''}
+                label={'State/Province'}
+                value={projectData.state}
+                onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <AppTextField
+                error={haveError && projectData.country === '' ? true : false}
+                type={''}
+                label={'Country'}
+                value={projectData.country}
+                onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
+              />
+            </div>
           </div>
-        </div>
-        <div className={'input-row'}>
-          <div style={{ flex: 1, marginRight: leftInputMargin }}>
-            <AppTextField
-              error={haveError && projectData.state === '' ? true : false}
-              type={''}
-              label={'State/Province'}
-              value={projectData.state}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <AppTextField
-              error={haveError && projectData.country === '' ? true : false}
-              type={''}
-              label={'Country'}
-              value={projectData.country}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
-            />
-          </div>
-        </div>
+        ) : null}
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      <NewProjectTitle title={'New Project'} subtitle={'Get Started'} />
-      {renderClientLogoView()}
+      {!props.isEdit ? (
+        <NewProjectTitle title={'New Project'} subtitle={'Get Started'} />
+      ) : (
+        <NewProjectTitle title={'Edit Client Details'} subtitle={''} />
+      )}
+      {!props.isEdit ? renderClientLogoView() : null}
       {renderMiddleView()}
       <NewProjectFooter
-        title={'Step 1 of 5'}
+        title={props.isEdit ? '' : 'Step 1 of 5'}
         onNext={props.onNext}
+        onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}
+        projectData={projectData}
       />
     </div>
   )

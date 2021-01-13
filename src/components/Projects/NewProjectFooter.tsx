@@ -18,6 +18,8 @@ type Props = {
   description?: string
   onStartProject?: () => void
   haveError?: boolean
+  onUpdate?: (projectData: any) => void
+  projectData?: any
 }
 
 const NewProjectFooter = ({
@@ -26,7 +28,9 @@ const NewProjectFooter = ({
   title,
   description,
   onStartProject,
-  haveError
+  haveError,
+  onUpdate,
+  projectData
 }: Props) => {
   const classes = useStyles()
 
@@ -69,6 +73,13 @@ const NewProjectFooter = ({
         {typeof onNext === 'function' && (
           <GradiantButton onClick={onNext} className={classes.continueButton}>
             <Typography variant={'button'}>Continue</Typography>
+          </GradiantButton>
+        )}
+        {typeof onUpdate === 'function' && (
+          <GradiantButton
+            onClick={() => onUpdate(projectData)}
+            className={classes.continueButton}>
+            <Typography variant={'button'}>Update</Typography>
           </GradiantButton>
         )}
       </div>
