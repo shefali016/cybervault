@@ -9,7 +9,7 @@ type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
   headerTitle?: string
-  onProfileClick: () => void
+  onProfileClick?: () => void
 }
 
 function Toolbar(props: Props) {

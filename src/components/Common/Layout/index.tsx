@@ -17,13 +17,15 @@ import { TabsProps } from '@material-ui/core'
 type ReduxProps = { onLogout: () => void }
 
 export type LayoutProps = {
-  actionButtonConfig: ButtonConfig
+  actionButtonConfig?: any
   headerTitle?: string
   children?: React.ReactNode
   tabs: Array<Tab>
   onTabPress: (tab: Tab) => void
   activeTab: Tab
-  onProfileClick: () => void
+  onProfileClick?: () => void
+  onActionButtonPress?: () => void
+  actionButtonTitle?: string
 }
 
 const Layout = (props: LayoutProps & ReduxProps) => {

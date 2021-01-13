@@ -34,12 +34,13 @@ const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
     )
     onSubmitClicked({ ...rest, id: generateUid(), logo: logoUrl })
   }
-
+  const newProject = true
   const renderStepsView = () => {
     const props = {
       projectData,
       haveError,
       setHaveError,
+      newProject,
       setProjectData,
       onNext: () => {
         const isError = validate(currentStep, projectData)

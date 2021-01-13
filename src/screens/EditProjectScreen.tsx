@@ -1,14 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
-import { Typography, Button } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import Layout from '../components/Common/Layout'
 import { makeStyles } from '@material-ui/core/styles'
-import { AUTO, COLUMN, FLEX } from '../utils/constants/stringConstants'
+import { COLUMN, FLEX, FLEX_END } from '../utils/constants/stringConstants'
 import { WHITE_COLOR } from '../utils/constants/colorsConstants'
-import IconMaterialEdit from '../assets/IconMaterialEdit.png'
 import NewProjectModal from '../components/Projects/NewProjectModal'
 import * as Types from 'utils/types'
+
 import {
   createNewProjectRequest,
   clearNewProjectData
@@ -19,75 +19,29 @@ import { RenderProjectDetails } from '../components/Common/Widget/ProjectDetailW
 import { RenderExpenseDetails } from '../components/Common/Widget/ExpenseDetailsWidget'
 import { RenderMilestonesDetails } from '../components/Common/Widget/MilestonesDetailWidget'
 import { RenderBudgetDetails } from '../components/Common/Widget/BudgetDetailsWidget'
-import Dummy from '../assets/Dummy.jpg'
-
+import { DragAndDropUploader } from '../components/Common/DragAndDropFileUpload'
 import { GradiantButton } from '../components/Common/Button/GradiantButton'
-// @ts-ignore
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import { Carousel } from 'react-responsive-carousel'
 import { ImageCarousel } from '../components/Common/Carousel'
-
+import EditProjectModal from 'components/EditProjectModel'
+import ProjectStatusIndicator from '../components/Common/ProjectStatusIndicator'
+import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
+import { getDefaultProjectData } from '../utils'
 export const EditProjectScreen = (props: any) => {
-  const [isClientEditable, setClientEditable] = useState(false)
-  const [isProjectEditable, setProjectEditable] = useState(false)
-  const [isBudgetEditable, setBudgetEditable] = useState(false)
   const classes = useStyles()
-  const currentDate = new Date().toISOString().slice(0, 10)
-  const projectData = {
-    logo: '',
-    campaignName: 'Test Campaign',
-    campaignDate: currentDate,
-    clientName: 'Test name',
-    clientEmail: 'test@yopmail.com',
-    address: '201 ST New york',
-    city: 'Newyork city',
-    state: 'LA',
-    country: 'United states',
-    campaignObjective: 'To get our own',
-    campaignDeadLine: currentDate,
-    description: 'Start with the game',
-    tasks: [
-      {
-        id: '0',
-        title: 'Work on',
-        startDate: '23-10-2021',
-        endDate: '19-09-2022'
-      }
-    ],
-    campaignBudget: '5000',
-    campaignExpenses: '1008',
-    expenses: [
-      {
-        id: '0',
-        title: 'New',
-        cost: '230'
-      }
-    ],
-    milestones: [
-      {
-        id: '0',
-        title: 'First',
-        payment: '4000'
-      }
-    ],
-    id: '12'
-  }
-
-  const editItems = (index: number): any => {
-    if (index === 1) {
-      setClientEditable(true)
-    } else if (index === 2) {
-      setProjectEditable(true)
-    } else if (index === 3) {
-      setBudgetEditable(true)
-    }
-  }
-
+  const [projectData, setProjectData] = useState(getDefaultProjectData())
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+  const [editProjectModalOpen, setEditProjectModalOpen] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [isExpenseEdit, setExpenseEdit] = useState(false)
+  const [isCampaignEdit, setCampaignEdit] = useState(false)
+  const [isTaskEdit, setTaskEdit] = useState(false)
+  const [isBudgetEdit, setBudgetEdit] = useState(false)
+
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
     []
   )
+
   const closeNewProjectModal = useCallback(
     () => setNewProjectModalOpen(false),
     []
@@ -97,56 +51,183 @@ export const EditProjectScreen = (props: any) => {
     []
   )
 
-  return (
-    <div className={'dashboardScreen'}>
-      <div className={classes.wrapper}>
-        <div style={{ marginTop: 30, marginLeft: 30 }}>
-          <RenderClientDetails projectData={projectData} editInfo />
-          <RenderProjectDetails projectData={projectData} editInfo />
-          {projectData.tasks.length > 0 &&
-          projectData.tasks[0].title.trim() !== '' ? (
-            <RenderTaskDetails projectData={projectData} editInfo />
-          ) : null}
-          {projectData.expenses.length > 0 &&
-          projectData.expenses[0].title.trim() !== '' ? (
-            <RenderExpenseDetails projectData={projectData} editInfo />
-          ) : null}
-          {projectData.milestones.length > 0 &&
-          projectData.milestones[0].title.trim() !== '' ? (
-            <RenderMilestonesDetails projectData={projectData} editInfo />
-          ) : null}
-          <RenderBudgetDetails projectData={projectData} editInfo />
-          <div style={{ marginBottom: 80 }}>
-            <Typography className={classes.textColor}>Upload Videos</Typography>
-            <div className={classes.imageCorouselContainer}>
-              <Carousel>
-                {
-                  //Using static data for testing
-                  [1, 2, 3].map((index: number) => {
-                    return (
-                      <div className={classes.carouselChild}>
-                        <img src={Dummy} alt='' />
-                      </div>
-                    )
-                  })
-                }
-              </Carousel>
-            </div>
+  const openEditProjectModal = (
+    currentStep: number,
+    isTaskEdit?: boolean,
+    isCampaignEdit?: boolean,
+    isExpensesEdit?: boolean,
+    isBudgetEdit?: boolean
+  ) => {
+    setEditProjectModalOpen(true)
+    setCurrentStep(currentStep)
+    setCampaignEdit(Boolean(isCampaignEdit))
+    setTaskEdit(Boolean(isTaskEdit))
+    setExpenseEdit(Boolean(isExpensesEdit))
+    setBudgetEdit(Boolean(isBudgetEdit))
+  }
+
+  const closeEditProjectModal = useCallback(
+    () => setEditProjectModalOpen(false),
+    []
+  )
+
+  const modifyProjectData = (updatedData: any) => {
+    setProjectData({ ...updatedData })
+  }
+
+  const onSaveChanges = () => {
+    console.log(projectData)
+  }
+
+  const editProject = (projectData: any) => {
+    modifyProjectData(projectData)
+    closeEditProjectModal()
+  }
+
+  const renderHeader = () => {
+    return (
+      <div className={classes.headText}>
+        <Typography> Status : {'In Progress'}</Typography>
+        <ProjectStatusIndicator status={'In progress'} />
+      </div>
+    )
+  }
+
+  const renderImageCarousel = () => {
+    return (
+      <>
+        <Typography className={classes.textColor}>
+          Upload Photo Content
+        </Typography>
+        <div style={{ display: FLEX }}>
+          <div className={classes.imageCorouselContainer}>
+            <ImageCarousel />
           </div>
-          <div>
-            <Typography className={classes.textColor}>
-              Upload Photo Content
+          <div className={classes.generalMarginTop}>
+            <DragAndDropUploader />
+          </div>
+        </div>
+        <div className={classes.button}>
+          <GradiantButton width={135} height={40}>
+            <Typography className={classes.buttonText} onClick={onSaveChanges}>
+              {' '}
+              Save Changes
             </Typography>
-            <div className={classes.imageCorouselContainer}>
-              <ImageCarousel />
-            </div>
+          </GradiantButton>
+        </div>
+      </>
+    )
+  }
+
+  const renderVideoCarousel = () => {
+    return (
+      <div className={classes.uploadVideoContainer}>
+        <Typography className={classes.textColor}>Upload Videos</Typography>
+        <div style={{ display: FLEX }}>
+          <div className={classes.videoCorouselContainer}>
+            <ImageCarousel isVideo />
           </div>
-          {/* <div className={classes.button}>
-            <GradiantButton> 
-              <Typography className={classes.buttonText}> Save Changes</Typography> </GradiantButton>
-            </div> */}
+          <div className={classes.generalMarginTop}>
+            <DragAndDropUploader isVideo />
+          </div>
+        </div>
+        {renderDevider({ editInfo: true })}
+      </div>
+    )
+  }
+
+  const renderProjectDetails = () => {
+    return (
+      <div>
+        <RenderClientDetails
+          projectData={projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(1)}
+        />
+        <RenderProjectDetails
+          projectData={projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(2, false, true, false, false)}
+        />
+        {projectData.tasks.length > 0 &&
+        projectData.tasks[0].title.trim() !== '' ? (
+          <RenderTaskDetails
+            projectData={projectData}
+            editInfo
+            onEdit={() => openEditProjectModal(2, true, false, false, false)}
+          />
+        ) : null}
+        {projectData.expenses.length > 0 &&
+        projectData.expenses[0].title.trim() !== '' ? (
+          <RenderExpenseDetails
+            projectData={projectData}
+            editInfo
+            onEdit={() => openEditProjectModal(3, false, false, true, false)}
+          />
+        ) : null}
+        {projectData.milestones.length > 0 &&
+        projectData.milestones[0].title.trim() !== '' ? (
+          <RenderMilestonesDetails
+            projectData={projectData}
+            editInfo
+            onEdit={() => openEditProjectModal(4)}
+          />
+        ) : null}
+        <RenderBudgetDetails
+          projectData={projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(3, false, false, false, true)}
+        />
+      </div>
+    )
+  }
+
+  const renderBody = () => {
+    return (
+      <div className={classes.detailsWrapper}>
+        {renderProjectDetails()}
+        {renderVideoCarousel()}
+        {renderImageCarousel()}
+      </div>
+    )
+  }
+
+  const renderEditProjectModel = () => {
+    return (
+      <EditProjectModal
+        open={editProjectModalOpen}
+        currentStep={currentStep}
+        onRequestClose={closeEditProjectModal}
+        onSubmitClicked={editProject}
+        isTaskEdit={isTaskEdit}
+        isCampaignEdit={isCampaignEdit}
+        isExpensesEdit={isExpenseEdit}
+        isBudgetEdit={isBudgetEdit}
+        projectData={projectData}
+      />
+    )
+  }
+
+  return (
+    <div className={classes.background}>
+      {/* <Layout
+        actionButtonTitle={'New Project'}
+        //history={props.history}
+        headerTitle={'Edit Project-'}
+        onActionButtonPress={openNewProjectModal}> */}
+      <NewProjectModal
+        open={newProjectModalOpen}
+        onRequestClose={closeNewProjectModal}
+        onSubmitClicked={createNewProject}
+      />
+      {renderEditProjectModel()}
+      <div className={classes.dashboardContainer}>
+        <div className={classes.wrapper}>
+          {renderHeader()}
+          {renderBody()}
         </div>
       </div>
+      {/* </Layout> */}
     </div>
   )
 }
@@ -167,6 +248,17 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  background: {
+    display: 'grid',
+    backgroundColor: '#24262B',
+    height: '100%',
+    width: '100%',
+    overflowY: 'auto',
+    overflowX: 'hidden'
+  },
+  dashboardContainer: {
+    marginTop: '50px'
+  },
   generalMarginLeft: {
     marginLeft: 10,
     color: WHITE_COLOR
@@ -228,7 +320,8 @@ const useStyles = makeStyles((theme) => ({
   imageCorouselContainer: {
     width: theme.spacing(50),
     height: theme.spacing(30),
-    marginTop: 20
+    marginTop: 20,
+    marginRight: 210
   },
   carouselChild: {
     width: 350,
@@ -239,14 +332,35 @@ const useStyles = makeStyles((theme) => ({
     color: 'white'
   },
   button: {
-    width: 135,
-    height: 40,
     display: FLEX,
-    flexDirection: 'column-reverse',
-    position: 'relative'
+    justifyContent: 'flex-end',
+    marginBottom: 20,
+    marginRight: 20
   },
   buttonText: {
     fontSize: 8
+  },
+  videoCorouselContainer: {
+    width: '60%',
+    marginRight: 30,
+    marginTop: 20
+  },
+  headText: {
+    display: FLEX,
+    justifyContent: FLEX_END,
+    color: 'white',
+    marginTop: 20,
+    marginRight: 20
+  },
+  detailsWrapper: {
+    marginTop: 30,
+    marginLeft: 30
+  },
+  generalMarginTop: {
+    marginTop: 40
+  },
+  uploadVideoContainer: {
+    marginBottom: 40
   }
 }))
 

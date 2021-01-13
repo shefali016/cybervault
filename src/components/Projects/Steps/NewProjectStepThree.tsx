@@ -73,14 +73,14 @@ const NewProjectStepThree = (props: any) => {
         <CloseButton onClick={() => deleteExpense(data.id)} />
       </div>
     )
-    return (
+    return props.newProject || props.editExpenses ? (
       <div className={'task-row'} key={`expense-${data.id}`}>
         {isTablet && closeButton}
         <div style={{ flex: 1, marginRight: leftInputMargin }}>
           <AppTextField
             type={''}
             label={`Expense ${index + 1}`}
-            value={projectData.title}
+            value={projectData.expenses[0].title}
             onChange={(e: InputChangeEvent) =>
               handleExpenseChange(e, 'title', index)
             }
@@ -90,7 +90,7 @@ const NewProjectStepThree = (props: any) => {
           <AppTextField
             type={'number'}
             label={`Estimated Cost $`}
-            value={projectData.cost}
+            value={projectData.expenses[0].cost}
             onChange={(e: InputChangeEvent) =>
               handleExpenseChange(e, 'cost', index)
             }
@@ -98,7 +98,7 @@ const NewProjectStepThree = (props: any) => {
         </div>
         {!isTablet && closeButton}
       </div>
-    )
+    ) : null
   }
 
   const renderMiddleView = () => {
@@ -106,46 +106,56 @@ const NewProjectStepThree = (props: any) => {
     return (
       <div className={classes.middleView}>
         <div>
-          <div className={'input-row'} style={{ marginBottom: 30 }}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={
-                  haveError && projectData.campaignBudget === '' ? true : false
-                }
-                type={'number'}
-                label={'Campaign Budget'}
-                value={projectData.campaignBudget}
-                onChange={(e: InputChangeEvent) =>
-                  handleInputChange(e, 'campaignBudget')
-                }
-              />
+          {props.newProject || props.editBudget ? (
+            <div className={'input-row'} style={{ marginBottom: 30 }}>
+              <div style={{ flex: 1, marginRight: leftInputMargin }}>
+                <AppTextField
+                  error={
+                    haveError && projectData.campaignBudget === ''
+                      ? true
+                      : false
+                  }
+                  type={'number'}
+                  label={'Campaign Budget'}
+                  value={projectData.campaignBudget}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e, 'campaignBudget')
+                  }
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <AppTextField
+                  error={
+                    haveError && projectData.campaignExpenses === ''
+                      ? true
+                      : false
+                  }
+                  type={'number'}
+                  label={'Campaign Expenses'}
+                  value={projectData.campaignExpenses}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e, 'campaignExpenses')
+                  }
+                />
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={
-                  haveError && projectData.campaignExpenses === ''
-                    ? true
-                    : false
-                }
-                type={'number'}
-                label={'Campaign Expenses'}
-                value={projectData.campaignExpenses}
-                onChange={(e: InputChangeEvent) =>
-                  handleInputChange(e, 'campaignExpenses')
-                }
-              />
-            </div>
-          </div>
+          ) : null}
         </div>
-        <Typography variant={'caption'} className={classes.estimatedCostLabel}>
-          Add your estimated cost of expenses:
-        </Typography>
+        {props.newProject || props.isBudgetEdit ? (
+          <Typography
+            variant={'caption'}
+            className={classes.estimatedCostLabel}>
+            Add your estimated cost of expenses:
+          </Typography>
+        ) : null}
         {projectData.expenses && projectData.expenses.length > 0
           ? projectData.expenses.map((data: Expense, index: number) => {
               return renderTasksView(data, index)
             })
           : null}
-        <AddMoreButton onClick={addExpense} title={'Add Expense'} />
+        {props.newProject || props.editExpenses ? (
+          <AddMoreButton onClick={addExpense} title={'Add Expense'} />
+        ) : null}
       </div>
     )
   }
@@ -158,12 +168,14 @@ const NewProjectStepThree = (props: any) => {
       />
       {renderMiddleView()}
       <NewProjectFooter
-        title={'Step 3 of 5'}
+        title={props.isEdit ? '' : 'Step 1 of 5'}
         onNext={props.onNext}
         onBack={props.onBack}
         description={
           '*This will be added to the final invoice sent to client. The campaign budget will be the total amount due to the client. You can go back and edit this page again if needed.'
         }
+        projectData={projectData}
+        onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}
       />
     </div>
