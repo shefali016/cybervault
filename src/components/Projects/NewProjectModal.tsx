@@ -12,10 +12,11 @@ import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/types'
 import validate from '../../utils/helpers'
+import { setMedia } from '../../apis/assets'
 
 type NewProjectProps = {
   onRequestClose: () => void
-  onSubmitClicked: (projectData: Types.Project) => void
+  onSubmitClicked: (projectData: any) => void
 }
 
 const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
@@ -24,9 +25,14 @@ const NewProject = ({ onRequestClose, onSubmitClicked }: NewProjectProps) => {
   const [haveError, setHaveError] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
 
-  const onSubmitData = () => {
+  const onSubmitData = async () => {
     // @ts-ignorets
-    onSubmitClicked({ ...projectData, id: generateUid() })
+    const { logoFile, logo, ...rest } = projectData
+    const logoUrl = await setMedia(
+      `images/clientLogos/${generateUid()}`,
+      logoFile
+    )
+    onSubmitClicked({ ...rest, id: generateUid(), logo: logoUrl })
   }
   const newProject = true
   const renderStepsView = () => {

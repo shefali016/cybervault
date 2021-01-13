@@ -1,6 +1,6 @@
 import React from 'react'
-import classes from './Toolbar.module.css'
 import { IconButton } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import profileIcon from '../../../assets/userAvatar.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
 
@@ -11,6 +11,7 @@ type Props = {
 }
 
 function Toolbar(props: Props) {
+  const classes = useStyles()
   return (
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25 }}>
@@ -36,5 +37,17 @@ function Toolbar(props: Props) {
     </div>
   )
 }
+
+const useStyles = makeStyles((theme) => ({
+  Toolbar: {
+    height: theme.spacing(8),
+    width: '100%',
+    background: '#333333',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxSizing: 'border-box'
+  }
+}))
 
 export default Toolbar

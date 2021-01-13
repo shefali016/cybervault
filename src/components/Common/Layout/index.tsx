@@ -5,84 +5,82 @@ import { connect } from 'react-redux'
 import ReactLoading from 'react-loading'
 import { logout } from '../../../actions/authActions'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { POSITION_ABSOLUTE, CENTER } from 'utils/constants/stringConstants'
+import {
+  POSITION_ABSOLUTE,
+  CENTER,
+  FLEX,
+  COLUMN
+} from 'utils/constants/stringConstants'
+import { Tab } from 'utils/types'
+import { TabsProps } from '@material-ui/core'
 
-type Props = {
+type ReduxProps = { onLogout: () => void }
+
+export type LayoutProps = {
   onActionButtonPress: () => void
   actionButtonTitle: string
   headerTitle?: string
   children?: React.ReactNode
-  history: any
-  onLogout?: () => void
-  isLoading?: boolean
+  tabs: Array<Tab>
+  onTabPress: (tab: Tab) => void
+  activeTab: Tab
 }
 
-const Layout = (props: Props) => {
+const Layout = (props: LayoutProps & ReduxProps) => {
   const {
     onActionButtonPress,
     actionButtonTitle,
-    history,
     onLogout,
     headerTitle,
-    isLoading
+    tabs,
+    onTabPress,
+    activeTab
   } = props
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
   const classes = useStyles()
   const theme = useTheme()
-  console.log(theme.palette.primary.light)
+
   return (
     <div className={classes.root}>
       <SideBarComponent
         {...{
           onActionButtonPress,
           actionButtonTitle,
-          history,
           onLogout,
           open: drawerOpen,
-          setOpen: setDrawerOpen
+          setOpen: setDrawerOpen,
+          tabs,
+          onTabPress,
+          activeTab
         }}
       />
       <div className={classes.main}>
         <ToolBar {...{ headerTitle }} />
-        <div style={{ flex: 1 }}>{props.children}</div>
+        {props.children}
       </div>
-      {isLoading && (
-        <div className={classes.loader}>
-          <ReactLoading
-            type={'bubbles'}
-            color={theme.palette.primary.dark}
-            height={'12%'}
-            width={'12%'}
-          />
-        </div>
-      )}
     </div>
   )
 }
 
-const useStyles = makeStyles((theme: any) => ({
-  root: { display: 'flex' },
-  main: { flexGrow: 1, height: '100vh' },
-  loader: {
-    flexGrow: 1,
-    position: POSITION_ABSOLUTE,
-    display: 'flex',
-    flex: 1,
-    height: '100%',
-    width: '100%',
-    alignItems: CENTER,
-    justifyContent: CENTER,
-    zIndex: 10000
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.default,
+    display: FLEX,
+    height: '100vh'
+  },
+  main: {
+    display: FLEX,
+    flexDirection: 'column',
+    height: '100vh',
+    width: '100vw',
+    overflowX: 'auto',
+    flexWrap: 'nowrap'
   }
 }))
 
-const mapStateToProps = (state: any) => ({
-  isLoading: state.project.isLoading
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: any): ReduxProps => ({
   onLogout: () => dispatch(logout())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Layout)
+export default connect(null, mapDispatchToProps)(Layout)

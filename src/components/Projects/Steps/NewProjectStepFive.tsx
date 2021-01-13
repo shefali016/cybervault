@@ -11,7 +11,6 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { useTabletLayout } from '../../../utils/hooks'
 import NewProjectTitle from '../NewProjectTitle'
 import NewProjectFooter from '../NewProjectFooter'
 import nikeLogo from '../../../assets/nike.png'

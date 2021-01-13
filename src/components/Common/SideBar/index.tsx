@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Button,
   Typography,
@@ -13,8 +13,6 @@ import {
 } from '@material-ui/core'
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import MailIcon from '@material-ui/icons/Mail'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import AddIcon from '@material-ui/icons/Add'
 import {
@@ -31,43 +29,38 @@ import {
 } from '../../../utils/constants/colorsConstants'
 import ROUTES from '../../../utils/constants/routes'
 import { Link } from 'react-router-dom'
+import { Tab } from 'utils/types'
 
 type Props = {
   actionButtonTitle: string
   onActionButtonPress: () => void
-  history: any
   onLogout?: () => void
   open: boolean
   setOpen: (open: boolean) => void
+  tabs: Array<Tab>
+  onTabPress: (tab: Tab) => void
+  activeTab: Tab
 }
 
 const SideBarComponent = (props: Props) => {
   const {
-    history,
     actionButtonTitle,
     onActionButtonPress,
     onLogout,
     open = false,
-    setOpen
+    setOpen,
+    tabs,
+    onTabPress,
+    activeTab
   } = props
   const classes = useStyles()
 
-  const handleOptionClick = (index: Number) => {
-    const url = index === 0 ? ROUTES.DASHBOARD : ROUTES.PROJECTS
-    history.push(url)
-  }
+  const [topTabs, bottomTabs] = useMemo(() => {
+    return [tabs.slice(0, 5), tabs.slice(5)]
+  }, tabs)
 
   const handleLogout = () => {
     onLogout && onLogout()
-  }
-
-  const getListItemIcon = (text: string) => {
-    switch (text) {
-      case 'DashBoard':
-        return <InboxIcon className={classes.listIconStyle} />
-      default:
-        return <MailIcon className={classes.listIconStyle} />
-    }
   }
 
   const renderStorageView = () => {
@@ -118,14 +111,18 @@ const SideBarComponent = (props: Props) => {
     )
   }
 
-  const renderListItem = (text: string, onClick: () => void) => (
-    <ListItem button key={text} onClick={onClick} className={classes.listItem}>
-      <ListItemIcon>{getListItemIcon(text)}</ListItemIcon>
+  const renderListItem = (tab: Tab, onClick: () => void) => (
+    <ListItem
+      button
+      key={tab.text}
+      onClick={onClick}
+      className={classes.listItem}>
+      <ListItemIcon>{tab.icon}</ListItemIcon>
       <ListItemText
         disableTypography
         primary={
           <Typography style={{ color: WHITE_COLOR, fontSize: 15 }}>
-            {text}
+            {tab.text}
           </Typography>
         }
         className={classes.sideBarText}
@@ -162,25 +159,24 @@ const SideBarComponent = (props: Props) => {
       </Button>
       <Divider className={classes.divider} />
       <List>
-        {[
-          'DashBoard',
-          'Projects',
-          'Portfolio',
-          'Setting',
-          'Storage'
-        ].map((text, index) =>
-          renderListItem(text, () => handleOptionClick(index))
+        {topTabs.map((tab, index) =>
+          renderListItem(tab, () => onTabPress(tab))
         )}
       </List>
       {renderStorageView()}
       <Divider className={classes.divider} />
       <List>
-        {['Invoices', 'Payment', 'Security'].map((text, index) =>
-          renderListItem(text, () => handleOptionClick(2))
+        {bottomTabs.map((tab, index) =>
+          renderListItem(tab, () => onTabPress(tab))
         )}
       </List>
       <Divider className={classes.divider} />
-      <List>{renderListItem('Log Out', handleLogout)}</List>
+      <List>
+        {renderListItem(
+          { id: 'logout', text: 'Log Out', icon: null },
+          handleLogout
+        )}
+      </List>
       <Divider className={classes.divider} />
       {renderTermsView()}
     </Drawer>
@@ -229,7 +225,7 @@ const useStyles = makeStyles((theme) => ({
   appIconContainer: {
     alignItems: CENTER,
     justifyContent: CENTER,
-    height: APP_BAR_HEIGHT,
+    minHeight: theme.spacing(8),
     backgroundColor: SECONDARY_DARK_COLOR,
     borderRadius: 0
   },

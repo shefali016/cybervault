@@ -20,6 +20,8 @@ import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks/'
+import { setMedia } from '../../../apis/assets'
+import { generateUid } from '../../../utils'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
@@ -27,11 +29,12 @@ const NewProjectStepOne = (props: any) => {
   const { projectData, setProjectData, haveError } = props
   let imageInputRef: any = React.useRef()
 
-  const handleChange = (event: any) => {
+  const handleChange = async (event: any) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
       setProjectData({
         ...projectData,
-        logo: URL.createObjectURL(event.target.files[0])
+        logo: URL.createObjectURL(event.target.files[0]),
+        logoFile: event.target.files[0]
       })
     }
   }
@@ -57,12 +60,15 @@ const NewProjectStepOne = (props: any) => {
               imageInputRef = input
             }}
             onChange={handleChange}
+            style={{ display: 'none' }}
           />
-          <img
-            src={projectData.logo !== '' ? projectData.logo : nikeLogo}
-            className={classes.clientLogoImg}
-            alt={'client-logo'}
-          />
+          {!!projectData.logo && (
+            <img
+              src={projectData.logo}
+              className={classes.clientLogoImg}
+              alt={'client-logo'}
+            />
+          )}
         </Button>
         <Typography variant={'caption'} className={classes.addLogoText}>
           Add Client Logo
@@ -207,11 +213,11 @@ const useStyles = makeStyles((theme) => ({
     width: 80,
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
-    marginBottom: 5
+    marginBottom: 5,
+    overflow: 'hidden'
   },
   clientLogoImg: {
     height: 80,
-    width: 80,
     borderRadius: 40,
     position: POSITION_ABSOLUTE
   },

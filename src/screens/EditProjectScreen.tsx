@@ -210,24 +210,24 @@ export const EditProjectScreen = (props: any) => {
 
   return (
     <div className={classes.background}>
-      <Layout
+      {/* <Layout
         actionButtonTitle={'New Project'}
-        history={props.history}
+        //history={props.history}
         headerTitle={'Edit Project-'}
-        onActionButtonPress={openNewProjectModal}>
-        <NewProjectModal
-          open={newProjectModalOpen}
-          onRequestClose={closeNewProjectModal}
-          onSubmitClicked={createNewProject}
-        />
-        {renderEditProjectModel()}
-        <div className={classes.dashboardContainer}>
-          <div className={classes.wrapper}>
-            {renderHeader()}
-            {renderBody()}
-          </div>
+        onActionButtonPress={openNewProjectModal}> */}
+      <NewProjectModal
+        open={newProjectModalOpen}
+        onRequestClose={closeNewProjectModal}
+        onSubmitClicked={createNewProject}
+      />
+      {renderEditProjectModel()}
+      <div className={classes.dashboardContainer}>
+        <div className={classes.wrapper}>
+          {renderHeader()}
+          {renderBody()}
         </div>
-      </Layout>
+      </div>
+      {/* </Layout> */}
     </div>
   )
 }
@@ -278,8 +278,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     flexDirection: COLUMN,
     borderRadius: 20,
-    margin: 20,
-    heigth: '70vh'
+    heigth: '70vh',
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3)
   },
   title: {
     fontFamily: 'Helvetica Neue',

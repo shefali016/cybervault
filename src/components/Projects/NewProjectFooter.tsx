@@ -3,6 +3,7 @@ import React from 'react'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import {
   CENTER,
+  COLUMN,
   FLEX,
   FLEX_END,
   NONE,
@@ -50,6 +51,11 @@ const NewProjectFooter = ({
       {!!description && (
         <Typography variant={'caption'}>{description}</Typography>
       )}
+      {haveError ? (
+        <Typography className={classes.warningText}>
+          Please fill all the required fields.
+        </Typography>
+      ) : null}
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
         {typeof onStartProject === 'function' && (
           <div className={classes.startProjectButtonContainer}>
@@ -60,12 +66,6 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {haveError ? (
-          <Typography className={classes.warningText}>
-            {' '}
-            Please fill all the required fields.
-          </Typography>
-        ) : null}
         {typeof onBack === 'function' && renderBackButton()}
         <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
@@ -88,7 +88,7 @@ const NewProjectFooter = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: { marginTop: 40 },
+  root: { marginTop: 40, display: FLEX, flexDirection: COLUMN },
   stepLabel: {
     color: theme.palette.grey[500]
   },
@@ -129,9 +129,7 @@ const useStyles = makeStyles((theme) => ({
   warningText: {
     color: 'red',
     fontSize: 12,
-    position: 'absolute',
-    right: 0,
-    top: -20
+    alignSelf: 'flex-end'
   }
 }))
 

@@ -5,6 +5,7 @@ import Routes from './routes/navigationRoutes'
 import history from './services/history'
 import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
     status: {

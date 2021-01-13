@@ -17,32 +17,31 @@ type Props = { projectDetails?: any; openProject?: any; style?: {} }
 const ProjectArchives = (props: Props) => {
   const classes = useStyles()
   return (
-    <Button
-      className={classes.button}
-      style={props.style}
-      variant={'contained'}>
-      <div className={classes.imgWrapper}>
-        <img
-          className={classes.img}
-          src={
-            props.projectDetails && props.projectDetails.image
-              ? props.projectDetails.image
-              : logo
-          }
-          alt='Logo'
-        />
-      </div>
-      <div className={classes.textWrapper}>
-        <Typography className={classes.title} noWrap={true}>
-          {props.projectDetails?.name}
-        </Typography>
-        <Typography className={classes.subTitle} noWrap={true}>
-          {props.projectDetails?.description}
-        </Typography>
-      </div>
+    <div style={props.style}>
+      <Button className={classes.button} variant={'contained'}>
+        <div className={classes.imgWrapper}>
+          <img
+            className={classes.img}
+            src={
+              props.projectDetails && props.projectDetails.image
+                ? props.projectDetails.image
+                : logo
+            }
+            alt='Logo'
+          />
+        </div>
+        <div className={classes.textWrapper}>
+          <Typography className={classes.title} noWrap={true}>
+            {props.projectDetails?.name}
+          </Typography>
+          <Typography className={classes.subTitle} noWrap={true}>
+            {props.projectDetails?.description}
+          </Typography>
+        </div>
 
-      <ArrowForwardIosIcon fontSize='small' />
-    </Button>
+        <ArrowForwardIosIcon fontSize='small' />
+      </Button>
+    </div>
   )
 }
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 20,
     padding: `${theme.spacing(3)}px ${theme.spacing(1.5)}px`,
     height: 70,
-    width: 300,
+    minidth: 300,
     backgroundColor: 'white'
   },
   imgWrapper: {

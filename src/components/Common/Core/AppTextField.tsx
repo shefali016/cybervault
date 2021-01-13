@@ -6,6 +6,7 @@ import {
   PRIMARY_DARK_COLOR
 } from '../../../utils/constants/colorsConstants'
 import { InputChangeEvent } from '../../../utils/types'
+import clsx from 'clsx'
 
 type Props = {
   type?: string
@@ -35,7 +36,7 @@ const AppTextField = ({
       variant='outlined'
       size='small'
       type={type}
-      className={classes.textField}
+      className={error ? classes.errorTextField : classes.textField}
       onChange={onChange}
       multiline={multiline}
       value={value}
@@ -81,12 +82,27 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 0
   },
   labelFocused: {},
+  errorTextField: {
+    width: '100%',
+    paddingBottom: 0,
+    fontWeight: 500,
+    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.error,
+      borderRadius: 20
+    },
+    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: PRIMARY_COLOR
+    },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: PRIMARY_COLOR
+    }
+  },
   textField: {
     width: '100%',
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      // borderColor: theme.palette.grey[500],
+      borderColor: theme.palette.grey[500],
       borderRadius: 20
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
