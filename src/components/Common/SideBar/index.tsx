@@ -14,7 +14,6 @@ import {
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
-import AddIcon from '@material-ui/icons/Add'
 import {
   SIDE_DRAWER_WIDTH,
   APP_BAR_HEIGHT,
@@ -29,11 +28,10 @@ import {
 } from '../../../utils/constants/colorsConstants'
 import ROUTES from '../../../utils/constants/routes'
 import { Link } from 'react-router-dom'
-import { Tab } from 'utils/types'
+import { Tab, ButtonConfig } from 'utils/types'
 
 type Props = {
-  actionButtonTitle: string
-  onActionButtonPress: () => void
+  actionButtonConfig: ButtonConfig
   onLogout?: () => void
   open: boolean
   setOpen: (open: boolean) => void
@@ -44,8 +42,7 @@ type Props = {
 
 const SideBarComponent = (props: Props) => {
   const {
-    actionButtonTitle,
-    onActionButtonPress,
+    actionButtonConfig,
     onLogout,
     open = false,
     setOpen,
@@ -153,9 +150,11 @@ const SideBarComponent = (props: Props) => {
         variant='contained'
         color='secondary'
         className={classes.addProjectButton}
-        startIcon={<AddIcon className={classes.menuIconStyle} />}
-        onClick={onActionButtonPress}>
-        <Typography variant={'button'}>{actionButtonTitle}</Typography>
+        onClick={actionButtonConfig.onClick}
+        {...(actionButtonConfig.icon
+          ? { startIcon: actionButtonConfig.icon }
+          : {})}>
+        <Typography variant={'button'}>{actionButtonConfig.title}</Typography>
       </Button>
       <Divider className={classes.divider} />
       <List>

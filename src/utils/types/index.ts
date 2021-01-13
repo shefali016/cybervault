@@ -2,6 +2,12 @@ import { ChangeEvent } from 'react'
 
 export type InputChangeEvent = ChangeEvent<HTMLInputElement>
 
+export type ButtonConfig = {
+  title: string
+  onClick: (params: any) => void
+  icon?: any
+}
+
 export type Tab = { id: string; icon: any; text: string }
 
 export type Asset = {
@@ -12,10 +18,19 @@ export type Asset = {
 }
 
 export type User = {
+  id: string,
   email: string
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
   password: string
+  avatar: string | undefined
+  firstName: string
+  lastName: string
+  company: string | undefined
+  instagram: string | undefined
+  facebook: string | undefined
+  twitter: string | undefined
+  linkedIn: string | undefined
 }
 
 export type UserLoginInfo = {

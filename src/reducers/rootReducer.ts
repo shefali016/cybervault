@@ -3,26 +3,23 @@ import { combineReducers } from 'redux'
 import authReducer from './authReducer'
 import projectReducer from './projectReducer'
 import { reducer as formReducer } from 'redux-form'
+import {State as AuthState, Action as AuthAction} from "./authReducer"
+import {State as ProjectState, Action as ProjectAction} from "./projectReducer"
+
 
 const appReducer = combineReducers({
-  // routing: routerReducer,
   auth: authReducer,
-  form: formReducer,
   project: projectReducer
 })
 
-type State = {
-  auth: any,
-  form?: any,
-  project: any
+export type ReduxState = {
+  auth: AuthState,
+  project: ProjectState
 };
 
-type Action = {
-  type: string,
-  payload?: {},
-};
+export type Action = AuthAction & ProjectAction
 
-const rootReducer = (state: State, action: Action) => {
+const rootReducer = (state: ReduxState, action: Action) => {
   if (action.type === 'RESET_ALL_DATA') {
     state = {
       auth: state.auth,

@@ -1,13 +1,15 @@
 import React from 'react'
 import { IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import profileIcon from '../../../assets/userAvatar.png'
+import defaultProfileIcon from '../../../assets/default_user.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
+import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
   headerTitle?: string
+  onProfileClick: () => void
 }
 
 function Toolbar(props: Props) {
@@ -16,7 +18,7 @@ function Toolbar(props: Props) {
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25 }}>
         <h2 style={{ color: 'white', fontWeight: 'normal' }}>
-          {props.headerTitle ? props.headerTitle : 'Dashboard'}
+          {props.headerTitle}
         </h2>
       </div>
       <div>
@@ -25,12 +27,16 @@ function Toolbar(props: Props) {
             <img src={notificationIcon} alt='notification icon' />
           </IconButton>
         ) : null}
-        <IconButton style={{ borderRadius: 100, width: 60, marginRight: 20 }}>
+        <IconButton
+          style={{ borderRadius: 100, width: 60, marginRight: 20 }}
+          onClick={props.onProfileClick}>
           <img
             src={
-              props.profilePictureIcon ? props.profilePictureIcon : profileIcon
+              props.profilePictureIcon
+                ? props.profilePictureIcon
+                : defaultProfileIcon
             }
-            style={{ borderRadius: 100 }}
+            style={{ borderRadius: 20, height: 40, width: 40 }}
           />
         </IconButton>
       </div>
@@ -46,7 +52,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: window.outerWidth - theme.spacing(8)
+    }
   }
 }))
 
