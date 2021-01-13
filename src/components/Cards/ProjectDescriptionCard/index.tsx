@@ -48,7 +48,7 @@ const ProjectCard = ({
 
   const editProject = () => {
     // history.replace(`/project/${project.id}`)
-    history.push('/editProjectInfo')
+    history.push('/project')
   }
 
   const handleClose = () => {
