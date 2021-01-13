@@ -43,7 +43,7 @@ function PendingInvoices(props: Props) {
 const useStyles = makeStyles((theme) => ({
   card: {
     display: GRID,
-    width: getCardHeight(theme),
+    minWidth: getCardHeight(theme),
     height: '10rem',
     borderRadius: 15
   },

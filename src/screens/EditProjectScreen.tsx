@@ -98,65 +98,55 @@ export const EditProjectScreen = (props: any) => {
   )
 
   return (
-    <div className={classes.background}>
-      <Layout
-        actionButtonTitle={'New Project'}
-        history={props.history}
-        headerTitle={'Edit Project'}
-        onActionButtonPress={openNewProjectModal}>
-        <div className={'dashboardContainer'}>
-          <div className={classes.wrapper}>
-            <div style={{ marginTop: 30, marginLeft: 30 }}>
-              <RenderClientDetails projectData={projectData} editInfo />
-              <RenderProjectDetails projectData={projectData} editInfo />
-              {projectData.tasks.length > 0 &&
-              projectData.tasks[0].title.trim() !== '' ? (
-                <RenderTaskDetails projectData={projectData} editInfo />
-              ) : null}
-              {projectData.expenses.length > 0 &&
-              projectData.expenses[0].title.trim() !== '' ? (
-                <RenderExpenseDetails projectData={projectData} editInfo />
-              ) : null}
-              {projectData.milestones.length > 0 &&
-              projectData.milestones[0].title.trim() !== '' ? (
-                <RenderMilestonesDetails projectData={projectData} editInfo />
-              ) : null}
-              <RenderBudgetDetails projectData={projectData} editInfo />
-              <div style={{ marginBottom: 80 }}>
-                <Typography className={classes.textColor}>
-                  Upload Videos
-                </Typography>
-                <div className={classes.imageCorouselContainer}>
-                  <Carousel>
-                    {
-                      //Using static data for testing
-                      [1, 2, 3].map((index: number) => {
-                        return (
-                          <div className={classes.carouselChild}>
-                            <img src={Dummy} alt='' />
-                          </div>
-                        )
-                      })
-                    }
-                  </Carousel>
-                </div>
-              </div>
-              <div>
-                <Typography className={classes.textColor}>
-                  Upload Photo Content
-                </Typography>
-                <div className={classes.imageCorouselContainer}>
-                  <ImageCarousel />
-                </div>
-              </div>
-              {/* <div className={classes.button}>
+    <div className={'dashboardScreen'}>
+      <div className={classes.wrapper}>
+        <div style={{ marginTop: 30, marginLeft: 30 }}>
+          <RenderClientDetails projectData={projectData} editInfo />
+          <RenderProjectDetails projectData={projectData} editInfo />
+          {projectData.tasks.length > 0 &&
+          projectData.tasks[0].title.trim() !== '' ? (
+            <RenderTaskDetails projectData={projectData} editInfo />
+          ) : null}
+          {projectData.expenses.length > 0 &&
+          projectData.expenses[0].title.trim() !== '' ? (
+            <RenderExpenseDetails projectData={projectData} editInfo />
+          ) : null}
+          {projectData.milestones.length > 0 &&
+          projectData.milestones[0].title.trim() !== '' ? (
+            <RenderMilestonesDetails projectData={projectData} editInfo />
+          ) : null}
+          <RenderBudgetDetails projectData={projectData} editInfo />
+          <div style={{ marginBottom: 80 }}>
+            <Typography className={classes.textColor}>Upload Videos</Typography>
+            <div className={classes.imageCorouselContainer}>
+              <Carousel>
+                {
+                  //Using static data for testing
+                  [1, 2, 3].map((index: number) => {
+                    return (
+                      <div className={classes.carouselChild}>
+                        <img src={Dummy} alt='' />
+                      </div>
+                    )
+                  })
+                }
+              </Carousel>
+            </div>
+          </div>
+          <div>
+            <Typography className={classes.textColor}>
+              Upload Photo Content
+            </Typography>
+            <div className={classes.imageCorouselContainer}>
+              <ImageCarousel />
+            </div>
+          </div>
+          {/* <div className={classes.button}>
             <GradiantButton> 
               <Typography className={classes.buttonText}> Save Changes</Typography> </GradiantButton>
             </div> */}
-            </div>
-          </div>
         </div>
-      </Layout>
+      </div>
     </div>
   )
 }
@@ -177,14 +167,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
-  background: {
-    display: 'grid',
-    backgroundColor: '#24262B',
-    height: '100%',
-    width: '100%',
-    overflowY: 'auto',
-    overflowX: 'hidden'
-  },
   generalMarginLeft: {
     marginLeft: 10,
     color: WHITE_COLOR
@@ -204,7 +186,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     flexDirection: COLUMN,
     borderRadius: 20,
-    heigth: '70vh'
+    heigth: '70vh',
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3)
   },
   title: {
     fontFamily: 'Helvetica Neue',

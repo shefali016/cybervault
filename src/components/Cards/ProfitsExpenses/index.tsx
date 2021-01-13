@@ -64,10 +64,10 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     [theme.breakpoints.down('sm')]: {
-      width: getCardHeight(theme),
+      minWidth: getCardHeight(theme),
       height: '12rem'
     },
-    // width: '14rem',
+    minWidth: '18rem',
     height: '10rem',
     borderRadius: 15
   },

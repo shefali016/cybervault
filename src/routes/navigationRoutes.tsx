@@ -1,12 +1,12 @@
 import React from 'react'
-import { Switch } from 'react-router-dom'
-import Route from './index'
+import { Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import LoginScreen from '../screens/LoginScreen'
 import SignUpScreen from '../screens/SignUpScreen'
 import HomeScreen from '../screens/HomeScreen'
-import ProjectScreen from '../screens/projects/ProjectsScreen'
+import ProjectScreen from '../screens/ProjectsScreen'
 import EditProjectScreen from '../screens/EditProjectScreen'
+import Dashboard from 'screens/Dashboard'
 
 type Props = { isLoggedIn?: boolean }
 
@@ -16,9 +16,7 @@ const Routes = (props: Props): JSX.Element => {
 
 const MainRoutes = () => (
   <Switch>
-    <Route path='/editProjectInfo' component={EditProjectScreen} />
-    <Route path='/projects' component={ProjectScreen} />
-    <Route path='/' component={HomeScreen} />
+    <Route path='/' component={Dashboard} />
   </Switch>
 )
 

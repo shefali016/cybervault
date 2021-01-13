@@ -73,10 +73,7 @@ button {
   border-width: 10px;
 }
 
-.dashboardContainer {
-  padding-top: 30px;
-  overflow-x: hidden;
-}
+.dashboardScreen {}
 
 .authScreenContainer {
   display: flex;

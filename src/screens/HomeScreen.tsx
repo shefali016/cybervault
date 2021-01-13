@@ -1,39 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
-import { logout } from '../actions/authActions'
 import {
   createNewProjectRequest,
   clearNewProjectData,
   getAllProjectsRequest
 } from '../actions/projectActions'
-import { Typography, Grid } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import ProjectCard from '../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../components/Cards/UnpaidInvoices'
 import PendingInvoices from '../components/Cards/PendingInvoices'
 import IncomeThisMonth from '../components/Cards/IncomeThisMonth'
 import ProjectCount from '../components/Cards/ProjectCount'
 import ProfitsExpenses from '../components/Cards/ProfitsExpenses'
-import Layout from '../components/Common/Layout'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { AUTO, COLUMN, FLEX } from 'utils/constants/stringConstants'
-import NewProjectModal from '../components/Projects/NewProjectModal'
+import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import Widget from '../components/Common/Widget'
 import * as Types from 'utils/types'
-import { getCardHeight, getWidgetCardHeight } from '../utils'
+import { getWidgetCardHeight } from '../utils'
 
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
-export const HomeScreen = (props: any) => {
+const HomeScreen = (props: any) => {
   const [allProjects, setAllProjects] = useState([])
   useEffect(() => {
-    if (props.newProjectData) {
-      setNewProjectModalOpen(false)
-      props.clearNewProjectData()
-    }
-    if (!props.isLoggedIn && !props.user) {
-      loggedOut(props)
-    }
+    console.log('PROPSSS', props)
     if (props.allProjectsData && props.allProjectsData !== allProjects) {
       setAllProjects(props.allProjectsData)
     }
@@ -49,86 +40,60 @@ export const HomeScreen = (props: any) => {
   const classes = useStyles()
   const theme = useTheme()
 
-  const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
-  const openNewProjectModal = useCallback(
-    () => setNewProjectModalOpen(true),
-    []
-  )
-  const closeNewProjectModal = useCallback(
-    () => setNewProjectModalOpen(false),
-    []
-  )
-  const createNewProject = useCallback(
-    (projectData) => props.createNewProject(projectData),
-    []
-  )
   return (
-    <div className={classes.background}>
-      <Layout
-        actionButtonTitle={'New Project'}
-        history={props.history}
-        onActionButtonPress={openNewProjectModal}>
-        <div className={'dashboardContainer'}>
-          <NewProjectModal
-            open={newProjectModalOpen}
-            onRequestClose={closeNewProjectModal}
-            onSubmitClicked={createNewProject}
+    <div className={'dashboardScreen'}>
+      <Widget
+        data={allProjects}
+        title={'Active Projects'}
+        emptyMessage={'No Projects found'}
+        loading={props.activeProjectsLoading}
+        itemHeight={getWidgetCardHeight(theme)}
+        renderItem={(item) => (
+          <ProjectCard
+            project={item}
+            isPopover={true}
+            key={`project-card-${item.projectId}`}
+            style={{
+              paddingRight: theme.spacing(3)
+            }}
+            history={props.history}
           />
-          <Widget
-            data={allProjects}
-            title={'Active Projects'}
-            emptyMessage={'No Projects found'}
-            loading={props.activeProjectsLoading}
-            itemHeight={getWidgetCardHeight(theme)}
-            renderItem={(item) => (
-              <ProjectCard
-                project={item}
-                isPopover={true}
-                key={`project-card-${item.projectId}`}
-                style={{
-                  paddingRight: theme.spacing(3)
-                }}
-                history={props.history}
-              />
-            )}
+        )}
+      />
+      <div className={classes.invoicingWrapper}>
+        <Typography
+          variant={'body1'}
+          className={classes.sectionTitle}
+          color={'textPrimary'}>
+          Invoicing and Analytics
+        </Typography>
+        <div className={classes.middleCardsWrapper}>
+          <PendingInvoices className={classes.widgetItem} />
+          <ProfitsExpenses className={classes.widgetItem} />
+          <ProjectCount
+            className={classes.widgetItem}
+            projectCount={allProjects.length}
           />
-          <div className={classes.invoicingWrapper}>
-            <Typography
-              variant={'body1'}
-              className={classes.sectionTitle}
-              color={'textPrimary'}>
-              Invoicing and Analytics
-            </Typography>
-            <div className={classes.middleCardsWrapper}>
-              <PendingInvoices className={classes.widgetItem} />
-              <ProfitsExpenses className={classes.widgetItem} />
-              <ProjectCount
-                className={classes.widgetItem}
-                projectCount={allProjects.length}
-              />
-              <IncomeThisMonth />
-            </div>
-          </div>
-          <Widget
-            title={'Unpaid Invoices'}
-            data={UNPAID_INVOICES_DATA}
-            renderItem={(item) => (
-              <UnpaidInvoices
-                projectDetails={item}
-                key={`unpaid-invoices-${item.id}`}
-                style={{ paddingRight: theme.spacing(3) }}
-              />
-            )}
-            emptyMessage={'No Projects found'}
-          />
+          <IncomeThisMonth style={{ paddingRight: theme.spacing(3) }} />
         </div>
-      </Layout>
+      </div>
+      <Widget
+        title={'Unpaid Invoices'}
+        data={UNPAID_INVOICES_DATA}
+        renderItem={(item) => (
+          <UnpaidInvoices
+            projectDetails={item}
+            key={`unpaid-invoices-${item.id}`}
+            style={{ paddingRight: theme.spacing(3) }}
+          />
+        )}
+        emptyMessage={'No Projects found'}
+      />
     </div>
   )
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.newProjectData,
   allProjectsData: state.project.allProjectsData,
   activeProjectsLoading: state.project.isLoading
@@ -150,7 +115,10 @@ const mapDispatchToProps = (dispatch: any) => ({
 const useStyles = makeStyles((theme) => ({
   invoicingWrapper: {
     marginBottom: theme.spacing(4),
-    paddingLeft: theme.spacing(4)
+    paddingLeft: theme.spacing(4),
+    flexWrap: 'nowrap',
+    overflowX: 'auto',
+    whiteSpace: 'nowrap'
   },
   middleCardsWrapper: {
     display: FLEX,
@@ -174,4 +142,5 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
+
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

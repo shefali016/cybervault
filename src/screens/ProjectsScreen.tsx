@@ -1,18 +1,18 @@
 import React, { useState, useCallback } from 'react'
-import '../../App.css'
+import '../App.css'
 import { connect } from 'react-redux'
-import { logout } from '../../actions/authActions'
-import { createNewProjectRequest } from '../../actions/projectActions'
-import Layout from '../../components/Common/Layout'
+import { logout } from '../actions/authActions'
+import { createNewProjectRequest } from '../actions/projectActions'
+import Layout from '../components/Common/Layout'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
-import { AUTO, FLEX } from '../../utils/constants/stringConstants'
-import ProjectArchives from '../../components/Cards/ProjectArchives'
-import { WHITE_COLOR } from '../../utils/constants/colorsConstants'
-import NewProjectModal from '../../components/Projects/NewProjectModal'
-import Widget from '../../components/Common/Widget'
-import { useTabletLayout } from '../../utils/hooks'
-import * as Types from '../../utils/types'
+import ProjectCard from '../components/Cards/ProjectDescriptionCard'
+import { AUTO, FLEX } from '../utils/constants/stringConstants'
+import ProjectArchives from '../components/Cards/ProjectArchives'
+import { WHITE_COLOR } from '../utils/constants/colorsConstants'
+import NewProjectModal from '../components/Projects/NewProjectModal'
+import Widget from '../components/Common/Widget'
+import { useTabletLayout } from '../utils/hooks'
+import * as Types from '../utils/types'
 
 const PROJECT_DATA = [
   {
@@ -77,46 +77,33 @@ export const ProjectsScreen = (props: any) => {
     []
   )
   return (
-    <div className='background'>
-      <Layout
-        history={props.history}
-        actionButtonTitle={'New Project'}
-        headerTitle={'Projects'}
-        onActionButtonPress={openNewProjectModal}>
-        <NewProjectModal
-          open={newProjectModalOpen}
-          onRequestClose={closeNewProjectModal}
-          onSubmitClicked={createNewProject}
-        />
-        <div className='dashboardContainer'>
-          <Widget
-            title={'Recent Projects'}
-            data={PROJECT_DATA}
-            renderItem={(item) => (
-              <ProjectCard
-                project={item}
-                style={{ marginRight: theme.spacing(3) }}
-              />
-            )}
-            emptyMessage={'No Projects found'}
+    <div className='dashboardScreen'>
+      <Widget
+        title={'Recent Projects'}
+        data={PROJECT_DATA}
+        renderItem={(item) => (
+          <ProjectCard
+            project={item}
+            style={{ paddingRight: theme.spacing(3) }}
           />
-          <Widget
-            title={'Projects Archives'}
-            data={ARCHIVE_DATA}
-            renderItem={(item) => (
-              <ProjectArchives
-                projectDetails={item}
-                style={{
-                  marginRight: theme.spacing(3),
-                  marginBottom: isTablet ? theme.spacing(3) : 0
-                }}
-              />
-            )}
-            emptyMessage={'No Projects found'}
-            tabletColumn={true}
+        )}
+        emptyMessage={'No Projects found'}
+      />
+      <Widget
+        title={'Projects Archives'}
+        data={ARCHIVE_DATA}
+        renderItem={(item) => (
+          <ProjectArchives
+            projectDetails={item}
+            style={{
+              paddingRight: theme.spacing(3),
+              marginBottom: isTablet ? theme.spacing(3) : 0
+            }}
           />
-        </div>
-      </Layout>
+        )}
+        emptyMessage={'No Projects found'}
+        tabletColumn={true}
+      />
     </div>
   )
 }

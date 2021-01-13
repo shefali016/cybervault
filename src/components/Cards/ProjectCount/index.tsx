@@ -24,7 +24,7 @@ function ProjectCount(props: Props) {
 }
 const useStyles = makeStyles((theme) => ({
   card: {
-    width: '10rem',
+    minWidth: '10rem',
     height: '10rem',
     borderRadius: 15,
     display: FLEX

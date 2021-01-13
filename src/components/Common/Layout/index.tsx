@@ -11,39 +11,48 @@ import {
   FLEX,
   COLUMN
 } from 'utils/constants/stringConstants'
+import { Tab } from 'utils/types'
+import { TabsProps } from '@material-ui/core'
 
-type Props = {
+type ReduxProps = { onLogout: () => void }
+
+export type LayoutProps = {
   onActionButtonPress: () => void
   actionButtonTitle: string
   headerTitle?: string
   children?: React.ReactNode
-  history: any
-  onLogout?: () => void
+  tabs: Array<Tab>
+  onTabPress: (tab: Tab) => void
+  activeTab: Tab
 }
 
-const Layout = (props: Props) => {
+const Layout = (props: LayoutProps & ReduxProps) => {
   const {
     onActionButtonPress,
     actionButtonTitle,
-    history,
     onLogout,
-    headerTitle
+    headerTitle,
+    tabs,
+    onTabPress,
+    activeTab
   } = props
   const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
   const classes = useStyles()
   const theme = useTheme()
-  console.log(theme.palette.primary.light)
+
   return (
     <div className={classes.root}>
       <SideBarComponent
         {...{
           onActionButtonPress,
           actionButtonTitle,
-          history,
           onLogout,
           open: drawerOpen,
-          setOpen: setDrawerOpen
+          setOpen: setDrawerOpen,
+          tabs,
+          onTabPress,
+          activeTab
         }}
       />
       <div className={classes.main}>
@@ -54,8 +63,9 @@ const Layout = (props: Props) => {
   )
 }
 
-const useStyles = makeStyles((theme: any) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
+    backgroundColor: theme.palette.background.default,
     display: FLEX,
     height: '100vh'
   },
@@ -69,7 +79,7 @@ const useStyles = makeStyles((theme: any) => ({
   }
 }))
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: any): ReduxProps => ({
   onLogout: () => dispatch(logout())
 })
 

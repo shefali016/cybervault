@@ -47,7 +47,7 @@ const ProjectCard = ({
   const [open, setOpen] = React.useState(false)
 
   const editProject = () => {
-    history.push('/editProjectInfo')
+    history.replace(`/project/${project.id}`)
   }
 
   const handleClose = () => {

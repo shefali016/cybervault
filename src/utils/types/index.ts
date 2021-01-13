@@ -2,6 +2,8 @@ import { ChangeEvent } from 'react'
 
 export type InputChangeEvent = ChangeEvent<HTMLInputElement>
 
+export type Tab = { id: string; icon: any; text: string }
+
 export type Asset = {
   id: string
   width?: number
@@ -55,7 +57,7 @@ export type Project = {
   milestones: Array<Milestone>
   createdAt: Date
   updatedAt: Date
-  id: string,
+  id: string
   campaignDate: string
 }
 
@@ -65,4 +67,4 @@ export type Account = {
   type: 'creator' | 'client'
 }
 
-export type AllProjects = Array<Project>;
+export type AllProjects = Array<Project>
