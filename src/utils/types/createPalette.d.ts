@@ -19,5 +19,6 @@ declare module '@material-ui/core/styles/createPalette' {
     background: string
     disabled: string
     hint: string
+    paper: string
   }
 }

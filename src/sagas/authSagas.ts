@@ -18,42 +18,32 @@ import {
   googleLoginRequest
 } from './authRequest'
 
-type Params = { user: Types.UserLoginInfo; type: string }
+type Params = { loginInfo: Types.UserLoginInfo; type: string }
 
-function* login({ user }: Params) {
+function* login({ loginInfo }: Params) {
   try {
-    const loginResponse = yield call(authRequest, user)
-    if (loginResponse) {
-      yield put(loginSuccess(loginResponse))
-    } else {
-      yield put(loginFailure(loginResponse))
-    }
+    console.log(loginInfo)
+    const loginResponse = yield call(authRequest, loginInfo)
+    yield put(loginSuccess(loginResponse))
   } catch (error: any) {
-    yield put(loginFailure(error))
+    console.log(error)
+    yield put(loginFailure(error?.message))
   }
 }
 
-function* signUp({ user }: Params) {
+function* signUp({ loginInfo }: Params) {
   try {
-    const signUpResponse = yield call(signUpRequest, user)
-    if (signUpResponse) {
-      yield put(signUpSuccess(signUpResponse))
-    } else {
-      yield put(signUpFailure(signUpResponse))
-    }
+    const signUpResponse = yield call(signUpRequest, loginInfo)
+    yield put(signUpSuccess(signUpResponse))
   } catch (error: any) {
-    yield put(signUpFailure(error))
+    yield put(signUpFailure(error?.message))
   }
 }
 
 function* logout() {
   try {
-    const logoutResponse = yield call(logoutRequest)
-    if (logoutResponse) {
-      yield put(logoutSuccess())
-    } else {
-      yield put(logoutFailure())
-    }
+    yield call(logoutRequest)
+    yield put(logoutSuccess())
   } catch (error: any) {
     yield put(logoutFailure())
   }
@@ -62,13 +52,9 @@ function* logout() {
 function* googleLogin() {
   try {
     const loginResponse = yield call(googleLoginRequest)
-    if (loginResponse) {
-      yield put(googleLoginSuccess(loginResponse))
-    } else {
-      yield put(googleLoginFailure(loginResponse))
-    }
+    yield put(googleLoginSuccess(loginResponse))
   } catch (error: any) {
-    yield put(googleLoginFailure(error))
+    yield put(googleLoginFailure(error?.message))
   }
 }
 

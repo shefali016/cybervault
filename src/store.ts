@@ -1,21 +1,38 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import persistState from 'redux-localstorage'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 import rootReducer from 'reducers/rootReducer'
 import rootSagas from 'sagas/rootSaga'
+import { authTransform } from './reducers/authReducer'
 
 // Create sagas middleware
 const sagaMiddleware = createSagaMiddleware()
-const composeEnhancers = ((window as any).window.__REDUX_DEVTOOLS_EXTENSION__ && (window as any).window.__REDUX_DEVTOOLS_EXTENSION__({
-	trace: true,
-	traceLimit: 100
-})) || compose
+const composeEnhancers =
+  typeof window === 'object' &&
+  // @ts-ignore
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? // @ts-ignore
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+      })
+    : compose
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  transforms: [authTransform]
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer as any)
 
 export default function configureStore() {
-  const store = createStore(rootReducer as any, composeEnhancers(applyMiddleware(
-    sagaMiddleware
-  ), persistState('auth' as any)))
+  const store = createStore(
+    persistedReducer,
+    composeEnhancers(applyMiddleware(sagaMiddleware))
+  )
+  let persistor = persistStore(store)
   // Running sagas
   sagaMiddleware.run(rootSagas)
-  return store
+  return { store, persistor }
 }

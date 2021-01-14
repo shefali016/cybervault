@@ -173,9 +173,11 @@ const MainScreen = (props: any) => {
   }
 
   const tabs = useMemo<Array<Tab>>(() => {
-    const tabids =
+    const tabids = Object.values(
       screenView === ScreenViews.dashboard ? DashboardTabIds : AccountTabIds
-    return Object.values(tabids).map(getTab)
+    )
+    const sharedTabIds = Object.values(SharedTabIds)
+    return [...tabids, ...sharedTabIds].map(getTab)
   }, [screenView])
 
   const [activeTab, setActiveTab] = useState(tabs[0])

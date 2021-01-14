@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { login, googleLogin } from '../actions/authActions'
 import AppTextField from '../components/Common/Core/AppTextField'
-import { Button, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import ReactLoading from 'react-loading'
 import * as Types from '../utils/types'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -14,6 +14,8 @@ import { PRIMARY_COLOR } from 'utils/constants/colorsConstants'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { GradiantButton } from '../components/Common/Button/GradiantButton'
 import clsx from 'clsx'
+import { ReduxState } from 'reducers/rootReducer'
+import { ToastContext } from '../context/Toast'
 
 const initialState = {
   email: '',
@@ -21,34 +23,78 @@ const initialState = {
   loading: false
 }
 
-export const LoginScreen = (props: any) => {
+type Props = {
+  isLoggedIn: boolean
+  user: Types.User | null
+  loginError: string | null
+  auth: (loginInfo: Types.UserLoginInfo) => void
+  googleAuth: () => void
+  history: any
+}
+
+export const LoginScreen = ({
+  isLoggedIn,
+  user,
+  loginError,
+  auth,
+  googleAuth,
+  history
+}: Props) => {
+  const classes = useStyles()
+  const theme = useTheme()
+
   const [state, setState] = useState(initialState)
   const { email, password, loading } = state
+  const passwordInput = useRef<HTMLInputElement>(null)
+
+  const toastContext = useContext(ToastContext)
+
+  const loginErrorRef = useRef(loginError)
 
   useEffect(() => {
-    if (props.isLoggedIn && props.user) {
-      loggedIn(props)
+    if (!loginErrorRef.current && loginError) {
+      setState((state) => ({ ...state, loading: false }))
+      toastContext.showToast({ title: loginError })
     }
-  }, [props.isLoggedIn, props.user])
+    loginErrorRef.current = loginError
+  }, [loginError])
 
-  const loggedIn = (props: any) => {
-    setState((state) => ({ ...state, loading: false }))
-    props.history.push('/home')
-  }
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      history.push('/home')
+    }
+  }, [isLoggedIn, user])
 
   const handleInputChange = (key: any) => (e: any) =>
     setState((state) => ({ ...state, [key]: e.target.value }))
 
   const handleLogin = () => {
-    setState((state) => ({ ...state, loading: true }))
-    props.auth({ email: email.trim(), password: password.trim() })
+    const _email = email.trim()
+    const _password = password.trim()
+    if (!_email || !_password) {
+      toastContext.showToast({ title: 'Complete all fields to login' })
+    } else {
+      setState((state) => ({ ...state, loading: true }))
+      auth({ email: email.trim(), password: password.trim() })
+    }
   }
 
   const navigateToSignUp = () => {
-    props.history.push('/signup')
+    history.push('/signup')
   }
-  const classes = useStyles()
-  const theme = useTheme()
+
+  const handleEmailKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      passwordInput.current?.focus()
+    }
+  }
+
+  const handlePasswordKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      handleLogin()
+    }
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.logoView}>
@@ -66,12 +112,17 @@ export const LoginScreen = (props: any) => {
             onChange={handleInputChange('email')}
             style={{ marginBottom: theme.spacing(2) }}
             value={email}
+            darkStyle={true}
+            onKeyUp={handleEmailKeyUp}
           />
           <AppTextField
+            ref={passwordInput}
             label='Password'
             onChange={handleInputChange('password')}
             type={'password'}
             value={password}
+            darkStyle={true}
+            onKeyUp={handlePasswordKeyUp}
           />
         </div>
         <GradiantButton
@@ -81,30 +132,46 @@ export const LoginScreen = (props: any) => {
           className={clsx(classes.button, classes.loginButton)}>
           Login
         </GradiantButton>
+
         <GoogleAuthComponent
-          onClick={props.googleAuth}
+          onClick={googleAuth}
           title={'Sign in with Google'}
           className={classes.button}
         />
+
+        <div onClick={navigateToSignUp} className={classes.signUpContainer}>
+          <Typography style={{ marginRight: 5 }}>
+            Don't have an account?
+          </Typography>
+          <Typography className={classes.signUpText}>Sign Up</Typography>
+        </div>
       </div>
     </div>
   )
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: ReduxState) => ({
   isLoggedIn: state.auth.isLoggedIn,
-  user: state.auth.user
+  user: state.auth.user,
+  loginError: state.auth.error
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  auth: (user: Types.User) => {
-    return dispatch(login(user))
+  auth: (loginInfo: Types.UserLoginInfo) => {
+    return dispatch(login(loginInfo))
   },
   googleAuth: () => {
     return dispatch(googleLogin())
   }
 })
+
 const useStyles = makeStyles((theme) => ({
+  signUpText: { color: theme.palette.primary.light },
+  signUpContainer: {
+    display: FLEX,
+    marginTop: theme.spacing(8),
+    cursor: 'pointer'
+  },
   root: {
     display: FLEX,
     height: '100vh',
@@ -118,7 +185,6 @@ const useStyles = makeStyles((theme) => ({
       display: 'none'
     },
     background: `linear-gradient(${theme.palette.primary.light}, ${theme.palette.primary.dark})`,
-    // backgroundColor: "red",
     display: FLEX,
     justifyContent: CENTER,
     alignItems: CENTER,
@@ -148,4 +214,5 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4)
   }
 }))
+
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)

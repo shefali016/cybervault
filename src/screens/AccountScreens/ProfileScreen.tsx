@@ -56,22 +56,26 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
       <div
         className={classes.section}
         style={{ marginBottom: theme.spacing(4) }}>
-        <Typography>Profile Info</Typography>
+        <Typography variant='h6' className={classes.sectionTitle}>
+          Profile Info
+        </Typography>
         <div className={classes.inputRow}>
           <AppTextField
-            label='First Name'
+            label='Full Name'
             onChange={(event: InputChangeEvent) =>
               updateProfile('firstName')(event.target.value)
             }
-            value={user.firstName}
+            value={user.name}
             style={textInputStyle}
+            darkStyle={true}
           />
           <AppTextField
-            label='Last Name'
+            label='Birthday'
             onChange={(event: InputChangeEvent) =>
               updateProfile('lastName')(event.target.value)
             }
-            value={user.lastName}
+            value={user.birthday}
+            darkStyle={true}
           />
         </div>
         <div className={classes.inputRow}>
@@ -82,6 +86,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             }
             value={user.company}
             style={textInputStyle}
+            darkStyle={true}
           />
           <AppTextField
             label='Email Addresss'
@@ -89,12 +94,15 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
               updateProfile('email')(event.target.value)
             }
             value={user.email}
+            darkStyle={true}
           />
         </div>
       </div>
 
       <div className={classes.section}>
-        <Typography>Social Links</Typography>
+        <Typography variant='h6' className={classes.sectionTitle}>
+          Social Links
+        </Typography>
         <div className={classes.inputRow}>
           <AppTextField
             label='Instagram'
@@ -103,6 +111,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             }
             value={user.instagram}
             style={textInputStyle}
+            darkStyle={true}
           />
           <AppTextField
             label='Twitter'
@@ -110,6 +119,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
               updateProfile('twitter')(event.target.value)
             }
             value={user.twitter}
+            darkStyle={true}
           />
         </div>
         <div className={classes.inputRow}>
@@ -120,6 +130,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             }
             value={user.facebook}
             style={textInputStyle}
+            darkStyle={true}
           />
           <AppTextField
             label='LinkedIn'
@@ -127,6 +138,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
               updateProfile('linkedIn')(event.target.value)
             }
             value={user.linkedIn}
+            darkStyle={true}
           />
         </div>
       </div>
@@ -145,6 +157,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(6),
     justifyContent: 'center',
     width: '100%'
+  },
+  sectionTitle: {
+    marginBottom: theme.spacing(1),
+    color: theme.palette.grey[300]
   },
   section: {
     backgroundColor: theme.palette.background.secondary,
@@ -176,7 +192,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const mapState = (state: ReduxState) => ({ user: state.auth.user })
+const mapState = (state: ReduxState) => ({
+  user: state.auth.user as User
+})
 
 const mapDispatch = (dispatch: any) => ({
   updateUser: (update: {}) => dispatch(updateUser(update))

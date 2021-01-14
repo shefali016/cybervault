@@ -61,10 +61,7 @@ const HomeScreen = (props: any) => {
         )}
       />
       <div className={classes.invoicingWrapper}>
-        <Typography
-          variant={'body1'}
-          className={classes.sectionTitle}
-          color={'textPrimary'}>
+        <Typography variant={'body1'} className={classes.sectionTitle}>
           Invoicing and Analytics
         </Typography>
         <div className={classes.middleCardsWrapper}>
@@ -126,7 +123,10 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: COLUMN
     }
   },
-  sectionTitle: { marginBottom: theme.spacing(1) },
+  sectionTitle: {
+    marginBottom: theme.spacing(1),
+    color: theme.palette.text.background
+  },
   background: {
     backgroundColor: '#24262B',
     height: '100%',
