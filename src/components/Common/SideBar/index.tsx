@@ -206,7 +206,10 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(8)
   },
-  paper: { backgroundColor: SECONDARY_COLOR, borderRightColor: BORDER_COLOR },
+  paper: {
+    backgroundColor: theme.palette.background.default,
+    borderRightColor: BORDER_COLOR
+  },
   root: {
     display: 'flex'
   },
@@ -227,13 +230,13 @@ const useStyles = makeStyles((theme) => ({
   appIconContainer: {
     alignItems: CENTER,
     justifyContent: CENTER,
-    minHeight: theme.spacing(8),
-    backgroundColor: SECONDARY_DARK_COLOR,
+    minHeight: theme.spacing(7),
+    backgroundColor: theme.palette.background.secondary,
     borderRadius: 0
   },
   appIcon: {
-    color: PRIMARY_COLOR,
-    fontSize: 45
+    color: theme.palette.primary.light,
+    fontSize: 43
   },
   sideBarText: {
     color: WHITE_COLOR,
@@ -258,7 +261,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listIconStyle: {
     marginRight: 10,
-    color: PRIMARY_COLOR,
+    color: theme.palette.primary.light,
     fontSize: theme.spacing(3)
   },
   storageContainer: {
@@ -301,7 +304,7 @@ const useStyles = makeStyles((theme) => ({
     })
   },
   linkText: {
-    color: PRIMARY_COLOR,
+    color: theme.palette.primary.light,
     fontSize: 8
   }
 }))

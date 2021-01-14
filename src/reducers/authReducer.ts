@@ -96,7 +96,8 @@ const googleLoginSuccess = (state: State, action: Action) => {
   return {
     ...state,
     isLoggedIn: true,
-    user: action.user
+    user: action.user,
+    account: action.account
   }
 }
 

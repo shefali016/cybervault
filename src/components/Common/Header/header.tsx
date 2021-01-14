@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
+import NotificationIcon from '@material-ui/icons/Notifications'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -23,12 +24,12 @@ function Toolbar(props: Props) {
       </div>
       <div>
         {!props.isNotificationIcon ? (
-          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 20 }}>
-            <img src={notificationIcon} alt='notification icon' />
+          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
+            <NotificationIcon className={classes.notificationIcon} />
           </IconButton>
         ) : null}
         <IconButton
-          style={{ borderRadius: 100, width: 60, marginRight: 20 }}
+          style={{ borderRadius: 100, width: 45, marginRight: 22 }}
           onClick={props.onProfileClick}>
           <img
             src={
@@ -36,7 +37,7 @@ function Toolbar(props: Props) {
                 ? props.profilePictureIcon
                 : defaultProfileIcon
             }
-            style={{ borderRadius: 20, height: 40, width: 40 }}
+            style={{ borderRadius: 20, height: 33, width: 33 }}
           />
         </IconButton>
       </div>
@@ -45,10 +46,11 @@ function Toolbar(props: Props) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
-    height: theme.spacing(8),
+    height: theme.spacing(7),
     width: '100%',
-    background: '#333333',
+    background: theme.palette.background.secondary,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',

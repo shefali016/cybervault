@@ -25,11 +25,11 @@ export type Account = {
 
 export type User = {
   id: string
-  email: string
+  email: string | null
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
   avatar?: string | undefined
-  name?: string
+  name?: string | null
   birthday?: string
   company?: string | undefined
   instagram?: string | undefined
@@ -40,8 +40,8 @@ export type User = {
 
 export type AuthUser = {
   uid: string
-  email: string
-  name?: string
+  email: string | null
+  name?: string | null
 }
 
 export type UserLoginInfo = {
