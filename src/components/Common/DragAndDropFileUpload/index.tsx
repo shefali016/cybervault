@@ -11,7 +11,6 @@ export const DragAndDropUploader = (props?: any) => {
 
   // receives array of files that are done uploading when submit button is clicked
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles)
     setImageSource(acceptedFiles)
     setIsImage(true)
   }, [])
@@ -20,12 +19,14 @@ export const DragAndDropUploader = (props?: any) => {
     onDrop,
     accept: props.isVideo ? 'video/*' : 'image/jpeg, image/png'
   })
+
   return (
     <div {...getRootProps({ className: classes.dropzone })}>
       <input {...getInputProps()} />
       <div className={classes.topContainer}>
         {isImage
           ? image.map((file: any, index: number) => {
+              props.onSubmit(file)
               return (
                 <img
                   src={URL.createObjectURL(file)}

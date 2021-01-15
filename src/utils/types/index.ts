@@ -86,6 +86,8 @@ export type Project = {
   updatedAt: Date
   id: string
   campaignDate: string
+  video: []
+  image: []
 }
 
 export type AllProjects = Array<Project>

@@ -25,7 +25,10 @@ import { ImageCarousel } from '../components/Common/Carousel'
 import EditProjectModal from 'components/EditProjectModel'
 import ProjectStatusIndicator from '../components/Common/ProjectStatusIndicator'
 import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
+
 import { getDefaultProjectData } from '../utils'
+import { getDownloadUrl, uploadMedia } from '../apis/assets'
+import { generateUid } from '../utils/index'
 export const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const [projectData, setProjectData] = useState(getDefaultProjectData())
@@ -79,6 +82,28 @@ export const EditProjectScreen = (props: any) => {
     console.log(projectData)
   }
 
+  const getImageObject = (file: any, url: any, id: string) => {
+    return {
+      id: id,
+      original: true,
+      url: url,
+      width: 50,
+      height: 50
+    }
+  }
+
+  const onImageUpload = async (file: any) => {
+    const id = generateUid()
+    const uploadTask = await uploadMedia(id, file)
+    const downloadUrl = await getUrl(id)
+    projectData.image.push(getImageObject(file, downloadUrl, id))
+  }
+
+  const getUrl = async (id: string) => {
+    const url = await getDownloadUrl(id)
+    return url
+  }
+
   const editProject = (projectData: any) => {
     modifyProjectData(projectData)
     closeEditProjectModal()
@@ -104,7 +129,7 @@ export const EditProjectScreen = (props: any) => {
             <ImageCarousel />
           </div>
           <div className={classes.generalMarginTop}>
-            <DragAndDropUploader />
+            <DragAndDropUploader onSubmit={onImageUpload} />
           </div>
         </div>
         <div className={classes.button}>
@@ -212,7 +237,7 @@ export const EditProjectScreen = (props: any) => {
     <div className={classes.background}>
       {/* <Layout
         actionButtonTitle={'New Project'}
-        //history={props.history}
+        history={props.history}
         headerTitle={'Edit Project-'}
         onActionButtonPress={openNewProjectModal}> */}
       <NewProjectModal
