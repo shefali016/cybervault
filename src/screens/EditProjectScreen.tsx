@@ -30,7 +30,7 @@ import { getDefaultProjectData } from '../utils'
 import { getDownloadUrl, uploadMedia } from '../apis/assets'
 import { generateUid } from '../utils/index'
 
-export const EditProjectScreen = (props: any) => {
+const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const [projectData, setProjectData] = useState(getDefaultProjectData())
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)

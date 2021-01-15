@@ -6,7 +6,7 @@ export const updateUser = (update: {}) => ({
   update
 })
 export const updateUserSuccess = (user: Types.User) => ({
-  type: ActionTypes.UPDATE_USER,
+  type: ActionTypes.UPDATE_USER_SUCCESS,
   user
 })
 export const updateUserFailure = (error: string) => ({

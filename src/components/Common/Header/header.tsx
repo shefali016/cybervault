@@ -20,6 +20,8 @@ import {
   ROW
 } from 'utils/constants/stringConstants'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
+import NotificationIcon from '@material-ui/icons/Notifications'
+import { User } from 'utils/types'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -28,6 +30,7 @@ type Props = {
   onProfileClick?: () => void
   isEditInfoScreen?: boolean
   projectName?: string
+  user: User
 }
 const ITEM_HEIGHT = 48
 
@@ -211,20 +214,16 @@ function Toolbar(props: Props) {
       {/* : null} */}
       <div>
         {!props.isNotificationIcon ? (
-          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 20 }}>
-            <img src={notificationIcon} alt='notification icon' />
+          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
+            <NotificationIcon className={classes.notificationIcon} />
           </IconButton>
         ) : null}
         <IconButton
-          style={{ borderRadius: 100, width: 60, marginRight: 20 }}
+          style={{ borderRadius: 100, width: 45, marginRight: 22 }}
           onClick={props.onProfileClick}>
           <img
-            src={
-              props.profilePictureIcon
-                ? props.profilePictureIcon
-                : defaultProfileIcon
-            }
-            style={{ borderRadius: 20, height: 40, width: 40 }}
+            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
+            style={{ borderRadius: 20, height: 33, width: 33 }}
           />
         </IconButton>
       </div>
@@ -233,10 +232,11 @@ function Toolbar(props: Props) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
-    height: theme.spacing(8),
+    height: theme.spacing(7),
     width: '100%',
-    background: '#333333',
+    background: theme.palette.background.secondary,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',

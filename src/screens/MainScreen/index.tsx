@@ -3,14 +3,15 @@ import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 
-import Layout, { LayoutProps } from 'components/Common/Layout'
+import ProjectsScreen from 'screens/ProjectsScreen'
+import EditProjectScreen from 'screens/EditProjectScreen'
+import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import HomeScreen from 'screens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
-import { ButtonConfig, Project, Tab } from 'utils/types'
+
 import NewProjectModal from 'components/Projects/NewProjectModal'
-import { createNewProjectRequest } from 'actions/projectActions'
-import { ProjectsScreen } from 'screens/ProjectsScreen'
-import { EditProjectScreen } from 'screens/EditProjectScreen'
+import Layout, { LayoutProps } from 'components/Common/Layout'
+import { ButtonConfig, Project, Tab } from 'utils/types'
 
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
@@ -28,6 +29,7 @@ import BrandingIcon from '@material-ui/icons/Brush'
 import SubscriptionIcon from '@material-ui/icons/LocalActivity'
 
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
+import { createNewProjectRequest } from 'actions/projectActions'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -243,6 +245,7 @@ const MainScreen = (props: any) => {
           <Route path='/projects' component={ProjectsScreen} />
           <Route path='/profile' component={ProfileScreen} />
           <Route path='/project' component={EditProjectScreen} />
+          <Route path='/manage' component={ManageAccountScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>

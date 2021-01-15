@@ -41,6 +41,7 @@ export const ToastProvider = ({
   return (
     <ToastContext.Provider value={{ showToast }}>
       <div>
+        {children}
         {!!toast && (
           <div
             style={{
@@ -55,12 +56,14 @@ export const ToastProvider = ({
               padding: 30,
               pointerEvents: 'none'
             }}>
-            <Alert severity='error' variant='filled'>
+            <Alert
+              severity={toast.type as any}
+              variant='filled'
+              style={{ zIndex: 100 }}>
               {toast.title}
             </Alert>
           </div>
         )}
-        {children}
       </div>
     </ToastContext.Provider>
   )

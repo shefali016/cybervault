@@ -80,10 +80,17 @@ export function googleLogin() {
   }
 }
 
-export function googleLoginSuccess(activeUser: any) {
+export function googleLoginSuccess({
+  user,
+  account
+}: {
+  user: User
+  account: Account
+}) {
   return {
     type: ActionTypes.GOOGLE_LOGIN_SUCCESS,
-    activeUser: activeUser
+    user,
+    account
   }
 }
 

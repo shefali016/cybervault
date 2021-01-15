@@ -4,6 +4,20 @@ import 'firebase/auth'
 import { generateUid } from 'utils'
 import { getUser } from 'apis/user'
 import { getAccount } from 'apis/account'
+import {
+  SharingPrivacies,
+  WatermarkControls,
+  WatermarkStyles
+} from 'utils/enums'
+
+export const getUserWithAccount = (
+  id: string
+): Promise<{ user: User; account: Account }> => {
+  return getUser(id).then((user: User) => {
+    const { mainAccount } = user
+    return getAccount(mainAccount).then((account) => ({ account, user }))
+  })
+}
 
 export const authRequest = (
   userLogin: UserLoginInfo
@@ -16,14 +30,10 @@ export const authRequest = (
       const { user } = res
       console.log(user)
       if (user && user.uid) {
-        return getUser(user.uid)
+        return getUserWithAccount(user.uid)
       } else {
         throw Error('Failed to authenticate user')
       }
-    })
-    .then((user: User) => {
-      const { mainAccount } = user
-      return getAccount(mainAccount).then((account) => ({ account, user }))
     })
 
 export const signUpRequest = (
@@ -50,14 +60,22 @@ export const logoutRequest = () => firebase.auth().signOut()
 
 export const googleLoginRequest = async () => {
   const googleProvider = await new firebase.auth.GoogleAuthProvider()
-  const userRes = await firebase.auth().signInWithPopup(googleProvider)
-  if (userRes) {
+  const { user: authUser } = await firebase
+    .auth()
+    .signInWithPopup(googleProvider)
+  if (authUser) {
     let userData = {
-      name: userRes.user?.displayName,
-      email: userRes.user?.email,
-      uid: userRes.user?.uid
+      name: authUser.displayName,
+      email: authUser.email,
+      uid: authUser.uid
     }
-    return userData
+    try {
+      const user = await getUser(authUser.uid)
+      const account = await getAccount(user.mainAccount)
+      return { user, account }
+    } catch (error) {
+      return createAccount(userData)
+    }
   } else {
     throw Error('Failed to create user')
   }
@@ -69,7 +87,12 @@ export const createAccount = (
   const account: Account = {
     id: generateUid(),
     owner: authUser.uid,
-    type: 'creator'
+    type: 'creator',
+    settings: {
+      sharingPrivacy: SharingPrivacies.strict,
+      watermarkStyle: WatermarkStyles.single,
+      watermarkControl: WatermarkControls.all
+    }
   }
   const user: User = {
     id: authUser.uid,
