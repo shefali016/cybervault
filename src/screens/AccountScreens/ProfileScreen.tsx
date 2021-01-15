@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import '../../App.css'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
@@ -9,29 +9,62 @@ import { useTheme, makeStyles } from '@material-ui/core/styles'
 import AppTextField from 'components/Common/Core/AppTextField'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Typography } from '@material-ui/core'
-import { updateUser } from 'actions/user'
+import { updateUser, updateUserSuccess } from 'actions/user'
 import { setMedia } from 'apis/assets'
+import { useOnChange } from 'utils/hooks'
+import { ToastContext, ToastTypes } from 'context/Toast'
+import { createFalse } from 'typescript'
 
-type Props = { user: User; updateUser: (update: {}) => void }
+type Props = {
+  user: User
+  updateUser: (update: {}) => void
+  updating: boolean
+  updateSuccess: boolean
+  updateError: string | null
+}
 
-const ProfileScreen = ({ user, updateUser }: Props) => {
+const ProfileScreen = ({
+  user,
+  updateUser,
+  updating,
+  updateSuccess,
+  updateError
+}: Props) => {
   const classes = useStyles()
   const theme = useTheme()
+  const toastContext = useContext(ToastContext)
   const textInputStyle = { marginRight: theme.spacing(4) }
 
-  const [profileChanges, setProfileChanges] = useState<Partial<User>>({})
+  const [profileChanges, setProfileChanges] = useState<Partial<User>>(user)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  useOnChange(updateSuccess, (success: boolean) => {
+    if (success) {
+      setLoading(false)
+      toastContext.showToast({
+        title: 'Update Success!',
+        type: ToastTypes.success
+      })
+    }
+  })
+
+  useOnChange(updateError, (error: string | null) => {
+    if (error) {
+      setLoading(false)
+      toastContext.showToast({ title: 'Update Failed', type: ToastTypes.error })
+    }
+  })
 
   const updateProfile = (key: string) => (val: any) =>
     setProfileChanges((state: {}) => ({ ...state, [key]: val }))
 
   const handleSave = async () => {
     try {
+      setLoading(true)
       let update = { ...profileChanges }
-      if (profileChanges.avatar) {
-        const avatarUrl = await setMedia(
-          `user_avatars/${user.id}`,
-          profileChanges.avatar
-        )
+      if (avatarFile) {
+        const avatarUrl = await setMedia(`user_avatars/${user.id}`, avatarFile)
         if (typeof avatarUrl === 'string') {
           update = { ...update, avatar: avatarUrl }
         } else {
@@ -44,11 +77,15 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
     }
   }
 
+  const handleAvatarChange = (file: File) => {
+    setAvatarFile(file)
+  }
+
   return (
     <div className={clsx('container', classes.container)}>
       <AvatarPicker
-        url={user.avatar}
-        onChange={(file: File) => updateProfile('avatar')(file)}
+        url={avatarFile ? URL.createObjectURL(avatarFile) : user.avatar}
+        onChange={(file: File) => handleAvatarChange(file)}
         size={120}
         className={classes.avatarPicker}
       />
@@ -65,16 +102,17 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('firstName')(event.target.value)
             }
-            value={user.name}
+            value={profileChanges.name}
             style={textInputStyle}
             darkStyle={true}
           />
           <AppTextField
             label='Birthday'
+            type='date'
             onChange={(event: InputChangeEvent) =>
-              updateProfile('lastName')(event.target.value)
+              updateProfile('birthday')(event.target.value)
             }
-            value={user.birthday}
+            value={profileChanges.birthday}
             darkStyle={true}
           />
         </div>
@@ -84,7 +122,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('company')(event.target.value)
             }
-            value={user.company}
+            value={profileChanges.company}
             style={textInputStyle}
             darkStyle={true}
           />
@@ -93,7 +131,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('email')(event.target.value)
             }
-            value={user.email}
+            value={profileChanges.email}
             darkStyle={true}
           />
         </div>
@@ -109,7 +147,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('instagram')(event.target.value)
             }
-            value={user.instagram}
+            value={profileChanges.instagram}
             style={textInputStyle}
             darkStyle={true}
           />
@@ -118,7 +156,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('twitter')(event.target.value)
             }
-            value={user.twitter}
+            value={profileChanges.twitter}
             darkStyle={true}
           />
         </div>
@@ -128,7 +166,7 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('facebook')(event.target.value)
             }
-            value={user.facebook}
+            value={profileChanges.facebook}
             style={textInputStyle}
             darkStyle={true}
           />
@@ -137,13 +175,16 @@ const ProfileScreen = ({ user, updateUser }: Props) => {
             onChange={(event: InputChangeEvent) =>
               updateProfile('linkedIn')(event.target.value)
             }
-            value={user.linkedIn}
+            value={profileChanges.linkedIn}
             darkStyle={true}
           />
         </div>
       </div>
 
-      <GradiantButton className={classes.saveButton} onClick={handleSave}>
+      <GradiantButton
+        className={classes.saveButton}
+        onClick={handleSave}
+        loading={loading}>
         <Typography variant='button'>Save</Typography>
       </GradiantButton>
     </div>
@@ -193,7 +234,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const mapState = (state: ReduxState) => ({
-  user: state.auth.user as User
+  user: state.auth.user as User,
+  updateError: state.auth.userUpdateError,
+  updateSuccess: state.auth.userUpdateSuccess
 })
 
 const mapDispatch = (dispatch: any) => ({

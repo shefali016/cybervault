@@ -70,7 +70,13 @@ const AppTextField = (
           ? {
               shrink: true,
               classes: {
-                root: !value ? classes.dateRoot : classes.dateRootFilled,
+                root: !value
+                  ? darkStyle
+                    ? classes.dateRootDark
+                    : classes.dateRoot
+                  : darkStyle
+                  ? classes.dateRootDarkFilled
+                  : classes.dateRootFilled,
                 focused: classes.labelFocused
               }
             }
@@ -101,6 +107,19 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
     '&$labelFocused': {
       color: theme.palette.primary.light
+    },
+    marginTop: 0
+  },
+  dateRootDark: {
+    color: theme.palette.common.white,
+    '&$labelFocused': {
+      color: theme.palette.common.white
+    }
+  },
+  dateRootDarkFilled: {
+    color: theme.palette.common.white,
+    '&$labelFocused': {
+      color: theme.palette.common.white
     },
     marginTop: 0
   },

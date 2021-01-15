@@ -5,12 +5,14 @@ import defaultProfileIcon from '../../../assets/default_user.png'
 import notificationIcon from '../../../assets/notificationIcon.png'
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
+import { User } from 'utils/types'
 
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
   headerTitle?: string
   onProfileClick?: () => void
+  user: User
 }
 
 function Toolbar(props: Props) {
@@ -32,11 +34,7 @@ function Toolbar(props: Props) {
           style={{ borderRadius: 100, width: 45, marginRight: 22 }}
           onClick={props.onProfileClick}>
           <img
-            src={
-              props.profilePictureIcon
-                ? props.profilePictureIcon
-                : defaultProfileIcon
-            }
+            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
             style={{ borderRadius: 20, height: 33, width: 33 }}
           />
         </IconButton>

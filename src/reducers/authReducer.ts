@@ -8,16 +8,23 @@ import {
   GOOGLE_LOGIN_SUCCESS,
   GOOGLE_LOGIN_FAILURE,
   LOGIN_REQUEST,
-  SIGNUP_REQUEST
+  SIGNUP_REQUEST,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE,
+  UPDATE_USER
 } from 'actions/actionTypes'
 import { User } from 'utils/types'
 import { createTransform } from 'redux-persist'
+import { updateUser } from 'actions/user'
 
 export type State = {
   isLoggedIn: boolean
   user: User | null
   account: Account | null
   error: string | null
+  userUpdating: boolean
+  userUpdateSuccess: boolean
+  userUpdateError: string | null
 }
 
 export type Action = {
@@ -32,7 +39,10 @@ const initialState = {
   user: null,
   account: null,
   isLoggedIn: false,
-  error: null
+  error: null,
+  userUpdating: false,
+  userUpdateSuccess: false,
+  userUpdateError: null
 }
 
 const signUp = (state: State, action: Action) => ({ ...state, error: null })
@@ -124,6 +134,22 @@ const authReducer = (state = initialState, action: Action) => {
       return googleLoginSuccess(state, action)
     case GOOGLE_LOGIN_FAILURE:
       return googleLoginFailure(state, action)
+    case UPDATE_USER:
+      return {
+        ...state,
+        userUpdating: true,
+        userUpdateError: null,
+        userUpdateSuccess: false
+      }
+    case UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        user: action.user,
+        userUpdateSuccess: true,
+        userUpdating: false
+      }
+    case UPDATE_USER_FAILURE:
+      return { ...state, userUpdateError: action.error, userUpdating: false }
     default:
       return state
   }

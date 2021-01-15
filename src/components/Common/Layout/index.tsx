@@ -11,10 +11,13 @@ import {
   FLEX,
   COLUMN
 } from 'utils/constants/stringConstants'
-import { ButtonConfig, Tab } from 'utils/types'
+import { ButtonConfig, Tab, User } from 'utils/types'
 import { TabsProps } from '@material-ui/core'
+import { ReduxState } from 'reducers/rootReducer'
 
-type ReduxProps = { onLogout: () => void }
+type StateProps = { user: User }
+type DispatchProps = { onLogout: () => void }
+type ReduxProps = StateProps & DispatchProps
 
 export type LayoutProps = {
   actionButtonConfig?: any
@@ -36,7 +39,8 @@ const Layout = (props: LayoutProps & ReduxProps) => {
     tabs,
     onTabPress,
     activeTab,
-    onProfileClick
+    onProfileClick,
+    user
   } = props
   const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
@@ -57,7 +61,7 @@ const Layout = (props: LayoutProps & ReduxProps) => {
         }}
       />
       <div className={classes.main}>
-        <ToolBar {...{ headerTitle, onProfileClick }} />
+        <ToolBar {...{ headerTitle, onProfileClick, user }} />
         {props.children}
       </div>
     </div>
@@ -80,8 +84,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const mapDispatchToProps = (dispatch: any): ReduxProps => ({
+const mapState = (state: ReduxState): StateProps => ({
+  user: state.auth.user as User
+})
+
+const mapDispatchToProps = (dispatch: any): DispatchProps => ({
   onLogout: () => dispatch(logout())
 })
 
-export default connect(null, mapDispatchToProps)(Layout)
+export default connect(mapState, mapDispatchToProps)(Layout)
