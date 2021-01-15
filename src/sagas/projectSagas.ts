@@ -2,7 +2,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects'
 import { createNewProjectSuccess, createNewProjectFailure, getAllProjectsRequestSuccess, getAllProjectsRequestFailure } from "../actions/projectActions";
 import * as Types from '../utils/types';
 import * as ActionTypes from '../actions/actionTypes';
-import { createNewProjectRequest, getAllProjectsRequest } from './projectRequest';
+import { createNewProjectRequest, getAllProjectsRequest } from '../apis/projectRequest';
 
 type Params = { newProjectData: Types.Project, type: string }
 type GetParams = {type: string}
