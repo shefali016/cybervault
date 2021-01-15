@@ -11,9 +11,12 @@ import {
   SIGNUP_REQUEST,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILURE,
-  UPDATE_USER
+  UPDATE_USER,
+  UPDATE_ACCOUNT,
+  UPDATE_ACCOUNT_SUCCESS,
+  UPDATE_ACCOUNT_FAILURE
 } from 'actions/actionTypes'
-import { User } from 'utils/types'
+import { User, Account } from 'utils/types'
 import { createTransform } from 'redux-persist'
 import { updateUser } from 'actions/user'
 
@@ -25,6 +28,9 @@ export type State = {
   userUpdating: boolean
   userUpdateSuccess: boolean
   userUpdateError: string | null
+  accountUpdating: boolean
+  accountUpdateSuccess: boolean
+  accountUpdateError: string | null
 }
 
 export type Action = {
@@ -42,7 +48,10 @@ const initialState = {
   error: null,
   userUpdating: false,
   userUpdateSuccess: false,
-  userUpdateError: null
+  userUpdateError: null,
+  accountUpdating: false,
+  accountUpdateSuccess: false,
+  accountUpdateError: null
 }
 
 const signUp = (state: State, action: Action) => ({ ...state, error: null })
@@ -150,6 +159,26 @@ const authReducer = (state = initialState, action: Action) => {
       }
     case UPDATE_USER_FAILURE:
       return { ...state, userUpdateError: action.error, userUpdating: false }
+    case UPDATE_ACCOUNT:
+      return {
+        ...state,
+        accountUpdating: true,
+        accountUpdateSuccess: false,
+        accountUpdateError: false
+      }
+    case UPDATE_ACCOUNT_SUCCESS:
+      return {
+        ...state,
+        account: action.account,
+        accountUpdating: false,
+        accountUpdateSuccess: true
+      }
+    case UPDATE_ACCOUNT_FAILURE:
+      return {
+        ...state,
+        accountUpdating: false,
+        accountUpdateError: action.error
+      }
     default:
       return state
   }

@@ -1,5 +1,19 @@
 import { ChangeEvent } from 'react'
 
+export type WatermarkControl = 'none' | 'portfolios' | 'invoices' | 'all'
+
+export type WatermarkStyle = 'single' | 'repeat'
+
+export type SharingPrivacy = 'open' | 'strict'
+
+export type Region = {
+  code: string
+  name: string
+  flag: string
+  currencySymbol: string
+  currencyCode: string
+}
+
 export type InputChangeEvent = ChangeEvent<HTMLInputElement>
 
 export type ButtonConfig = {
@@ -21,6 +35,13 @@ export type Account = {
   id: string
   owner: string // id of user
   type: 'creator' | 'client'
+  region?: Region
+  settings: {
+    sharingPrivacy: SharingPrivacy
+    watermarkStyle: WatermarkStyle
+    watermarkControl: WatermarkControl
+    watermark?: string
+  }
 }
 
 export type User = {

@@ -4,6 +4,11 @@ import 'firebase/auth'
 import { generateUid } from 'utils'
 import { getUser } from 'apis/user'
 import { getAccount } from 'apis/account'
+import {
+  SharingPrivacies,
+  WatermarkControls,
+  WatermarkStyles
+} from 'utils/enums'
 
 export const getUserWithAccount = (
   id: string
@@ -82,7 +87,12 @@ export const createAccount = (
   const account: Account = {
     id: generateUid(),
     owner: authUser.uid,
-    type: 'creator'
+    type: 'creator',
+    settings: {
+      sharingPrivacy: SharingPrivacies.strict,
+      watermarkStyle: WatermarkStyles.single,
+      watermarkControl: WatermarkControls.all
+    }
   }
   const user: User = {
     id: authUser.uid,

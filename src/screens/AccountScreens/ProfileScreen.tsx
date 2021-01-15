@@ -35,7 +35,7 @@ const ProfileScreen = ({
   const toastContext = useContext(ToastContext)
   const textInputStyle = { marginRight: theme.spacing(4) }
 
-  const [profileChanges, setProfileChanges] = useState<Partial<User>>(user)
+  const [profileChanges, setProfileChanges] = useState<User>({ ...user })
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -57,7 +57,7 @@ const ProfileScreen = ({
   })
 
   const updateProfile = (key: string) => (val: any) =>
-    setProfileChanges((state: {}) => ({ ...state, [key]: val }))
+    setProfileChanges((state: User) => ({ ...state, [key]: val }))
 
   const handleSave = async () => {
     try {
@@ -73,7 +73,10 @@ const ProfileScreen = ({
       }
       updateUser(update)
     } catch (error) {
-      alert('Failed to update profile. Please try again.')
+      setLoading(false)
+      toastContext.showToast({
+        title: 'Failed to update profile. Please try again.'
+      })
     }
   }
 

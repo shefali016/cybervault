@@ -16,3 +16,12 @@ export const getAccount = (id: string): Promise<Account> => {
       }
     })
 }
+
+export const updateAccount = (account: Account): Promise<Account> => {
+  return firebase
+    .firestore()
+    .collection('Accounts')
+    .doc(account.id)
+    .set(account)
+    .then(() => account)
+}

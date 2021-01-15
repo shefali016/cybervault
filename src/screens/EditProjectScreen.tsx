@@ -26,7 +26,8 @@ import EditProjectModal from 'components/EditProjectModel'
 import ProjectStatusIndicator from '../components/Common/ProjectStatusIndicator'
 import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
 import { getDefaultProjectData } from '../utils'
-export const EditProjectScreen = (props: any) => {
+
+const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const [projectData, setProjectData] = useState(getDefaultProjectData())
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)

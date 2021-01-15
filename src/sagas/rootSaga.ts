@@ -1,12 +1,9 @@
 import { all } from 'redux-saga/effects'
 import authSagas from './authSagas'
 import projectSagas from './projectSagas'
-import userSagas from "./user"
+import userSagas from './user'
+import accountSagas from './account'
 
 export default function* rootSaga() {
-  yield all([
-    authSagas(),
-    projectSagas(),
-    userSagas()
-  ])
+  yield all([authSagas(), projectSagas(), userSagas(), accountSagas()])
 }
