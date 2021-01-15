@@ -17,25 +17,37 @@ export type Asset = {
   original?: any
 }
 
+export type Account = {
+  id: string
+  owner: string // id of user
+  type: 'creator' | 'client'
+}
+
 export type User = {
-  id: string,
+  id: string
   email: string
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
-  password: string
-  avatar: string | undefined
-  firstName: string
-  lastName: string
-  company: string | undefined
-  instagram: string | undefined
-  facebook: string | undefined
-  twitter: string | undefined
-  linkedIn: string | undefined
+  avatar?: string | undefined
+  name?: string
+  birthday?: string
+  company?: string | undefined
+  instagram?: string | undefined
+  facebook?: string | undefined
+  twitter?: string | undefined
+  linkedIn?: string | undefined
+}
+
+export type AuthUser = {
+  uid: string
+  email: string
+  name?: string
 }
 
 export type UserLoginInfo = {
   email: string
   password: string
+  name?: string
 }
 
 export type Task = {
@@ -74,12 +86,6 @@ export type Project = {
   updatedAt: Date
   id: string
   campaignDate: string
-}
-
-export type Account = {
-  id: string
-  owner: string // id of user
-  type: 'creator' | 'client'
 }
 
 export type AllProjects = Array<Project>

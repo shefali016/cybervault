@@ -5,6 +5,7 @@ import Routes from './routes/navigationRoutes'
 import history from './services/history'
 import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { ToastProvider } from 'context/Toast'
 
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
@@ -42,9 +43,10 @@ const theme = createMuiTheme({
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
     background: { default: '#24262b', secondary: '#292b2e', paper: '#ffffff' },
     text: {
-      primary: '#ffffff',
+      primary: '#24262b',
       secondary: '#e6e6e6',
-      background: '#ffffff'
+      background: '#ffffff',
+      paper: '#24262b'
     }
   },
   shape: { borderRadius: 12 }
@@ -56,7 +58,9 @@ function App() {
   return (
     <Router history={history}>
       <ThemeProvider theme={theme}>
-        <Routes />
+        <ToastProvider>
+          <Routes />
+        </ToastProvider>
       </ThemeProvider>
     </Router>
   )

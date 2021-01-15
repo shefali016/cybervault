@@ -16,7 +16,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import {
   SIDE_DRAWER_WIDTH,
-  APP_BAR_HEIGHT,
   CENTER
 } from '../../../utils/constants/stringConstants'
 import {
@@ -26,9 +25,9 @@ import {
   SECONDARY_COLOR,
   SECONDARY_DARK_COLOR
 } from '../../../utils/constants/colorsConstants'
-import ROUTES from '../../../utils/constants/routes'
 import { Link } from 'react-router-dom'
 import { Tab, ButtonConfig } from 'utils/types'
+import LogoutIcon from '@material-ui/icons/ExitToApp'
 
 type Props = {
   actionButtonConfig: ButtonConfig
@@ -172,7 +171,11 @@ const SideBarComponent = (props: Props) => {
       <Divider className={classes.divider} />
       <List>
         {renderListItem(
-          { id: 'logout', text: 'Log Out', icon: null },
+          {
+            id: 'logout',
+            text: 'Log Out',
+            icon: <LogoutIcon className={classes.listIconStyle} />
+          },
           handleLogout
         )}
       </List>

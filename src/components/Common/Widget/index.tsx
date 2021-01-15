@@ -29,10 +29,7 @@ const Widget = ({
   const theme = useTheme()
   return (
     <div className={clsx(classes.root)}>
-      <Typography
-        variant={'body1'}
-        className={classes.title}
-        color={'textPrimary'}>
+      <Typography variant={'body1'} className={classes.title}>
         {title}
       </Typography>
       <div
@@ -82,7 +79,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(4)
+    marginLeft: theme.spacing(4),
+    color: theme.palette.text.background
   },
   loader: {}
 }))

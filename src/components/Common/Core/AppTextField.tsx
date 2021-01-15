@@ -1,12 +1,7 @@
-import { makeStyles, TextField } from '@material-ui/core'
-import React from 'react'
-import {
-  BLACK_COLOR,
-  PRIMARY_COLOR,
-  PRIMARY_DARK_COLOR
-} from '../../../utils/constants/colorsConstants'
-import { InputChangeEvent } from '../../../utils/types'
+import { makeStyles, TextField, useTheme } from '@material-ui/core'
 import clsx from 'clsx'
+import React, { useMemo, forwardRef } from 'react'
+import { InputChangeEvent } from '../../../utils/types'
 
 type Props = {
   type?: string
@@ -16,21 +11,45 @@ type Props = {
   multiline?: boolean
   style?: {}
   error?: boolean
+  darkStyle?: boolean
+  onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+  onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
 }
 
-const AppTextField = ({
-  type,
-  label,
-  value,
-  onChange,
-  multiline,
-  style = {},
-  error
-}: Props) => {
+const AppTextField = (
+  {
+    type,
+    label,
+    value,
+    onChange,
+    multiline,
+    style = {},
+    error,
+    darkStyle,
+    onKeyDown,
+    onKeyUp
+  }: Props,
+  ref: any
+) => {
   const classes = useStyles()
+  const theme = useTheme()
   const currentDate = new Date().toISOString().slice(0, 10)
+
+  const dynamicInputStyle = useMemo(() => {
+    if (multiline) {
+      return darkStyle
+        ? classes.multilineInputRootDark
+        : classes.multilineInputRoot
+    } else {
+      return darkStyle ? classes.inputRootDark : classes.inputRoot
+    }
+  }, [multiline, darkStyle])
+
   return (
     <TextField
+      inputRef={ref}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
       error={error ? error : false}
       label={label}
       variant='outlined'
@@ -42,7 +61,7 @@ const AppTextField = ({
       value={value}
       InputProps={{
         classes: {
-          root: multiline ? classes.multilineInputRoot : classes.inputRoot
+          root: dynamicInputStyle
         }
       }}
       inputProps={type === 'date' ? { min: currentDate } : {}}
@@ -62,7 +81,11 @@ const AppTextField = ({
               }
             }
       }
-      style={{ marginTop: 8, marginBottom: 8, ...style }}
+      style={{
+        marginTop: theme.spacing(1.5),
+        marginBottom: theme.spacing(1.5),
+        ...style
+      }}
     />
   )
 }
@@ -71,13 +94,13 @@ const useStyles = makeStyles((theme) => ({
   dateRoot: {
     color: theme.palette.grey[500],
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
+      color: theme.palette.primary.light
     }
   },
   dateRootFilled: {
     color: theme.palette.grey[500],
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
+      color: theme.palette.primary.light
     },
     marginTop: 0
   },
@@ -90,10 +113,10 @@ const useStyles = makeStyles((theme) => ({
       borderColor: theme.palette.error
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
+      borderColor: theme.palette.primary.light
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
+      borderColor: theme.palette.primary.light
     }
   },
   textField: {
@@ -104,10 +127,10 @@ const useStyles = makeStyles((theme) => ({
       borderColor: theme.palette.grey[500]
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
+      borderColor: theme.palette.primary.light
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
+      borderColor: theme.palette.primary.light
     }
   },
   inputRoot: {
@@ -115,20 +138,29 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[900]
   },
   multilineInputRoot: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     color: theme.palette.grey[900]
+  },
+  inputRootDark: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    color: theme.palette.text.background
+  },
+  multilineInputRootDark: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    color: theme.palette.text.background
   },
   labelRoot: {
     color: theme.palette.grey[500],
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
+      color: theme.palette.primary.light
     }
   },
   labelRootFilled: {
     color: theme.palette.grey[500],
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
+      color: theme.palette.primary.light
     }
   }
 }))
 
-export default AppTextField
+export default forwardRef(AppTextField)
