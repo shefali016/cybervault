@@ -10,11 +10,7 @@ type GetParams = {type: string}
 function* createNewProject( { newProjectData }: Params) {
   try {
     const response = yield call(createNewProjectRequest, newProjectData);
-    if (response) {
-      yield put(createNewProjectSuccess(response))
-    } else {
-      yield put(createNewProjectFailure(response))
-    }
+    yield put(createNewProjectSuccess(response))
   } catch (error: any) {
     yield put(createNewProjectFailure(error))
   }
@@ -23,11 +19,7 @@ function* createNewProject( { newProjectData }: Params) {
 function* getAllProjects() {
   try {
     const response = yield call(getAllProjectsRequest);
-    if (response) {
-      yield put(getAllProjectsRequestSuccess(response))
-    } else {
-      yield put(getAllProjectsRequestFailure(response))
-    }
+    yield put(getAllProjectsRequestSuccess(response))
   } catch (error: any) {
     yield put(getAllProjectsRequestFailure(error))
   }
