@@ -78,10 +78,9 @@ const MainScreen = (props: any) => {
     () => setNewProjectModalOpen(false),
     []
   )
-  const createNewProject = useCallback(
-    (projectData) => props.createNewProject(projectData),
-    []
-  )
+  const createNewProject = useCallback((projectData) => {
+    props.createNewProject(projectData, props.userData.account)
+  }, [])
 
   const getTab = (id: string) => {
     switch (id) {
@@ -272,10 +271,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const mapStateToProps = (state: any) => ({
+  userData: state.auth
+})
+
 const mapDispatchToProps = (dispatch: any) => ({
-  createNewProject: (projectData: Project) => {
-    return dispatch(createNewProjectRequest(projectData))
+  createNewProject: (projectData: Project, account: Account) => {
+    return dispatch(createNewProjectRequest(projectData, account))
   }
 })
 
-export default connect(null, mapDispatchToProps)(MainScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

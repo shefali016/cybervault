@@ -7,11 +7,14 @@ import 'firebase/firestore'
  * @createNewProject
  */
 export const createNewProjectRequest = async (
-  newProjectData: Types.Project
+  newProjectData: Types.Project,
+  account: Account
 ) => {
   return new Promise((resolve, reject) => {
     firebase
     .firestore()
+    .collection('AllProjects')
+    .doc(account.id)
     .collection('Projects')
     .doc(newProjectData.id)
     .set(newProjectData)
@@ -25,10 +28,13 @@ export const createNewProjectRequest = async (
  * @getAllProjects
  */
 export const getAllProjectsRequest = async (
+  account: Account
 ) => {
   return new Promise((resolve, reject) => {
     firebase
     .firestore()
+    .collection('AllProjects')
+    .doc(account.id)
     .collection('Projects')
     .onSnapshot((QuerySnapshot) => {
       let allProjectsData: Array<{}> = [];

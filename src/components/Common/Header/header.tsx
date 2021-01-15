@@ -116,94 +116,97 @@ function Toolbar(props: Props) {
     )
   }
 
+  const renderEditInfoData = () => {
+    return (
+      <div
+        style={{ display: FLEX, alignItems: CENTER, justifyContent: CENTER }}>
+        <h2
+          style={{
+            color: 'white',
+            fontWeight: 'normal',
+            marginRight: 20,
+            marginLeft: 20
+          }}>
+          {props.projectName ? props.projectName : 'Nike Campaign'}
+        </h2>
+        <Grid style={{ marginRight: 100 }}>
+          <PopupState variant='popover' popupId='demo-popup-popover'>
+            {(popupState) => (
+              <div>
+                <IconButton
+                  aria-label='more'
+                  aria-controls='long-menu'
+                  aria-haspopup='true'
+                  {...bindTrigger(popupState)}
+                  style={{ color: WHITE_COLOR }}>
+                  <MoreVertIcon />
+                </IconButton>
+                <Popover
+                  id={'long-menu'}
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right'
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left'
+                  }}
+                  PaperProps={{
+                    style: {
+                      maxHeight: ITEM_HEIGHT * 2.5,
+                      borderRadius: 15,
+                      border: 1,
+                      fontSize: 12,
+                      borderColor: 'black',
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      color: '#000'
+                    }
+                  }}
+                  style={{ marginLeft: -20, marginTop: -20 }}
+                  {...bindPopover(popupState)}>
+                  <MenuItem style={{ fontSize: 12, color: 'black' }}>
+                    {renderInnerPopover()}
+                  </MenuItem>
+                  <MenuItem style={{ fontSize: 12 }}>
+                    <div style={{ display: FLEX }}>
+                      <ReceiptIcon
+                        style={{ marginRight: 5 }}
+                        fontSize='small'
+                      />
+                      Invoice Milestone
+                    </div>
+                  </MenuItem>
+                  <MenuItem style={{ fontSize: 12 }}>
+                    <div style={{ display: FLEX, color: 'red' }}>
+                      <DeleteSharpIcon
+                        style={{ marginRight: 5 }}
+                        fontSize='small'
+                      />
+                      Delete Project
+                    </div>
+                  </MenuItem>
+                </Popover>
+              </div>
+            )}
+          </PopupState>
+        </Grid>
+        <div>
+          <GradiantButton width={135} height={40}>
+            <Typography variant={'body1'}> Invoice</Typography>
+          </GradiantButton>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25, display: FLEX }}>
         <h2 style={{ color: 'white', fontWeight: 'normal' }}>
           {props.headerTitle}
         </h2>
-
-        {/* { props.isEditInfoScreen ?  */}
-        <div
-          style={{ display: FLEX, alignItems: CENTER, justifyContent: CENTER }}>
-          <h2
-            style={{
-              color: 'white',
-              fontWeight: 'normal',
-              marginRight: 20,
-              marginLeft: 20
-            }}>
-            {props.projectName ? props.projectName : 'Nike Campaign'}
-          </h2>
-          <Grid style={{ marginRight: 100 }}>
-            <PopupState variant='popover' popupId='demo-popup-popover'>
-              {(popupState) => (
-                <div>
-                  <IconButton
-                    aria-label='more'
-                    aria-controls='long-menu'
-                    aria-haspopup='true'
-                    {...bindTrigger(popupState)}
-                    style={{ color: WHITE_COLOR }}>
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Popover
-                    id={'long-menu'}
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right'
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left'
-                    }}
-                    PaperProps={{
-                      style: {
-                        maxHeight: ITEM_HEIGHT * 2.5,
-                        borderRadius: 15,
-                        border: 1,
-                        fontSize: 12,
-                        borderColor: 'black',
-                        paddingTop: 8,
-                        paddingBottom: 8,
-                        color: '#000'
-                      }
-                    }}
-                    style={{ marginLeft: -20, marginTop: -20 }}
-                    {...bindPopover(popupState)}>
-                    <MenuItem style={{ fontSize: 12, color: 'black' }}>
-                      {renderInnerPopover()}
-                    </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }}>
-                      <div style={{ display: FLEX }}>
-                        <ReceiptIcon
-                          style={{ marginRight: 5 }}
-                          fontSize='small'
-                        />
-                        Invoice Milestone
-                      </div>
-                    </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }}>
-                      <div style={{ display: FLEX, color: 'red' }}>
-                        <DeleteSharpIcon
-                          style={{ marginRight: 5 }}
-                          fontSize='small'
-                        />
-                        Delete Project
-                      </div>
-                    </MenuItem>
-                  </Popover>
-                </div>
-              )}
-            </PopupState>
-          </Grid>
-          <div>
-            <GradiantButton width={135} height={40}>
-              <Typography variant={'body1'}> Invoice</Typography>
-            </GradiantButton>
-          </div>
-        </div>
       </div>
       {/* : null} */}
       <div>

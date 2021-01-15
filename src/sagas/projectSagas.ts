@@ -4,21 +4,22 @@ import * as Types from '../utils/types';
 import * as ActionTypes from '../actions/actionTypes';
 import { createNewProjectRequest, getAllProjectsRequest } from '../apis/projectRequest';
 
-type Params = { newProjectData: Types.Project, type: string }
-type GetParams = {type: string}
+type Params = { newProjectData: Types.Project, type: string, account: Account }
+type GetParams = {type: string, account: Account}
 
-function* createNewProject( { newProjectData }: Params) {
+function* createNewProject( { newProjectData, account }: Params) {
   try {
-    const response = yield call(createNewProjectRequest, newProjectData);
+    console.log('createNewProject ===', newProjectData, account)
+    const response = yield call(createNewProjectRequest, newProjectData, account);
     yield put(createNewProjectSuccess(response))
   } catch (error: any) {
     yield put(createNewProjectFailure(error))
   }
 }
 
-function* getAllProjects() {
+function* getAllProjects({ account }: GetParams) {
   try {
-    const response = yield call(getAllProjectsRequest);
+    const response = yield call(getAllProjectsRequest, account);
     yield put(getAllProjectsRequestSuccess(response))
   } catch (error: any) {
     yield put(getAllProjectsRequestFailure(error))
