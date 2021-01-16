@@ -122,7 +122,7 @@ const BrandingScreen = ({
     }))
 
   const renderEmail = () => (
-    <div style={{ flex: 1, display: 'flex' }}>
+    <div className={classes.brandingDisplayContainer}>
       <div className={classes.brandingDisplaySection}>
         <div className={classes.emailHeader}>
           <img src={accountUpdate.settings.watermark} height='60px' />
@@ -168,8 +168,7 @@ const BrandingScreen = ({
       <div
         style={{
           display: 'flex',
-          alignItems: 'center',
-          overflow: 'hidden'
+          alignItems: 'center'
         }}>
         <LeftArrowIcon className={classes.arrowIcon} />
         <div
@@ -229,7 +228,7 @@ const BrandingScreen = ({
   }
 
   const renderPortfolio = () => (
-    <div style={{ flex: 1, display: 'flex' }}>
+    <div className={classes.brandingDisplayContainer}>
       <div
         className={classes.brandingDisplaySection}
         style={{
@@ -424,7 +423,7 @@ const BrandingScreen = ({
               style={{ marginBottom: theme.spacing(2) }}>
               Customize your email notifications
             </Typography>
-            <div style={{ display: 'flex' }}>
+            <div className={classes.colorPickerContainer}>
               <div>
                 <ColorPicker
                   color={accountUpdate.branding.email.backgroundColor}
@@ -471,7 +470,7 @@ const BrandingScreen = ({
               style={{ marginBottom: theme.spacing(2) }}>
               Displayed through the portfolio sharing link
             </Typography>
-            <div style={{ display: 'flex' }}>
+            <div className={classes.colorPickerContainer}>
               <div>
                 <ColorPicker
                   color={accountUpdate.branding.portfolio.backgroundColor}
@@ -627,6 +626,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(6)
   },
 
+  colorPickerContainer: {
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
+  },
+  brandingDisplayContainer: {
+    display: 'flex',
+    flex: 1
+  },
   brandingDisplaySection: {
     flex: 1,
     display: 'flex',
@@ -637,7 +644,8 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: 1,
     marginLeft: theme.spacing(15),
     overflow: 'hidden',
-    maxHeight: 500
+    maxHeight: 500,
+    [theme.breakpoints.down('sm')]: { marginLeft: 0, display: 'none' }
   },
   colorPicker: { marginTop: theme.spacing(1) },
   emailNotifications: { marginBottom: theme.spacing(4) },
