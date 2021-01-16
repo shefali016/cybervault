@@ -45,7 +45,7 @@ const HomeScreen = (props: any) => {
       <Widget
         data={allProjects}
         title={'Active Projects'}
-        emptyMessage={'No Projects found'}
+        emptyMessage={'No Active Projects'}
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
         renderItem={(item) => (

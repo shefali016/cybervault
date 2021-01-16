@@ -207,11 +207,8 @@ function Toolbar(props: Props) {
   return (
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25, display: FLEX }}>
-        <h2 style={{ color: 'white', fontWeight: 'normal' }}>
-          {props.headerTitle}
-        </h2>
+        <h2 className={classes.title}>{props.headerTitle}</h2>
       </div>
-      {/* : null} */}
       <div>
         {!props.isNotificationIcon ? (
           <IconButton style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
@@ -232,6 +229,13 @@ function Toolbar(props: Props) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  title: {
+    color: 'white',
+    fontWeight: 'normal',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 14
+    }
+  },
   notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
     height: theme.spacing(7),
