@@ -6,11 +6,17 @@ import arrowIcon from '../../../assets/Iconionic-ios-arrow-down.png'
 import { makeStyles } from '@material-ui/core/styles'
 import Dummy from '../../../assets/Dummy.jpg'
 import { VideoComponent } from '../Video'
+import { MediaObject } from 'utils/types'
+import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 
-export const ImageCarousel = (props?: any) => {
+export type Props = {
+  isVideo?: boolean
+  source: Array<{}>
+}
+
+export const ImageCarousel = (props: Props) => {
   const classes = useStyles()
   const [currentSlide, setCurrentSlide] = useState(1)
-
   const next = () => {
     setCurrentSlide(currentSlide + 1)
   }
@@ -23,6 +29,24 @@ export const ImageCarousel = (props?: any) => {
     if (currentSlide !== index) {
       setCurrentSlide(index)
     }
+  }
+
+  const renderEmptyComponent = () => {
+    return <div />
+  }
+
+  const renderMediaComponent = () => {
+    return props.source.map((data: MediaObject) => {
+      return props.isVideo ? (
+        <div className={classes.videoComponentWrapper}>
+          <VideoComponent url={data.url} />
+        </div>
+      ) : (
+        <div>
+          <img src={data.url} alt='' />
+        </div>
+      )
+    })
   }
 
   return (
@@ -38,35 +62,38 @@ export const ImageCarousel = (props?: any) => {
           onClick={prev}
         />
       </Button>
-      <Carousel
-        statusFormatter={(currentItem: number, total: number) => {
-          return ''
-        }}
-        renderArrowPrev={(onClickHandler, hasPrev, label) => {
-          return null
-        }}
-        renderArrowNext={(onClickHandler, hasNext, label) => {
-          return null
-        }}
-        renderIndicator={(onClickHandler, isSelected, index, label) => {
-          return null
-        }}
-        selectedItem={currentSlide}
-        onChange={updateCurrentSlide}>
-        {[1, 2, 3].map((index: number) => {
-          return props.isVideo ? (
-            <div className={classes.videoComponentWrapper}>
-              <VideoComponent
-                url={'https://www.youtube.com/embed/0uGETVnkujA'}
-              />
-            </div>
-          ) : (
-            <div>
-              <img src={Dummy} alt='' />
-            </div>
-          )
-        })}
-      </Carousel>
+      <div className={classes.videoContainer}>
+        <Carousel
+          statusFormatter={(currentItem: number, total: number) => {
+            return ''
+          }}
+          renderArrowPrev={(onClickHandler, hasPrev, label) => {
+            return null
+          }}
+          renderArrowNext={(onClickHandler, hasNext, label) => {
+            return null
+          }}
+          renderIndicator={(onClickHandler, isSelected, index, label) => {
+            return null
+          }}
+          selectedItem={currentSlide}
+          onChange={updateCurrentSlide}>
+          {[1, 2, 3].map((data: any) => {
+            return props.isVideo ? (
+              <div className={classes.videoComponentWrapper}>
+                <VideoComponent
+                  //url={data.url}
+                  url={'https://www.youtube.com/embed/0uGETVnkujA'}
+                />
+              </div>
+            ) : (
+              <div>
+                <img src={Dummy} alt='' />
+              </div>
+            )
+          })}
+        </Carousel>
+      </div>
       <Button
         className={classes.button}
         style={{ marginTop: props.isVideo ? 110 : 80 }}>
@@ -93,5 +120,11 @@ const useStyles = makeStyles((theme) => ({
   videoComponentWrapper: {
     margin: 0,
     width: '100%'
+  },
+  videoContainer: {
+    margin: 0,
+    width: '100%',
+    borderWidth: 2,
+    borderColor: WHITE_COLOR
   }
 }))

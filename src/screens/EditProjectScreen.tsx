@@ -25,7 +25,10 @@ import { ImageCarousel } from '../components/Common/Carousel'
 import EditProjectModal from 'components/EditProjectModel'
 import ProjectStatusIndicator from '../components/Common/ProjectStatusIndicator'
 import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
+
 import { getDefaultProjectData } from '../utils'
+import { getDownloadUrl, uploadMedia } from '../apis/assets'
+import { generateUid } from '../utils/index'
 
 const EditProjectScreen = (props: any) => {
   const classes = useStyles()
@@ -48,7 +51,8 @@ const EditProjectScreen = (props: any) => {
     []
   )
   const createNewProject = useCallback(
-    (projectData) => props.createNewProject(projectData),
+    (projectData) =>
+      props.createNewProject(projectData, props.userData.account),
     []
   )
 
@@ -77,7 +81,40 @@ const EditProjectScreen = (props: any) => {
   }
 
   const onSaveChanges = () => {
-    console.log(projectData)
+    //console.log('Project data ===', projectData);
+  }
+
+  const getImageObject = (file: any, url: string, id: string) => {
+    return {
+      id: id,
+      original: true,
+      url: url,
+      width: 50,
+      height: 50
+    }
+  }
+
+  const onImageUpload = async (file: any) => {
+    const id = generateUid()
+    await uploadMedia(id, file)
+    const downloadUrl = await getUrl(id)
+    // @ts-ignore
+    projectData.images.push(getImageObject(file, downloadUrl, id))
+    setProjectData(projectData)
+  }
+
+  const onVideoUpload = async (file: any) => {
+    const id = generateUid()
+    await uploadMedia(id, file)
+    const downloadUrl = await getUrl(id)
+    // @ts-ignore
+    projectData.videos.push(getImageObject(file, downloadUrl, id))
+    setProjectData(projectData)
+  }
+
+  const getUrl = async (id: string) => {
+    const url = await getDownloadUrl(id)
+    return url
   }
 
   const editProject = (projectData: any) => {
@@ -102,10 +139,10 @@ const EditProjectScreen = (props: any) => {
         </Typography>
         <div style={{ display: FLEX }}>
           <div className={classes.imageCorouselContainer}>
-            <ImageCarousel />
+            <ImageCarousel source={[]} />
           </div>
           <div className={classes.generalMarginTop}>
-            <DragAndDropUploader />
+            <DragAndDropUploader onSubmit={onImageUpload} />
           </div>
         </div>
         <div className={classes.button}>
@@ -126,10 +163,10 @@ const EditProjectScreen = (props: any) => {
         <Typography className={classes.textColor}>Upload Videos</Typography>
         <div style={{ display: FLEX }}>
           <div className={classes.videoCorouselContainer}>
-            <ImageCarousel isVideo />
+            <ImageCarousel isVideo source={[]} />
           </div>
           <div className={classes.generalMarginTop}>
-            <DragAndDropUploader isVideo />
+            <DragAndDropUploader isVideo onSubmit={onVideoUpload} />
           </div>
         </div>
         {renderDevider({ editInfo: true })}
@@ -213,7 +250,7 @@ const EditProjectScreen = (props: any) => {
     <div className={classes.background}>
       {/* <Layout
         actionButtonTitle={'New Project'}
-        //history={props.history}
+        history={props.history}
         headerTitle={'Edit Project-'}
         onActionButtonPress={openNewProjectModal}> */}
       <NewProjectModal
@@ -235,12 +272,13 @@ const EditProjectScreen = (props: any) => {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
-  newProjectData: state.project.projectData
+  newProjectData: state.project.projectData,
+  userData: state.auth
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  createNewProject: (projectData: Types.Project) => {
-    return dispatch(createNewProjectRequest(projectData))
+  createNewProject: (projectData: Types.Project, account: Account) => {
+    return dispatch(createNewProjectRequest(projectData, account))
   },
 
   clearNewProjectData: () => {

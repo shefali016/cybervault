@@ -2,32 +2,25 @@ import { all, call, put, takeLatest } from 'redux-saga/effects'
 import { createNewProjectSuccess, createNewProjectFailure, getAllProjectsRequestSuccess, getAllProjectsRequestFailure } from "../actions/projectActions";
 import * as Types from '../utils/types';
 import * as ActionTypes from '../actions/actionTypes';
-import { createNewProjectRequest, getAllProjectsRequest } from './projectRequest';
+import { createNewProjectRequest, getAllProjectsRequest } from '../apis/projectRequest';
 
-type Params = { newProjectData: Types.Project, type: string }
-type GetParams = {type: string}
+type Params = { newProjectData: Types.Project, type: string, account: Account }
+type GetParams = {type: string, account: Account}
 
-function* createNewProject( { newProjectData }: Params) {
+function* createNewProject( { newProjectData, account }: Params) {
   try {
-    const response = yield call(createNewProjectRequest, newProjectData);
-    if (response) {
-      yield put(createNewProjectSuccess(response))
-    } else {
-      yield put(createNewProjectFailure(response))
-    }
+    console.log('createNewProject ===', newProjectData, account)
+    const response = yield call(createNewProjectRequest, newProjectData, account);
+    yield put(createNewProjectSuccess(response))
   } catch (error: any) {
     yield put(createNewProjectFailure(error))
   }
 }
 
-function* getAllProjects() {
+function* getAllProjects({ account }: GetParams) {
   try {
-    const response = yield call(getAllProjectsRequest);
-    if (response) {
-      yield put(getAllProjectsRequestSuccess(response))
-    } else {
-      yield put(getAllProjectsRequestFailure(response))
-    }
+    const response = yield call(getAllProjectsRequest, account);
+    yield put(getAllProjectsRequestSuccess(response))
   } catch (error: any) {
     yield put(getAllProjectsRequestFailure(error))
   }

@@ -32,12 +32,14 @@ export const setMedia = (id: string, file: any) => {
 
 export const uploadMedia = (id: string, file: any) => {
   const childRef = firebase.storage().ref().child(buildAssetPath(id))
-
   return childRef.put(file)
 }
 
-export const getDownloadUrl = (id: string) => {
-  return firebase.storage().ref().child(buildAssetPath(id)).getDownloadURL()
+export const  getDownloadUrl =async (id: string) => {
+  return new Promise(async function (resolve, reject) {
+    const downloadUrl = await firebase.storage().ref().child(buildAssetPath(id)).getDownloadURL()
+    resolve(downloadUrl)
+  });
 }
 
 export const getAssets = async () => {

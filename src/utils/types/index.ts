@@ -106,6 +106,14 @@ export type Milestone = {
   cost: number
 }
 
+export type MediaObject = {
+  id?: string,
+  original?: boolean,
+  url?: string,
+  width?: number,
+  height?: number
+}
+
 export type Project = {
   logo: any
   campaignName: string
@@ -123,6 +131,8 @@ export type Project = {
   updatedAt: Date
   id: string
   campaignDate: string
+  videos: Array<MediaObject>,
+  images: Array<MediaObject>
 }
 
 export type AllProjects = Array<Project>

@@ -1,10 +1,11 @@
 import * as ActionTypes from './actionTypes';
 import * as Types from '../utils/types';
 
-export function createNewProjectRequest(newProjectData: Types.Project) {
+export function createNewProjectRequest(newProjectData: Types.Project, account: Account) {
   return {
     type: ActionTypes.NEW_PROJECT_REQUEST,
     newProjectData,
+    account
   };
 }
 
@@ -29,9 +30,10 @@ export function createNewProjectFailure (error: any) {
   };
 
 
-  export function getAllProjectsRequest() {
+  export function getAllProjectsRequest(account: Account) {
     return {
-      type: ActionTypes.GET_ALL_PROJECT_REQUEST
+      type: ActionTypes.GET_ALL_PROJECT_REQUEST,
+      account
     };
   }
   

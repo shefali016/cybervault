@@ -16,7 +16,7 @@ import {
   signUpRequest,
   logoutRequest,
   googleLoginRequest
-} from './authRequest'
+} from '../apis/authRequest'
 
 type Params = { loginInfo: Types.UserLoginInfo; type: string }
 

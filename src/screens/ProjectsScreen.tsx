@@ -73,7 +73,8 @@ export const ProjectsScreen = (props: any) => {
     []
   )
   const createNewProject = useCallback(
-    (projectData) => props.createNewProject(projectData),
+    (projectData) =>
+      props.createNewProject(projectData, props.userData.account),
     []
   )
   return (
@@ -122,15 +123,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn
+  isLoggedIn: state.auth.isLoggedIn,
+  userData: state.auth
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
   logout: () => {
     return dispatch(logout())
   },
-  createNewProject: (projectData: Types.Project) => {
-    return dispatch(createNewProjectRequest(projectData))
+  createNewProject: (projectData: Types.Project, account: Account) => {
+    return dispatch(createNewProjectRequest(projectData, account))
   }
 })
 

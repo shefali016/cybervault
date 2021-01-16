@@ -31,7 +31,7 @@ const HomeScreen = (props: any) => {
   }, [props.isLoggedIn, props.newProjectData, props.allProjectsData])
 
   useEffect(() => {
-    props.getAllProjectsData()
+    props.getAllProjectsData(props.userData.account)
   }, [])
 
   const loggedOut = (props: any) => {
@@ -93,19 +93,16 @@ const HomeScreen = (props: any) => {
 const mapStateToProps = (state: any) => ({
   newProjectData: state.project.newProjectData,
   allProjectsData: state.project.allProjectsData,
-  activeProjectsLoading: state.project.isLoading
+  activeProjectsLoading: state.project.isLoading,
+  userData: state.auth
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  createNewProject: (projectData: Types.Project) => {
-    return dispatch(createNewProjectRequest(projectData))
-  },
-
   clearNewProjectData: () => {
     return dispatch(clearNewProjectData())
   },
-  getAllProjectsData: () => {
-    return dispatch(getAllProjectsRequest())
+  getAllProjectsData: (account: Account) => {
+    return dispatch(getAllProjectsRequest(account))
   }
 })
 
