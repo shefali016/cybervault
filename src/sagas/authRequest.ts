@@ -92,6 +92,21 @@ export const createAccount = (
       sharingPrivacy: SharingPrivacies.strict,
       watermarkStyle: WatermarkStyles.single,
       watermarkControl: WatermarkControls.all
+    },
+    branding: {
+      email: {
+        backgroundColor: '#EFEFEF',
+        text: '#000',
+        buttonBackgroundColor: '#0f77ff',
+        buttonTextColor: '#fff'
+      },
+      portfolio: {
+        backgroundColor: '#999999',
+        foregroundColor: '#EFEFEF',
+        text: '#000',
+        headerGradient1: '#0f77ff',
+        headerGradient2: '#fff'
+      }
     }
   }
   const user: User = {

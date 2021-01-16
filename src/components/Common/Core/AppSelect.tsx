@@ -9,6 +9,7 @@ export type Item = {
   renderer?: () => React.ReactElement
   title?: string
 }
+
 type Props = {
   items: Array<Item>
   value?: string

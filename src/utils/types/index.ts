@@ -36,11 +36,27 @@ export type Account = {
   owner: string // id of user
   type: 'creator' | 'client'
   region?: Region
+  name?: string
   settings: {
     sharingPrivacy: SharingPrivacy
     watermarkStyle: WatermarkStyle
     watermarkControl: WatermarkControl
     watermark?: string
+  }
+  branding: {
+    email: {
+      backgroundColor: string
+      text: string
+      buttonBackgroundColor: string
+      buttonTextColor: string
+    }
+    portfolio: {
+      backgroundColor: string
+      foregroundColor: string
+      text: string
+      headerGradient1: string
+      headerGradient2: string
+    }
   }
 }
 

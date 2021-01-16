@@ -28,7 +28,10 @@ export const GradiantButton = (props: any) => {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`
+    background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`,
+    minWidth: 150,
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5)
   },
   spinner: { marginLeft: 10 }
 }))

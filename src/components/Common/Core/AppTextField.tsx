@@ -5,7 +5,7 @@ import { InputChangeEvent } from '../../../utils/types'
 
 type Props = {
   type?: string
-  label: string
+  label?: string
   value: any
   onChange: (e: InputChangeEvent) => void
   multiline?: boolean

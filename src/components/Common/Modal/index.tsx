@@ -7,11 +7,18 @@ export type ModalProps = {
   open: boolean
   onRequestClose: () => void
   children: React.ReactElement<any, any>
+  clickToClose?: boolean
 }
 
-const AppModal = ({ open, onRequestClose, children }: ModalProps) => {
+const AppModal = ({
+  open,
+  onRequestClose,
+  children,
+  clickToClose
+}: ModalProps) => {
   return (
     <Modal
+      onBackdropClick={clickToClose ? onRequestClose : () => {}}
       open={open}
       aria-labelledby='transition-modal-title'
       aria-describedby='transition-modal-description'

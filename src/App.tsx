@@ -46,8 +46,10 @@ const theme = createMuiTheme({
       primary: '#24262b',
       secondary: '#e6e6e6',
       background: '#ffffff',
-      paper: '#24262b'
-    }
+      paper: '#24262b',
+      meta: '#999999'
+    },
+    border: '#e6e6e6'
   },
   shape: { borderRadius: 12 }
 })

@@ -5,9 +5,10 @@ import { makeStyles } from '@material-ui/core'
 
 import ProjectsScreen from 'screens/ProjectsScreen'
 import EditProjectScreen from 'screens/EditProjectScreen'
-import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import HomeScreen from 'screens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
+import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
+import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -247,6 +248,7 @@ const MainScreen = (props: any) => {
           <Route path='/profile' component={ProfileScreen} />
           <Route path='/project' component={EditProjectScreen} />
           <Route path='/manage' component={ManageAccountScreen} />
+          <Route path='/branding' component={BrandingScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>

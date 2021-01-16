@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 1000
     },
     [theme.breakpoints.down('sm')]: {
-      width: '90%',
+      width: '89%',
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2)
     }

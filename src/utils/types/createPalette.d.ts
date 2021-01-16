@@ -1,13 +1,18 @@
 import * as createPalette from '@material-ui/core/styles/createPalette'
 
 declare module '@material-ui/core/styles/createPalette' {
-  interface PaletteOptions {
+  export interface PaletteOptions {
     success?: PaletteColorOptions
     ding?: PaletteColorOptions
     background: { default: PaletteColorOptions }
+    border: string
   }
 
-  interface TypeBackground {
+  export interface Palette {
+    border: string
+  }
+
+  export interface TypeBackground {
     default: string
     secondary: string
     paper: string
@@ -20,5 +25,6 @@ declare module '@material-ui/core/styles/createPalette' {
     disabled: string
     hint: string
     paper: string
+    meta: string
   }
 }

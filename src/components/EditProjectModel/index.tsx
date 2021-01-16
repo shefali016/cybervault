@@ -35,7 +35,6 @@ const EditProject = ({
 }: EditProjectProps) => {
   const [projectData, setProjectData] = useState(currentProjectData)
   const [haveError, setHaveError] = useState(false)
-  const modalContentRef = useRef<HTMLDivElement>(null)
   const isEdit = true
 
   const onSubmitData = () => {
@@ -79,7 +78,7 @@ const EditProject = ({
   }
 
   return (
-    <div className='new-project-modal-content' ref={modalContentRef}>
+    <div className='new-project-modal-content'>
       {renderStepsView()}
       <CloseButton
         onClick={onRequestClose}
