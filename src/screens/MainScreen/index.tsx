@@ -183,7 +183,11 @@ const MainScreen = (props: any) => {
     return [...tabids, ...sharedTabIds].map(getTab)
   }, [screenView])
 
-  const [activeTab, setActiveTab] = useState(tabs[0])
+  const [activeTab, setActiveTab] = useState(
+    tabs.find(
+      (tab) => tab.id === props.history.location.pathname.replace('/', '')
+    ) || tabs[0]
+  )
 
   const getSidebarButtonConfig = (): ButtonConfig => {
     if (screenView === ScreenViews.account) {
