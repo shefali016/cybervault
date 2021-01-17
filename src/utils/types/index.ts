@@ -1,5 +1,8 @@
 import { ChangeEvent } from 'react'
 
+export type SubscriptionType = 'creator' | 'pro' | 'team' | 'business'
+export type SubscriptionDuration = 'yearly' | 'monthly'
+
 export type WatermarkControl = 'none' | 'portfolios' | 'invoices' | 'all'
 
 export type WatermarkStyle = 'single' | 'repeat'
@@ -37,6 +40,11 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
+  subscription?: {
+    type: SubscriptionType
+    duration: SubscriptionDuration,
+    customerId: string // Strip customer ID
+  }
   settings: {
     sharingPrivacy: SharingPrivacy
     watermarkStyle: WatermarkStyle
@@ -107,10 +115,10 @@ export type Milestone = {
 }
 
 export type MediaObject = {
-  id?: string,
-  original?: boolean,
-  url?: string,
-  width?: number,
+  id?: string
+  original?: boolean
+  url?: string
+  width?: number
   height?: number
 }
 
@@ -131,7 +139,7 @@ export type Project = {
   updatedAt: Date
   id: string
   campaignDate: string
-  videos: Array<MediaObject>,
+  videos: Array<MediaObject>
   images: Array<MediaObject>
 }
 

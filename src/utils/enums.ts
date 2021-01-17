@@ -1,4 +1,10 @@
-import { SharingPrivacy, WatermarkStyle, WatermarkControl } from './types'
+import {
+  SharingPrivacy,
+  WatermarkStyle,
+  WatermarkControl,
+  SubscriptionType,
+  SubscriptionDuration
+} from './types'
 
 export const SharingPrivacies: {
   open: SharingPrivacy
@@ -26,4 +32,24 @@ export const WatermarkControls: {
   all: 'all',
   invoices: 'invoices',
   portfolios: 'portfolios'
+}
+
+export const SubscriptionTypes: {
+  creator: SubscriptionType
+  pro: SubscriptionType
+  team: SubscriptionType
+  business: SubscriptionType
+} = {
+  creator: 'creator',
+  pro: 'pro',
+  team: 'team',
+  business: 'business'
+}
+
+export const SubscriptionDurations: {
+  yearly: SubscriptionDuration
+  monthly: SubscriptionDuration
+} = {
+  yearly: 'yearly',
+  monthly: 'monthly'
 }

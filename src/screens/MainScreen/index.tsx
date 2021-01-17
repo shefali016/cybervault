@@ -31,6 +31,7 @@ import SubscriptionIcon from '@material-ui/icons/LocalActivity'
 
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import { createNewProjectRequest } from 'actions/projectActions'
+import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -248,6 +249,7 @@ const MainScreen = (props: any) => {
           <Route path='/project' component={EditProjectScreen} />
           <Route path='/manage' component={ManageAccountScreen} />
           <Route path='/branding' component={BrandingScreen} />
+          <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>

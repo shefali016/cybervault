@@ -10,8 +10,8 @@ export const GradiantButton = (props: any) => {
     <Button
       color={'primary'}
       variant={'contained'}
-      {...props}
-      className={clsx(classes.button, props.className)}>
+      className={clsx(classes.button, props.className)}
+      {...props}>
       {props.children}
       {props.loading && (
         <ReactLoading

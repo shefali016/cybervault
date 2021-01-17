@@ -4,25 +4,20 @@ import { Router } from 'react-router-dom'
 import Routes from './routes/navigationRoutes'
 import history from './services/history'
 import React from 'react'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import {
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider
+} from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
 
-declare module '@material-ui/core/styles/createMuiTheme' {
-  interface Theme {
-    status: {
-      inProgress: React.CSSProperties['color']
-      completed: React.CSSProperties['color']
-      archived: React.CSSProperties['color']
-    }
+const useStyles = makeStyles((theme) => ({
+  '@global': {
+    '.row': { display: 'flex', alignItems: 'center' },
+    '.icon': { color: theme.palette.grey[400], fontSize: 20 },
+    '.MuiButton-label': { textTransform: 'capitalize' }
   }
-  interface ThemeOptions {
-    status: {
-      inProgress: React.CSSProperties['color']
-      completed: React.CSSProperties['color']
-      archived: React.CSSProperties['color']
-    }
-  }
-}
+}))
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -33,11 +28,6 @@ const theme = createMuiTheme({
       lg: 1280,
       xl: 1920
     }
-  },
-  status: {
-    inProgress: '#ffea00',
-    completed: '#4caf50',
-    archived: '#f44336'
   },
   palette: {
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
@@ -57,6 +47,7 @@ const theme = createMuiTheme({
 initFirebase()
 
 function App() {
+  useStyles()
   return (
     <Router history={history}>
       <ThemeProvider theme={theme}>
