@@ -530,7 +530,7 @@ const BrandingScreen = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  arrowIcon: { color: theme.palette.grey[500] },
+  arrowIcon: { color: theme.palette.grey[300] },
   emailButton: {
     borderRadius: '100px',
     padding: `${theme.spacing(1.5)}px ${theme.spacing(2)}px`
