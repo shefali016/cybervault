@@ -10,6 +10,7 @@ import Modal from '../Common/Modal'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
+import { GradiantButton } from 'components/Common/Button/GradiantButton'
 
 type Props = {
   open: boolean
@@ -33,6 +34,8 @@ export const SubscriptionModal = ({
     activeSubscriptionType || SubscriptionTypes.pro
   )
 
+  const handleChoosePlan = (type: SubscriptionType) => {}
+
   const renderCreatorSubscription = () => {
     const {
       name,
@@ -52,6 +55,7 @@ export const SubscriptionModal = ({
         extraFeatures={extraFeatures}
         isSelected={selectedSubscription === SubscriptionTypes.creator}
         duration={duration}
+        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator)}
       />
     )
   }
@@ -75,6 +79,7 @@ export const SubscriptionModal = ({
         extraFeatures={extraFeatures}
         isSelected={selectedSubscription === SubscriptionTypes.pro}
         duration={duration}
+        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.pro)}
       />
     )
   }
@@ -98,6 +103,7 @@ export const SubscriptionModal = ({
         extraFeatures={extraFeatures}
         isSelected={selectedSubscription === SubscriptionTypes.team}
         duration={duration}
+        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.team)}
       />
     )
   }
@@ -169,6 +175,7 @@ type SubscriptionItemProps = {
   extraFeatures?: Array<string>
   isSelected: boolean
   onClick: () => void
+  onChoosePlan: () => void
 }
 
 const SubscriptionItem = ({
@@ -179,7 +186,8 @@ const SubscriptionItem = ({
   features,
   extraFeatures,
   isSelected,
-  onClick
+  onClick,
+  onChoosePlan
 }: SubscriptionItemProps) => {
   const classes = useStyles()
   return (
@@ -194,7 +202,7 @@ const SubscriptionItem = ({
         {description}
       </Typography>
       <div className={classes.priceContainer}>
-        <Typography variant={'h6'} className={classes.priceText}>
+        <Typography variant={'h5'} className={classes.priceText}>
           ${price}
         </Typography>
         <Typography variant={'h6'} className={classes.durationText}>
@@ -228,11 +236,23 @@ const SubscriptionItem = ({
           </ul>
         </div>
       ) : null}
+      <div className={classes.choosePlanContainer}>
+        <GradiantButton onClick={onChoosePlan}>
+          <Typography>Choose Plan</Typography>
+        </GradiantButton>
+      </div>
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  choosePlanContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingTop: theme.spacing(5)
+  },
   header: {
     display: 'flex',
     flexDirection: 'column',
@@ -241,6 +261,8 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(3)
   },
   subscriptionItemContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     borderRadius: theme.shape.borderRadius,
     boxShadow: '0 5px 10px #cccccc',
     padding: theme.spacing(3),
@@ -284,5 +306,5 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center'
   },
   priceText: { color: theme.palette.grey[600] },
-  durationText: { color: theme.palette.grey[600], fontSize: 10 }
+  durationText: { color: theme.palette.grey[600], fontSize: 12, marginTop: 8 }
 }))
