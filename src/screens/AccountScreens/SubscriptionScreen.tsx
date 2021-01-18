@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
@@ -10,6 +10,7 @@ import { getSubscriptionDetails } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
+import { SubscriptionModal } from 'components/Subscription/SubscriptionModal'
 
 type StateProps = {
   account: Account
@@ -21,8 +22,21 @@ type Props = {}
 const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
   const classes = useStyles()
 
+  const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
+    false
+  )
+
+  const openSubscriptionModal = () => setSubscriptionModalOpen(true)
+  const closeSubscriptionModal = () => setSubscriptionModalOpen(false)
+
   return (
     <div className={clsx('container', classes.container)}>
+      <SubscriptionModal
+        open={subscriptionModalOpen}
+        onRequestClose={closeSubscriptionModal}
+        activeSubscriptionType={account.subscription?.type}
+      />
+
       <Section title={'Your Plan'} className={classes.section}>
         <div className={classes.sectionInner}>
           <div className={classes.sectionTextArea}>
@@ -42,7 +56,7 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
                       : 'Subscribe to benefit from the full features of Creator Cloud'}
                   </Typography>
                 </div>,
-                <GradiantButton>
+                <GradiantButton onClick={openSubscriptionModal}>
                   <div className={'row'}>
                     <Typography style={{ marginRight: 5 }}>
                       Manage Plan
@@ -155,7 +169,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.paper,
     display: 'flex',
     alignItems: 'center',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('sm')]: {
       flexDirection: 'column'
     }
   },

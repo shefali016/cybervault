@@ -24,7 +24,7 @@ const WatermarkStyleSelect = ({ onChange, watermarkStyle }: Props) => {
     <AppSelect
       items={MENU_ITEMS}
       value={watermarkStyle || WatermarkStyles.single}
-      onChange={(event: InputChangeEvent) => {
+      onChange={(event: any) => {
         onChange(event.target.value as WatermarkStyle)
       }}
     />

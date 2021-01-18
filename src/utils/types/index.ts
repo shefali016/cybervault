@@ -1,13 +1,31 @@
 import { ChangeEvent } from 'react'
+import {
+  SharingPrivacies,
+  SubscriptionDurations,
+  SubscriptionTypes,
+  WatermarkControls,
+  WatermarkStyles
+} from 'utils/enums'
 
-export type SubscriptionType = 'creator' | 'pro' | 'team' | 'business'
-export type SubscriptionDuration = 'yearly' | 'monthly'
+export type SubscriptionType =
+  | SubscriptionTypes.creator
+  | SubscriptionTypes.pro
+  | SubscriptionTypes.team
+  | SubscriptionTypes.business
 
-export type WatermarkControl = 'none' | 'portfolios' | 'invoices' | 'all'
+export type SubscriptionDuration =
+  | SubscriptionDurations.yearly
+  | SubscriptionDurations.monthly
 
-export type WatermarkStyle = 'single' | 'repeat'
+export type WatermarkControl =
+  | WatermarkControls.none
+  | WatermarkControls.portfolios
+  | WatermarkControls.invoices
+  | WatermarkControls.all
 
-export type SharingPrivacy = 'open' | 'strict'
+export type WatermarkStyle = WatermarkStyles.single | WatermarkStyles.repeat
+
+export type SharingPrivacy = SharingPrivacies.open | SharingPrivacies.strict
 
 export type Region = {
   code: string
@@ -42,7 +60,7 @@ export type Account = {
   name?: string
   subscription?: {
     type: SubscriptionType
-    duration: SubscriptionDuration,
+    duration: SubscriptionDuration
     customerId: string // Strip customer ID
   }
   settings: {

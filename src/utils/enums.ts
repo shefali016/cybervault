@@ -1,55 +1,28 @@
-import {
-  SharingPrivacy,
-  WatermarkStyle,
-  WatermarkControl,
-  SubscriptionType,
-  SubscriptionDuration
-} from './types'
-
-export const SharingPrivacies: {
-  open: SharingPrivacy
-  strict: SharingPrivacy
-} = {
-  open: 'open',
-  strict: 'strict'
+export enum SharingPrivacies {
+  open,
+  strict
 }
 
-export const WatermarkStyles: {
-  single: WatermarkStyle
-  repeat: WatermarkStyle
-} = {
-  single: 'single',
-  repeat: 'repeat'
+export enum WatermarkStyles {
+  single,
+  repeat
 }
 
-export const WatermarkControls: {
-  none: WatermarkControl
-  all: WatermarkControl
-  invoices: WatermarkControl
-  portfolios: WatermarkControl
-} = {
-  none: 'none',
-  all: 'all',
-  invoices: 'invoices',
-  portfolios: 'portfolios'
+export enum WatermarkControls {
+  none,
+  all,
+  invoices,
+  portfolios
 }
 
-export const SubscriptionTypes: {
-  creator: SubscriptionType
-  pro: SubscriptionType
-  team: SubscriptionType
-  business: SubscriptionType
-} = {
-  creator: 'creator',
-  pro: 'pro',
-  team: 'team',
-  business: 'business'
+export enum SubscriptionTypes {
+  creator,
+  pro,
+  team,
+  business
 }
 
-export const SubscriptionDurations: {
-  yearly: SubscriptionDuration
-  monthly: SubscriptionDuration
-} = {
-  yearly: 'yearly',
-  monthly: 'monthly'
+export enum SubscriptionDurations {
+  yearly,
+  monthly
 }

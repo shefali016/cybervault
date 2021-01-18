@@ -14,10 +14,10 @@ const ProjectStatusIndicator = (props: { status: string }) => {
         marginLeft: 10,
         backgroundColor:
           props.status === 'In progress'
-            ? theme.status.inProgress
+            ? theme.palette.status.inProgress
             : props.status === 'Completed'
-            ? theme.status.completed
-            : theme.status.archived
+            ? theme.palette.status.completed
+            : theme.palette.status.archived
       }}
     />
   )

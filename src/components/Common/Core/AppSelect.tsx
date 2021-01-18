@@ -12,7 +12,7 @@ export type Item = {
 
 type Props = {
   items: Array<Item>
-  value?: string
+  value?: any
   onChange: (value: any) => void
 }
 

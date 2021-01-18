@@ -3,14 +3,13 @@ import { Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import LoginScreen from '../screens/LoginScreen'
 import SignUpScreen from '../screens/SignUpScreen'
-import HomeScreen from '../screens/HomeScreen'
-import ProjectScreen from '../screens/ProjectsScreen'
-import EditProjectScreen from '../screens/EditProjectScreen'
 import MainScreen from 'screens/MainScreen'
+import { useGlobalStyles } from '../utils/globalStyles'
 
 type Props = { isLoggedIn?: boolean }
 
 const Routes = (props: Props): JSX.Element => {
+  useGlobalStyles()
   return props.isLoggedIn ? MainRoutes() : AuthRoutes()
 }
 

@@ -6,10 +6,20 @@ declare module '@material-ui/core/styles/createPalette' {
     ding?: PaletteColorOptions
     background: { default: PaletteColorOptions }
     border: string
+    status: {
+      inProgress: React.CSSProperties['color']
+      completed: React.CSSProperties['color']
+      archived: React.CSSProperties['color']
+    }
   }
 
   export interface Palette {
     border: string
+    status: {
+      inProgress: React.CSSProperties['color']
+      completed: React.CSSProperties['color']
+      archived: React.CSSProperties['color']
+    }
   }
 
   export interface TypeBackground {
