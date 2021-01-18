@@ -78,17 +78,14 @@ export const ImageCarousel = (props: Props) => {
           }}
           selectedItem={currentSlide}
           onChange={updateCurrentSlide}>
-          {[1, 2, 3].map((data: any) => {
+          {props.source.map((data: any) => {
             return props.isVideo ? (
               <div className={classes.videoComponentWrapper}>
-                <VideoComponent
-                  //url={data.url}
-                  url={'https://www.youtube.com/embed/0uGETVnkujA'}
-                />
+                <VideoComponent url={data.url} />
               </div>
             ) : (
-              <div>
-                <img src={Dummy} alt='' />
+              <div style={{ height: 150, width: 370 }}>
+                <img src={data.url} alt='' />
               </div>
             )
           })}
