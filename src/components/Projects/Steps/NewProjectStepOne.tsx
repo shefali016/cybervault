@@ -26,15 +26,15 @@ import { generateUid } from '../../../utils'
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const isTablet = useTabletLayout()
-  const { projectData, setProjectData, haveError } = props
+  const { projectData, setProjectData, haveError, setLogoFile } = props
   let imageInputRef: any = React.useRef()
 
   const handleChange = async (event: any) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
+      setLogoFile(event.target.files[0])
       setProjectData({
         ...projectData,
-        logo: URL.createObjectURL(event.target.files[0]),
-        logoFile: event.target.files[0]
+        logo: URL.createObjectURL(event.target.files[0])
       })
     }
   }
@@ -189,7 +189,7 @@ const NewProjectStepOne = (props: any) => {
       {!props.isEdit ? renderClientLogoView() : null}
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 1 of 5'}
+        title={props.isEdit ? '' : 'Step 4 of 5'}
         onNext={props.onNext}
         onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}

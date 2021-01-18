@@ -80,7 +80,7 @@ const NewProjectStepThree = (props: any) => {
           <AppTextField
             type={''}
             label={`Expense ${index + 1}`}
-            value={projectData.expenses[0].title}
+            value={projectData.expenses[index].title}
             onChange={(e: InputChangeEvent) =>
               handleExpenseChange(e, 'title', index)
             }
@@ -90,7 +90,7 @@ const NewProjectStepThree = (props: any) => {
           <AppTextField
             type={'number'}
             label={`Estimated Cost $`}
-            value={projectData.expenses[0].cost}
+            value={projectData.expenses[index].cost}
             onChange={(e: InputChangeEvent) =>
               handleExpenseChange(e, 'cost', index)
             }
@@ -168,7 +168,7 @@ const NewProjectStepThree = (props: any) => {
       />
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 1 of 5'}
+        title={props.isEdit ? '' : 'Step 3 of 5'}
         onNext={props.onNext}
         onBack={props.onBack}
         description={

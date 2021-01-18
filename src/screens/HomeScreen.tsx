@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
-import {
-  createNewProjectRequest,
-  clearNewProjectData,
-  getAllProjectsRequest
-} from '../actions/projectActions'
+import { getAllProjectsRequest } from '../actions/projectActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../components/Cards/UnpaidInvoices'
@@ -45,7 +41,7 @@ const HomeScreen = (props: any) => {
       <Widget
         data={allProjects}
         title={'Active Projects'}
-        emptyMessage={'No Projects found'}
+        emptyMessage={'No Active Projects'}
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
         renderItem={(item) => (
@@ -98,9 +94,6 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  clearNewProjectData: () => {
-    return dispatch(clearNewProjectData())
-  },
   getAllProjectsData: (account: Account) => {
     return dispatch(getAllProjectsRequest(account))
   }

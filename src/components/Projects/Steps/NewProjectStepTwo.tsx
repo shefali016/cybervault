@@ -181,7 +181,7 @@ const NewProjectStepTwo = (props: any) => {
       <NewProjectTitle title={'Plan The Strategy.'} subtitle={'Work scope.'} />
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 1 of 5'}
+        title={props.isEdit ? '' : 'Step 2 of 5'}
         onBack={props.onBack}
         onNext={props.onNext}
         onUpdate={props.onUpdate}

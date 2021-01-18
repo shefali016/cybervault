@@ -9,7 +9,13 @@ import { ToastContext, ToastTypes } from 'context/Toast'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
 import RegionSelect from 'components/Selects/RegionSelect'
-import { Region, Account, WatermarkStyle, WatermarkControl } from 'utils/types'
+import {
+  Region,
+  Account,
+  WatermarkStyle,
+  WatermarkControl,
+  SharingPrivacy
+} from 'utils/types'
 import SharingPrivacySelect from 'components/Selects/SharingPrivacySelect'
 import WatermarkStyleSelect from 'components/Selects/WatermarkStyleSelect'
 import WatermarkControlSelect from 'components/Selects/WatermarkControlSelect'
@@ -130,7 +136,7 @@ const ManageAccountScreen = ({
             </Typography>
           </div>
           <SharingPrivacySelect
-            onChange={(sharingPrivacy: string) =>
+            onChange={(sharingPrivacy: SharingPrivacy) =>
               updateAccountSettings('sharingPrivacy')(sharingPrivacy)
             }
             privacy={accountUpdate.settings?.sharingPrivacy}
@@ -228,7 +234,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.paper,
     display: 'flex',
     alignItems: 'center',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('sm')]: {
       flexDirection: 'column'
     }
   },

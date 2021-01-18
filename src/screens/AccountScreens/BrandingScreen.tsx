@@ -454,7 +454,7 @@ const BrandingScreen = ({
                   onChange={(color: string) =>
                     updateAccountEmailBranding('buttonTextColor')(color)
                   }
-                  label={'Background text'}
+                  label={'Button text'}
                   className={classes.colorPicker}
                 />
               </div>
@@ -530,7 +530,7 @@ const BrandingScreen = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  arrowIcon: { color: theme.palette.grey[500] },
+  arrowIcon: { color: theme.palette.grey[300] },
   emailButton: {
     borderRadius: '100px',
     padding: `${theme.spacing(1.5)}px ${theme.spacing(2)}px`

@@ -59,9 +59,7 @@ button {
   align-items: center;
   padding: 15px 20px;
 }
-.row {
-  display: flex;
-}
+
 .col {
   display: flex;
   flex-direction: column;
@@ -70,7 +68,8 @@ button {
   border-width: 10px;
 }
 
-.dashboardScreen {}
+.dashboardScreen {
+}
 
 .authScreenContainer {
   display: flex;

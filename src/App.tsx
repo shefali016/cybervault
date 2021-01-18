@@ -7,23 +7,6 @@ import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
 
-declare module '@material-ui/core/styles/createMuiTheme' {
-  interface Theme {
-    status: {
-      inProgress: React.CSSProperties['color']
-      completed: React.CSSProperties['color']
-      archived: React.CSSProperties['color']
-    }
-  }
-  interface ThemeOptions {
-    status: {
-      inProgress: React.CSSProperties['color']
-      completed: React.CSSProperties['color']
-      archived: React.CSSProperties['color']
-    }
-  }
-}
-
 const theme = createMuiTheme({
   breakpoints: {
     values: {
@@ -33,11 +16,6 @@ const theme = createMuiTheme({
       lg: 1280,
       xl: 1920
     }
-  },
-  status: {
-    inProgress: '#ffea00',
-    completed: '#4caf50',
-    archived: '#f44336'
   },
   palette: {
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
@@ -49,7 +27,12 @@ const theme = createMuiTheme({
       paper: '#24262b',
       meta: '#999999'
     },
-    border: '#e6e6e6'
+    border: '#e6e6e6',
+    status: {
+      inProgress: '#ffea00',
+      completed: '#4caf50',
+      archived: '#f44336'
+    }
   },
   shape: { borderRadius: 12 }
 })

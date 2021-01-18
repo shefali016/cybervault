@@ -6,6 +6,7 @@ import { getUser } from 'apis/user'
 import { getAccount } from 'apis/account'
 import {
   SharingPrivacies,
+  SubscriptionTypes,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
@@ -88,6 +89,7 @@ export const createAccount = (
     id: generateUid(),
     owner: authUser.uid,
     type: 'creator',
+    subscription: { type: SubscriptionTypes.creator },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,
       watermarkStyle: WatermarkStyles.single,

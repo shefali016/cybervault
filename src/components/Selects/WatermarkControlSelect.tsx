@@ -31,8 +31,12 @@ const WatermarkControlSelect = ({ onChange, watermarkControl }: Props) => {
   return (
     <AppSelect
       items={MENU_ITEMS}
-      value={watermarkControl || WatermarkControls.all}
-      onChange={(event: InputChangeEvent) => {
+      value={
+        watermarkControl !== undefined
+          ? watermarkControl
+          : WatermarkControls.all
+      }
+      onChange={(event: any) => {
         onChange(event.target.value as WatermarkControl)
       }}
     />

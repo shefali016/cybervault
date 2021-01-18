@@ -1,10 +1,31 @@
 import { ChangeEvent } from 'react'
+import {
+  SharingPrivacies,
+  SubscriptionDurations,
+  SubscriptionTypes,
+  WatermarkControls,
+  WatermarkStyles
+} from 'utils/enums'
 
-export type WatermarkControl = 'none' | 'portfolios' | 'invoices' | 'all'
+export type SubscriptionType =
+  | SubscriptionTypes.creator
+  | SubscriptionTypes.pro
+  | SubscriptionTypes.team
+  | SubscriptionTypes.business
 
-export type WatermarkStyle = 'single' | 'repeat'
+export type SubscriptionDuration =
+  | SubscriptionDurations.yearly
+  | SubscriptionDurations.monthly
 
-export type SharingPrivacy = 'open' | 'strict'
+export type WatermarkControl =
+  | WatermarkControls.none
+  | WatermarkControls.portfolios
+  | WatermarkControls.invoices
+  | WatermarkControls.all
+
+export type WatermarkStyle = WatermarkStyles.single | WatermarkStyles.repeat
+
+export type SharingPrivacy = SharingPrivacies.open | SharingPrivacies.strict
 
 export type Region = {
   code: string
@@ -37,6 +58,11 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
+  subscription: {
+    type: SubscriptionType
+    extraStorage?: number,
+    customerId?: string // Stripe customer ID
+  }
   settings: {
     sharingPrivacy: SharingPrivacy
     watermarkStyle: WatermarkStyle
@@ -107,10 +133,10 @@ export type Milestone = {
 }
 
 export type MediaObject = {
-  id?: string,
-  original?: boolean,
-  url?: string,
-  width?: number,
+  id?: string
+  original?: boolean
+  url?: string
+  width?: number
   height?: number
 }
 
@@ -131,7 +157,7 @@ export type Project = {
   updatedAt: Date
   id: string
   campaignDate: string
-  videos: Array<MediaObject>,
+  videos: Array<MediaObject>
   images: Array<MediaObject>
 }
 

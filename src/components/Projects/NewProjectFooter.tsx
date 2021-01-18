@@ -21,6 +21,7 @@ type Props = {
   haveError?: boolean
   onUpdate?: (projectData: any) => void
   projectData?: any
+  isLoading?: boolean
 }
 
 const NewProjectFooter = ({
@@ -31,7 +32,8 @@ const NewProjectFooter = ({
   onStartProject,
   haveError,
   onUpdate,
-  projectData
+  projectData,
+  isLoading
 }: Props) => {
   const classes = useStyles()
 
@@ -61,7 +63,8 @@ const NewProjectFooter = ({
           <div className={classes.startProjectButtonContainer}>
             <GradiantButton
               onClick={onStartProject}
-              className={classes.buttonStartProject}>
+              className={classes.buttonStartProject}
+              loading={isLoading}>
               <Typography variant={'button'}>Start Project</Typography>
             </GradiantButton>
           </div>
@@ -112,10 +115,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: FLEX_END,
     position: 'relative'
   },
-  buttonStartProject: {
-    width: 180,
-    height: 40
-  },
+  buttonStartProject: {},
   startProjectButtonContainer: {
     position: POSITION_ABSOLUTE,
     right: 0,

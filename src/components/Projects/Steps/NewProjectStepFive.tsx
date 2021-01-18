@@ -27,16 +27,15 @@ const NewProjectStepFive = (props: any) => {
 
   const renderClientLogoView = () => {
     return (
-      <div className={'client-logo-container'} style={{ marginBottom: 20 }}>
-        <Button
-          variant='contained'
-          onClick={() => {}}
-          className={classes.clientLogo}>
-          <img
-            src={projectData.logo !== '' ? projectData.logo : nikeLogo}
-            className={classes.clientLogoImg}
-            alt={'client-logo'}
-          />
+      <div className={'client-logo-container'}>
+        <Button variant='contained' className={classes.clientLogo}>
+          {!!projectData.logo && (
+            <img
+              src={projectData.logo}
+              className={classes.clientLogoImg}
+              alt={'client-logo'}
+            />
+          )}
         </Button>
       </div>
     )
@@ -73,6 +72,7 @@ const NewProjectStepFive = (props: any) => {
         title={'Step 5 of 5'}
         onStartProject={onSubmit}
         onBack={props.onBack}
+        isLoading={props.isLoading}
       />
     </div>
   )

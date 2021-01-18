@@ -4,14 +4,20 @@ import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import ReactLoading from 'react-loading'
 
-export const GradiantButton = (props: any) => {
+type Props = {
+  children?: React.ReactElement
+  loading?: boolean
+  className?: string
+} & any
+
+export const GradiantButton = (props: Props) => {
   const classes = useStyles()
   return (
     <Button
       color={'primary'}
       variant={'contained'}
-      {...props}
-      className={clsx(classes.button, props.className)}>
+      className={clsx(classes.button, props.className)}
+      {...props}>
       {props.children}
       {props.loading && (
         <ReactLoading
@@ -29,7 +35,7 @@ export const GradiantButton = (props: any) => {
 const useStyles = makeStyles((theme) => ({
   button: {
     background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`,
-    minWidth: 150,
+    minWidth: 200,
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5)
   },

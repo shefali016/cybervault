@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
 import React from 'react'
-import { InputChangeEvent, SharingPrivacy } from 'utils/types'
+import { SharingPrivacy } from 'utils/types'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 import { SharingPrivacies } from '../../utils/enums'
 
@@ -24,9 +24,9 @@ const SharingPrivacySelect = ({ onChange, privacy }: Props) => {
   return (
     <AppSelect
       items={MENU_ITEMS}
-      value={privacy || SharingPrivacies.strict}
-      onChange={(event: InputChangeEvent) => {
-        onChange(event.target.value as SharingPrivacy)
+      value={privacy !== undefined ? privacy : SharingPrivacies.strict}
+      onChange={(event: any) => {
+        onChange(event.target.value)
       }}
     />
   )
