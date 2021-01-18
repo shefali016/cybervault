@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
 import React from 'react'
-import { InputChangeEvent, SharingPrivacy } from 'utils/types'
+import { SharingPrivacy } from 'utils/types'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 import { SharingPrivacies } from '../../utils/enums'
 
