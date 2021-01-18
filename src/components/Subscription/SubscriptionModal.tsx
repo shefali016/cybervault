@@ -264,12 +264,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     borderRadius: theme.shape.borderRadius,
-    boxShadow: '0 5px 10px #cccccc',
+    boxShadow: '0 5px 15px #999999',
     padding: theme.spacing(3),
     minWidth: 250,
     maxWidth: 250,
-    marginLeft: theme.spacing(1.5),
-    marginRight: theme.spacing(1.5),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'transparent',
@@ -284,15 +284,16 @@ const useStyles = makeStyles((theme) => ({
   },
   selected: {
     borderColor: theme.palette.primary.main,
-    boxShadow: `0 5px 10px ${theme.palette.primary.light}`,
+    boxShadow: `0 5px 15px ${theme.palette.primary.light}`,
     transition: theme.transitions.create(
-      ['transform', 'border-color', 'box-shadow'],
+      ['transform', 'border-color', 'box-shadow', 'background'],
       {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.standard
       }
     ),
-    transform: `translateY(-10px)`
+    transform: `translateY(-10px)`,
+    background: 'red'
   },
   divider: { margin: `${theme.spacing(3)}px 0` },
   featureTitle: {

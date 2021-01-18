@@ -454,7 +454,7 @@ const BrandingScreen = ({
                   onChange={(color: string) =>
                     updateAccountEmailBranding('buttonTextColor')(color)
                   }
-                  label={'Background text'}
+                  label={'Button text'}
                   className={classes.colorPicker}
                 />
               </div>

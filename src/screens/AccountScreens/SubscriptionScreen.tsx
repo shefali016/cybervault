@@ -11,6 +11,7 @@ import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { SubscriptionModal } from 'components/Subscription/SubscriptionModal'
+import { StorageModal } from 'components/Storage/StorageModal'
 
 type StateProps = {
   account: Account
@@ -25,9 +26,13 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
     false
   )
+  const [storageModalOpen, setStorageModalOpen] = useState<boolean>(false)
 
   const openSubscriptionModal = () => setSubscriptionModalOpen(true)
   const closeSubscriptionModal = () => setSubscriptionModalOpen(false)
+
+  const openStorageModal = () => setStorageModalOpen(true)
+  const closeStorageModal = () => setStorageModalOpen(false)
 
   return (
     <div className={clsx('container', classes.container)}>
@@ -35,6 +40,12 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
         open={subscriptionModalOpen}
         onRequestClose={closeSubscriptionModal}
         activeSubscriptionType={account.subscription?.type}
+      />
+
+      <StorageModal
+        open={storageModalOpen}
+        onRequestClose={closeStorageModal}
+        account={account}
       />
 
       <Section title={'Your Plan'} className={classes.section}>
@@ -81,7 +92,7 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
                     Viewers can also download a previewed watermarked version
                   </Typography>
                 </div>,
-                <GradiantButton>
+                <GradiantButton onClick={openStorageModal}>
                   <div className={'row'}>
                     <Typography style={{ marginRight: 5 }}>
                       Manage Storage

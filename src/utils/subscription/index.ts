@@ -11,6 +11,7 @@ export const getSubscriptionDetails = (
   }
   features: Array<string>
   extraFeatures?: Array<string>
+  storage: number
 } => {
   switch (type) {
     case SubscriptionTypes.creator:
@@ -28,7 +29,8 @@ export const getSubscriptionDetails = (
           '7% security transaction fee',
           'Auto crop downloadable content',
           '5GB storage'
-        ]
+        ],
+        storage: 5
       }
     case SubscriptionTypes.pro:
       return {
@@ -50,7 +52,8 @@ export const getSubscriptionDetails = (
           'Customizable portfolio sharing',
           'Personalized watermark',
           'Additional storage plans'
-        ]
+        ],
+        storage: 50
       }
     case SubscriptionTypes.team:
       return {
@@ -72,7 +75,8 @@ export const getSubscriptionDetails = (
           'Customizable portfolio sharing',
           'Personalized watermark',
           'Additional storage plans'
-        ]
+        ],
+        storage: 150
       }
     case SubscriptionTypes.business:
       return {
@@ -82,7 +86,8 @@ export const getSubscriptionDetails = (
           [SubscriptionDurations.monthly]: '',
           [SubscriptionDurations.yearly]: ''
         },
-        features: []
+        features: [],
+        storage: 0
       }
     default:
       return {
@@ -92,7 +97,8 @@ export const getSubscriptionDetails = (
           [SubscriptionDurations.monthly]: '',
           [SubscriptionDurations.yearly]: ''
         },
-        features: []
+        features: [],
+        storage: 0
       }
   }
 }

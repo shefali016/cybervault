@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
     '.row': { display: 'flex', alignItems: 'center' },
+    '.col': { display: 'flex', alignItems: 'center', flexDirection: 'column' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
     '.MuiButton-label': { textTransform: 'capitalize' },
     '.MuiToggleButton-label': { textTransform: 'capitalize' },
@@ -22,6 +23,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       overflowY: 'scroll',
       position: 'relative'
+    },
+    '.horizontalGradient': {
+      background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`
+    },
+    '.verticalGradient': {
+      background: `linear-gradient(${theme.palette.primary.light},  ${theme.palette.primary.dark})`
     }
   }
 }))

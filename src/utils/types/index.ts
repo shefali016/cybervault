@@ -58,10 +58,10 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
-  subscription?: {
+  subscription: {
     type: SubscriptionType
-    duration: SubscriptionDuration
-    customerId: string // Strip customer ID
+    extraStorage?: number,
+    customerId?: string // Stripe customer ID
   }
   settings: {
     sharingPrivacy: SharingPrivacy
