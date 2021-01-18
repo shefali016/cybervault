@@ -24,7 +24,7 @@ const SharingPrivacySelect = ({ onChange, privacy }: Props) => {
   return (
     <AppSelect
       items={MENU_ITEMS}
-      value={privacy || SharingPrivacies.strict}
+      value={privacy !== undefined ? privacy : SharingPrivacies.strict}
       onChange={(event: any) => {
         onChange(event.target.value)
       }}
