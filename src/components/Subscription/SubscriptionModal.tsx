@@ -286,14 +286,13 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.primary.main,
     boxShadow: `0 5px 15px ${theme.palette.primary.light}`,
     transition: theme.transitions.create(
-      ['transform', 'border-color', 'box-shadow', 'background'],
+      ['transform', 'border-color', 'box-shadow'],
       {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.standard
       }
     ),
-    transform: `translateY(-10px)`,
-    background: 'red'
+    transform: `translateY(-10px)`
   },
   divider: { margin: `${theme.spacing(3)}px 0` },
   featureTitle: {
