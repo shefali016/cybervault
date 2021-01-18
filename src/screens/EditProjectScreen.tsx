@@ -40,7 +40,8 @@ const EditProjectScreen = (props: any) => {
   const [isCampaignEdit, setCampaignEdit] = useState(false)
   const [isTaskEdit, setTaskEdit] = useState(false)
   const [isBudgetEdit, setBudgetEdit] = useState(false)
-
+  const [isImageLoading, setImageLoading] = useState(false)
+  const [isVideoLoading, setVideoLoading] = useState(false)
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
     []
@@ -50,6 +51,7 @@ const EditProjectScreen = (props: any) => {
     () => setNewProjectModalOpen(false),
     []
   )
+
   const createNewProject = useCallback(
     (projectData) =>
       props.createNewProject(projectData, props.userData.account),
@@ -95,21 +97,25 @@ const EditProjectScreen = (props: any) => {
   }
 
   const onImageUpload = async (file: any) => {
+    setImageLoading(true)
     const id = generateUid()
     await uploadMedia(id, file)
     const downloadUrl = await getUrl(id)
     // @ts-ignore
     projectData.images.push(getImageObject(file, downloadUrl, id))
     setProjectData(projectData)
+    setImageLoading(false)
   }
 
   const onVideoUpload = async (file: any) => {
+    setVideoLoading(true)
     const id = generateUid()
     await uploadMedia(id, file)
     const downloadUrl = await getUrl(id)
     // @ts-ignore
     projectData.videos.push(getImageObject(file, downloadUrl, id))
     setProjectData(projectData)
+    setVideoLoading(false)
   }
 
   const getUrl = async (id: string) => {
@@ -139,10 +145,13 @@ const EditProjectScreen = (props: any) => {
         </Typography>
         <div style={{ display: FLEX }}>
           <div className={classes.imageCorouselContainer}>
-            <ImageCarousel source={[]} />
+            <ImageCarousel source={projectData.images} />
           </div>
           <div className={classes.generalMarginTop}>
-            <DragAndDropUploader onSubmit={onImageUpload} />
+            <DragAndDropUploader
+              onSubmit={onImageUpload}
+              isLoading={isImageLoading}
+            />
           </div>
         </div>
         <div className={classes.button}>
@@ -163,10 +172,14 @@ const EditProjectScreen = (props: any) => {
         <Typography className={classes.textColor}>Upload Videos</Typography>
         <div style={{ display: FLEX }}>
           <div className={classes.videoCorouselContainer}>
-            <ImageCarousel isVideo source={[]} />
+            <ImageCarousel isVideo source={projectData.videos} />
           </div>
           <div className={classes.generalMarginTop}>
-            <DragAndDropUploader isVideo onSubmit={onVideoUpload} />
+            <DragAndDropUploader
+              isVideo
+              onSubmit={onVideoUpload}
+              isLoading={isVideoLoading}
+            />
           </div>
         </div>
         {renderDevider({ editInfo: true })}
@@ -248,11 +261,6 @@ const EditProjectScreen = (props: any) => {
 
   return (
     <div className={classes.background}>
-      {/* <Layout
-        actionButtonTitle={'New Project'}
-        history={props.history}
-        headerTitle={'Edit Project-'}
-        onActionButtonPress={openNewProjectModal}> */}
       <NewProjectModal
         open={newProjectModalOpen}
         onRequestClose={closeNewProjectModal}
@@ -265,7 +273,6 @@ const EditProjectScreen = (props: any) => {
           {renderBody()}
         </div>
       </div>
-      {/* </Layout> */}
     </div>
   )
 }

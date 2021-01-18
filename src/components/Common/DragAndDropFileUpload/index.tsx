@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone'
 import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
+import ReactLoading from 'react-loading'
 
 export const DragAndDropUploader = (props?: any) => {
   const classes = useStyles()
@@ -23,6 +24,24 @@ export const DragAndDropUploader = (props?: any) => {
   return (
     <div {...getRootProps({ className: classes.dropzone })}>
       <input {...getInputProps()} />
+      {props.isLoading && (
+        <div className={classes.loaderWrapper}>
+          <ReactLoading
+            type={'bubbles'}
+            color={'#fff'}
+            className={classes.loader}
+          />
+        </div>
+      )}
+      {props.isLoading && props.isVideo && (
+        <div className={classes.loaderWrapper}>
+          <ReactLoading
+            type={'bubbles'}
+            color={'#fff'}
+            className={classes.loader}
+          />
+        </div>
+      )}
       <div className={classes.topContainer}>
         {isImage
           ? image.map((file: any, index: number) => {
