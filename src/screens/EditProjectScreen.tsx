@@ -9,10 +9,7 @@ import { WHITE_COLOR } from '../utils/constants/colorsConstants'
 import NewProjectModal from '../components/Projects/NewProjectModal'
 import * as Types from 'utils/types'
 
-import {
-  createNewProjectRequest,
-  clearNewProjectData
-} from '../actions/projectActions'
+import { createNewProjectRequest } from '../actions/projectActions'
 import { RenderClientDetails } from '../components/Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../components/Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../components/Common/Widget/ProjectDetailWidget'
@@ -279,10 +276,6 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   createNewProject: (projectData: Types.Project, account: Account) => {
     return dispatch(createNewProjectRequest(projectData, account))
-  },
-
-  clearNewProjectData: () => {
-    return dispatch(clearNewProjectData())
   }
 })
 

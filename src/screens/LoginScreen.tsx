@@ -16,6 +16,7 @@ import { GradiantButton } from '../components/Common/Button/GradiantButton'
 import clsx from 'clsx'
 import { ReduxState } from 'reducers/rootReducer'
 import { ToastContext } from '../context/Toast'
+import Icon from '@material-ui/icons/PolymerSharp'
 
 const initialState = {
   email: '',
@@ -98,8 +99,11 @@ export const LoginScreen = ({
   return (
     <div className={classes.root}>
       <div className={classes.logoView}>
-        <PolymerSharpIcon className={classes.logo} fontSize={'inherit'} />
+        <Icon />
       </div>
+      {/* <div className={classes.logoView}>
+        <PolymerSharpIcon className={classes.logo} fontSize={'inherit'} />
+      </div> */}
       <div className={classes.loginView}>
         <PolymerSharpIcon className={classes.logoBlue} fontSize={'inherit'} />
         <Typography variant={'h5'} style={{ marginTop: theme.spacing(2) }}>

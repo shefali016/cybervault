@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage'
 import rootReducer from 'reducers/rootReducer'
 import rootSagas from 'sagas/rootSaga'
 import { authTransform } from './reducers/authReducer'
+import { projectTransform } from 'reducers/projectReducer'
 
 // Create sagas middleware
 const sagaMiddleware = createSagaMiddleware()
@@ -21,7 +22,7 @@ const composeEnhancers =
 const persistConfig = {
   key: 'root',
   storage,
-  transforms: [authTransform]
+  transforms: [authTransform, projectTransform]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any)

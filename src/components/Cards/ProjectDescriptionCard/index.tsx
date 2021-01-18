@@ -7,7 +7,6 @@ import {
   IconButton,
   Typography
 } from '@material-ui/core'
-import logo from '../../../assets/nike.png'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
@@ -60,9 +59,12 @@ const ProjectCard = ({
   return (
     <div style={style}>
       <Card className={classes.card} elevation={5}>
-        <div className={classes.imageWrapper}>
-          <img className={classes.img} src={project.logo || logo} alt='Logo' />
-        </div>
+        <div
+          className={classes.imageWrapper}
+          style={{
+            background: `url(${project.logo}) no-repeat center`,
+            backgroundSize: 'cover'
+          }}></div>
         <div className={classes.footer}>
           <Typography variant={'body1'} className={classes.title} noWrap={true}>
             {project.campaignName}
@@ -198,11 +200,6 @@ const useStyles = makeStyles((theme) => ({
   bodyText: {
     fontSize: '8px',
     color: BLACK_COLOR
-  },
-  img: {
-    width: AUTO,
-    height: AUTO,
-    maxHeight: '100%'
   }
 }))
 export default ProjectCard
