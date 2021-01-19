@@ -48,3 +48,10 @@ export function getAllProjectsRequestFailure(error: string) {
     error
   }
 }
+
+export function isOnEditProjectScreen( isEditProject : boolean ){
+  return {
+    type: ActionTypes.USER_IS_ON_UPDATE_SCREEN,
+    payload : isEditProject
+  }
+}

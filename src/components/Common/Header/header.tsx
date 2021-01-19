@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { IconButton, Typography, MenuItem, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
@@ -12,6 +12,7 @@ import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
 import ProjectStatusIndicator from '../ProjectStatusIndicator'
+import { connect } from 'react-redux'
 import {
   AUTO,
   CENTER,
@@ -31,13 +32,22 @@ type Props = {
   isEditInfoScreen?: boolean
   projectName?: string
   user: User
+  onEditProject?: boolean
 }
 const ITEM_HEIGHT = 48
 
 function Toolbar(props: Props) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [isEditProject, setEditProject] = useState(false)
 
+  useEffect(() => {
+    if (props.onEditProject) {
+      setEditProject(true)
+    } else {
+      setEditProject(false)
+    }
+  }, [])
   const renderInnerPopover = () => {
     return (
       <Grid>
@@ -120,7 +130,7 @@ function Toolbar(props: Props) {
   }
 
   const renderEditInfoData = () => {
-    return (
+    return props.onEditProject ? (
       <div
         style={{ display: FLEX, alignItems: CENTER, justifyContent: CENTER }}>
         <h2
@@ -130,6 +140,7 @@ function Toolbar(props: Props) {
             marginRight: 20,
             marginLeft: 20
           }}>
+          {'-'}
           {props.projectName ? props.projectName : 'Nike Campaign'}
         </h2>
         <Grid style={{ marginRight: 100 }}>
@@ -195,19 +206,20 @@ function Toolbar(props: Props) {
             )}
           </PopupState>
         </Grid>
-        <div>
-          <GradiantButton width={135} height={40}>
+        <div style={{ padding: 0 }}>
+          <GradiantButton>
             <Typography variant={'body1'}> Invoice</Typography>
           </GradiantButton>
         </div>
       </div>
-    )
+    ) : null
   }
 
   return (
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25, display: FLEX }}>
         <h2 className={classes.title}>{props.headerTitle}</h2>
+        {renderEditInfoData()}
       </div>
       <div>
         {!props.isNotificationIcon ? (
@@ -252,4 +264,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default Toolbar
+const mapStateToProps = (state: any) => ({
+  onEditProject: state.project.onEditProjectScreen
+})
+
+export default connect(mapStateToProps, null)(Toolbar)

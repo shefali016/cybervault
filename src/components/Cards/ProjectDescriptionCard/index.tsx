@@ -45,9 +45,9 @@ const ProjectCard = ({
 
   const [open, setOpen] = React.useState(false)
 
-  const editProject = () => {
+  const editProject = (projectId: string) => {
     // history.replace(`/project/${project.id}`)
-    history.push('/project')
+    history.push(`/project?id:${projectId}`)
   }
 
   const handleClose = () => {
@@ -116,7 +116,9 @@ const ProjectCard = ({
                     }}
                     style={{ marginLeft: -20, marginTop: -20 }}
                     {...bindPopover(popupState)}>
-                    <MenuItem style={{ fontSize: 12 }} onClick={editProject}>
+                    <MenuItem
+                      style={{ fontSize: 12 }}
+                      onClick={() => editProject(project.id)}>
                       <div style={{ display: FLEX }}>
                         <AddBoxIcon
                           style={{ marginRight: 5 }}

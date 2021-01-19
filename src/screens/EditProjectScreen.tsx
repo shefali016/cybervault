@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
@@ -39,6 +39,9 @@ const EditProjectScreen = (props: any) => {
   const [isBudgetEdit, setBudgetEdit] = useState(false)
   const [isImageLoading, setImageLoading] = useState(false)
   const [isVideoLoading, setVideoLoading] = useState(false)
+  const [projectId, setProjectId] = useState('')
+  const [isUpdateProject, setIsUpdateProject] = useState(false)
+
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
     []
@@ -93,26 +96,43 @@ const EditProjectScreen = (props: any) => {
     }
   }
 
+  useEffect(() => {
+    if (window.location.search) {
+      setIsUpdateProject(true)
+      const projectId = window.location.search.split(':')
+      setProjectId(projectId[1])
+      console.log(window.location, projectId)
+    } else {
+      setIsUpdateProject(false)
+    }
+  }, [])
+
   const onImageUpload = async (file: any) => {
-    setImageLoading(true)
+    if (projectData.images && !projectData.images.length) {
+      setImageLoading(true)
+    } else {
+      setImageLoading(false)
+    }
     const id = generateUid()
     await uploadMedia(id, file)
     const downloadUrl = await getUrl(id)
     // @ts-ignore
     projectData.images.push(getImageObject(file, downloadUrl, id))
     setProjectData(projectData)
-    setImageLoading(false)
   }
 
   const onVideoUpload = async (file: any) => {
-    setVideoLoading(true)
+    if (projectData.videos && !projectData.videos.length) {
+      setVideoLoading(true)
+    } else {
+      setVideoLoading(false)
+    }
     const id = generateUid()
     await uploadMedia(id, file)
     const downloadUrl = await getUrl(id)
     // @ts-ignore
     projectData.videos.push(getImageObject(file, downloadUrl, id))
     setProjectData(projectData)
-    setVideoLoading(false)
   }
 
   const getUrl = async (id: string) => {
@@ -368,9 +388,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8
   },
   videoCorouselContainer: {
-    width: '60%',
-    marginRight: 30,
-    marginTop: 20
+    width: theme.spacing(50),
+    height: theme.spacing(30),
+    marginTop: 20,
+    marginRight: 210
   },
   headText: {
     display: FLEX,
