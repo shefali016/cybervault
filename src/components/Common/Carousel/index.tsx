@@ -62,7 +62,10 @@ export const ImageCarousel = (props: Props) => {
           onClick={prev}
         />
       </Button>
-      <div className={props.source.length ? classes.videoContainer : ''}>
+      <div
+        className={
+          props.source && props.source.length ? classes.videoContainer : ''
+        }>
         {props.source && props.source.length ? (
           <Carousel
             statusFormatter={(currentItem: number, total: number) => {

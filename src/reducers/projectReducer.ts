@@ -5,7 +5,10 @@ import {
   GET_ALL_PROJECT_REQUEST,
   GET_ALL_PROJECT_SUCCESS,
   GET_ALL_PROJECT_FAILURE,
-  USER_IS_ON_UPDATE_SCREEN
+  USER_IS_ON_UPDATE_SCREEN,
+  GET_PROJECT_DETAILS_REQUEST,
+  GET_PROJECT_DETAILS_SUCCESS,
+  GET_PROJECT_DETAILS_FAILURE
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import * as Types from '../utils/types'
@@ -21,6 +24,8 @@ export type State = {
   updateError: null | string
   updateSuccess: boolean
   onEditProjectScreen: boolean
+  projectDetails: Object
+  isProjectDetailsLoading: boolean
 }
 
 export type Action = {
@@ -42,7 +47,9 @@ const initialState = {
   updateLoading: false,
   updateSuccess: false,
   updateError: null,
-  onEditProjectScreen: false
+  onEditProjectScreen: false,
+  projectDetails: {},
+  isProjectDetailsLoading: false
 }
 
 const createNewProject = (state: State, action: Action) => ({
@@ -90,7 +97,28 @@ const getAllProjectsFailure = (state: State, action: Action) => ({
 
 const onEditProject = (state: State, action: Action) => ({
   ...state,
-  onEditProjectScreen : action.payload
+  onEditProjectScreen: action.payload
+})
+
+//Get Single project details
+
+const getProjectDetails = (state: State, action: Action) => ({
+  ...state,
+  isProjectDetailsLoading: true
+})
+
+const getProjectDetailsSuccess = (state: State, action: Action) => {
+  return {
+    ...state,
+    isProjectDetailsLoading: false,
+    projectDetails: action.payload
+  }
+}
+
+const getProjectDetailsFailure = (state: State, action: Action) => ({
+  ...state,
+  isProjectDetailsLoading: false,
+  projectDetails: {}
 })
 
 const authReducer = (state = initialState, action: Action) => {
@@ -109,6 +137,12 @@ const authReducer = (state = initialState, action: Action) => {
       return getAllProjectsFailure(state, action)
     case USER_IS_ON_UPDATE_SCREEN:
       return onEditProject(state, action)
+    case GET_PROJECT_DETAILS_REQUEST:
+      return getProjectDetails(state, action)
+    case GET_PROJECT_DETAILS_SUCCESS:
+      return getProjectDetailsSuccess(state, action)
+    case GET_PROJECT_DETAILS_FAILURE:
+      return getProjectDetailsFailure(state, action)
     default:
       return state
   }

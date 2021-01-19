@@ -49,9 +49,57 @@ export function getAllProjectsRequestFailure(error: string) {
   }
 }
 
-export function isOnEditProjectScreen( isEditProject : boolean ){
+export function isOnEditProjectScreen(isEditProject: boolean) {
   return {
     type: ActionTypes.USER_IS_ON_UPDATE_SCREEN,
-    payload : isEditProject
+    payload: isEditProject
+  }
+}
+
+export function requestGetProjectDetails(
+  account: Account,
+  projectId: string | undefined
+) {
+  return {
+    type: ActionTypes.GET_PROJECT_DETAILS_REQUEST,
+    account,
+    projectId
+  }
+}
+
+export function getProjectDetailsSuccess(projectData: Object | undefined) {
+  return {
+    type: ActionTypes.GET_PROJECT_DETAILS_SUCCESS,
+    payload: projectData
+  }
+}
+export function getProjectDetailsFailure(error: string) {
+  return {
+    type: ActionTypes.GET_PROJECT_DETAILS_FAILURE,
+    error
+  }
+}
+
+export function requestUpdateProjectDetails(
+  account: Account,
+  projectdata: Object | undefined
+) {
+  return {
+    type: ActionTypes.UPDATE_PROJECT_DETAILS_REQUEST,
+    account,
+    projectdata
+  }
+}
+
+export function updateProjectDetailsSuccess(projectData: Object | undefined) {
+  return {
+    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS,
+    payload: projectData
+  }
+}
+export function updateProjectDetailsFailure(error: string) {
+  return {
+    type: ActionTypes.UPDATE_PROJECT_DETAILS_FAILURE,
+    error
   }
 }

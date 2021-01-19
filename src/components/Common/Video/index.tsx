@@ -2,8 +2,6 @@ import React from 'react'
 import ReactPlayer from 'react-player'
 import { makeStyles } from '@material-ui/core/styles'
 export const VideoComponent = (props: any) => {
-  console.log('>>>>>>>>>>>>>>>>>>Props', props)
-
   const classes = useStyles()
   return (
     <div>

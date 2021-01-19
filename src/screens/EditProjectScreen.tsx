@@ -2,14 +2,17 @@ import React, { useCallback, useState, useEffect } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
-import Layout from '../components/Common/Layout'
 import { makeStyles } from '@material-ui/core/styles'
 import { COLUMN, FLEX, FLEX_END } from '../utils/constants/stringConstants'
 import { WHITE_COLOR } from '../utils/constants/colorsConstants'
 import NewProjectModal from '../components/Projects/NewProjectModal'
 import * as Types from 'utils/types'
 
-import { createNewProjectRequest } from '../actions/projectActions'
+import {
+  createNewProjectRequest,
+  requestGetProjectDetails,
+  requestUpdateProjectDetails
+} from '../actions/projectActions'
 import { RenderClientDetails } from '../components/Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../components/Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../components/Common/Widget/ProjectDetailWidget'
@@ -40,7 +43,8 @@ const EditProjectScreen = (props: any) => {
   const [isImageLoading, setImageLoading] = useState(false)
   const [isVideoLoading, setVideoLoading] = useState(false)
   const [projectId, setProjectId] = useState('')
-  const [isUpdateProject, setIsUpdateProject] = useState(false)
+
+  console.log('>>>>>>>>>>>>>Props', props)
 
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
@@ -95,17 +99,23 @@ const EditProjectScreen = (props: any) => {
       height: 50
     }
   }
-
+  // For geting project details
   useEffect(() => {
     if (window.location.search) {
-      setIsUpdateProject(true)
       const projectId = window.location.search.split(':')
       setProjectId(projectId[1])
+      props.getProjectDetails(props.userData.account, projectId[1])
       console.log(window.location, projectId)
-    } else {
-      setIsUpdateProject(false)
     }
   }, [])
+
+  // Fetched Project Details
+  useEffect(() => {
+    const { projectDetails } = props
+    if (projectDetails) {
+      setProjectData(projectDetails)
+    }
+  }, [props.projectDetails])
 
   const onImageUpload = async (file: any) => {
     if (projectData.images && !projectData.images.length) {
@@ -154,6 +164,12 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  //submit project details update
+  const handleUpdateProject = () => {
+    console.log('>>>>>>>>>>>>>>>>>>>>>Project data', projectData)
+    props.updateProjectDetails(props.userData.account, projectData)
+  }
+
   const renderImageCarousel = () => {
     return (
       <>
@@ -172,7 +188,10 @@ const EditProjectScreen = (props: any) => {
           </div>
         </div>
         <div className={classes.button}>
-          <GradiantButton width={135} height={40}>
+          <GradiantButton
+            onClick={() => handleUpdateProject()}
+            width={135}
+            height={40}>
             <Typography className={classes.buttonText} onClick={onSaveChanges}>
               {' '}
               Save Changes
@@ -297,12 +316,19 @@ const EditProjectScreen = (props: any) => {
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.projectData,
+  projectDetails: state.project.projectDetails,
   userData: state.auth
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
   createNewProject: (projectData: Types.Project, account: Account) => {
     return dispatch(createNewProjectRequest(projectData, account))
+  },
+  getProjectDetails: (account: Account, projectId: string | undefined) => {
+    return dispatch(requestGetProjectDetails(account, projectId))
+  },
+  updateProjectDetails: (account: Account, projectData: Object | undefined) => {
+    return dispatch(requestUpdateProjectDetails(account, projectData))
   }
 })
 
