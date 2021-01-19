@@ -121,9 +121,18 @@ const EditProjectScreen = (props: any) => {
     if (window.location.search) {
       const projectId = window.location.search.split(':')
       setProjectId(projectId[1])
+      props.getProjectDetails(props.userData.account, projectId[1])
       console.log(window.location, projectId)
     }
   }, [])
+
+  // Fetched Project Details
+  useEffect(() => {
+    const { projectDetails } = props
+    if (projectDetails) {
+      setProjectData(projectDetails)
+    }
+  }, [props.projectDetails])
 
   const onImageUpload = async (file: any) => {
     if (projectData.images && !projectData.images.length) {
