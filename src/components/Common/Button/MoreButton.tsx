@@ -1,7 +1,6 @@
 import { Button, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import React from 'react'
-import '../../../App.css'
 import { useTabletLayout } from '../../../utils/hooks'
 
 type Props = {

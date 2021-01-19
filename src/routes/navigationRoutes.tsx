@@ -1,8 +1,8 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import LoginScreen from '../screens/LoginScreen'
-import SignUpScreen from '../screens/SignUpScreen'
+import LoginScreen from '../screens/AuthScreens/LoginScreen'
+import SignUpScreen from '../screens/AuthScreens/SignUpScreen'
 import MainScreen from 'screens/MainScreen'
 import { useGlobalStyles } from '../utils/globalStyles'
 

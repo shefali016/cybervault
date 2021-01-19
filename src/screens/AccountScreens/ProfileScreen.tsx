@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-import '../../App.css'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { InputChangeEvent, User } from 'utils/types'
@@ -9,11 +8,10 @@ import { useTheme, makeStyles } from '@material-ui/core/styles'
 import AppTextField from 'components/Common/Core/AppTextField'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Typography } from '@material-ui/core'
-import { updateUser, updateUserSuccess } from 'actions/user'
+import { updateUser } from 'actions/user'
 import { setMedia } from 'apis/assets'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext, ToastTypes } from 'context/Toast'
-import { createFalse } from 'typescript'
 
 type Props = {
   user: User

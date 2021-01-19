@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
-import '../App.css'
-import AppTextField from '../components/Common/Core/AppTextField'
+import '../../App.css'
+import AppTextField from '../../components/Common/Core/AppTextField'
 import { Typography } from '@material-ui/core'
-import { googleLogin, signUp } from '../actions/authActions'
+import { googleLogin, signUp } from '../../actions/authActions'
 import { connect } from 'react-redux'
 import ReactLoading from 'react-loading'
-import * as Types from '../utils/types'
+import * as Types from '../../utils/types'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { BOLD, CENTER, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import { PRIMARY_COLOR } from 'utils/constants/colorsConstants'
@@ -13,7 +13,7 @@ import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import GoogleAuthComponent from 'components/SocialAuth/GoogleAuthComponent'
 import clsx from 'clsx'
-import { ToastContext } from '../context/Toast'
+import { ToastContext } from '../../context/Toast'
 
 const initialState = {
   email: '',
@@ -100,7 +100,7 @@ export const SignUpScreen = (props: any) => {
           onClick={handleSignUp}
           color='primary'
           className={clsx(classes.button, classes.loginButton)}>
-          Sign Up
+          <Typography>Sign Up</Typography>
         </GradiantButton>
 
         <GoogleAuthComponent

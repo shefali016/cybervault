@@ -1,14 +1,13 @@
 import React from 'react'
 import { TextField } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import '../App.css'
 
 const styles = {
   root: {
     background: '#e6e6e6',
     borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-  },
+    borderTopRightRadius: 5
+  }
 }
 
 const AppTextField = (props: any) => {

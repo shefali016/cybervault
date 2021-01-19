@@ -29,6 +29,19 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.verticalGradient': {
       background: `linear-gradient(${theme.palette.primary.light},  ${theme.palette.primary.dark})`
+    },
+    '.container': {
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    '.add-more-button': {
+      padding: '8px 20px !important',
+      fontSize: '8px',
+      textTransform: 'none'
+    },
+    '.add-more-label': {
+      color: '#626262',
+      fontSize: '10px !important'
     }
   }
 }))

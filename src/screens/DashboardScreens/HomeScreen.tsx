@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import '../App.css'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { getAllProjectsRequest } from '../actions/projectActions'
+import { getAllProjectsRequest } from '../../actions/projectActions'
 import { Typography } from '@material-ui/core'
-import ProjectCard from '../components/Cards/ProjectDescriptionCard'
-import UnpaidInvoices from '../components/Cards/UnpaidInvoices'
-import PendingInvoices from '../components/Cards/PendingInvoices'
-import IncomeThisMonth from '../components/Cards/IncomeThisMonth'
-import ProjectCount from '../components/Cards/ProjectCount'
-import ProfitsExpenses from '../components/Cards/ProfitsExpenses'
+import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
+import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
+import PendingInvoices from '../../components/Cards/PendingInvoices'
+import IncomeThisMonth from '../../components/Cards/IncomeThisMonth'
+import ProjectCount from '../../components/Cards/ProjectCount'
+import ProfitsExpenses from '../../components/Cards/ProfitsExpenses'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { COLUMN, FLEX } from 'utils/constants/stringConstants'
-import Widget from '../components/Common/Widget'
-import * as Types from 'utils/types'
-import { getWidgetCardHeight } from '../utils'
+import Widget from '../../components/Common/Widget'
+import { getWidgetCardHeight } from '../../utils'
 
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
@@ -37,7 +35,7 @@ const HomeScreen = (props: any) => {
   const theme = useTheme()
 
   return (
-    <div className={'dashboardScreen'}>
+    <div>
       <Widget
         data={allProjects}
         title={'Active Projects'}
