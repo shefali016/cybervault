@@ -18,7 +18,6 @@
     "@types/redux-localstorage": "^1.0.8",
     "@types/styled-components": "^5.1.5",
     "axios": "^0.21.0",
-    "classnames": "^2.2.6",
     "clsx": "^1.1.1",
     "firebase": "^8.0.2",
     "history": "^4.10.1",

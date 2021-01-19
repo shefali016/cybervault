@@ -11,6 +11,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
+import businessSubBg from '../../assets/business-sub-bg.png'
 
 type Props = {
   open: boolean
@@ -35,6 +36,8 @@ export const SubscriptionModal = ({
   )
 
   const handleChoosePlan = (type: SubscriptionType) => {}
+
+  const handleChatWithSales = () => {}
 
   const renderCreatorSubscription = () => {
     const {
@@ -108,8 +111,32 @@ export const SubscriptionModal = ({
     )
   }
 
+  const renderBusinessSubscription = () => {
+    return (
+      <div className={classes.businessSubscription}>
+        <div>
+          <Typography
+            variant={'h4'}
+            className={classes.businessSubscriptionText}>
+            Business
+          </Typography>
+          <Typography
+            variant={'body1'}
+            className={classes.businessSubscriptionText}>
+            Custom plans that suit your needs
+          </Typography>
+        </div>
+
+        <GradiantButton
+          onClick={handleChatWithSales}
+          className={classes.businessSubscriptionButton}>
+          <Typography>Chat With Sales</Typography>
+        </GradiantButton>
+      </div>
+    )
+  }
+
   const handleDuration = (duration: SubscriptionDuration) => {
-    console.log(duration)
     setDuration(duration)
   }
 
@@ -161,6 +188,8 @@ export const SubscriptionModal = ({
           {renderProSubscription()}
           {renderTeamSubscription()}
         </div>
+
+        <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
       </div>
     </Modal>
   )
@@ -264,7 +293,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     borderRadius: theme.shape.borderRadius,
-    boxShadow: '0 5px 15px #999999',
+    boxShadow: '0 5px 10px #999999',
     padding: theme.spacing(3),
     minWidth: 250,
     maxWidth: 250,
@@ -284,7 +313,7 @@ const useStyles = makeStyles((theme) => ({
   },
   selected: {
     borderColor: theme.palette.primary.main,
-    boxShadow: `0 5px 15px ${theme.palette.primary.light}`,
+    boxShadow: `0 5px 20px ${theme.palette.primary.light}`,
     transition: theme.transitions.create(
       ['transform', 'border-color', 'box-shadow'],
       {
@@ -293,6 +322,46 @@ const useStyles = makeStyles((theme) => ({
       }
     ),
     transform: `translateY(-10px)`
+  },
+  businessSubscription: {
+    borderRadius: theme.shape.borderRadius,
+    background: `url(${businessSubBg})`,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    minHeight: theme.spacing(12),
+    minWidth: 250,
+
+    overflow: 'hidden',
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(4),
+    flex: 1,
+    boxShadow: '0 5px 10px #999999',
+    padding: `${theme.spacing(3)}px ${theme.spacing(5)}px`,
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    transition: theme.transitions.create(
+      ['transform', 'border-color', 'box-shadow'],
+      {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.standard
+      }
+    ),
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column', maxWidth: 250 },
+    '&:hover': {
+      boxShadow: `0 5px 30px ${theme.palette.primary.light}`
+    }
+  },
+  businessSubscriptionText: {
+    textShadow: '0 5px 5px #000'
+  },
+  businessSubscriptionButton: {
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(3),
+      alignSelf: 'stretch'
+    }
   },
   divider: { margin: `${theme.spacing(3)}px 0` },
   featureTitle: {
