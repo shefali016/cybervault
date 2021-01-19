@@ -244,12 +244,7 @@ const EditProjectScreen = (props: any) => {
   }
 
   return (
-    <div className={classes.background}>
-      {/* <Layout
-        actionButtonTitle={'New Project'}
-        history={props.history}
-        headerTitle={'Edit Project-'}
-        onActionButtonPress={openNewProjectModal}> */}
+    <div>
       <NewProjectModal
         open={newProjectModalOpen}
         onRequestClose={closeNewProjectModal}
@@ -262,7 +257,6 @@ const EditProjectScreen = (props: any) => {
           {renderBody()}
         </div>
       </div>
-      {/* </Layout> */}
     </div>
   )
 }
@@ -280,20 +274,10 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
-  background: {
-    display: 'grid',
-    backgroundColor: '#24262B',
-    height: '100%',
-    width: '100%',
-    overflowY: 'auto',
-    overflowX: 'hidden'
-  },
-  dashboardContainer: {
-    marginTop: '50px'
-  },
+  dashboardContainer: {},
   generalMarginLeft: {
     marginLeft: 10,
-    color: WHITE_COLOR
+    color: theme.palette.common.white
   },
   topCardsWrapper: {
     marginLeft: 10,
@@ -303,16 +287,14 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX
   },
   wrapper: {
-    backgroundColor: '#393939',
-    width: '90%',
+    backgroundColor: theme.palette.background.secondary,
     display: FLEX,
     flex: 1,
     flexGrow: 1,
     flexDirection: COLUMN,
     borderRadius: 20,
-    heigth: '70vh',
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(3)
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(5)
   },
   title: {
     fontFamily: 'Helvetica Neue',
