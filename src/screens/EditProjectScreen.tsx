@@ -117,6 +117,14 @@ const EditProjectScreen = (props: any) => {
     }
   }, [props.projectDetails])
 
+  useEffect(() => {
+    if (window.location.search) {
+      const projectId = window.location.search.split(':')
+      setProjectId(projectId[1])
+      console.log(window.location, projectId)
+    }
+  }, [])
+
   const onImageUpload = async (file: any) => {
     if (projectData.images && !projectData.images.length) {
       setImageLoading(true)
