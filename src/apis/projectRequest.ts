@@ -76,7 +76,7 @@ export const getProjectDetailsRequest = async (
   return new Promise((resolve, reject) => {
     firebase
       .firestore()
-      .collection('AllProjects')
+      .collection('AccountData')
       .doc(account.id)
       .collection('Projects')
       .onSnapshot((QuerySnapshot) => {
@@ -107,7 +107,7 @@ export const updateProjectDetailsRequest = async (
   return new Promise((resolve, reject) => {
     firebase
       .firestore()
-      .collection('AllProjects')
+      .collection('AccountData')
       .doc(account.id)
       .collection('Projects')
       .onSnapshot((QuerySnapshot) => {

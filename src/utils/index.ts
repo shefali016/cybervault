@@ -119,8 +119,8 @@ export const getDefaultProjectData = () =>{
     country: 'United states',
     campaignObjective: 'To get our own',
     campaignExpenses: '1008',
-    images:[],
-    videos: []
+    image:[],
+    video: []
   }
 
 }

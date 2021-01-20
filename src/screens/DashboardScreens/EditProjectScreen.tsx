@@ -135,7 +135,7 @@ const EditProjectScreen = (props: any) => {
   }, [props.projectDetails])
 
   const onImageUpload = async (file: any) => {
-    if (projectData.images && !projectData.images.length) {
+    if (projectData.image && !projectData.image.length) {
       setImageLoading(true)
     } else {
       setImageLoading(false)
@@ -144,13 +144,13 @@ const EditProjectScreen = (props: any) => {
     await uploadMedia(id, file)
     const downloadUrl = await getUrl(id)
     // @ts-ignore
-    projectData.images.push(getImageObject(file, downloadUrl, id))
+    projectData.image.push(getImageObject(file, downloadUrl, id))
     setProjectData(projectData)
     setImageLoading(false)
   }
 
   const onVideoUpload = async (file: any) => {
-    if (projectData.videos && !projectData.videos.length) {
+    if (projectData.video && !projectData.video.length) {
       setVideoLoading(true)
     } else {
       setVideoLoading(false)
@@ -159,7 +159,7 @@ const EditProjectScreen = (props: any) => {
     await uploadMedia(id, file)
     const downloadUrl = await getUrl(id)
     // @ts-ignore
-    projectData.videos.push(getImageObject(file, downloadUrl, id))
+    projectData.video.push(getImageObject(file, downloadUrl, id))
     setProjectData(projectData)
     setVideoLoading(false)
   }
@@ -185,7 +185,6 @@ const EditProjectScreen = (props: any) => {
 
   //submit project details update
   const handleUpdateProject = () => {
-    console.log('>>>>>>>>>>>>>>>>>>>>>Project data', projectData)
     props.updateProjectDetails(props.userData.account, projectData)
   }
 
@@ -197,7 +196,7 @@ const EditProjectScreen = (props: any) => {
         </Typography>
         <div style={{ display: FLEX }}>
           <div className={classes.imageCorouselContainer}>
-            <ImageCarousel source={projectData.images} />
+            <ImageCarousel source={projectData.image} />
           </div>
           <div className={classes.generalMarginTop}>
             <DragAndDropUploader
@@ -227,7 +226,7 @@ const EditProjectScreen = (props: any) => {
         <Typography className={classes.textColor}>Upload Videos</Typography>
         <div style={{ display: FLEX }}>
           <div className={classes.videoCorouselContainer}>
-            <ImageCarousel isVideo source={projectData.videos} />
+            <ImageCarousel isVideo source={projectData.video} />
           </div>
           <div className={classes.generalMarginTop}>
             <DragAndDropUploader
