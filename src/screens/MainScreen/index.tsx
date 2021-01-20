@@ -9,6 +9,7 @@ import HomeScreen from 'screens/DashboardScreens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
+import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -254,6 +255,7 @@ const MainScreen = (props: any) => {
           <Route path='/manage' component={ManageAccountScreen} />
           <Route path='/branding' component={BrandingScreen} />
           <Route path='/subscription' component={SubscriptionScreen} />
+          <Route path='/security' component={SecurityScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>

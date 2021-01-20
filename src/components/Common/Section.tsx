@@ -7,12 +7,13 @@ type Props = {
   title?: string
   children: React.ReactElement
   className?: string
+  style?: {}
 }
 
-const Section = ({ title, children, className }: Props) => {
+const Section = ({ title, children, className, style }: Props) => {
   const classes = useStyles()
   return (
-    <div className={clsx(classes.section, className)}>
+    <div className={clsx(classes.section, className)} style={style}>
       {!!title && (
         <Typography variant='h6' className={classes.sectionTitle}>
           {title}

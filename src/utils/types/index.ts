@@ -58,9 +58,14 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
+  security: {
+    twoFactor: boolean
+    textMessageVerification: boolean
+    securityQuestion: { question: string; answer: string }
+  }
   subscription: {
     type: SubscriptionType
-    extraStorage?: number,
+    extraStorage?: number
     customerId?: string // Stripe customer ID
   }
   settings: {
