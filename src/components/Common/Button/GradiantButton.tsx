@@ -16,8 +16,12 @@ export const GradiantButton = (props: Props) => {
     <Button
       color={'primary'}
       variant={'contained'}
-      className={clsx(classes.button, props.className)}
-      {...props}>
+      {...props}
+      className={clsx(
+        classes.button,
+        props.className,
+        props.inActive ? classes.inActive : ''
+      )}>
       {props.children}
       {props.loading && (
         <ReactLoading
@@ -37,7 +41,13 @@ const useStyles = makeStyles((theme) => ({
     background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`,
     minWidth: 200,
     paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5)
+    paddingBottom: theme.spacing(1.5),
+    transition: theme.transitions.create(['background', 'color'])
+  },
+  inActive: {
+    background: `linear-gradient(90deg, ${theme.palette.grey[200]},  ${theme.palette.grey[300]})`,
+    color: theme.palette.grey[900],
+    transition: theme.transitions.create(['background', 'color'])
   },
   spinner: { marginLeft: 10 }
 }))

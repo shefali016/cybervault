@@ -62,34 +62,53 @@ export const ImageCarousel = (props: Props) => {
           onClick={prev}
         />
       </Button>
-      <div className={classes.videoContainer}>
-        <Carousel
-          statusFormatter={(currentItem: number, total: number) => {
-            return ''
-          }}
-          renderArrowPrev={(onClickHandler, hasPrev, label) => {
-            return null
-          }}
-          renderArrowNext={(onClickHandler, hasNext, label) => {
-            return null
-          }}
-          renderIndicator={(onClickHandler, isSelected, index, label) => {
-            return null
-          }}
-          selectedItem={currentSlide}
-          onChange={updateCurrentSlide}>
-          {props.source.map((data: any) => {
-            return props.isVideo ? (
-              <div className={classes.videoComponentWrapper}>
-                <VideoComponent url={data.url} />
-              </div>
-            ) : (
-              <div style={{ height: 150, width: 370 }}>
-                <img src={data.url} alt='' />
-              </div>
-            )
-          })}
-        </Carousel>
+      <div
+        className={
+          props.source && props.source.length ? classes.videoContainer : ''
+        }>
+        {props.source && props.source.length ? (
+          <Carousel
+            statusFormatter={(currentItem: number, total: number) => {
+              return ''
+            }}
+            renderArrowPrev={(onClickHandler, hasPrev, label) => {
+              return null
+            }}
+            renderArrowNext={(onClickHandler, hasNext, label) => {
+              return null
+            }}
+            renderIndicator={(onClickHandler, isSelected, index, label) => {
+              return null
+            }}
+            selectedItem={currentSlide}
+            onChange={updateCurrentSlide}>
+            {props.source.map((data: any) => {
+              return props.isVideo ? (
+                <div className={classes.videoComponentWrapper}>
+                  <VideoComponent url={data.url} />
+                </div>
+              ) : (
+                <div style={{ height: 150, width: 370 }}>
+                  <img src={data.url} alt='' />
+                </div>
+              )
+            })}
+          </Carousel>
+        ) : props.isVideo ? (
+          <div style={{ height: 100, width: 300 }}>
+            <img
+              src={
+                'https://static.wixstatic.com/media/cbe343_d34314ad52a443b18daabe5c821b29b6~mv2.png'
+              }
+              alt=''
+              width={'100%'}
+            />
+          </div>
+        ) : (
+          <div style={{ height: 100, width: 300 }}>
+            <img src={Dummy} width={'100%'} alt='' />
+          </div>
+        )}
       </div>
       <Button
         className={classes.button}

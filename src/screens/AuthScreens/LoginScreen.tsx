@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import '../App.css'
+import '../../App.css'
 import { connect } from 'react-redux'
-import { login, googleLogin } from '../actions/authActions'
-import AppTextField from '../components/Common/Core/AppTextField'
+import { login, googleLogin } from '../../actions/authActions'
+import AppTextField from '../../components/Common/Core/AppTextField'
 import { Typography } from '@material-ui/core'
 import ReactLoading from 'react-loading'
-import * as Types from '../utils/types'
+import * as Types from '../../utils/types'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import 'firebase/auth'
-import GoogleAuthComponent from '../components/SocialAuth/GoogleAuthComponent'
+import GoogleAuthComponent from '../../components/SocialAuth/GoogleAuthComponent'
 import { BOLD, CENTER, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import { PRIMARY_COLOR } from 'utils/constants/colorsConstants'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
-import { GradiantButton } from '../components/Common/Button/GradiantButton'
+import { GradiantButton } from '../../components/Common/Button/GradiantButton'
 import clsx from 'clsx'
 import { ReduxState } from 'reducers/rootReducer'
-import { ToastContext } from '../context/Toast'
-import Icon from '@material-ui/icons/PolymerSharp'
+import { ToastContext } from '../../context/Toast'
 
 const initialState = {
   email: '',
@@ -99,11 +98,8 @@ export const LoginScreen = ({
   return (
     <div className={classes.root}>
       <div className={classes.logoView}>
-        <Icon />
-      </div>
-      {/* <div className={classes.logoView}>
         <PolymerSharpIcon className={classes.logo} fontSize={'inherit'} />
-      </div> */}
+      </div>
       <div className={classes.loginView}>
         <PolymerSharpIcon className={classes.logoBlue} fontSize={'inherit'} />
         <Typography variant={'h5'} style={{ marginTop: theme.spacing(2) }}>
@@ -134,7 +130,7 @@ export const LoginScreen = ({
           onClick={handleLogin}
           color='primary'
           className={clsx(classes.button, classes.loginButton)}>
-          Login
+          <Typography>Login</Typography>
         </GradiantButton>
 
         <GoogleAuthComponent

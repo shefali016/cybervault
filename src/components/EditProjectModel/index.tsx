@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react'
-import '../../App.css'
+import React, { useState } from 'react'
 import '../Projects/Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import NewProjectStepOne from '../Projects/Steps/NewProjectStepOne'

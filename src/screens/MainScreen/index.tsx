@@ -1,19 +1,20 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 
-import ProjectsScreen from 'screens/ProjectsScreen'
-import EditProjectScreen from 'screens/EditProjectScreen'
-import HomeScreen from 'screens/HomeScreen'
+import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
+import EditProjectScreen from 'screens/DashboardScreens/EditProjectScreen'
+import HomeScreen from 'screens/DashboardScreens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
+import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
 import { ButtonConfig, Project, Tab } from 'utils/types'
-
+import { isOnEditProjectScreen } from '../../actions/projectActions'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
 import DashboardIcon from '@material-ui/icons/Home'
@@ -239,6 +240,14 @@ const MainScreen = (props: any) => {
     }
   }
 
+  useEffect(() => {
+    if (window.location.pathname === '/project') {
+      props.onEditProject(true)
+    } else {
+      props.onEditProject(false)
+    }
+  }, [window.location.pathname])
+
   return (
     <Layout {...getLayoutProps()}>
       <NewProjectModal
@@ -254,6 +263,7 @@ const MainScreen = (props: any) => {
           <Route path='/manage' component={ManageAccountScreen} />
           <Route path='/branding' component={BrandingScreen} />
           <Route path='/subscription' component={SubscriptionScreen} />
+          <Route path='/security' component={SecurityScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>
@@ -289,6 +299,9 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   createNewProject: (projectData: Project, account: Account) => {
     return dispatch(createNewProjectRequest(projectData, account))
+  },
+  onEditProject: (isEditProject: boolean) => {
+    return dispatch(isOnEditProjectScreen(isEditProject))
   }
 })
 

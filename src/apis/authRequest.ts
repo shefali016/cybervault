@@ -89,6 +89,11 @@ export const createAccount = (
     id: generateUid(),
     owner: authUser.uid,
     type: 'creator',
+    security: {
+      twoFactor: false,
+      textMessageVerification: false,
+      securityQuestion: { question: '', answer: '' }
+    },
     subscription: { type: SubscriptionTypes.creator },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,

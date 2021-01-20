@@ -1,4 +1,3 @@
-import './App.css'
 import { initFirebase } from './firebaseConfig'
 import { Router } from 'react-router-dom'
 import Routes from './routes/navigationRoutes'

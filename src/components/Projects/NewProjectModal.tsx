@@ -1,6 +1,5 @@
 import React, { useState, useRef, useContext } from 'react'
 import { connect } from 'react-redux'
-import '../../App.css'
 import './Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
@@ -17,7 +16,6 @@ import { setMedia } from '../../apis/assets'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
-import { isJSDocNonNullableType } from 'typescript'
 
 type NewProjectProps = {
   onRequestClose: () => void
