@@ -17,9 +17,11 @@ const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
 const HomeScreen = (props: any) => {
   const [allProjects, setAllProjects] = useState([])
+
   useEffect(() => {
     console.log('PROPSSS', props)
     if (props.allProjectsData && props.allProjectsData !== allProjects) {
+      console.log('***********Allllll', props.allProjectsData)
       setAllProjects(props.allProjectsData)
     }
   }, [props.isLoggedIn, props.newProjectData, props.allProjectsData])
