@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
@@ -14,7 +14,7 @@ import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
 import { ButtonConfig, Project, Tab } from 'utils/types'
-
+import { isOnEditProjectScreen } from '../../actions/projectActions'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
 import DashboardIcon from '@material-ui/icons/Home'
@@ -240,6 +240,14 @@ const MainScreen = (props: any) => {
     }
   }
 
+  useEffect(() => {
+    if (window.location.pathname === '/project') {
+      props.onEditProject(true)
+    } else {
+      props.onEditProject(false)
+    }
+  }, [window.location.pathname])
+
   return (
     <Layout {...getLayoutProps()}>
       <NewProjectModal
@@ -291,6 +299,9 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   createNewProject: (projectData: Project, account: Account) => {
     return dispatch(createNewProjectRequest(projectData, account))
+  },
+  onEditProject: (isEditProject: boolean) => {
+    return dispatch(isOnEditProjectScreen(isEditProject))
   }
 })
 

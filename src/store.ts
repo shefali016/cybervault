@@ -6,9 +6,11 @@ import rootReducer from 'reducers/rootReducer'
 import rootSagas from 'sagas/rootSaga'
 import { authTransform } from './reducers/authReducer'
 import { projectTransform } from 'reducers/projectReducer'
+import logger from 'redux-logger'
 
 // Create sagas middleware
 const sagaMiddleware = createSagaMiddleware()
+const middleware: any = [sagaMiddleware]
 const composeEnhancers =
   typeof window === 'object' &&
   // @ts-ignore
@@ -28,9 +30,13 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer as any)
 
 export default function configureStore() {
+  const isProd = process.env.NODE_ENV === 'production'
+  if (!isProd) {
+    middleware.push(logger)
+  }
   const store = createStore(
     persistedReducer,
-    composeEnhancers(applyMiddleware(sagaMiddleware))
+    composeEnhancers(applyMiddleware(...middleware))
   )
   let persistor = persistStore(store)
   // Running sagas

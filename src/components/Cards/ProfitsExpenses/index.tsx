@@ -3,7 +3,6 @@ import { Card, CardContent, Typography } from '@material-ui/core'
 // @ts-ignore
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Chart from '../../Common/Chart'
 import {
   makeStyles,
   withStyles,
@@ -20,6 +19,7 @@ import {
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import clsx from 'clsx'
 import { getCardHeight } from '../../../utils'
+import Chart from 'components/Common/Chart'
 
 export default function ProfitExpenses(props: any) {
   const [value, setValue] = React.useState(0)
