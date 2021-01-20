@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import '../App.css'
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
