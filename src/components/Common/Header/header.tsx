@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { IconButton, Typography, MenuItem, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
-import notificationIcon from '../../../assets/notificationIcon.png'
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
@@ -13,13 +12,7 @@ import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
 import ProjectStatusIndicator from '../ProjectStatusIndicator'
 import { connect } from 'react-redux'
-import {
-  AUTO,
-  CENTER,
-  COLUMN,
-  FLEX,
-  ROW
-} from 'utils/constants/stringConstants'
+import { CENTER, FLEX } from 'utils/constants/stringConstants'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
 import { User } from 'utils/types'
@@ -38,16 +31,8 @@ const ITEM_HEIGHT = 48
 
 function Toolbar(props: Props) {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const [isEditProject, setEditProject] = useState(false)
+  const [anchorEl] = React.useState<null | HTMLElement>(null)
 
-  useEffect(() => {
-    if (props.onEditProject) {
-      setEditProject(true)
-    } else {
-      setEditProject(false)
-    }
-  }, [])
   const renderInnerPopover = () => {
     return (
       <Grid>
@@ -233,6 +218,7 @@ function Toolbar(props: Props) {
           <img
             src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
             style={{ borderRadius: 20, height: 33, width: 33 }}
+            alt={'img'}
           />
         </IconButton>
       </div>

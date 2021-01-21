@@ -1,5 +1,5 @@
 import React from 'react'
-import { InputChangeEvent, WatermarkStyle } from 'utils/types'
+import { WatermarkStyle } from 'utils/types'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 import { WatermarkStyles } from '../../utils/enums'
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardContent, Typography } from '@material-ui/core'
+import { Card, CardContent } from '@material-ui/core'
 // @ts-ignore
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -9,13 +9,7 @@ import {
   createStyles,
   Theme
 } from '@material-ui/core/styles'
-import {
-  BOLD,
-  CENTER,
-  COLUMN,
-  FLEX,
-  GRID
-} from 'utils/constants/stringConstants'
+import { BOLD, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import clsx from 'clsx'
 import { getCardHeight } from '../../../utils'

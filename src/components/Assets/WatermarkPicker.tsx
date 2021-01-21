@@ -2,9 +2,7 @@ import { makeStyles } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import clsx from 'clsx'
 import React, { useRef } from 'react'
-import { TRANSPARENT } from 'utils/constants/colorsConstants'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
-import defaultAvatar from '../../assets/default_user.png'
 
 type Props = {
   url: string | undefined

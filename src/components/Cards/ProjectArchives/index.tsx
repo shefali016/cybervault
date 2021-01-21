@@ -1,13 +1,12 @@
 import React from 'react'
-import { Button, Card, CardContent, Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import logo from '../../../assets/logo.png'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   BOLD,
   CENTER,
   FLEX,
-  AUTO,
-  FLEX_END
+  AUTO
 } from '../../../utils/constants/stringConstants'
 import { GREY_COLOR } from '../../../utils/constants/colorsConstants'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'

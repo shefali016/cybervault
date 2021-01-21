@@ -19,20 +19,22 @@ const HomeScreen = (props: any) => {
   const [allProjects, setAllProjects] = useState([])
 
   useEffect(() => {
-    console.log('PROPSSS', props)
     if (props.allProjectsData && props.allProjectsData !== allProjects) {
-      console.log('***********Allllll', props.allProjectsData)
       setAllProjects(props.allProjectsData)
     }
-  }, [props.isLoggedIn, props.newProjectData, props.allProjectsData])
+  }, [
+    props.isLoggedIn,
+    props.newProjectData,
+    props.allProjectsData,
+    props,
+    allProjects
+  ])
 
   useEffect(() => {
     props.getAllProjectsData(props.userData.account)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const loggedOut = (props: any) => {
-    props.history.push('/')
-  }
   const classes = useStyles()
   const theme = useTheme()
 

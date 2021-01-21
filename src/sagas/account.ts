@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest, select } from 'redux-saga/effects'
+import { all, call, put, takeLatest } from 'redux-saga/effects'
 import * as ActionTypes from '../actions/actionTypes'
 import * as AccountApis from '../apis/account'
 import * as AccountActions from '../actions/account'

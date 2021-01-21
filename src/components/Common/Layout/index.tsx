@@ -1,18 +1,11 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import SideBarComponent from '../SideBar'
 import ToolBar from '../Header/header'
 import { connect } from 'react-redux'
-import ReactLoading from 'react-loading'
 import { logout } from '../../../actions/authActions'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import {
-  POSITION_ABSOLUTE,
-  CENTER,
-  FLEX,
-  COLUMN
-} from 'utils/constants/stringConstants'
-import { ButtonConfig, Tab, User } from 'utils/types'
-import { TabsProps } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { FLEX } from 'utils/constants/stringConstants'
+import { Tab, User } from 'utils/types'
 import { ReduxState } from 'reducers/rootReducer'
 
 type StateProps = { user: User }
@@ -45,8 +38,6 @@ const Layout = (props: LayoutProps & ReduxProps) => {
   const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
 
   const classes = useStyles()
-  const theme = useTheme()
-
   return (
     <div className={classes.root}>
       <SideBarComponent

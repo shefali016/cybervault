@@ -13,7 +13,6 @@ import {
 } from 'utils/constants/stringConstants'
 import NewProjectTitle from '../NewProjectTitle'
 import NewProjectFooter from '../NewProjectFooter'
-import nikeLogo from '../../../assets/nike.png'
 import { RenderClientDetails } from '../../Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../../Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../../Common/Widget/ProjectDetailWidget'

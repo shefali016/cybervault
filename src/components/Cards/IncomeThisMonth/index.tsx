@@ -1,7 +1,7 @@
 import React from 'react'
 import { LinearProgress, Card, CardContent } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { CENTER, GRID } from '../../../utils/constants/stringConstants'
+import { CENTER } from '../../../utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import { getCardHeight } from '../../../utils'
 

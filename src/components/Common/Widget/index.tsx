@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
-import { COLUMN, FLEX } from '../../../utils/constants/stringConstants'
+import { COLUMN } from '../../../utils/constants/stringConstants'
 import ReactLoading from 'react-loading'
 import { useTheme } from '@material-ui/core/styles'
 
