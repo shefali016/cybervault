@@ -1,5 +1,5 @@
 import React from 'react'
-import { SharingPrivacy } from 'utils/types'
+import { SharingPrivacy } from 'utils/Interface'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 import { SharingPrivacies } from '../../utils/enums'
 

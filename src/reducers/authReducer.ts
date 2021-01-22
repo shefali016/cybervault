@@ -16,7 +16,7 @@ import {
   UPDATE_ACCOUNT_SUCCESS,
   UPDATE_ACCOUNT_FAILURE
 } from 'actions/actionTypes'
-import { User, Account } from 'utils/types'
+import { User, Account } from 'utils/Interface'
 import { createTransform } from 'redux-persist'
 
 export type State = {

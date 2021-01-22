@@ -1,4 +1,4 @@
-import { User, UserLoginInfo, AuthUser, Account } from '../utils/types'
+import { User, UserLoginInfo, AuthUser, Account } from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { generateUid } from 'utils'

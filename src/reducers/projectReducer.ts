@@ -15,7 +15,7 @@ import {
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export type State = {
   projectData: any

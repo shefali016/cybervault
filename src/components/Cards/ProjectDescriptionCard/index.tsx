@@ -9,7 +9,7 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project } from '../../../utils/types'
+import { Project } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 

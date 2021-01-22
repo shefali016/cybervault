@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import { CENTER, FLEX } from 'utils/constants/stringConstants'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
-import { User } from 'utils/types'
+import { User } from 'utils/Interface'
 
 type Props = {
   isNotificationIcon?: boolean

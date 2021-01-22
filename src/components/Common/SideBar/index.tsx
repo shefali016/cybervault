@@ -22,7 +22,7 @@ import {
   BORDER_COLOR
 } from '../../../utils/constants/colorsConstants'
 import { Link } from 'react-router-dom'
-import { Tab, ButtonConfig } from 'utils/types'
+import { Tab, ButtonConfig } from 'utils/Interface'
 import LogoutIcon from '@material-ui/icons/ExitToApp'
 
 type Props = {

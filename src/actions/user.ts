@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export const updateUser = (update: {}) => ({
   type: ActionTypes.UPDATE_USER,

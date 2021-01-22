@@ -13,7 +13,7 @@ import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
-import { ButtonConfig, Project, Tab } from 'utils/types'
+import { ButtonConfig, Project, Tab } from 'utils/Interface'
 import { isOnEditProjectScreen } from '../../actions/projectActions'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'

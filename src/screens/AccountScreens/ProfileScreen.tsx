@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
-import { InputChangeEvent, User } from 'utils/types'
+import { InputChangeEvent, User } from 'utils/Interface'
 import AvatarPicker from 'components/Assets/AvatarPicker'
 import clsx from 'clsx'
 import { useTheme, makeStyles } from '@material-ui/core/styles'

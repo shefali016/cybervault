@@ -15,7 +15,7 @@ import {
   WatermarkStyle,
   WatermarkControl,
   SharingPrivacy
-} from 'utils/types'
+} from 'utils/Interface'
 import SharingPrivacySelect from 'components/Selects/SharingPrivacySelect'
 import WatermarkStyleSelect from 'components/Selects/WatermarkStyleSelect'
 import WatermarkControlSelect from 'components/Selects/WatermarkControlSelect'

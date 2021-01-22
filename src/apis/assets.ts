@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Asset } from '../utils/types'
+import { Asset } from '../utils/Interface'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 

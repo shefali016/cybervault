@@ -1,4 +1,4 @@
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'

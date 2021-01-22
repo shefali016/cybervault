@@ -2,7 +2,7 @@ import { all, call, put, takeLatest, select } from 'redux-saga/effects'
 import * as ActionTypes from '../actions/actionTypes'
 import * as UserApis from '../apis/user'
 import * as UserActions from '../actions/user'
-import { User } from '../utils/types'
+import { User } from '../utils/Interface'
 
 type Params = { update: Partial<User>; type: string }
 

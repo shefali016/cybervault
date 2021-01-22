@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { User } from 'utils/types'
+import { User } from 'utils/Interface'
 
 export const updateUser = (user: User): Promise<User> => {
   return firebase

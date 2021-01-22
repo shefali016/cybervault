@@ -10,7 +10,7 @@ import {
   updateProjectDetailsFailure,
   requestGetProjectDetails
 } from '../actions/projectActions'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import {
   createNewProjectRequest,
