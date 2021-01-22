@@ -52,21 +52,28 @@ export type Asset = {
   original?: any
 }
 
+export type BankingDetails = {} // @todo R&D what details we need from user to deposit from Stripe
+
 export type Account = {
   id: string
   owner: string // id of user
   type: 'creator' | 'client'
   region?: Region
   name?: string
+  customerId?: string // Stripe customer ID
   security: {
     twoFactor: boolean
     textMessageVerification: boolean
     securityQuestion: { question: string; answer: string }
   }
+  banking: {
+    depositSchedule: Date | null
+    depositValue: number | null
+    details: BankingDetails | null
+  }
   subscription: {
     type: SubscriptionType
     extraStorage?: number
-    customerId?: string // Stripe customer ID
   }
   settings: {
     sharingPrivacy: SharingPrivacy

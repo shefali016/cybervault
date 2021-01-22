@@ -29,10 +29,12 @@ import ProfileIcon from '@material-ui/icons/Person'
 import ManageIcon from '@material-ui/icons/Apartment'
 import BrandingIcon from '@material-ui/icons/Brush'
 import SubscriptionIcon from '@material-ui/icons/LocalActivity'
+import BankingIcon from '@material-ui/icons/AccountBalance'
 
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
+import BankingScreen from 'screens/SharedScreens/BankingScreen'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -53,7 +55,8 @@ const AccountTabIds = {
 const SharedTabIds = {
   invoices: 'invoices',
   payments: 'payments',
-  security: 'security'
+  security: 'security',
+  banking: 'banking'
 }
 
 const ScreenViews = {
@@ -138,6 +141,12 @@ const MainScreen = (props: any) => {
           id,
           text: 'Security',
           icon: <SecurityIcon className={classes.listIconStyle} />
+        }
+      case SharedTabIds.banking:
+        return {
+          id,
+          text: 'Banking',
+          icon: <BankingIcon className={classes.listIconStyle} />
         }
       // Account tabs
       case AccountTabIds.profile:
@@ -264,6 +273,7 @@ const MainScreen = (props: any) => {
           <Route path='/branding' component={BrandingScreen} />
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
+          <Route path='/banking' component={BankingScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>

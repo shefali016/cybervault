@@ -94,6 +94,7 @@ export const createAccount = (
       textMessageVerification: false,
       securityQuestion: { question: '', answer: '' }
     },
+    banking: {depositSchedule: null, depositValue: null, details: null},
     subscription: { type: SubscriptionTypes.creator },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,
