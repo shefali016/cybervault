@@ -22,16 +22,19 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project } from '../../../utils/types'
+import { Project,Account } from '../../../utils/types'
 import { Dot } from '../../Common/Dot'
-import { getCardHeight, getWidgetCardHeight } from '../../../utils'
+import { getCardHeight, getWidgetCardHeight } from '../../../utils';
+import InvoiceModal from '../../../components/Invoices/InvoiceModal';
 
 type Props = {
   project: Project
   openProject?: any
   isPopover?: boolean
   style?: {}
-  history?: any
+  history?: any,
+  // account:Account
+  [key:string]:any
 }
 
 const ProjectCard = ({
@@ -39,7 +42,9 @@ const ProjectCard = ({
   openProject,
   isPopover,
   style,
-  history
+  history,
+  account
+  // data
 }: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -49,15 +54,27 @@ const ProjectCard = ({
     // history.replace(`/project/${project.id}`)
     history.push(`/project?id:${projectId}`)
   }
+  const sendInvoice=(projectId: string)=>{
+    setOpen(true)
+  }
 
   const handleClose = () => {
     setAnchorEl(null)
     setOpen(false)
   }
+  const onRequestClose=()=>{
+    setOpen(false)
+  }
+
   const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (
     <div style={style}>
+      <InvoiceModal open={open} onRequestClose={onRequestClose} 
+        project={project}
+        account={account}
+      // allProjects={data}
+      />
       <Card className={classes.card} elevation={5}>
         <div
           className={classes.imageWrapper}
@@ -127,7 +144,7 @@ const ProjectCard = ({
                         Edit Project Info
                       </div>
                     </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }}>
+                    <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}

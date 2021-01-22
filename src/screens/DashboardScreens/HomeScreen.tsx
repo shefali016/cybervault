@@ -46,12 +46,14 @@ const HomeScreen = (props: any) => {
         itemHeight={getWidgetCardHeight(theme)}
         renderItem={(item) => (
           <ProjectCard
+            // data={allProjects}
             project={item}
             isPopover={true}
             key={`project-card-${item.projectId}`}
             style={{
               paddingRight: theme.spacing(3)
             }}
+            account={props.userData.account}
             history={props.history}
           />
         )}
