@@ -23,7 +23,7 @@ import EditProjectModal from 'components/EditProjectModel'
 import ProjectStatusIndicator from '../../../components/Common/ProjectStatusIndicator'
 import {
   getDownloadUrl,
-  updateProjectAssets,
+  addProjectAssets,
   uploadMedia
 } from '../../../apis/assets'
 import { generateUid } from '../../../utils/index'
@@ -119,14 +119,31 @@ const EditProjectScreen = (props: any) => {
     } else {
       setState({ ...state, isImageLoading: false })
     }
+    console.log('>>>>>>>>>>>>>>file', file)
+
     const id = generateUid()
     await uploadMedia(id, file)
+    let tempImageData =
+      projectData.image &&
+      projectData.image.files &&
+      projectData.image.files.length
+        ? projectData.image.files
+        : []
     const downloadUrl = await getDownloadUrl(id)
     // @ts-ignore
-    projectData.image.push(getImageObject(file, downloadUrl, id))
+    tempImageData.push(getImageObject(file, downloadUrl, id))
+    console.log('>>>>>>>>>>>>>>tempImageData', tempImageData)
+
     setState({
       ...state,
-      projectData: projectData
+      projectData: {
+        ...projectData,
+        image: {
+          ...projectData.image,
+          files: tempImageData,
+          fileName: file.name
+        }
+      }
     })
   }
 
@@ -139,12 +156,25 @@ const EditProjectScreen = (props: any) => {
     }
     const id = generateUid()
     await uploadMedia(id, file)
+    const tempVideoData =
+      projectData.image &&
+      projectData.video.files &&
+      projectData.video.files.length
+        ? projectData.video.files
+        : []
     const downloadUrl = await getDownloadUrl(id)
     // @ts-ignore
-    projectData.video.push(getImageObject(file, downloadUrl, id))
+    tempVideoData.push(getImageObject(file, downloadUrl, id))
     setState({
       ...state,
-      projectData: projectData
+      projectData: {
+        ...projectData,
+        video: {
+          ...projectData.video,
+          files: tempVideoData,
+          fileName: file.name
+        }
+      }
     })
   }
 
@@ -169,16 +199,52 @@ const EditProjectScreen = (props: any) => {
   const handleUpdateProject = async () => {
     const { projectData } = state
     const { userData } = props
-    if (projectData.image && projectData.image.length) {
-      await updateProjectAssets(
+    let imageId: string = '',
+      videoId: string = ''
+    console.log('????????????projectData.image', projectData.image)
+
+    if (
+      projectData.image &&
+      projectData.image.files &&
+      projectData.image.files.length
+    ) {
+      if (projectData.image.id) {
+        imageId = projectData.image.id
+      } else {
+        imageId = generateUid()
+      }
+      await addProjectAssets(
         userData.account,
-        projectData.image,
+        projectData.image.files,
         'image',
-        projectData.campaignName,
-        generateUid()
+        projectData.image.fileName,
+        imageId
       )
     }
-    props.updateProjectDetails(props.userData.account, state.projectData)
+    if (
+      projectData.video &&
+      projectData.video.files &&
+      projectData.video.files.length
+    ) {
+      if (projectData.video.id) {
+        videoId = projectData.video.id
+      } else {
+        videoId = generateUid()
+      }
+      await addProjectAssets(
+        userData.account,
+        projectData.video.files,
+        'video',
+        projectData.video.fileName,
+        videoId
+      )
+    }
+    const projectConst = {
+      ...state.projectData,
+      image: imageId,
+      video: videoId
+    }
+    props.updateProjectDetails(props.userData.account, projectConst)
   }
 
   const renderProjectDetails = () => {
@@ -236,14 +302,26 @@ const EditProjectScreen = (props: any) => {
           textColor: classes.textColor,
           videoCorouselContainer: classes.videoCorouselContainer,
           onVideoUpload: onVideoUpload,
-          video: state.projectData.video,
+          video:
+            state.projectData &&
+            state.projectData.video &&
+            state.projectData.video.files &&
+            state.projectData.video.files.length
+              ? state.projectData.video.files
+              : [],
           isVideoLoading: state.isVideoLoading,
           generalMarginTop: classes.generalMarginTop
         })}
         {renderImageCarousel({
           textColor: classes.textColor,
           imageCorouselContainer: classes.imageCorouselContainer,
-          image: state.projectData.image,
+          image:
+            state.projectData &&
+            state.projectData.image &&
+            state.projectData.image.files &&
+            state.projectData.image.files.length
+              ? state.projectData.image.files
+              : [],
           generalMarginTop: classes.generalMarginTop,
           onImageUpload: (file: File) => onImageUpload(file),
           isImageLoading: state.isImageLoading,

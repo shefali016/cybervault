@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import {
   createNewProjectSuccess,
   createNewProjectFailure,
@@ -7,7 +7,8 @@ import {
   getProjectDetailsSuccess,
   getProjectDetailsFailure,
   updateProjectDetailsSuccess,
-  updateProjectDetailsFailure
+  updateProjectDetailsFailure,
+  requestGetProjectDetails
 } from '../actions/projectActions'
 import * as Types from '../utils/types'
 import * as ActionTypes from '../actions/actionTypes'
@@ -21,13 +22,13 @@ import {
 type Params = { newProjectData: Types.Project; type: string; account: Account }
 type GetParams = {
   type: string
-  account: Account
   projectId: string | undefined
-  projectdata: string | undefined
+  projectdata: Object | undefined | any
 }
 
-function* createNewProject({ newProjectData, account }: Params) {
+function* createNewProject({ newProjectData }: Params) {
   try {
+    const account = yield select((state) => state.auth.account)
     const response = yield call(
       createNewProjectRequest,
       newProjectData,
@@ -39,8 +40,9 @@ function* createNewProject({ newProjectData, account }: Params) {
   }
 }
 
-function* getAllProjects({ account }: GetParams) {
+function* getAllProjects() {
   try {
+    const account = yield select((state) => state.auth.account)
     const response = yield call(getAllProjectsRequest, account)
     yield put(getAllProjectsRequestSuccess(response))
   } catch (error: any) {
@@ -48,8 +50,9 @@ function* getAllProjects({ account }: GetParams) {
   }
 }
 
-function* getProjectDetails({ account, projectId }: GetParams) {
+function* getProjectDetails({ projectId }: GetParams) {
   try {
+    const account = yield select((state) => state.auth.account)
     const response = yield call(getProjectDetailsRequest, account, projectId)
 
     yield put(
@@ -60,11 +63,14 @@ function* getProjectDetails({ account, projectId }: GetParams) {
   }
 }
 
-function* updateProjectDetails({ account, projectdata }: GetParams) {
+function* updateProjectDetails({ projectdata }: GetParams) {
   try {
+    const account = yield select((state) => state.auth.account)
     yield call(updateProjectDetailsRequest, account, projectdata)
     yield put(updateProjectDetailsSuccess())
-    yield put(getProjectDetailsSuccess(projectdata))
+    yield put(
+      requestGetProjectDetails(account, projectdata ? projectdata.id : '')
+    )
   } catch (error: any) {
     yield put(updateProjectDetailsFailure(error?.message || 'default'))
   }

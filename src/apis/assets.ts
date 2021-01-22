@@ -46,7 +46,7 @@ export const getDownloadUrl = async (id: string) => {
   })
 }
 
-export const updateProjectAssets = async (
+export const addProjectAssets = async (
   accountData: Account,
   file: Object,
   type: string,
@@ -61,14 +61,12 @@ export const updateProjectAssets = async (
       fileName: fileName,
       id
     }
-    console.log('>>>>>>>>>>>>>>assectObjet', assectObjet)
-
     return await firebase
       .firestore()
       .collection('AccountData')
       .doc(accountData.id)
       .collection('Assets')
-      .doc()
+      .doc(id)
       .set(assectObjet)
   } catch (error) {
     console.log('>>>>>>>>>>>Error', error)

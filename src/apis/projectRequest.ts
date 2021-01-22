@@ -61,21 +61,64 @@ export const getProjectDetailsRequest = async (
   account: Account,
   projectId: string | undefined
 ) => {
-  let allProjectsData: Array<{}> = []
-  let data: any = await firebase
-    .firestore()
-    .collection('AccountData')
-    .doc(account.id)
-    .collection('Projects')
-    .get()
+  try {
+    let allProjectsData: Array<{}> = []
+    let data: any = await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Projects')
+      .doc(projectId)
+      .get()
+    const project = data.data()
+    const imageId: string = project.image
+    const videoId: string = project.video
+    let imageArray: Object = {}
+    let videoArray: Object = {}
+    await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Assets')
+      .where('id', '==', imageId)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          imageArray = doc.data()
+        })
+      })
+      .catch(function (error) {
+        console.log('Error getting documents: ', error)
+      })
+    await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Assets')
+      .where('id', '==', videoId)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          videoArray = doc.data()
+        })
+      })
+      .catch(function (error) {
+        console.log('Error getting documents: ', error)
+      })
 
-  for (const doc of data.docs) {
-    const projectData = doc.data()
-    if (projectData.id === projectId) {
-      allProjectsData.push(doc.data())
+    const projectDetails = {
+      ...project,
+      image: imageArray,
+      video: videoArray
     }
+
+    allProjectsData.push(projectDetails)
+
+    return allProjectsData
+  } catch (error) {
+    console.log('>>>>>>>>>>>>>error', error)
+    return error
   }
-  return allProjectsData
 }
 
 /**
@@ -85,24 +128,17 @@ export const updateProjectDetailsRequest = async (
   account: Account,
   projectData: Object | undefined | any
 ) => {
-  let setProjectDetail: Object = {}
-  const data = await firebase
-    .firestore()
-    .collection('AccountData')
-    .doc(account.id)
-    .collection('Projects')
-    .get()
-  for (const doc of data.docs) {
-    const project = doc.data()
-    if (project.id === projectData.id) {
-      setProjectDetail = firebase
-        .firestore()
-        .collection('AccountData')
-        .doc(account.id)
-        .collection('Projects')
-        .doc(projectData.id)
-        .set(projectData)
-    }
+  try {
+    const data = await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Projects')
+      .doc(projectData.id)
+      .set(projectData)
+    return data
+  } catch (error) {
+    console.log('Errror in update Project details', error)
+    return error
   }
-  return setProjectDetail
 }

@@ -29,8 +29,6 @@ export const ImageCarousel = (props: Props) => {
       setCurrentSlide(index)
     }
   }
-  console.log('>>>>>>>>>>>>>props', props)
-
   return (
     <div style={{ display: 'flex' }}>
       <Button
@@ -48,7 +46,9 @@ export const ImageCarousel = (props: Props) => {
         className={
           props.source && props.source.length ? classes.videoContainer : ''
         }>
-        {props.source && props.source.length ? (
+        {typeof props.source !== 'string' &&
+        props.source &&
+        props.source.length ? (
           <Carousel
             statusFormatter={(currentItem: number, total: number) => {
               return ''

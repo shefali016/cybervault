@@ -39,7 +39,6 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
     handleUpdateProject,
     buttonText
   } = props
-  console.log('>>>>>>>>>>>>>image', image)
 
   return (
     <>

@@ -68,14 +68,24 @@ export const getProductData = () => {
       }
     ],
     id: '',
-    image: [],
-    video: []
+    image: {
+      type: 'image',
+      fileName: '',
+      files: [],
+      id: ''
+    },
+    video: {
+      type: 'video',
+      fileName: '',
+      files: [],
+      id: ''
+    }
   }
 }
 
-export const getDefaultProjectData = () =>{
+export const getDefaultProjectData = () => {
   const currentDate = new Date().toISOString().slice(0, 10)
-  return  {
+  return {
     logo: '',
     campaignName: 'Test Campaign',
     startDate: currentDate,
@@ -119,8 +129,7 @@ export const getDefaultProjectData = () =>{
     country: 'United states',
     campaignObjective: 'To get our own',
     campaignExpenses: '1008',
-    image:[],
+    image: [],
     video: []
   }
-
 }

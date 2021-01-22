@@ -176,7 +176,7 @@ export const projectTransform = createTransform(
       isLoading: false,
       updateLoading: false,
       newProjectData: null,
-      isUpdatedSuccess: false
+      isUpdatedSuccess: false,
     }
   },
   (outboundState: State) => outboundState,
