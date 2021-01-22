@@ -1,5 +1,5 @@
 import React from 'react'
-import { Paper, Card, CardContent, Typography } from '@material-ui/core'
+import { Card, CardContent, Typography } from '@material-ui/core'
 import logo from '../../../assets/logo.png'
 import { makeStyles } from '@material-ui/core/styles'
 import {

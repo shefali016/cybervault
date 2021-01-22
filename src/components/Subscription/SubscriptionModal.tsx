@@ -257,8 +257,8 @@ const SubscriptionItem = ({
           <AppDivider className={classes.divider} />
           <Typography className={classes.featureTitle}>and...</Typography>
           <ul>
-            {extraFeatures.map((feature: string) => (
-              <li>
+            {extraFeatures.map((feature: string, index: number) => (
+              <li key={index}>
                 <Typography>{feature}</Typography>
               </li>
             ))}

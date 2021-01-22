@@ -26,44 +26,32 @@ export const createNewProjectRequest = async (
   newProjectData: Types.Project,
   account: Account
 ) => {
-  return new Promise((resolve, reject) => {
-    firebase
-      .firestore()
-      .collection('AccountData')
-      .doc(account.id)
-      .collection('Projects')
-      .doc(newProjectData.id)
-      .set(newProjectData)
-      .then(() => {
-        resolve(newProjectData)
-      })
-  })
+  await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Projects')
+    .doc(newProjectData.id)
+    .set(newProjectData)
+  return newProjectData
 }
 
 /**
  * @getAllProjects
  */
 export const getAllProjectsRequest = async (account: Account) => {
-  return new Promise((resolve, reject) => {
-    firebase
-      .firestore()
-      .collection('AccountData')
-      .doc(account.id)
-      .collection('Projects')
-      .onSnapshot((QuerySnapshot) => {
-        let allProjectsData: Array<{}> = []
-        if (QuerySnapshot && QuerySnapshot.size > 0) {
-          QuerySnapshot.forEach((documentSnapshot) => {
-            const data = {
-              projectId: documentSnapshot.id,
-              ...documentSnapshot.data()
-            }
-            allProjectsData.push(data)
-          })
-        }
-        resolve(allProjectsData)
-      })
-  })
+  let allProjectsData: Array<{}> = []
+  let data: any = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Projects')
+    .get()
+
+  for (const doc of data.docs) {
+    allProjectsData.push(doc.data())
+  }
+  return allProjectsData
 }
 
 /**
@@ -73,28 +61,21 @@ export const getProjectDetailsRequest = async (
   account: Account,
   projectId: string | undefined
 ) => {
-  return new Promise((resolve, reject) => {
-    firebase
-      .firestore()
-      .collection('AllProjects')
-      .doc(account.id)
-      .collection('Projects')
-      .onSnapshot((QuerySnapshot) => {
-        let allProjectsData: Array<{}> = []
-        if (QuerySnapshot && QuerySnapshot.size > 0) {
-          QuerySnapshot.forEach((documentSnapshot) => {
-            const data = {
-              projectId: documentSnapshot.id,
-              ...documentSnapshot.data()
-            }
-            if (data.projectId === projectId) {
-              allProjectsData.push(data)
-            }
-          })
-        }
-        resolve(allProjectsData)
-      })
-  })
+  let allProjectsData: Array<{}> = []
+  let data: any = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Projects')
+    .get()
+
+  for (const doc of data.docs) {
+    const projectData = doc.data()
+    if (projectData.id === projectId) {
+      allProjectsData.push(doc.data())
+    }
+  }
+  return allProjectsData
 }
 
 /**
@@ -104,32 +85,24 @@ export const updateProjectDetailsRequest = async (
   account: Account,
   projectData: Object | undefined | any
 ) => {
-  return new Promise((resolve, reject) => {
-    firebase
-      .firestore()
-      .collection('AllProjects')
-      .doc(account.id)
-      .collection('Projects')
-      .onSnapshot((QuerySnapshot) => {
-        let setProjectDetail: Object = {}
-        if (QuerySnapshot && QuerySnapshot.size > 0) {
-          QuerySnapshot.forEach((documentSnapshot) => {
-            const data = {
-              projectId: documentSnapshot.id,
-              ...documentSnapshot.data()
-            }
-            if (data.projectId === projectData.projectId) {
-              setProjectDetail = firebase
-                .firestore()
-                .collection('AllProjects')
-                .doc(account.id)
-                .collection('Projects')
-                .doc(data.projectId)
-                .set(projectData)
-            }
-          })
-        }
-        resolve(setProjectDetail)
-      })
-  })
+  let setProjectDetail: Object = {}
+  const data = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Projects')
+    .get()
+  for (const doc of data.docs) {
+    const project = doc.data()
+    if (project.id === projectData.id) {
+      setProjectDetail = firebase
+        .firestore()
+        .collection('AccountData')
+        .doc(account.id)
+        .collection('Projects')
+        .doc(projectData.id)
+        .set(projectData)
+    }
+  }
+  return setProjectDetail
 }

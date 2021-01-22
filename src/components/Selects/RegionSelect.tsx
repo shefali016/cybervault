@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
-import React, { useMemo, useEffect, useState } from 'react'
-import { InputChangeEvent, Region } from 'utils/types'
+import React, { useEffect, useState } from 'react'
+import { Region } from 'utils/types'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 
 type Props = {
@@ -21,6 +21,7 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
 
   useEffect(() => {
     fetchCountries()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchCountries = async () => {

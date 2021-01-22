@@ -8,7 +8,7 @@ import { useOnChange } from 'utils/hooks'
 import { ToastContext, ToastTypes } from 'context/Toast'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Region, Account, User } from 'utils/types'
+import { Account, User } from 'utils/types'
 import WatermarkPicker from 'components/Assets/WatermarkPicker'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { setMedia } from 'apis/assets'
@@ -63,12 +63,6 @@ const BrandingScreen = ({
     }
   })
 
-  const updateAccountBranding = (key: string) => (val: any) =>
-    setAccountUpdate((account: Account) => ({
-      ...account,
-      branding: { ...account.branding, [key]: val }
-    }))
-
   const handleWatermarkChange = (file: File) => {
     setWatermarkFile(file)
   }
@@ -88,7 +82,7 @@ const BrandingScreen = ({
             settings: { ...update.settings, watermark: watermarkUrl }
           }
         } else {
-          throw 'invalid_watermark_url'
+          throw Error('invalid_watermark_url')
         }
       }
       updateAccount(update)
@@ -99,9 +93,6 @@ const BrandingScreen = ({
       })
     }
   }
-
-  const handleAccountChange = (key: string) => (val: string) =>
-    setAccountUpdate((account: Account) => ({ ...account, [key]: val }))
 
   const updateAccountEmailBranding = (key: string) => (val: any) =>
     setAccountUpdate((account) => ({
@@ -125,7 +116,11 @@ const BrandingScreen = ({
     <div className={classes.brandingDisplayContainer}>
       <div className={classes.brandingDisplaySection}>
         <div className={classes.emailHeader}>
-          <img src={accountUpdate.settings.watermark} height='60px' />
+          <img
+            src={accountUpdate.settings.watermark}
+            height='60px'
+            alt={'acc img'}
+          />
         </div>
         <div
           className={classes.emailContent}
@@ -187,6 +182,7 @@ const BrandingScreen = ({
                 'https://bgr.com/wp-content/uploads/2020/04/iphone-12-pro-technizio-concept.jpg?quality=70&strip=all&w=1200'
               }
               width='100%'
+              alt={'potfolio Img'}
             />
           </div>
           <div
@@ -203,6 +199,7 @@ const BrandingScreen = ({
                 'https://images.news18.com/ibnlive/uploads/2020/04/1587208059_iphone_12_pro_max_design.jpg'
               }
               width='100%'
+              alt={'portfolioSlide'}
             />
           </div>
           <div
@@ -219,6 +216,7 @@ const BrandingScreen = ({
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQZrGi7U_RlfDXE31U-7xyJD-Lx4Wvde20jA&usqp=CAU'
               }
               width='100%'
+              alt={'img'}
             />
           </div>
         </div>
@@ -245,6 +243,7 @@ const BrandingScreen = ({
                 height='25px'
                 width='auto'
                 className={classes.portfolioHeaderImage}
+                alt={'portfolioHeaderImage'}
               />
             </div>
             <Typography className={classes.portfolioHeaderTitle}>
@@ -261,6 +260,7 @@ const BrandingScreen = ({
             <img
               src={user.avatar ? user.avatar : defaultProfileIcon}
               style={{ borderRadius: 20, height: 25, width: 25 }}
+              alt={'defaultProfileIcon'}
             />
           </div>
         </div>

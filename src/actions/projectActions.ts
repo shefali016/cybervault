@@ -91,10 +91,9 @@ export function requestUpdateProjectDetails(
   }
 }
 
-export function updateProjectDetailsSuccess(projectData: Object | undefined) {
+export function updateProjectDetailsSuccess() {
   return {
-    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS,
-    payload: projectData
+    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS
   }
 }
 export function updateProjectDetailsFailure(error: string) {

@@ -2,13 +2,10 @@ import React, { useState } from 'react'
 import { Typography, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
-import CloseIcon from '@material-ui/icons/Close'
 import Modal from './index'
 import AppTextField from '../Core/AppTextField'
 import { InputChangeEvent } from 'utils/types'
 import { GradiantButton } from '../Button/GradiantButton'
-import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
-import CloseButton from '../Button/CloseButton'
 import clsx from 'clsx'
 
 type EditItem = {
@@ -51,9 +48,12 @@ const EditModal = ({ onSave, editItems, className }: Props) => {
       <div className={classes.editItemsContainer}>
         <div className={classes.editItemsInner}>
           {editItems.map(
-            ({ title, value, key, placeholder, type }: EditItem) => {
+            (
+              { title, value, key, placeholder, type }: EditItem,
+              index: number
+            ) => {
               return (
-                <div>
+                <div key={index}>
                   <Typography variant='body1' className={classes.title}>
                     {title}
                   </Typography>

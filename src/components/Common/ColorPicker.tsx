@@ -2,7 +2,6 @@ import { Typography, Button, Fade } from '@material-ui/core'
 import React, { useState } from 'react'
 import { BlockPicker } from 'react-color'
 import { makeStyles } from '@material-ui/core/styles'
-import classes from '*.module.css'
 import clsx from 'clsx'
 
 type Props = {

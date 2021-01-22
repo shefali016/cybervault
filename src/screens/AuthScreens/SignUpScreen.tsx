@@ -38,13 +38,14 @@ export const SignUpScreen = (props: any) => {
       setState((state) => ({ ...state, loading: false }))
       toastContext.showToast({ title: props.signUpError })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.signUpError])
 
   useEffect(() => {
     if (props.isLoggedIn && props.user) {
       props.history.push('/home')
     }
-  }, [props.isLoggedIn, props.user])
+  }, [props.history, props.isLoggedIn, props.user])
 
   const handleInputChange = (key: any) => (e: any) =>
     setState((state) => ({ ...state, [key]: e.target.value }))

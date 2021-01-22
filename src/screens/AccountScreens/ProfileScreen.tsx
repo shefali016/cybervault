@@ -66,7 +66,7 @@ const ProfileScreen = ({
         if (typeof avatarUrl === 'string') {
           update = { ...update, avatar: avatarUrl }
         } else {
-          throw 'invalid_avatar_url'
+          throw Error('invalid_avatar_url')
         }
       }
       updateUser(update)

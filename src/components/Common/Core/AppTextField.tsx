@@ -1,5 +1,4 @@
 import { makeStyles, TextField, useTheme } from '@material-ui/core'
-import clsx from 'clsx'
 import React, { useMemo, forwardRef } from 'react'
 import { InputChangeEvent } from '../../../utils/types'
 
@@ -43,6 +42,7 @@ const AppTextField = (
     } else {
       return darkStyle ? classes.inputRootDark : classes.inputRoot
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [multiline, darkStyle])
 
   return (

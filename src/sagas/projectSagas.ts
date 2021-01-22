@@ -63,7 +63,8 @@ function* getProjectDetails({ account, projectId }: GetParams) {
 function* updateProjectDetails({ account, projectdata }: GetParams) {
   try {
     yield call(updateProjectDetailsRequest, account, projectdata)
-    yield put(updateProjectDetailsSuccess(projectdata))
+    yield put(updateProjectDetailsSuccess())
+    yield put(getProjectDetailsSuccess(projectdata))
   } catch (error: any) {
     yield put(updateProjectDetailsFailure(error?.message || 'default'))
   }

@@ -18,7 +18,6 @@ import {
 } from 'actions/actionTypes'
 import { User, Account } from 'utils/types'
 import { createTransform } from 'redux-persist'
-import { updateUser } from 'actions/user'
 
 export type State = {
   isLoggedIn: boolean

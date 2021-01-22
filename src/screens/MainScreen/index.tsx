@@ -88,6 +88,7 @@ const MainScreen = (props: any) => {
   )
   const createNewProject = useCallback((projectData) => {
     props.createNewProject(projectData, props.userData.account)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getTab = (id: string) => {
@@ -191,6 +192,7 @@ const MainScreen = (props: any) => {
     )
     const sharedTabIds = Object.values(SharedTabIds)
     return [...tabids, ...sharedTabIds].map(getTab)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screenView])
 
   const [activeTab, setActiveTab] = useState(
@@ -250,12 +252,12 @@ const MainScreen = (props: any) => {
   }
 
   useEffect(() => {
-    if (window.location.pathname === '/project') {
+    if (props.location.pathname === '/project') {
       props.onEditProject(true)
     } else {
       props.onEditProject(false)
     }
-  }, [window.location.pathname])
+  }, [props, props.location])
 
   return (
     <Layout {...getLayoutProps()}>

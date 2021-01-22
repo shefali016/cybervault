@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Typography from '@material-ui/core/Typography/Typography'
 
 declare module '@material-ui/core/Typography/Typography' {

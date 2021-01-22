@@ -1,59 +1,32 @@
 import React from 'react'
-import {
-  Button,
-  Card,
-  Grid,
-  MenuItem,
-  IconButton,
-  Typography
-} from '@material-ui/core'
+import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
-import {
-  AUTO,
-  CENTER,
-  COLUMN,
-  FLEX,
-  ROW
-} from 'utils/constants/stringConstants'
+import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import { Project } from '../../../utils/types'
 import { Dot } from '../../Common/Dot'
-import { getCardHeight, getWidgetCardHeight } from '../../../utils'
+import { getWidgetCardHeight } from '../../../utils'
 
 type Props = {
   project: Project
-  openProject?: any
   isPopover?: boolean
   style?: {}
   history?: any
 }
 
-const ProjectCard = ({
-  project,
-  openProject,
-  isPopover,
-  style,
-  history
-}: Props) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
-  const [open, setOpen] = React.useState(false)
+const ProjectCard = ({ project, isPopover, style, history }: Props) => {
+  const [anchorEl] = React.useState<null | HTMLElement>(null)
 
   const editProject = (projectId: string) => {
-    // history.replace(`/project/${project.id}`)
     history.push(`/project?id:${projectId}`)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
-    setOpen(false)
-  }
   const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (

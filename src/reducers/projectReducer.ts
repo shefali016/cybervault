@@ -8,9 +8,12 @@ import {
   USER_IS_ON_UPDATE_SCREEN,
   GET_PROJECT_DETAILS_REQUEST,
   GET_PROJECT_DETAILS_SUCCESS,
-  GET_PROJECT_DETAILS_FAILURE
+  GET_PROJECT_DETAILS_FAILURE,
+  UPDATE_PROJECT_DETAILS_SUCCESS,
+  UPDATE_PROJECT_DETAILS_FAILURE
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
+import { getProductData } from 'utils'
 import * as Types from '../utils/types'
 
 export type State = {
@@ -26,6 +29,7 @@ export type State = {
   onEditProjectScreen: boolean
   projectDetails: Object
   isProjectDetailsLoading: boolean
+  isUpdatedSuccess: boolean
 }
 
 export type Action = {
@@ -48,8 +52,9 @@ const initialState = {
   updateSuccess: false,
   updateError: null,
   onEditProjectScreen: false,
-  projectDetails: {},
-  isProjectDetailsLoading: false
+  projectDetails: getProductData(),
+  isProjectDetailsLoading: false,
+  isUpdatedSuccess: false
 }
 
 const createNewProject = (state: State, action: Action) => ({
@@ -86,7 +91,8 @@ const getAllProjectsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     allProjectsData: action.allProjectsData,
-    isLoading: false
+    isLoading: false,
+    updateSuccess: false
   }
 }
 
@@ -111,7 +117,8 @@ const getProjectDetailsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     isProjectDetailsLoading: false,
-    projectDetails: action.payload
+    projectDetails: action.payload,
+    isUpdatedSuccess: false
   }
 }
 
@@ -121,7 +128,15 @@ const getProjectDetailsFailure = (state: State, action: Action) => ({
   projectDetails: {}
 })
 
-const authReducer = (state = initialState, action: Action) => {
+const updateProjectDetailsSuccess = (state: State, action: Action) => ({
+  ...state,
+  isUpdatedSuccess: true
+})
+const updateProjectDetailsFailure = (state: State, action: Action) => ({
+  ...state,
+  isUpdatedSuccess: false
+})
+const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_PROJECT_REQUEST:
       return createNewProject(state, action)
@@ -143,6 +158,10 @@ const authReducer = (state = initialState, action: Action) => {
       return getProjectDetailsSuccess(state, action)
     case GET_PROJECT_DETAILS_FAILURE:
       return getProjectDetailsFailure(state, action)
+    case UPDATE_PROJECT_DETAILS_SUCCESS:
+      return updateProjectDetailsSuccess(state, action)
+    case UPDATE_PROJECT_DETAILS_FAILURE:
+      return updateProjectDetailsFailure(state, action)
     default:
       return state
   }
@@ -156,11 +175,12 @@ export const projectTransform = createTransform(
       success: false,
       isLoading: false,
       updateLoading: false,
-      newProjectData: null
+      newProjectData: null,
+      isUpdatedSuccess: false
     }
   },
   (outboundState: State) => outboundState,
   { whitelist: ['project'] }
 )
 
-export default authReducer
+export default projectReducer

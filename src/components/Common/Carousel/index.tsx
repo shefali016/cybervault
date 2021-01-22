@@ -6,7 +6,6 @@ import arrowIcon from '../../../assets/Iconionic-ios-arrow-down.png'
 import { makeStyles } from '@material-ui/core/styles'
 import Dummy from '../../../assets/Dummy.jpg'
 import { VideoComponent } from '../Video'
-import { MediaObject } from 'utils/types'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 
 export type Props = {
@@ -30,24 +29,7 @@ export const ImageCarousel = (props: Props) => {
       setCurrentSlide(index)
     }
   }
-
-  const renderEmptyComponent = () => {
-    return <div />
-  }
-
-  const renderMediaComponent = () => {
-    return props.source.map((data: MediaObject) => {
-      return props.isVideo ? (
-        <div className={classes.videoComponentWrapper}>
-          <VideoComponent url={data.url} />
-        </div>
-      ) : (
-        <div>
-          <img src={data.url} alt='' />
-        </div>
-      )
-    })
-  }
+  console.log('>>>>>>>>>>>>>props', props)
 
   return (
     <div style={{ display: 'flex' }}>
@@ -82,13 +64,13 @@ export const ImageCarousel = (props: Props) => {
             }}
             selectedItem={currentSlide}
             onChange={updateCurrentSlide}>
-            {props.source.map((data: any) => {
+            {props.source.map((data: any, i: number) => {
               return props.isVideo ? (
-                <div className={classes.videoComponentWrapper}>
+                <div key={i} className={classes.videoComponentWrapper}>
                   <VideoComponent url={data.url} />
                 </div>
               ) : (
-                <div style={{ height: 150, width: 370 }}>
+                <div key={i} style={{ height: 150, width: 370 }}>
                   <img src={data.url} alt='' />
                 </div>
               )
