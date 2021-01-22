@@ -15,6 +15,7 @@ type UploadMediaImage = {
   button: string
   handleUpdateProject: () => void
   buttonText: string
+  updateDetails: boolean
 }
 
 type UploadMediaVideo = {
@@ -37,7 +38,8 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
     isImageLoading,
     button,
     handleUpdateProject,
-    buttonText
+    buttonText,
+    updateDetails
   } = props
 
   return (
@@ -58,7 +60,8 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
         <GradiantButton
           onClick={() => handleUpdateProject()}
           width={135}
-          height={40}>
+          height={40}
+          loading={updateDetails}>
           <Typography className={buttonText}> Save Changes</Typography>
         </GradiantButton>
       </div>

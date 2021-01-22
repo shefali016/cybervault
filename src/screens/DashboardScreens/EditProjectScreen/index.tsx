@@ -87,6 +87,8 @@ const EditProjectScreen = (props: any) => {
 
   // Fetched Project Details
   useEffect(() => {
+    console.log('In use Effect')
+
     const { projectDetails, isUpdatedSuccess } = props
     if (projectDetails) {
       setState({
@@ -119,34 +121,19 @@ const EditProjectScreen = (props: any) => {
     } else {
       setState({ ...state, isImageLoading: false })
     }
-    console.log('>>>>>>>>>>>>>>file', file)
-
     const id = generateUid()
     await uploadMedia(id, file)
-    let tempImageData =
-      projectData.image &&
-      projectData.image.files &&
-      projectData.image.files.length
-        ? projectData.image.files
-        : []
     const downloadUrl = await getDownloadUrl(id)
     // @ts-ignore
-    tempImageData.push(getImageObject(file, downloadUrl, id))
-    console.log('>>>>>>>>>>>>>>tempImageData', tempImageData)
-
+    projectData.image.files.push(getImageObject(file, downloadUrl, id))
+    if (!projectData.image.fileName) {
+      projectData.image.fileName = file.name
+    }
     setState({
       ...state,
-      projectData: {
-        ...projectData,
-        image: {
-          ...projectData.image,
-          files: tempImageData,
-          fileName: file.name
-        }
-      }
+      projectData
     })
   }
-
   const onVideoUpload = async (file: any) => {
     const { projectData } = state
     if (projectData.video && !projectData.video.length) {
@@ -156,25 +143,15 @@ const EditProjectScreen = (props: any) => {
     }
     const id = generateUid()
     await uploadMedia(id, file)
-    const tempVideoData =
-      projectData.image &&
-      projectData.video.files &&
-      projectData.video.files.length
-        ? projectData.video.files
-        : []
     const downloadUrl = await getDownloadUrl(id)
     // @ts-ignore
-    tempVideoData.push(getImageObject(file, downloadUrl, id))
+    projectData.video.files.push(getImageObject(file, downloadUrl, id))
+    if (!projectData.video.fileName) {
+      projectData.video.fileName = file.name
+    }
     setState({
       ...state,
-      projectData: {
-        ...projectData,
-        video: {
-          ...projectData.video,
-          files: tempVideoData,
-          fileName: file.name
-        }
-      }
+      projectData
     })
   }
 
@@ -201,8 +178,6 @@ const EditProjectScreen = (props: any) => {
     const { userData } = props
     let imageId: string = '',
       videoId: string = ''
-    console.log('????????????projectData.image', projectData.image)
-
     if (
       projectData.image &&
       projectData.image.files &&
@@ -327,7 +302,8 @@ const EditProjectScreen = (props: any) => {
           isImageLoading: state.isImageLoading,
           button: classes.button,
           handleUpdateProject: handleUpdateProject,
-          buttonText: classes.buttonText
+          buttonText: classes.buttonText,
+          updateDetails: props.updateDetails
         })}
       </div>
     )
@@ -367,7 +343,8 @@ const mapStateToProps = (state: any) => ({
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
   isUpdatedSuccess: state.project.isUpdatedSuccess,
-  userData: state.auth
+  userData: state.auth,
+  updateDetails: state.project.updateDetails
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

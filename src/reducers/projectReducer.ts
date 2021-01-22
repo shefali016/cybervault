@@ -10,7 +10,8 @@ import {
   GET_PROJECT_DETAILS_SUCCESS,
   GET_PROJECT_DETAILS_FAILURE,
   UPDATE_PROJECT_DETAILS_SUCCESS,
-  UPDATE_PROJECT_DETAILS_FAILURE
+  UPDATE_PROJECT_DETAILS_FAILURE,
+  UPDATE_PROJECT_DETAILS_REQUEST
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'
@@ -30,6 +31,7 @@ export type State = {
   projectDetails: Object
   isProjectDetailsLoading: boolean
   isUpdatedSuccess: boolean
+  updateDetails: boolean
 }
 
 export type Action = {
@@ -54,7 +56,8 @@ const initialState = {
   onEditProjectScreen: false,
   projectDetails: getProductData(),
   isProjectDetailsLoading: false,
-  isUpdatedSuccess: false
+  isUpdatedSuccess: false,
+  updateDetails: false
 }
 
 const createNewProject = (state: State, action: Action) => ({
@@ -128,13 +131,21 @@ const getProjectDetailsFailure = (state: State, action: Action) => ({
   projectDetails: {}
 })
 
+const updateProjectDetailsRequest = (state: State, action: Action) => ({
+  ...state,
+  isUpdatedSuccess: true,
+  updateDetails: true
+})
+
 const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
-  isUpdatedSuccess: true
+  isUpdatedSuccess: true,
+  updateDetails: false
 })
 const updateProjectDetailsFailure = (state: State, action: Action) => ({
   ...state,
-  isUpdatedSuccess: false
+  isUpdatedSuccess: false,
+  updateDetails: false
 })
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
@@ -162,6 +173,8 @@ const projectReducer = (state = initialState, action: Action) => {
       return updateProjectDetailsSuccess(state, action)
     case UPDATE_PROJECT_DETAILS_FAILURE:
       return updateProjectDetailsFailure(state, action)
+    case UPDATE_PROJECT_DETAILS_REQUEST:
+      return updateProjectDetailsRequest(state, action)
     default:
       return state
   }
@@ -176,7 +189,7 @@ export const projectTransform = createTransform(
       isLoading: false,
       updateLoading: false,
       newProjectData: null,
-      isUpdatedSuccess: false,
+      isUpdatedSuccess: false
     }
   },
   (outboundState: State) => outboundState,

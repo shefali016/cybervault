@@ -73,8 +73,8 @@ export const getProjectDetailsRequest = async (
     const project = data.data()
     const imageId: string = project.image
     const videoId: string = project.video
-    let imageArray: Object = {}
-    let videoArray: Object = {}
+    let imageArray: Object | any = {}
+    let videoArray: Object | any = {}
     await firebase
       .firestore()
       .collection('AccountData')
@@ -108,8 +108,8 @@ export const getProjectDetailsRequest = async (
 
     const projectDetails = {
       ...project,
-      image: imageArray,
-      video: videoArray
+      image: imageArray.id ? imageArray : { files: [] },
+      video: videoArray.id ? videoArray : { files: [] }
     }
 
     allProjectsData.push(projectDetails)

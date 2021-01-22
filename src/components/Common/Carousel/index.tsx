@@ -15,7 +15,7 @@ export type Props = {
 
 export const ImageCarousel = (props: Props) => {
   const classes = useStyles()
-  const [currentSlide, setCurrentSlide] = useState(1)
+  const [currentSlide, setCurrentSlide] = useState(0)
   const next = () => {
     setCurrentSlide(currentSlide + 1)
   }
