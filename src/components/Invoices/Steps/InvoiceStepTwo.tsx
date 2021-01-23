@@ -85,32 +85,6 @@ const useStyles = makeStyles((theme) => ({
   subHeading:{
       fontSize:10
   },
- 
-
-  //   bodyText: {
-  //     fontWeight: BOLD,
-  //     fontSize: 10
-  //   },
-  //   cardContent: {
-  //     padding: theme.spacing(1),
-  //     '&:last-child':{
-  //         paddingBottom:theme.spacing(1)
-  //     }
-  //   },
-  //   card:{
-  //       border:`1px solid ${BORDER_COLOR_GREY_LIGHT}`
-  //   },
-
-  //   textWrapper: {
-  //     display: GRID,
-  //     marginLeft: 5,
-  //     alignContent: CENTER
-  //   },
-  //   bottomText: {
-  //     fontWeight: BOLD,
-  //     fontSize: 8,
-  //     color: GREY_COLOR
-  //   },
 }))
 
 export default InvoiceStepTwo

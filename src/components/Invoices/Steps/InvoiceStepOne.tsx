@@ -28,7 +28,6 @@ type InvoiceStepProps = {
 }
 
 
-// const InvoiceStepOne = ({ allProjects }: InvoiceStepProps) => {
 const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
   const classes = useStyles()
 
@@ -40,7 +39,6 @@ const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
         onNext(invoiceType)
     }
 }
-  console.log(project, 'project')
   return (
     <Grid>
       <div>
@@ -77,7 +75,6 @@ const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
       </Grid>
 
       {/* {allProjects.map((pro) => {
-        console.log(pro, 'yyyy')
         return (
           <Grid item sm={3}>
             <Card className={classes.card}>
@@ -138,32 +135,6 @@ borderRight:`1px solid ${GREY_COLOR}`
       borderRadius:22,
       margin:'20px 0'
   }
-
-
-  //   bodyText: {
-  //     fontWeight: BOLD,
-  //     fontSize: 10
-  //   },
-  //   cardContent: {
-  //     padding: theme.spacing(1),
-  //     '&:last-child':{
-  //         paddingBottom:theme.spacing(1)
-  //     }
-  //   },
-  //   card:{
-  //       border:`1px solid ${BORDER_COLOR_GREY_LIGHT}`
-  //   },
-
-  //   textWrapper: {
-  //     display: GRID,
-  //     marginLeft: 5,
-  //     alignContent: CENTER
-  //   },
-  //   bottomText: {
-  //     fontWeight: BOLD,
-  //     fontSize: 8,
-  //     color: GREY_COLOR
-  //   },
 }))
 
 export default InvoiceStepOne

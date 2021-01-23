@@ -21,72 +21,21 @@ type InvoiceProps = {
   project: Project
   account: Account
   // allProjects:Array<Project>
-  //   onSubmitClicked: (projectData: any) => void
-  // success: boolean
-  // error: null | string
 }
 
 const InvoiceData = ({
   onRequestClose,
   project,
   account,
-}: // allProjects
-//   onSubmitClicked,
-// success,
-// error
+}: 
 InvoiceProps) => {
-  const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
-  const [projectData, setProjectData] = useState(getProductData())
-  const [logoFile, setLogoFile] = useState(null)
-  const [haveError, setHaveError] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
   const [invoiceType, setInvoiceType] = useState('')
   const dispatch=useDispatch()
-
-  // useOnChange(success, (success) => {
-  //   if (success) {
-  //     onRequestClose()
-  //   }
-  // })
-
-  // useOnChange(error, (error) => {
-  //   if (error) {
-  //     setIsLoading(false)
-  //     toastContext.showToast({
-  //       title: 'Could not create project. Please try again.'
-  //     })
-  //   }
-  // })
-
-  //   const onSubmitData = async () => {
-  //     try {
-  //       // @ts-ignorets
-  //       setIsLoading(true)
-  //       let project = { ...projectData, id: generateUid() }
-  //       if (logoFile) {
-  //         const logoUrl = await setMedia(
-  //           `images/clientLogos/${generateUid()}`,
-  //           logoFile
-  //         )
-  //         if (typeof logoUrl === 'string') {
-  //           project = { ...project, logo: logoUrl }
-  //         }
-  //       }
-  //       onSubmitClicked(project)
-  //     } catch (error) {
-  //       setIsLoading(false)
-  //       toastContext.showToast({
-  //         title: 'Failed to create project. Please try again.'
-  //       })
-  //     }
-  //   }
   useEffect(() => {
     if (currentStep == 2) {
-      const payload = {}
-      console.log(project.id, 'offf')
-
       const invoice = {
         id: generateUid(), // Using generateId function
         dateCreated: new Date(),
@@ -98,7 +47,6 @@ InvoiceProps) => {
         isPaid: false // has client paid invoice or not
       }
       dispatch(generateNewInvoiceRequest(account,project,invoice))
-      // generateInvoiceRequest(account, project, invoice)
     }
   }, [currentStep])
   const newProject = true
@@ -116,7 +64,6 @@ InvoiceProps) => {
             headerTitle={'Send Invoice'}
             project={project}
             {...props}
-            // allProjects={allProjects}
           />
         )
       case 2:
@@ -133,7 +80,6 @@ InvoiceProps) => {
             {...props}
             headerTitle={'Send Invoice'}
             project={project}
-            // allProjects={allProjects}
           />
         )
     }
@@ -159,8 +105,6 @@ type InvoiceModalProps = {
   project: Project
   onRequestClose: () => void
   account: Account
-  // allProjects:Array<Project>
-  // onSubmitClicked: (projectData: Types.Project) => void
 }
 
 const InvoiceModal = ({
@@ -168,10 +112,7 @@ const InvoiceModal = ({
   project,
   onRequestClose,
   account,
-}: // allProjects
-// onSubmitClicked,
-// success,
-// error
+}: 
 InvoiceModalProps) => {
   console.log(account,"account")
   return (
@@ -180,16 +121,10 @@ InvoiceModalProps) => {
         onRequestClose={onRequestClose}
         project={project}
         account={account}
-        // allProjects={allProjects}
       />
     </AppModal>
   )
 }
-
-// type StateProps = {
-//   success: boolean
-//   error: string | null
-// }
 
 
 
