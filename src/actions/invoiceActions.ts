@@ -18,7 +18,7 @@ export function generateNewInvoiceRequest(
   ) {
     return {
       type: ActionTypes.NEW_INVOICE_SUCCESS,
-      invoice
+      payload:invoice
     }
   }
   export function generateNewInvoiceError(error: string) {

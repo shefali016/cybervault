@@ -135,6 +135,7 @@ export type Milestone = {
   id: string
   title: string
   cost: number
+  payment:number //added as in fireabase when creating milestone payment key is used for cost 
 }
 
 export type MediaObject = {
@@ -150,14 +151,15 @@ export type Project = {
   campaignName: string
   startDate: Date
   clientId: string
+  clientName:string
   clientEmail:string
-  objective: string
-  deadline: Date
+  campaignObjective: string
+  campaignDeadline: Date
   tasks: Array<Task>
   description: string
   campaignBudget: number
   expensesEstimate: number
-  expenses: Array<Expense>
+  campaignExpenses: Array<Expense>
   milestones: Array<Milestone>
   createdAt: Date
   updatedAt: Date
@@ -175,7 +177,8 @@ export type Invoice= {
   price: number, // Amount that the client must pay
   milestones: Array<Milestone> | null, // will contain milestones being invoiced or null if invoicing total amount
   clientEmail: String,
-  isPaid: Boolean // has client paid invoice or not
+  isPaid: Boolean,
+  status:string // has client paid invoice or not
 }
 
 export type AllProjects = Array<Project>

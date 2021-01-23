@@ -15,6 +15,8 @@ import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
 import { Project, Account, Invoice } from '../../utils/types'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo';
+import InvoiceStepThree from './Steps/InvoiceStepThree';
+import { forEachChild } from 'typescript';
 
 type InvoiceProps = {
   onRequestClose: () => void
@@ -34,50 +36,69 @@ InvoiceProps) => {
   const toastContext = useContext(ToastContext)
   const [invoiceType, setInvoiceType] = useState('')
   const dispatch=useDispatch()
-  useEffect(() => {
-    if (currentStep == 2) {
-      const invoice = {
-        id: generateUid(), // Using generateId function
-        dateCreated: new Date(),
-        datePaid: null,
-        projectId: project.id, // Id of the project being invoiced
-        price: 20, // Amount that the client must pay
-        milestones: project.milestones, // will contain milestones being invoiced or null if invoicing total amount
-        clientEmail: project.clientEmail,
-        isPaid: false // has client paid invoice or not
-      }
-      dispatch(generateNewInvoiceRequest(account,project,invoice))
-    }
-  }, [currentStep])
-  const newProject = true
+
+  const getFullAmount=(milestones:Array<Types.Milestone>)=>{
+    let totalCost=0
+    milestones.forEach((mile:Types.Milestone,i:number)=>{
+      totalCost=totalCost+Number(mile.payment)
+    })
+    return totalCost
+  }
+  const handleSendInvoice=()=>{
+        const invoice = {
+          id: generateUid(), // Using generateId function
+          dateCreated: new Date(),
+          datePaid: null,
+          projectId: project.id, // Id of the project being invoiced
+          price: invoiceType==='fullAmount'?getFullAmount(project.milestones):0 ,// Amount that the client must pay
+          milestones: project.milestones, // will contain milestones being invoiced or null if invoicing total amount
+          clientEmail: project.clientEmail,
+          isPaid: false,
+          status:'draft' // has client paid invoice or not
+        }
+        dispatch(generateNewInvoiceRequest(account,project,invoice))
+    
+  }
+  
   const renderStepsView = () => {
-    const props = {
-      onNext: (invoiceType: String) => {
-        // setInvoiceType(invoiceType)
-        setCurrentStep((step) => step + 1)
-      }
+    const onNext=(invoiceType:any)=>{
+            if(currentStep===1){
+              setInvoiceType(invoiceType)
+            }
+            setCurrentStep((step) => step + 1)
     }
+  
+    
     switch (currentStep) {
       case 1:
         return (
           <InvoiceStepOne
             headerTitle={'Send Invoice'}
             project={project}
-            {...props}
+            onNext={onNext}
           />
         )
       case 2:
         return (
           <InvoiceStepTwo
-            {...props}
+          onNext={onNext}
             project={project}
             headerTitle={'Invoice'}
+            invoiceType={invoiceType}
+            handleSendInvoice={handleSendInvoice}
+          />
+        )
+      case 3:
+        return (
+          <InvoiceStepThree
+            project={project} 
+            onRequestClose={onRequestClose}         
           />
         )
       default:
         return (
           <InvoiceStepOne
-            {...props}
+          onNext={onNext}
             headerTitle={'Send Invoice'}
             project={project}
           />

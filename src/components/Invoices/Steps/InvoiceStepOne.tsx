@@ -23,7 +23,7 @@ import {GradiantButton }from '../../Common/Button/GradiantButton';
 type InvoiceStepProps = {
   project: Project
   headerTitle: String,
-  onNext:(invoiceType:String)=>void
+  onNext:(invoiceType:any)=>void
  //   allProjects: Array<Project>
 }
 
@@ -31,13 +31,8 @@ type InvoiceStepProps = {
 const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
   const classes = useStyles()
 
-  const handleClick=(invoiceType:String)=>{
-    if(invoiceType==='fullAmount'){
+  const handleClick=(invoiceType:string)=>{
         onNext(invoiceType)
-    }
-    else{
-        onNext(invoiceType)
-    }
 }
   return (
     <Grid>
