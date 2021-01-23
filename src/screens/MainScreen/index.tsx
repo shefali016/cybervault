@@ -10,6 +10,7 @@ import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
+import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -35,6 +36,8 @@ import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 import BankingScreen from 'screens/SharedScreens/BankingScreen'
+import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
+import PortfoliosScreen from 'screens/DashboardScreens/PortfoliosScreen'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -276,6 +279,9 @@ const MainScreen = (props: any) => {
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/banking' component={BankingScreen} />
+          <Route path='/invoices' component={InvoicesScreen} />
+          <Route path='/payments' component={PaymentsScreen} />
+          <Route path='/portfolio' component={PortfoliosScreen} />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>

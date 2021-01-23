@@ -208,10 +208,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex'
   },
-  appBar: {
-    width: `calc(100% - ${SIDE_DRAWER_WIDTH}px)`,
-    marginLeft: SIDE_DRAWER_WIDTH
-  },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
   content: {
