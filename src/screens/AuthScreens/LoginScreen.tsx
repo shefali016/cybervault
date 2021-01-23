@@ -57,12 +57,14 @@ export const LoginScreen = ({
       toastContext.showToast({ title: loginError })
     }
     loginErrorRef.current = loginError
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginError])
 
   useEffect(() => {
     if (isLoggedIn && user) {
       history.push('/home')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, user])
 
   const handleInputChange = (key: any) => (e: any) =>

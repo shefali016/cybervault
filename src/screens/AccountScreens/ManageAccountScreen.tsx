@@ -92,7 +92,7 @@ const ManageAccountScreen = ({
             settings: { ...update.settings, watermark: watermarkUrl }
           }
         } else {
-          throw 'invalid_watermark_url'
+          throw Error('invalid_watermark_url')
         }
       }
       updateAccount(update)

@@ -1,4 +1,4 @@
-import { CircularProgress, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import CloseButton from 'components/Common/Button/CloseButton'
@@ -6,7 +6,7 @@ import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { AppCircularProgress } from 'components/Common/Core/AppCircularProgress'
 import { AppSlider } from 'components/Common/Core/AppSlider'
 import Modal from 'components/Common/Modal'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { SubscriptionTypes } from 'utils/enums'
 import { getSubscriptionDetails } from 'utils/subscription'
 import { Account } from '../../utils/types'
@@ -21,7 +21,7 @@ export const StorageModal = ({ open, onRequestClose, account }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
-  const [storageUsed, setStorageUsed] = useState<number>(2)
+  const [storageUsed] = useState<number>(2)
   const [extraStorage, setExtraStorage] = useState<number>(
     account.subscription?.extraStorage || 0
   )

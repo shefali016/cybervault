@@ -1,4 +1,4 @@
-import { Button, IconButton, makeStyles, Typography } from '@material-ui/core'
+import { IconButton, makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import {
@@ -9,7 +9,6 @@ import {
   NONE,
   POSITION_ABSOLUTE
 } from '../../utils/constants/stringConstants'
-import { GREY_COLOR } from '../../utils/constants/colorsConstants'
 import { GradiantButton } from '../Common/Button/GradiantButton'
 
 type Props = {

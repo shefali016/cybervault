@@ -1,35 +1,21 @@
 import React from 'react'
-import {
-  Button,
-  Card,
-  Grid,
-  MenuItem,
-  IconButton,
-  Typography
-} from '@material-ui/core'
+import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
-import {
-  AUTO,
-  CENTER,
-  COLUMN,
-  FLEX,
-  ROW
-} from 'utils/constants/stringConstants'
+import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import { Project,Account } from '../../../utils/types'
 import { Dot } from '../../Common/Dot'
-import { getCardHeight, getWidgetCardHeight } from '../../../utils';
+import { getWidgetCardHeight } from '../../../utils';
 import InvoiceModal from '../../../components/Invoices/InvoiceModal';
 
 type Props = {
   project: Project
-  openProject?: any
   isPopover?: boolean
   style?: {}
   history?: any,
@@ -38,7 +24,6 @@ type Props = {
 
 const ProjectCard = ({
   project,
-  openProject,
   isPopover,
   style,
   history,
@@ -50,17 +35,12 @@ const ProjectCard = ({
   const [open, setOpen] = React.useState(false)
 
   const editProject = (projectId: string) => {
-    // history.replace(`/project/${project.id}`)
     history.push(`/project?id:${projectId}`)
   }
   const sendInvoice=(projectId: string)=>{
     setOpen(true)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
-    setOpen(false)
-  }
   const onRequestClose=()=>{
     setOpen(false)
   }

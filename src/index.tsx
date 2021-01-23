@@ -11,9 +11,9 @@ const { store, persistor } = configureStore()
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <React.StrictMode>
+      <React.Fragment>
         <App />
-      </React.StrictMode>
+      </React.Fragment>
     </PersistGate>
   </Provider>,
   document.getElementById('root')

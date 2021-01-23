@@ -14,5 +14,6 @@ export const useOnChange = (value: any, onChange: (value: any) => void) => {
       onChange(value)
     }
     previous.current = value
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 }

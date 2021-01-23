@@ -1,5 +1,5 @@
 import React from 'react'
-import { InputChangeEvent, WatermarkControl } from 'utils/types'
+import { WatermarkControl } from 'utils/types'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 import { WatermarkControls } from '../../utils/enums'
 

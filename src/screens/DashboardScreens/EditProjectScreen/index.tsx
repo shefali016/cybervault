@@ -1,30 +1,36 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState, useEffect, useContext } from 'react'
-import '../../App.css'
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { COLUMN, FLEX, FLEX_END } from '../../utils/constants/stringConstants'
-import { WHITE_COLOR } from '../../utils/constants/colorsConstants'
+import {
+  COLUMN,
+  FLEX,
+  FLEX_END
+} from '../../../utils/constants/stringConstants'
+import { WHITE_COLOR } from '../../../utils/constants/colorsConstants'
 import {
   requestGetProjectDetails,
   requestUpdateProjectDetails
-} from '../../actions/projectActions'
-import { RenderClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
-import { RenderTaskDetails } from '../../components/Common/Widget/TaskDetailsWidget'
-import { RenderProjectDetails } from '../../components/Common/Widget/ProjectDetailWidget'
-import { RenderExpenseDetails } from '../../components/Common/Widget/ExpenseDetailsWidget'
-import { RenderMilestonesDetails } from '../../components/Common/Widget/MilestonesDetailWidget'
-import { RenderBudgetDetails } from '../../components/Common/Widget/BudgetDetailsWidget'
-import { DragAndDropUploader } from '../../components/Common/DragAndDropFileUpload'
-import { GradiantButton } from '../../components/Common/Button/GradiantButton'
-import { ImageCarousel } from '../../components/Common/Carousel'
+} from '../../../actions/projectActions'
+import { RenderClientDetails } from '../../../components/Common/Widget/ClientDetailsWidget'
+import { RenderTaskDetails } from '../../../components/Common/Widget/TaskDetailsWidget'
+import { RenderProjectDetails } from '../../../components/Common/Widget/ProjectDetailWidget'
+import { RenderExpenseDetails } from '../../../components/Common/Widget/ExpenseDetailsWidget'
+import { RenderMilestonesDetails } from '../../../components/Common/Widget/MilestonesDetailWidget'
+import { RenderBudgetDetails } from '../../../components/Common/Widget/BudgetDetailsWidget'
 import EditProjectModal from 'components/EditProjectModel'
-import ProjectStatusIndicator from '../../components/Common/ProjectStatusIndicator'
-import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
-import { getDownloadUrl, uploadMedia } from '../../apis/assets'
-import { generateUid } from '../../utils/index'
+import ProjectStatusIndicator from '../../../components/Common/ProjectStatusIndicator'
+import {
+  getDownloadUrl,
+  updateProjectAssets,
+  uploadMedia
+} from '../../../apis/assets'
+import { generateUid } from '../../../utils/index'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
+import { renderImageCarousel, renderVideoCarousel } from './UploadMedia'
+import '../../../App.css'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -106,7 +112,7 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
-  const onImageUpload = async (file: any) => {
+  const onImageUpload = async (file: File) => {
     const { projectData } = state
     if (projectData.image && !projectData.image.length) {
       setState({ ...state, isImageLoading: true })
@@ -115,7 +121,7 @@ const EditProjectScreen = (props: any) => {
     }
     const id = generateUid()
     await uploadMedia(id, file)
-    const downloadUrl = await getUrl(id)
+    const downloadUrl = await getDownloadUrl(id)
     // @ts-ignore
     projectData.image.push(getImageObject(file, downloadUrl, id))
     setState({
@@ -133,18 +139,13 @@ const EditProjectScreen = (props: any) => {
     }
     const id = generateUid()
     await uploadMedia(id, file)
-    const downloadUrl = await getUrl(id)
+    const downloadUrl = await getDownloadUrl(id)
     // @ts-ignore
     projectData.video.push(getImageObject(file, downloadUrl, id))
     setState({
       ...state,
       projectData: projectData
     })
-  }
-
-  const getUrl = async (id: string) => {
-    const url = await getDownloadUrl(id)
-    return url
   }
 
   const editProject = (projectData: any) => {
@@ -165,61 +166,19 @@ const EditProjectScreen = (props: any) => {
   }
 
   //submit project details update
-  const handleUpdateProject = () => {
+  const handleUpdateProject = async () => {
+    const { projectData } = state
+    const { userData } = props
+    if (projectData.image && projectData.image.length) {
+      await updateProjectAssets(
+        userData.account,
+        projectData.image,
+        'image',
+        projectData.campaignName,
+        generateUid()
+      )
+    }
     props.updateProjectDetails(props.userData.account, state.projectData)
-  }
-
-  const renderImageCarousel = () => {
-    return (
-      <>
-        <Typography className={classes.textColor}>
-          Upload Photo Content
-        </Typography>
-        <div style={{ display: FLEX }}>
-          <div className={classes.imageCorouselContainer}>
-            <ImageCarousel source={state.projectData.image} />
-          </div>
-          <div className={classes.generalMarginTop}>
-            <DragAndDropUploader
-              onSubmit={onImageUpload}
-              isLoading={state.isImageLoading}
-            />
-          </div>
-        </div>
-        <div className={classes.button}>
-          <GradiantButton
-            onClick={() => handleUpdateProject()}
-            width={135}
-            height={40}>
-            <Typography className={classes.buttonText}>
-              {' '}
-              Save Changes
-            </Typography>
-          </GradiantButton>
-        </div>
-      </>
-    )
-  }
-
-  const renderVideoCarousel = () => {
-    return (
-      <div className={classes.uploadVideoContainer}>
-        <Typography className={classes.textColor}>Upload Videos</Typography>
-        <div style={{ display: FLEX }}>
-          <div className={classes.videoCorouselContainer}>
-            <ImageCarousel isVideo source={state.projectData.video} />
-          </div>
-          <div className={classes.generalMarginTop}>
-            <DragAndDropUploader
-              isVideo
-              onSubmit={onVideoUpload}
-              isLoading={state.isVideoLoading}
-            />
-          </div>
-        </div>
-        {renderDevider({ editInfo: true })}
-      </div>
-    )
   }
 
   const renderProjectDetails = () => {
@@ -272,8 +231,26 @@ const EditProjectScreen = (props: any) => {
     return (
       <div className={classes.detailsWrapper}>
         {renderProjectDetails()}
-        {renderVideoCarousel()}
-        {renderImageCarousel()}
+        {renderVideoCarousel({
+          uploadVideoContainer: classes.uploadVideoContainer,
+          textColor: classes.textColor,
+          videoCorouselContainer: classes.videoCorouselContainer,
+          onVideoUpload: onVideoUpload,
+          video: state.projectData.video,
+          isVideoLoading: state.isVideoLoading,
+          generalMarginTop: classes.generalMarginTop
+        })}
+        {renderImageCarousel({
+          textColor: classes.textColor,
+          imageCorouselContainer: classes.imageCorouselContainer,
+          image: state.projectData.image,
+          generalMarginTop: classes.generalMarginTop,
+          onImageUpload: (file: File) => onImageUpload(file),
+          isImageLoading: state.isImageLoading,
+          button: classes.button,
+          handleUpdateProject: handleUpdateProject,
+          buttonText: classes.buttonText
+        })}
       </div>
     )
   }

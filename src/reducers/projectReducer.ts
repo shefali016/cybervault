@@ -10,8 +10,7 @@ import {
   GET_PROJECT_DETAILS_SUCCESS,
   GET_PROJECT_DETAILS_FAILURE,
   UPDATE_PROJECT_DETAILS_SUCCESS,
-  UPDATE_PROJECT_DETAILS_FAILURE,
-  UPDATE_PROJECT_DETAILS_REQUEST
+  UPDATE_PROJECT_DETAILS_FAILURE
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'

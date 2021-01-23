@@ -8,8 +8,7 @@ import {
   LinearProgress,
   Divider,
   ListItemIcon,
-  ListItemText,
-  IconButton
+  ListItemText
 } from '@material-ui/core'
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
@@ -20,10 +19,7 @@ import {
 } from '../../../utils/constants/stringConstants'
 import {
   WHITE_COLOR,
-  BORDER_COLOR,
-  PRIMARY_COLOR,
-  SECONDARY_COLOR,
-  SECONDARY_DARK_COLOR
+  BORDER_COLOR
 } from '../../../utils/constants/colorsConstants'
 import { Link } from 'react-router-dom'
 import { Tab, ButtonConfig } from 'utils/types'
@@ -46,14 +42,13 @@ const SideBarComponent = (props: Props) => {
     open = false,
     setOpen,
     tabs,
-    onTabPress,
-    activeTab
+    onTabPress
   } = props
   const classes = useStyles()
 
   const [topTabs, bottomTabs] = useMemo(() => {
     return [tabs.slice(0, 5), tabs.slice(5)]
-  }, tabs)
+  }, [tabs])
 
   const handleLogout = () => {
     onLogout && onLogout()

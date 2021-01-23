@@ -15,13 +15,10 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import nikeLogo from '../../../assets/nike.png'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks/'
-import { setMedia } from '../../../apis/assets'
-import { generateUid } from '../../../utils'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()

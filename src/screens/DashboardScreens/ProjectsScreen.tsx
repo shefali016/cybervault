@@ -1,12 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { logout } from '../../actions/authActions'
 import { createNewProjectRequest } from '../../actions/projectActions'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
-import { AUTO, FLEX } from '../../utils/constants/stringConstants'
 import ProjectArchives from '../../components/Cards/ProjectArchives'
-import { WHITE_COLOR } from '../../utils/constants/colorsConstants'
 import Widget from '../../components/Common/Widget'
 import { useTabletLayout } from '../../utils/hooks'
 import * as Types from '../../utils/types'
@@ -57,23 +55,8 @@ const ARCHIVE_DATA = [
 ]
 
 export const ProjectsScreen = (props: any) => {
-  const classes = useStyles()
   const isTablet = useTabletLayout()
   const theme = useTheme()
-  const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
-  const openNewProjectModal = useCallback(
-    () => setNewProjectModalOpen(true),
-    []
-  )
-  const closeNewProjectModal = useCallback(
-    () => setNewProjectModalOpen(false),
-    []
-  )
-  const createNewProject = useCallback(
-    (projectData) =>
-      props.createNewProject(projectData, props.userData.account),
-    []
-  )
   return (
     <div>
       <Widget
@@ -107,19 +90,6 @@ export const ProjectsScreen = (props: any) => {
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  generalMarginLeft: {
-    marginLeft: 10,
-    color: WHITE_COLOR
-  },
-  topCardsWrapper: {
-    overflow: AUTO,
-    marginLeft: 10,
-    marginTop: 20,
-    display: FLEX,
-    flexDirection: 'row'
-  }
-}))
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
   userData: state.auth

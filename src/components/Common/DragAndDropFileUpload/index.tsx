@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
@@ -13,7 +13,9 @@ export const DragAndDropUploader = (props?: any) => {
   // receives array of files that are done uploading when submit button is clicked
   const onDrop = useCallback((acceptedFiles) => {
     setImageSource(acceptedFiles)
+    props.onSubmit(acceptedFiles[0])
     setIsImage(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -45,13 +47,15 @@ export const DragAndDropUploader = (props?: any) => {
       <div className={classes.topContainer}>
         {isImage
           ? image.map((file: any, index: number) => {
-              props.onSubmit(file)
+              // props.onSubmit(file)
               return (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt='icon'
-                  className={classes.addedImage}
-                />
+                <Fragment key={index}>
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt='icon'
+                    className={classes.addedImage}
+                  />
+                </Fragment>
               )
             })
           : null}
