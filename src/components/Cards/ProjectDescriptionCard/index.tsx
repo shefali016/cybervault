@@ -33,8 +33,7 @@ type Props = {
   isPopover?: boolean
   style?: {}
   history?: any,
-  // account:Account
-  [key:string]:any
+  account:Account
 }
 
 const ProjectCard = ({
