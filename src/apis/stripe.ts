@@ -50,7 +50,7 @@ export const createStripeAccountLink = async (
     {
       id: stripeAccountId,
       refresh_url: `${domain}/refresh_account_link/${stripeAccountId}`,
-      return_url: `${domain}/banking`
+      return_url: `${domain}/invoices`
     }
   )
 
@@ -66,7 +66,7 @@ export const createStripeLogin = async (stripeAccountId: string) => {
     `${server_url}/api/v1/stripe/create_login_link`,
     {
       id: stripeAccountId,
-      redirect_url: `${domain}/banking`
+      redirect_url: `${domain}/invoices`
     }
   )
 

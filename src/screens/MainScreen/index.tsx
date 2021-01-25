@@ -64,9 +64,7 @@ const AccountTabIds = {
 
 const SharedTabIds = {
   invoices: 'invoices',
-  // payments: 'payments',
   security: 'security'
-  // banking: 'banking'
 }
 
 const ScreenViews = {
@@ -160,24 +158,12 @@ const MainScreen = ({
           text: 'Invoices',
           icon: <InvoiceIcon className={classes.listIconStyle} />
         }
-      // case SharedTabIds.payments:
-      //   return {
-      //     id,
-      //     text: 'Payments',
-      //     icon: <PaymentIcon className={classes.listIconStyle} />
-      //   }
       case SharedTabIds.security:
         return {
           id,
           text: 'Security',
           icon: <SecurityIcon className={classes.listIconStyle} />
         }
-      // case SharedTabIds.banking:
-      //   return {
-      //     id,
-      //     text: 'Banking',
-      //     icon: <BankingIcon className={classes.listIconStyle} />
-      //   }
       // Account tabs
       case AccountTabIds.profile:
         return {
