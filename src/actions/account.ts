@@ -1,6 +1,19 @@
 import * as ActionTypes from './actionTypes'
 import { Account } from '../utils/types'
 
+export const getAccount = (id: string) => ({
+  type: ActionTypes.GET_ACCOUNT,
+  id
+})
+export const getAccountSuccess = (account: Account) => ({
+  type: ActionTypes.GET_ACCOUNT_SUCCESS,
+  account
+})
+export const getAccountFailure = (error: string) => ({
+  type: ActionTypes.GET_ACCOUNT_FAILURE,
+  error
+})
+
 export const updateAccount = (account: Account) => ({
   type: ActionTypes.UPDATE_ACCOUNT,
   account

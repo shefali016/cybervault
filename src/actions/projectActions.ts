@@ -1,14 +1,10 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/types'
 
-export function createNewProjectRequest(
-  newProjectData: Types.Project,
-  account: Account
-) {
+export function createNewProjectRequest(newProjectData: Types.Project) {
   return {
     type: ActionTypes.NEW_PROJECT_REQUEST,
-    newProjectData,
-    account
+    newProjectData
   }
 }
 

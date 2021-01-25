@@ -42,7 +42,8 @@ const SideBarComponent = (props: Props) => {
     open = false,
     setOpen,
     tabs,
-    onTabPress
+    onTabPress,
+    activeTab
   } = props
   const classes = useStyles()
 
@@ -102,24 +103,29 @@ const SideBarComponent = (props: Props) => {
     )
   }
 
-  const renderListItem = (tab: Tab, onClick: () => void) => (
-    <ListItem
-      button
-      key={tab.text}
-      onClick={onClick}
-      className={classes.listItem}>
-      <ListItemIcon>{tab.icon}</ListItemIcon>
-      <ListItemText
-        disableTypography
-        primary={
-          <Typography style={{ color: WHITE_COLOR, fontSize: 15 }}>
-            {tab.text}
-          </Typography>
-        }
-        className={classes.sideBarText}
-      />
-    </ListItem>
-  )
+  const renderListItem = (tab: Tab, onClick: () => void) => {
+    const isActive = tab.id === activeTab.id
+    return (
+      <ListItem
+        button
+        key={tab.text}
+        onClick={onClick}
+        className={clsx(classes.listItem, isActive ? classes.activeTab : '')}>
+        <ListItemIcon style={{ opacity: isActive ? 1 : 0.7 }}>
+          {tab.icon}
+        </ListItemIcon>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography style={{ color: WHITE_COLOR, fontSize: 15 }}>
+              {tab.text}
+            </Typography>
+          }
+          className={classes.sideBarText}
+        />
+      </ListItem>
+    )
+  }
 
   return (
     <Drawer
@@ -151,20 +157,20 @@ const SideBarComponent = (props: Props) => {
         <Typography variant={'button'}>{actionButtonConfig.title}</Typography>
       </Button>
       <Divider className={classes.divider} />
-      <List>
+      <div>
         {topTabs.map((tab, index) =>
           renderListItem(tab, () => onTabPress(tab))
         )}
-      </List>
+      </div>
       {renderStorageView()}
       <Divider className={classes.divider} />
-      <List>
+      <div>
         {bottomTabs.map((tab, index) =>
           renderListItem(tab, () => onTabPress(tab))
         )}
-      </List>
+      </div>
       <Divider className={classes.divider} />
-      <List>
+      <div>
         {renderListItem(
           {
             id: 'logout',
@@ -173,7 +179,7 @@ const SideBarComponent = (props: Props) => {
           },
           handleLogout
         )}
-      </List>
+      </div>
       <Divider className={classes.divider} />
       {renderTermsView()}
     </Drawer>
@@ -270,7 +276,14 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2.4),
     paddingRight: theme.spacing(2.4),
     paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1)
+    paddingBottom: theme.spacing(1),
+    '&:hover': { background: theme.palette.background.surface },
+    transition: theme.transitions.create(['background'], { duration: 300 })
+  },
+  activeTab: {
+    background: theme.palette.background.surface,
+    '&:hover': { background: theme.palette.background.surfaceHighlight },
+    transition: theme.transitions.create(['background'], { duration: 300 })
   },
   listItemLogout: {
     marginTop: 50
