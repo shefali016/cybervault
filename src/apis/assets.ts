@@ -1,7 +1,8 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Asset } from '../utils/Interface'
+import { Asset, Project, ProjectAsset } from '../utils/Interface'
+import { generateUid } from 'utils'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 
@@ -48,26 +49,77 @@ export const getDownloadUrl = async (id: string) => {
 
 export const addProjectAssets = async (
   accountData: Account,
-  file: Object,
-  type: string,
-  fileName: string,
-  id: string
+  projectData: Project
 ) => {
   try {
-    const assectObjet = {
-      createdAt: firebase.firestore.Timestamp.now(),
-      type: type,
-      files: file,
-      fileName: fileName,
-      id
+    let assectObject: ProjectAsset = {
+      type: '',
+      files: [],
+      fileName: '',
+      id: ''
     }
-    return await firebase
-      .firestore()
+    let db = firebase.firestore()
+    let imagesArray: Array<string> = []
+    let videosArray: Array<string> = []
+    let ColAssets = await db
       .collection('AccountData')
       .doc(accountData.id)
       .collection('Assets')
-      .doc(id)
-      .set(assectObjet)
+    /// Batch Thing //
+    let batch = db.batch()
+
+    if (projectData.images && projectData.images.length) {
+      for (let index = 0; index < projectData.images.length; index++) {
+        const images: ProjectAsset | any = projectData.images[index]
+        let id: string
+        if (!images.id) {
+          id = generateUid()
+        } else {
+          id = images.id
+        }
+        imagesArray.push(id)
+        let ref = ColAssets.doc(id)
+        assectObject = {
+          type: 'image',
+          files: images.files,
+          fileName: images.fileName,
+          id: id
+        }
+        batch.set(ref, {
+          ...assectObject,
+          createdAt: firebase.firestore.Timestamp.now()
+        })
+      }
+    }
+    if (projectData.videos && projectData.videos.length) {
+      for (let index = 0; index < projectData.videos.length; index++) {
+        const videos: ProjectAsset | any = projectData.videos[index]
+        let id: string
+        if (!videos.id) {
+          id = generateUid()
+        } else {
+          id = videos.id
+        }
+        videosArray.push(id)
+        let ref = ColAssets.doc(id)
+        assectObject = {
+          type: 'video',
+          files: videos.files,
+          fileName: videos.fileName,
+          id: id
+        }
+        batch.set(ref, {
+          ...assectObject,
+          createdAt: firebase.firestore.Timestamp.now()
+        })
+      }
+    }
+    batch.commit()
+    const data = {
+      imagesArray,
+      videosArray
+    }
+    return data
   } catch (error) {
     console.log('>>>>>>>>>>>Error', error)
     return error

@@ -1,14 +1,10 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
 
-export function createNewProjectRequest(
-  newProjectData: Types.Project,
-  account: Account
-) {
+export function createNewProjectRequest(newProjectData: Types.Project) {
   return {
     type: ActionTypes.NEW_PROJECT_REQUEST,
-    newProjectData,
-    account
+    newProjectData
   }
 }
 
@@ -80,20 +76,17 @@ export function getProjectDetailsFailure(error: string) {
   }
 }
 
-export function requestUpdateProjectDetails(
-  account: Account,
-  projectdata: Object | undefined
-) {
+export function requestUpdateProjectDetails(projectdata: Types.Project | undefined) {
   return {
     type: ActionTypes.UPDATE_PROJECT_DETAILS_REQUEST,
-    account,
     projectdata
   }
 }
 
-export function updateProjectDetailsSuccess() {
+export function updateProjectDetailsSuccess(projectdata: Types.Project) {
   return {
-    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS
+    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS,
+    projectdata
   }
 }
 export function updateProjectDetailsFailure(error: string) {

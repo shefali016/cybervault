@@ -89,10 +89,16 @@ export const createAccount = (
     id: generateUid(),
     owner: authUser.uid,
     type: 'creator',
+    email: authUser.email,
     security: {
       twoFactor: false,
       textMessageVerification: false,
       securityQuestion: { question: '', answer: '' }
+    },
+    stripe: {
+      accountId: null,
+      detailsSubmitted: false,
+      payoutsEnabled: false
     },
     subscription: { type: SubscriptionTypes.creator },
     settings: {

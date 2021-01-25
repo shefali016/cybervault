@@ -7,10 +7,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import Dummy from '../../../assets/Dummy.jpg'
 import { VideoComponent } from '../Video'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
+import { ProjectAsset } from 'utils/Interface'
+import ReactLoading from 'react-loading'
+import { CENTER, FLEX } from 'utils/constants/stringConstants'
 
 export type Props = {
   isVideo?: boolean
-  source: Array<{}>
+  source: Array<ProjectAsset>
+  isVideoLoading?: boolean | undefined
+  isImageLoading?: boolean | undefined
 }
 
 export const ImageCarousel = (props: Props) => {
@@ -46,9 +51,7 @@ export const ImageCarousel = (props: Props) => {
         className={
           props.source && props.source.length ? classes.videoContainer : ''
         }>
-        {typeof props.source !== 'string' &&
-        props.source &&
-        props.source.length ? (
+        {props.source && props.source.length ? (
           <Carousel
             statusFormatter={(currentItem: number, total: number) => {
               return ''
@@ -67,28 +70,62 @@ export const ImageCarousel = (props: Props) => {
             {props.source.map((data: any, i: number) => {
               return props.isVideo ? (
                 <div key={i} className={classes.videoComponentWrapper}>
-                  <VideoComponent url={data.url} />
+                  {props.isVideoLoading ? (
+                    <ReactLoading
+                      type={'bubbles'}
+                      color={'#fff'}
+                      className={classes.loader}
+                    />
+                  ) : (
+                    <VideoComponent url={data.files[0].url} />
+                  )}
                 </div>
               ) : (
-                <div key={i} style={{ height: 150, width: 370 }}>
-                  <img src={data.url} alt='' />
+                <div key={i} style={{ width: 400, maxWidth: 400 }}>
+                  {props.isImageLoading ? (
+                    <ReactLoading
+                      type={'bubbles'}
+                      color={'#fff'}
+                      className={classes.loader}
+                    />
+                  ) : (
+                    <img src={data.files[0].url} alt='' />
+                  )}
                 </div>
               )
             })}
           </Carousel>
         ) : props.isVideo ? (
-          <div style={{ height: 100, width: 300 }}>
-            <img
-              src={
-                'https://static.wixstatic.com/media/cbe343_d34314ad52a443b18daabe5c821b29b6~mv2.png'
-              }
-              alt=''
-              width={'100%'}
-            />
+          <div style={{ height: 100, width: 400, maxWidth: 400 }}>
+            {props.isVideoLoading ? (
+              <ReactLoading
+                type={'bubbles'}
+                color={'#fff'}
+                className={classes.loader}
+              />
+            ) : (
+              <img
+                src={
+                  'https://static.wixstatic.com/media/cbe343_d34314ad52a443b18daabe5c821b29b6~mv2.png'
+                }
+                alt=''
+                width={'100%'}
+              />
+            )}
           </div>
         ) : (
-          <div style={{ height: 100, width: 300 }}>
-            <img src={Dummy} width={'100%'} alt='' />
+          <div style={{ height: 100, width: 400, maxWidth: 400 }}>
+            {props.isImageLoading ? (
+              <div style={{ textAlign: CENTER }}>
+                <ReactLoading
+                  type={'bubbles'}
+                  color={'#fff'}
+                  className={classes.loader}
+                />
+              </div>
+            ) : (
+              <img src={Dummy} width={'100%'} alt='' />
+            )}
           </div>
         )}
       </div>
@@ -117,12 +154,34 @@ const useStyles = makeStyles((theme) => ({
   },
   videoComponentWrapper: {
     margin: 0,
-    width: '100%'
+    width: 400,
+    maxWidth: 400
   },
   videoContainer: {
     margin: 0,
     width: '100%',
     borderWidth: 2,
     borderColor: WHITE_COLOR
+  },
+  loaderWrapper: {
+    zIndex: 1000,
+    position: 'absolute',
+    right: '0px',
+    bottom: '0px',
+    height: '100%',
+    width: '100%',
+    display: FLEX,
+    alignItems: CENTER,
+    justifyContent: CENTER
+  },
+  loader: {
+    zIndex: 100,
+    height: '200px !important',
+    width: '100px !important',
+    position: 'relative',
+    margin: '0 auto',
+    display: FLEX,
+    alignItems: CENTER,
+    justifyContent: CENTER
   }
 }))

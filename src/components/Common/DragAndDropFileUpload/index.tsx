@@ -13,8 +13,8 @@ export const DragAndDropUploader = (props?: any) => {
   // receives array of files that are done uploading when submit button is clicked
   const onDrop = useCallback((acceptedFiles) => {
     setImageSource(acceptedFiles)
-    props.onSubmit(acceptedFiles[0])
     setIsImage(true)
+    props.onSubmit(acceptedFiles)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

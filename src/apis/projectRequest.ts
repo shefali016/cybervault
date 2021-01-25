@@ -40,7 +40,7 @@ export const createNewProjectRequest = async (
  * @getAllProjects
  */
 export const getAllProjectsRequest = async (account: Account) => {
-  let allProjectsData: Array<{}> = []
+  let allProjectsData: Array<Types.Project> = []
   let data: any = await firebase
     .firestore()
     .collection('AccountData')
@@ -62,7 +62,7 @@ export const getProjectDetailsRequest = async (
   projectId: string | undefined
 ) => {
   try {
-    let allProjectsData: Array<{}> = []
+    let projectsData: Types.Project
     let data: any = await firebase
       .firestore()
       .collection('AccountData')
@@ -71,50 +71,47 @@ export const getProjectDetailsRequest = async (
       .doc(projectId)
       .get()
     const project = data.data()
-    const imageId: string = project.image
-    const videoId: string = project.video
-    let imageArray: Object | any = {}
-    let videoArray: Object | any = {}
-    await firebase
-      .firestore()
-      .collection('AccountData')
-      .doc(account.id)
-      .collection('Assets')
-      .where('id', '==', imageId)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          imageArray = doc.data()
-        })
-      })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error)
-      })
-    await firebase
-      .firestore()
-      .collection('AccountData')
-      .doc(account.id)
-      .collection('Assets')
-      .where('id', '==', videoId)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          videoArray = doc.data()
-        })
-      })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error)
-      })
+    const imageIds: Array<string> = project.images
+    const videoIds: Array<string> = project.videos
+    let imageArray: Array<Types.ProjectAsset> | any = []
+    let videoArray: Array<Types.ProjectAsset> | any = []
+    if (imageIds && imageIds.length) {
+      for (let index = 0; index < imageIds.length; index++) {
+        const images = imageIds[index]
+        const imageAsset = await firebase
+          .firestore()
+          .collection('AccountData')
+          .doc(account.id)
+          .collection('Assets')
+          .doc(images)
+          .get()
+        imageArray.push(imageAsset.data())
+      }
+    }
+    if (videoIds && videoIds.length) {
+      for (let index = 0; index < videoIds.length; index++) {
+        const videos = videoIds[index]
+        const videoAssets = await firebase
+          .firestore()
+          .collection('AccountData')
+          .doc(account.id)
+          .collection('Assets')
+          .doc(videos)
+          .get()
+        videoArray.push(videoAssets.data())
+      }
+    }
+    console.log('projectprojectproject', project)
 
-    const projectDetails = {
+    const projectDetails: Types.Project = {
       ...project,
-      image: imageArray.id ? imageArray : { files: [] },
-      video: videoArray.id ? videoArray : { files: [] }
+      images: imageArray && imageArray.length ? imageArray : [],
+      videos: videoArray && videoArray.length ? videoArray : []
     }
 
-    allProjectsData.push(projectDetails)
+    projectsData = projectDetails
 
-    return allProjectsData
+    return projectsData
   } catch (error) {
     console.log('>>>>>>>>>>>>>error', error)
     return error

@@ -68,18 +68,8 @@ export const getProductData = () => {
       }
     ],
     id: '',
-    image: {
-      type: 'image',
-      fileName: '',
-      files: [],
-      id: ''
-    },
-    video: {
-      type: 'video',
-      fileName: '',
-      files: [],
-      id: ''
-    }
+    images: [],
+    videos: []
   }
 }
 

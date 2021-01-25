@@ -4,11 +4,12 @@ import { ImageCarousel } from 'components/Common/Carousel'
 import { DragAndDropUploader } from 'components/Common/DragAndDropFileUpload'
 import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
 import { FLEX } from 'utils/constants/stringConstants'
+import { ProjectAsset } from 'utils/Interface'
 
 type UploadMediaImage = {
   textColor: string
   imageCorouselContainer: string
-  image: Array<{}>
+  image: Array<ProjectAsset>
   generalMarginTop: string
   onImageUpload: (data: any) => void
   isImageLoading: boolean | undefined
@@ -23,7 +24,7 @@ type UploadMediaVideo = {
   textColor: string
   videoCorouselContainer: string
   onVideoUpload: (data: any) => void
-  video: Array<{}>
+  video: Array<ProjectAsset>
   isVideoLoading: boolean | undefined
   generalMarginTop: string
 }
@@ -47,7 +48,7 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
       <Typography className={textColor}>Upload Photo Content</Typography>
       <div style={{ display: FLEX }}>
         <div className={imageCorouselContainer}>
-          <ImageCarousel source={image} />
+          <ImageCarousel source={image} isImageLoading={isImageLoading} />
         </div>
         <div className={generalMarginTop}>
           <DragAndDropUploader
@@ -84,7 +85,11 @@ export const renderVideoCarousel = (props: UploadMediaVideo) => {
       <Typography className={textColor}>Upload Videos</Typography>
       <div style={{ display: FLEX }}>
         <div className={videoCorouselContainer}>
-          <ImageCarousel isVideo source={video} />
+          <ImageCarousel
+            isVideo
+            source={video}
+            isVideoLoading={isVideoLoading}
+          />
         </div>
         <div className={generalMarginTop}>
           <DragAndDropUploader

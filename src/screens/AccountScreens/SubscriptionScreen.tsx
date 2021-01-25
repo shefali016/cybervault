@@ -112,7 +112,7 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
             <ResponsiveRow>
               {[
                 <div style={{ flex: 1 }}>
-                  {account.subscription?.customerId ? (
+                  {!!account.customerId ? (
                     <div></div> // @todo fetch active payment method from stripe
                   ) : (
                     <Typography variant='subtitle1'>
@@ -140,7 +140,7 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
             <ResponsiveRow>
               {[
                 <div style={{ flex: 1 }}>
-                  {account.subscription?.customerId ? (
+                  {!!account.customerId ? (
                     <div></div> // @todo fetch most recent billing history item
                   ) : (
                     <Typography variant='subtitle1'>

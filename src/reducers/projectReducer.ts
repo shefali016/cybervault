@@ -57,7 +57,8 @@ const initialState = {
   projectDetails: getProductData(),
   isProjectDetailsLoading: false,
   isUpdatedSuccess: false,
-  updateDetails: false
+  updateDetails: false,
+  projectUpdateError: null
 }
 
 const createNewProject = (state: State, action: Action) => ({
@@ -121,7 +122,9 @@ const getProjectDetailsSuccess = (state: State, action: Action) => {
     ...state,
     isProjectDetailsLoading: false,
     projectDetails: action.payload,
-    isUpdatedSuccess: false
+    isUpdatedSuccess: false,
+    projectUpdateError: null,
+    updateDetails: false
   }
 }
 
@@ -139,12 +142,12 @@ const updateProjectDetailsRequest = (state: State, action: Action) => ({
 
 const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
-  isUpdatedSuccess: true,
   updateDetails: false
 })
 const updateProjectDetailsFailure = (state: State, action: Action) => ({
   ...state,
   isUpdatedSuccess: false,
+  projectUpdateError: 'Error in updating project details',
   updateDetails: false
 })
 const projectReducer = (state = initialState, action: Action) => {
@@ -189,7 +192,8 @@ export const projectTransform = createTransform(
       isLoading: false,
       updateLoading: false,
       newProjectData: null,
-      isUpdatedSuccess: false
+      isUpdatedSuccess: false,
+      updateDetails: false
     }
   },
   (outboundState: State) => outboundState,

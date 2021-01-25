@@ -18,17 +18,19 @@ import {
   getProjectDetailsRequest,
   updateProjectDetailsRequest
 } from '../apis/projectRequest'
+import { ReduxState } from 'reducers/rootReducer'
+import { addProjectAssets } from 'apis/assets'
 
 type Params = { newProjectData: Types.Project; type: string; account: Account }
 type GetParams = {
   type: string
   projectId: string | undefined
-  projectdata: Object | undefined | any
+  projectdata: Types.Project
 }
 
 function* createNewProject({ newProjectData }: Params) {
   try {
-    const account = yield select((state) => state.auth.account)
+    const account = yield select((state: ReduxState) => state.auth.account)
     const response = yield call(
       createNewProjectRequest,
       newProjectData,
@@ -55,9 +57,7 @@ function* getProjectDetails({ projectId }: GetParams) {
     const account = yield select((state) => state.auth.account)
     const response = yield call(getProjectDetailsRequest, account, projectId)
 
-    yield put(
-      getProjectDetailsSuccess(response && response.length ? response[0] : {})
-    )
+    yield put(getProjectDetailsSuccess(response ? response : {}))
   } catch (error: any) {
     yield put(getProjectDetailsFailure(error?.message || 'default'))
   }
@@ -66,11 +66,27 @@ function* getProjectDetails({ projectId }: GetParams) {
 function* updateProjectDetails({ projectdata }: GetParams) {
   try {
     const account = yield select((state) => state.auth.account)
-    yield call(updateProjectDetailsRequest, account, projectdata)
-    yield put(updateProjectDetailsSuccess())
-    yield put(
-      requestGetProjectDetails(account, projectdata ? projectdata.id : '')
+
+    const media = yield call(addProjectAssets, account, projectdata)
+    const projectDetails: Types.Project = {
+      ...projectdata,
+      images: media.imagesArray,
+      videos: media.videosArray
+    }
+    const reponseError = yield call(
+      updateProjectDetailsRequest,
+      account,
+      projectDetails
     )
+
+    if (reponseError === undefined) {
+      yield put(
+        requestGetProjectDetails(account, projectdata ? projectdata.id : '')
+      )
+    } else {
+      yield put(updateProjectDetailsFailure(reponseError || 'default'))
+    }
+    // yield put(updateProjectDetailsSuccess())
   } catch (error: any) {
     yield put(updateProjectDetailsFailure(error?.message || 'default'))
   }

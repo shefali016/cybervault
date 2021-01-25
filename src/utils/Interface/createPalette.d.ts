@@ -27,6 +27,8 @@ declare module '@material-ui/core/styles/createPalette' {
     default: string
     secondary: string
     paper: string
+    surface: string
+    surfaceHighlight: string
   }
 
   export interface TypeText {

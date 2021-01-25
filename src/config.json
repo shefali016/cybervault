@@ -1,1 +1,5 @@
-{}
+{
+  "local_server_url": "http://localhost:5001/cybervault-8cfe9/us-central1/httpsRequests",
+  "server_url": "https://us-central1-cybervault-8cfe9.cloudfunctions.net/httpsRequests",
+  "domain": "http://localhost:3000"
+}

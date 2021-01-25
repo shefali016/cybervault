@@ -14,7 +14,11 @@ import {
   UPDATE_USER,
   UPDATE_ACCOUNT,
   UPDATE_ACCOUNT_SUCCESS,
-  UPDATE_ACCOUNT_FAILURE
+  UPDATE_ACCOUNT_FAILURE,
+  GET_ACCOUNT_SUCCESS,
+  GET_USER_FAILURE,
+  GET_USER_SUCCESS,
+  GET_ACCOUNT_FAILURE
 } from 'actions/actionTypes'
 import { User, Account } from 'utils/Interface'
 import { createTransform } from 'redux-persist'
@@ -22,7 +26,11 @@ import { createTransform } from 'redux-persist'
 export type State = {
   isLoggedIn: boolean
   user: User | null
+  userRestored: boolean
+  getUserError: string | null
   account: Account | null
+  accountRestored: boolean
+  getAccountError: string | null
   error: string | null
   userUpdating: boolean
   userUpdateSuccess: boolean
@@ -42,7 +50,9 @@ export type Action = {
 
 const initialState = {
   user: null,
+  userRestored: false,
   account: null,
+  accountRestored: false,
   isLoggedIn: false,
   error: null,
   userUpdating: false,
@@ -50,7 +60,9 @@ const initialState = {
   userUpdateError: null,
   accountUpdating: false,
   accountUpdateSuccess: false,
-  accountUpdateError: null
+  accountUpdateError: null,
+  getAccountError: null,
+  getUserError: null
 }
 
 const signUp = (state: State, action: Action) => ({ ...state, error: null })
@@ -65,17 +77,15 @@ const signUpSuccess = (state: State, action: Action) => {
     ...state,
     isLoggedIn: true,
     user: action.user,
-    account: action.account
+    account: action.account,
+    userRestored: true,
+    accountRestored: true
   }
 }
 
 const login = (state: State, action: Action) => ({ ...state, error: null })
 
 const loginFailure = (state: State, action: Action) => {
-  console.log({
-    ...state,
-    error: action.error
-  })
   return {
     ...state,
     error: action.error
@@ -87,7 +97,9 @@ const loginSuccess = (state: State, action: Action) => {
     ...state,
     isLoggedIn: true,
     user: action.user,
-    account: action.account
+    account: action.account,
+    userRestored: true,
+    accountRestored: true
   }
 }
 
@@ -142,6 +154,10 @@ const authReducer = (state = initialState, action: Action) => {
       return googleLoginSuccess(state, action)
     case GOOGLE_LOGIN_FAILURE:
       return googleLoginFailure(state, action)
+    case GET_USER_SUCCESS:
+      return { ...state, user: action.user, userRestored: true }
+    case GET_USER_FAILURE:
+      return { ...state, getUserError: action.error }
     case UPDATE_USER:
       return {
         ...state,
@@ -158,6 +174,11 @@ const authReducer = (state = initialState, action: Action) => {
       }
     case UPDATE_USER_FAILURE:
       return { ...state, userUpdateError: action.error, userUpdating: false }
+
+    case GET_ACCOUNT_SUCCESS:
+      return { ...state, account: action.account, accountRestored: true }
+    case GET_ACCOUNT_FAILURE:
+      return { ...state, getAccountError: action.error }
     case UPDATE_ACCOUNT:
       return {
         ...state,
@@ -185,7 +206,8 @@ const authReducer = (state = initialState, action: Action) => {
 
 export const authTransform = createTransform(
   (inboundState: State) => {
-    return { ...inboundState, error: null }
+    const { isLoggedIn, user, account } = inboundState
+    return { ...initialState, user, account, isLoggedIn }
   },
   (outboundState: State) => outboundState,
   { whitelist: ['auth'] }

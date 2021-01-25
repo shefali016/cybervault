@@ -18,7 +18,13 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
-    background: { default: '#181818', secondary: '#202020', paper: '#ffffff' },
+    background: {
+      default: '#181818',
+      secondary: '#202020',
+      surface: '#272726',
+      surfaceHighlight: '#40403f',
+      paper: '#ffffff'
+    },
     text: {
       primary: '#24262b',
       secondary: '#e6e6e6',

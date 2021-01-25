@@ -4,7 +4,7 @@ import * as UserApis from '../apis/user'
 import * as UserActions from '../actions/user'
 import { User } from '../utils/Interface'
 
-type Params = { update: Partial<User>; type: string }
+type Params = { update: Partial<User>; type: string; id: string }
 
 function* updateUser({ update }: Params) {
   try {
@@ -19,8 +19,18 @@ function* updateUser({ update }: Params) {
   }
 }
 
+function* getUser({ id }: Params) {
+  try {
+    const user = yield call(UserApis.getUser, id)
+    yield put(UserActions.getUserSuccess(user))
+  } catch (error: any) {
+    yield put(UserActions.getUserFailure(error?.message || 'default'))
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.UPDATE_USER, updateUser)
+  yield takeLatest(ActionTypes.GET_USER, getUser)
 }
 
 export default function* sagas() {
