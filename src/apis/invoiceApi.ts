@@ -31,12 +31,9 @@ export const newInvoice = async (
       .collection('Projects')
       .doc(project.id)
       .collection('Invoices').get()
-      console.log(data,"dataa")
     
   for (const doc of data.docs) {
-    console.log(doc.data(),"doccc")
     allInvoices.push(doc.data())
   }
-  console.log(allInvoices,"invoicessss")
   return allInvoices
   }

@@ -42,7 +42,6 @@ export function generateNewInvoiceRequest(
   export function getInvoiceSuccess(
     invoicesData:Array<Types.Invoice>
   ) {
-    console.log(invoicesData,"kkkkkkkkkk")
     return {
       type: ActionTypes.GET_INVOICE_SUCCESS,
       payload:invoicesData

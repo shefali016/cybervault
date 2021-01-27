@@ -68,7 +68,6 @@ const handleClicked=()=>{
   dispatch(getInvoiceRequest(account,project))
 
 }
-console.log(pendingInvoices,'cauuuuuu')
 
   const ITEM_HEIGHT = 48
   const classes = useStyles()
