@@ -102,7 +102,7 @@ const getAllProjectsSuccess = (state: State, action: Action) => {
 
 const getAllProjectsFailure = (state: State, action: Action) => ({
   ...state,
-  isLoading: false
+  isLoading: false,
 })
 
 const onEditProject = (state: State, action: Action) => ({
@@ -137,18 +137,24 @@ const getProjectDetailsFailure = (state: State, action: Action) => ({
 const updateProjectDetailsRequest = (state: State, action: Action) => ({
   ...state,
   isUpdatedSuccess: true,
-  updateDetails: true
+  updateDetails: true,
+  isProjectDetailsLoading: true
 })
 
 const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
-  updateDetails: false
+  updateDetails: false,
+  projectDetails: action.projectData,
+  isUpdatedSuccess: false,
+  projectUpdateError: null,
+  isProjectDetailsLoading: false
 })
 const updateProjectDetailsFailure = (state: State, action: Action) => ({
   ...state,
   isUpdatedSuccess: false,
   projectUpdateError: 'Error in updating project details',
-  updateDetails: false
+  updateDetails: false,
+  isProjectDetailsLoading: false
 })
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
@@ -193,7 +199,7 @@ export const projectTransform = createTransform(
       updateLoading: false,
       newProjectData: null,
       isUpdatedSuccess: false,
-      updateDetails: false
+      updateDetails: false,
     }
   },
   (outboundState: State) => outboundState,

@@ -8,13 +8,11 @@ import ReactLoading from 'react-loading'
 export const DragAndDropUploader = (props?: any) => {
   const classes = useStyles()
   const [image, setImageSource] = useState([])
-  const [isImage, setIsImage] = useState(false)
 
   // receives array of files that are done uploading when submit button is clicked
   const onDrop = useCallback((acceptedFiles) => {
     setImageSource(acceptedFiles)
-    setIsImage(true)
-    props.onSubmit(acceptedFiles)
+    props.onSubmit(acceptedFiles[0])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -45,7 +43,7 @@ export const DragAndDropUploader = (props?: any) => {
         </div>
       )}
       <div className={classes.topContainer}>
-        {isImage
+        {image && image.length
           ? image.map((file: any, index: number) => {
               // props.onSubmit(file)
               return (
@@ -61,7 +59,7 @@ export const DragAndDropUploader = (props?: any) => {
           : null}
       </div>
       <div className={classes.container}>
-        {!isImage ? (
+        {image && !image.length ? (
           <img src={iconFolderUpload} alt='icon' className={classes.image} />
         ) : null}
         <Typography className={classes.text}> Drag {`&`} Drop Media</Typography>

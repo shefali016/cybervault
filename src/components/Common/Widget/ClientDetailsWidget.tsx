@@ -27,8 +27,14 @@ export const RenderClientDetails = (props: any) => {
           </Button>
         ) : null}
       </div>
-      {renderDetails('Client Name:', props.projectData.clientName)}
-      {renderDetails('Client Contact: ', props.projectData.clientEmail)}
+      {renderDetails(
+        'Client Name:',
+        props.projectData ? props.projectData.clientName : ''
+      )}
+      {renderDetails(
+        'Client Contact: ',
+        props.projectData ? props.projectData.clientEmail : ''
+      )}
       {props.editInfo
         ? renderDevider({ editInfo: props.editInfo })
         : renderDevider()}

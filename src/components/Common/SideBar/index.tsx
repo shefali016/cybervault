@@ -257,7 +257,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 30
   },
   listIconStyle: {
-    marginRight: 10,
+    marginRight: 40,
     color: theme.palette.primary.light,
     fontSize: theme.spacing(3)
   },

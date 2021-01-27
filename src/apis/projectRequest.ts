@@ -2,6 +2,8 @@ import * as Types from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
+import ImagePreview from '../assets/imagePreview.png'
+import VideoPreview from '../assets/videoPreview.png'
 
 /**
  * @deleteProject
@@ -101,12 +103,27 @@ export const getProjectDetailsRequest = async (
         videoArray.push(videoAssets.data())
       }
     }
-    console.log('projectprojectproject', project)
 
     const projectDetails: Types.Project = {
       ...project,
-      images: imageArray && imageArray.length ? imageArray : [],
-      videos: videoArray && videoArray.length ? videoArray : []
+      images:
+        imageArray && imageArray.length
+          ? imageArray
+          : [
+              {
+                files: [{ url: ImagePreview }],
+                isPlaceHolder: true
+              }
+            ],
+      videos:
+        videoArray && videoArray.length
+          ? videoArray
+          : [
+              {
+                files: [{ url: VideoPreview }],
+                isPlaceHolder: true
+              }
+            ]
     }
 
     projectsData = projectDetails

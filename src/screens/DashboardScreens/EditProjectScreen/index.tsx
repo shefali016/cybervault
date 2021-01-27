@@ -6,7 +6,7 @@ import React, {
   useContext,
   Fragment
 } from 'react'
-import { connect, TypedUseSelectorHook } from 'react-redux'
+import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -27,7 +27,11 @@ import { RenderMilestonesDetails } from '../../../components/Common/Widget/Miles
 import { RenderBudgetDetails } from '../../../components/Common/Widget/BudgetDetailsWidget'
 import EditProjectModal from 'components/EditProjectModel'
 import ProjectStatusIndicator from '../../../components/Common/ProjectStatusIndicator'
-import { getDownloadUrl, uploadMedia } from '../../../apis/assets'
+import {
+  addProjectAssets,
+  getDownloadUrl,
+  uploadMedia
+} from '../../../apis/assets'
 import { generateUid } from '../../../utils/index'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
@@ -93,8 +97,6 @@ const EditProjectScreen = (props: any) => {
 
   // Fetched Project Details
   useEffect(() => {
-    console.log('In use Effect')
-
     const { projectDetails, isUpdatedSuccess, projectUpdateError } = props
     if (projectDetails) {
       setState({
@@ -116,7 +118,7 @@ const EditProjectScreen = (props: any) => {
         duration: 3000
       })
     }
-  }, [props.projectDetails, props.isUpdatedSuccess])
+  }, [props.projectDetails])
 
   useEffect(() => {
     const { location, userData, getProjectDetails } = props
@@ -127,79 +129,80 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
-  const onImageUpload = async (files: Array<File>) => {
+  const onImageUpload = async (file: File) => {
     const { projectData } = state
+    const { userData } = props
     setState({ ...state, isImageLoading: true })
-    for (let index = 0; index < files.length; index++) {
-      let imageAssets: ProjectAsset = {
-        type: 'image',
-        files: [],
-        fileName: '',
-        id: ''
-      }
-      const file: File = files[index]
-      const id = generateUid()
-      await uploadMedia(id, file)
-      const downloadUrl = await getDownloadUrl(id)
-      // @ts-ignore
-      imageAssets.files.push(getImageObject(file, downloadUrl, id))
-      if (projectData.images && !projectData.images.length) {
-        imageAssets.fileName = file.name
-      } else {
-        imageAssets.fileName =
-          projectData.images && projectData.images.length
-            ? projectData.images[0].fileName
-            : ''
-      }
-      projectData.images.push(imageAssets)
-
-      setState({
-        ...state,
-        projectData,
-        isImageLoading: false
-      })
+    let imageAssets: ProjectAsset = {
+      type: 'image',
+      files: [],
+      fileName: '',
+      id: ''
     }
+    if (projectData.images[0].isPlaceHolder) {
+      projectData.images.splice(0, 1)
+    }
+
+    const id = generateUid()
+    await uploadMedia(id, file)
+    const downloadUrl = await getDownloadUrl(id)
+    // @ts-ignore
+    imageAssets.files.push(getImageObject(file, downloadUrl, id))
+
+    const assetId = await addProjectAssets(userData.account, imageAssets)
+    imageAssets.id = assetId
+    if (projectData.images && !projectData.images.length) {
+      imageAssets.fileName = file.name
+    } else {
+      imageAssets.fileName =
+        projectData.images && projectData.images.length
+          ? projectData.images[0].fileName
+          : ''
+    }
+    projectData.images.push(imageAssets)
+
+    setState({
+      ...state,
+      projectData,
+      isImageLoading: false
+    })
+    props.updateProjectDetails(projectData)
   }
 
   //Video File Upload
-  const onVideoUpload = async (files: Array<File>) => {
+  const onVideoUpload = async (file: File) => {
     const { projectData } = state
-
+    const { userData } = props
     setState({ ...state, isVideoLoading: true })
-    for (let index = 0; index < files.length; index++) {
-      let videoAssets: ProjectAsset = {
-        type: 'image',
-        files: [],
-        fileName: '',
-        id: ''
-      }
-      const file: File = files[index]
-      const id = generateUid()
-      await uploadMedia(id, file)
-      const downloadUrl = await getDownloadUrl(id)
-      // @ts-ignore
-      videoAssets.files.push(getImageObject(file, downloadUrl, id))
-      if (projectData.videos && !projectData.videos.length) {
-        videoAssets.fileName = file.name
-      } else {
-        videoAssets.fileName = projectData.videos[0].fileName
-      }
-      projectData.videos.push(videoAssets)
-
-      setState({
-        ...state,
-        projectData,
-        isVideoLoading: false
-      })
+    let videoAssets: ProjectAsset = {
+      type: 'image',
+      files: [],
+      fileName: '',
+      id: ''
     }
-  }
+    if (projectData.videos[0].isPlaceHolder) {
+      projectData.videos.splice(0, 1)
+    }
+    const id = generateUid()
+    await uploadMedia(id, file)
+    const downloadUrl = await getDownloadUrl(id)
+    // @ts-ignore
+    videoAssets.files.push(getImageObject(file, downloadUrl, id))
+    const assetId = await addProjectAssets(userData.account, videoAssets)
+    videoAssets.id = assetId
+    if (projectData.videos && !projectData.videos.length) {
+      videoAssets.fileName = file.name
+    } else {
+      videoAssets.fileName = projectData.videos[0].fileName
+    }
 
-  const editProject = (projectData: any) => {
+    projectData.videos.push(videoAssets)
     setState({
       ...state,
-      projectData: projectData,
-      editProjectModalOpen: false
+      projectData,
+      isVideoLoading: false
     })
+    props.updateProjectDetails(projectData)
   }
 
   const renderHeader = () => {
@@ -212,8 +215,11 @@ const EditProjectScreen = (props: any) => {
   }
 
   //submit project details update
-  const handleUpdateProject = async () => {
-    const { projectData } = state
+  const handleUpdateProject = async (projectData: Project) => {
+    setState({
+      ...state,
+      editProjectModalOpen: false
+    })
     props.updateProjectDetails(projectData)
   }
 
@@ -230,7 +236,8 @@ const EditProjectScreen = (props: any) => {
           editInfo
           onEdit={() => openEditProjectModal(2, false, true, false, false)}
         />
-        {state.projectData.tasks &&
+        {state.projectData &&
+        state.projectData.tasks &&
         state.projectData.tasks.length > 0 &&
         state.projectData.tasks[0].title.trim() !== '' ? (
           <RenderTaskDetails
@@ -239,7 +246,8 @@ const EditProjectScreen = (props: any) => {
             onEdit={() => openEditProjectModal(2, true, false, false, false)}
           />
         ) : null}
-        {state.projectData.expenses &&
+        {state.projectData &&
+        state.projectData.expenses &&
         state.projectData.expenses.length > 0 &&
         state.projectData.expenses[0].title.trim() !== '' ? (
           <RenderExpenseDetails
@@ -248,7 +256,8 @@ const EditProjectScreen = (props: any) => {
             onEdit={() => openEditProjectModal(3, false, false, true, false)}
           />
         ) : null}
-        {state.projectData.milestones &&
+        {state.projectData &&
+        state.projectData.milestones &&
         state.projectData.milestones.length > 0 &&
         state.projectData.milestones[0].title.trim() !== '' ? (
           <RenderMilestonesDetails
@@ -296,12 +305,9 @@ const EditProjectScreen = (props: any) => {
                   ? state.projectData.images
                   : [],
               generalMarginTop: classes.generalMarginTop,
-              onImageUpload: (file: Array<File>) => onImageUpload(file),
+              onImageUpload: (file: File) => onImageUpload(file),
               isImageLoading: state.isImageLoading,
-              button: classes.button,
-              handleUpdateProject: handleUpdateProject,
-              buttonText: classes.buttonText,
-              updateDetails: props.updateDetails
+              button: classes.button
             })}
           </Fragment>
         ) : (
@@ -321,7 +327,7 @@ const EditProjectScreen = (props: any) => {
         open={state.editProjectModalOpen}
         currentStep={state.currentStep}
         onRequestClose={closeEditProjectModal}
-        onSubmitClicked={editProject}
+        onSubmitClicked={handleUpdateProject}
         isTaskEdit={state.isTaskEdit}
         isCampaignEdit={state.isCampaignEdit}
         isExpensesEdit={state.isExpensesEdit}
@@ -424,7 +430,6 @@ const useStyles = makeStyles((theme) => ({
   },
   imageCorouselContainer: {
     width: theme.spacing(50),
-    height: theme.spacing(30),
     marginTop: 20,
     marginRight: 210
   },
@@ -447,7 +452,6 @@ const useStyles = makeStyles((theme) => ({
   },
   videoCorouselContainer: {
     width: theme.spacing(50),
-    height: theme.spacing(30),
     marginTop: 20,
     marginRight: 210
   },

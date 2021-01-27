@@ -76,17 +76,19 @@ export function getProjectDetailsFailure(error: string) {
   }
 }
 
-export function requestUpdateProjectDetails(projectdata: Types.Project | undefined) {
+export function requestUpdateProjectDetails(
+  projectdata: Types.Project | undefined
+) {
   return {
     type: ActionTypes.UPDATE_PROJECT_DETAILS_REQUEST,
     projectdata
   }
 }
 
-export function updateProjectDetailsSuccess(projectdata: Types.Project) {
+export function updateProjectDetailsSuccess(projectData: Types.Project) {
   return {
     type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS,
-    projectdata
+    projectData
   }
 }
 export function updateProjectDetailsFailure(error: string) {

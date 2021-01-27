@@ -28,10 +28,16 @@ export const RenderProjectDetails = (props: any) => {
       </div>
       {renderDetails(
         'Campaign Objective:',
-        props.projectData.campaignObjective
+        props.projectData ? props.projectData.campaignObjective : ''
       )}
-      {renderDetails('Deadline: ', props.projectData.campaignDeadLine)}
-      {renderDetails('Project Summary: ', props.projectData.description)}
+      {renderDetails(
+        'Deadline: ',
+        props.projectData ? props.projectData.campaignDeadLine : ''
+      )}
+      {renderDetails(
+        'Project Summary: ',
+        props.projectData ? props.projectData.description : ''
+      )}
       {props.editInfo
         ? renderDevider({ editInfo: props.editInfo })
         : renderDevider()}

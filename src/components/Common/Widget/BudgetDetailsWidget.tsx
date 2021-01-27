@@ -27,17 +27,23 @@ export const RenderBudgetDetails = (props: any) => {
           </Button>
         ) : null}
       </div>
-      {renderDetails('Production Budget:', props.projectData.campaignBudget)}
+      {renderDetails(
+        'Production Budget:',
+        props.projectData ? props.projectData.campaignBudget : ''
+      )}
       {renderDetails(
         'Production Expenses: ',
-        props.projectData.campaignExpenses
+        props.projectData ? props.projectData.campaignExpenses : ''
       )}
       {props.editInfo
         ? renderDevider({ editInfo: props.editInfo })
         : renderDevider()}
       <Typography variant={'subtitle2'} style={{ marginTop: 10 }}>
         Estimated Net Revenue: ${' '}
-        {props.projectData.campaignBudget - props.projectData.campaignExpenses}
+        {props.projectData
+          ? props.projectData.campaignBudget -
+            props.projectData.campaignExpenses
+          : 0}
       </Typography>
     </div>
   )

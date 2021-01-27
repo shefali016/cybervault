@@ -14,9 +14,6 @@ type UploadMediaImage = {
   onImageUpload: (data: any) => void
   isImageLoading: boolean | undefined
   button: string
-  handleUpdateProject: () => void
-  buttonText: string
-  updateDetails: boolean
 }
 
 type UploadMediaVideo = {
@@ -36,11 +33,7 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
     image,
     generalMarginTop,
     onImageUpload,
-    isImageLoading,
-    button,
-    handleUpdateProject,
-    buttonText,
-    updateDetails
+    isImageLoading
   } = props
 
   return (
@@ -48,7 +41,7 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
       <Typography className={textColor}>Upload Photo Content</Typography>
       <div style={{ display: FLEX }}>
         <div className={imageCorouselContainer}>
-          <ImageCarousel source={image} isImageLoading={isImageLoading} />
+          <ImageCarousel source={image} isAssetLoading={isImageLoading} />
         </div>
         <div className={generalMarginTop}>
           <DragAndDropUploader
@@ -56,15 +49,6 @@ export const renderImageCarousel = (props: UploadMediaImage) => {
             isLoading={isImageLoading}
           />
         </div>
-      </div>
-      <div className={button}>
-        <GradiantButton
-          onClick={() => handleUpdateProject()}
-          width={135}
-          height={40}
-          loading={updateDetails}>
-          <Typography className={buttonText}> Save Changes</Typography>
-        </GradiantButton>
       </div>
     </>
   )
@@ -88,7 +72,7 @@ export const renderVideoCarousel = (props: UploadMediaVideo) => {
           <ImageCarousel
             isVideo
             source={video}
-            isVideoLoading={isVideoLoading}
+            isAssetLoading={isVideoLoading}
           />
         </div>
         <div className={generalMarginTop}>

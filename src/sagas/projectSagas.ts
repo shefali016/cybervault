@@ -19,7 +19,6 @@ import {
   updateProjectDetailsRequest
 } from '../apis/projectRequest'
 import { ReduxState } from 'reducers/rootReducer'
-import { addProjectAssets } from 'apis/assets'
 
 type Params = { newProjectData: Types.Project; type: string; account: Account }
 type GetParams = {
@@ -66,23 +65,34 @@ function* getProjectDetails({ projectId }: GetParams) {
 function* updateProjectDetails({ projectdata }: GetParams) {
   try {
     const account = yield select((state) => state.auth.account)
-
-    const media = yield call(addProjectAssets, account, projectdata)
-    const projectDetails: Types.Project = {
+    let imagesIds: Array<string> | any = []
+    let videosIds: Array<string> | any = []
+    for (let index = 0; index < projectdata.images.length; index++) {
+      const imageData = projectdata.images[index]
+      const id = imageData.id
+      if (id) {
+        imagesIds.push(id)
+      }
+    }
+    for (let index = 0; index < projectdata.videos.length; index++) {
+      const videoData = projectdata.videos[index]
+      const id = videoData.id
+      if (id) {
+        videosIds.push(id)
+      }
+    }
+    let projectDetails: Types.Project = {
       ...projectdata,
-      images: media.imagesArray,
-      videos: media.videosArray
+      images: imagesIds,
+      videos: videosIds
     }
     const reponseError = yield call(
       updateProjectDetailsRequest,
       account,
       projectDetails
     )
-
     if (reponseError === undefined) {
-      yield put(
-        requestGetProjectDetails(account, projectdata ? projectdata.id : '')
-      )
+      yield put(updateProjectDetailsSuccess(projectdata))
     } else {
       yield put(updateProjectDetailsFailure(reponseError || 'default'))
     }
