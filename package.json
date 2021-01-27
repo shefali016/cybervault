@@ -7,6 +7,8 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.11.1",
+    "@stripe/react-stripe-js": "^1.2.0",
+    "@stripe/stripe-js": "^1.11.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -17,7 +19,7 @@
     "@types/reactstrap": "^8.7.2",
     "@types/redux-localstorage": "^1.0.8",
     "@types/styled-components": "^5.1.5",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "firebase": "^8.0.2",
     "history": "^4.10.1",
@@ -79,6 +81,7 @@
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/redux-form": "^8.3.0",
     "@types/redux-logger": "^3.0.8",
+    "@types/stripe": "^8.0.417",
     "husky": "^4.3.6",
     "prettier": "^2.2.1",
     "pretty-quick": "^3.1.0",
@@ -88,5 +91,10 @@
     "hooks": {
       "pre-commit": "npm run prettier-staged && yarn validate"
     }
+  },
+  "standard": {
+    "ignore": [
+      "/functions/"
+    ]
   }
 }

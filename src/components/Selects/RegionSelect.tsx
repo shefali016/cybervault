@@ -42,13 +42,13 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
     return countries.reduce(
       (
         acc: { regions: { [key: string]: Region }; items: Array<Item> },
-        { name, flag, currencies, alpha3Code }: any
+        { name, flag, currencies, alpha2Code }: any
       ) => {
         const currency = currencies[0]
         const currencySymbol = currency.symbol
         const currencyCode = currency.code
         const region = {
-          code: alpha3Code,
+          code: alpha2Code,
           name,
           flag,
           currencySymbol,

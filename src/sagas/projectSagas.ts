@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import {
   createNewProjectSuccess,
   createNewProjectFailure,
@@ -17,6 +17,7 @@ import {
   getProjectDetailsRequest,
   updateProjectDetailsRequest
 } from '../apis/projectRequest'
+import { ReduxState } from 'reducers/rootReducer'
 
 type Params = { newProjectData: Types.Project; type: string; account: Account }
 type GetParams = {
@@ -26,8 +27,9 @@ type GetParams = {
   projectdata: string | undefined
 }
 
-function* createNewProject({ newProjectData, account }: Params) {
+function* createNewProject({ newProjectData }: Params) {
   try {
+    const account = yield select((state: ReduxState) => state.auth.account)
     const response = yield call(
       createNewProjectRequest,
       newProjectData,

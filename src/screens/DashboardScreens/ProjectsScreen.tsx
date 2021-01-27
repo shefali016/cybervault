@@ -91,17 +91,7 @@ export const ProjectsScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn,
-  userData: state.auth
+  projects: state.project
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
-  logout: () => {
-    return dispatch(logout())
-  },
-  createNewProject: (projectData: Types.Project, account: Account) => {
-    return dispatch(createNewProjectRequest(projectData, account))
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectsScreen)
+export default connect(mapStateToProps)(ProjectsScreen)

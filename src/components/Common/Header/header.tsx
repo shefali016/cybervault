@@ -203,7 +203,7 @@ function Toolbar(props: Props) {
   return (
     <div className={classes.Toolbar}>
       <div style={{ marginLeft: 25, display: FLEX }}>
-        <h2 className={classes.title}>{props.headerTitle}</h2>
+        <h3 className={classes.title}>{props.headerTitle}</h3>
         {renderEditInfoData()}
       </div>
       <div>

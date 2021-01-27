@@ -52,21 +52,53 @@ export type Asset = {
   original?: any
 }
 
+export type BankingDetails = {} // @todo R&D what details we need from user to deposit from Stripe
+
+export type StripeAccount = {
+  id: string
+  object: 'account'
+  charges_enabled: boolean
+  details_submitted: boolean
+  payouts_enabled: boolean
+  email: string
+  country: string
+}
+
+export interface StripeLoginLink {
+  object: string
+  created: number
+  url: string
+  id: string
+}
+
+export type StripeAccountLink = {
+  url: string
+  object: 'account_link'
+  created: number
+  expires_at: number
+}
+
 export type Account = {
   id: string
   owner: string // id of user
+  email: string | null
   type: 'creator' | 'client'
   region?: Region
   name?: string
+  customerId?: string // Stripe customer ID
   security: {
     twoFactor: boolean
     textMessageVerification: boolean
     securityQuestion: { question: string; answer: string }
   }
+  stripe: {
+    accountId: string | null
+    detailsSubmitted: boolean
+    payoutsEnabled: boolean
+  }
   subscription: {
     type: SubscriptionType
     extraStorage?: number
-    customerId?: string // Stripe customer ID
   }
   settings: {
     sharingPrivacy: SharingPrivacy

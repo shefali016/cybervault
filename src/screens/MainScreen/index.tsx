@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, useTheme } from '@material-ui/core'
 
 import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
 import EditProjectScreen from 'screens/DashboardScreens/EditProjectScreen'
@@ -10,10 +10,11 @@ import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
+import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
-import { ButtonConfig, Project, Tab } from 'utils/types'
+import { ButtonConfig, Project, Tab, User, Account } from 'utils/types'
 import { isOnEditProjectScreen } from '../../actions/projectActions'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
@@ -29,10 +30,21 @@ import ProfileIcon from '@material-ui/icons/Person'
 import ManageIcon from '@material-ui/icons/Apartment'
 import BrandingIcon from '@material-ui/icons/Brush'
 import SubscriptionIcon from '@material-ui/icons/LocalActivity'
+import BankingIcon from '@material-ui/icons/AccountBalance'
 
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
+// import BankingScreen from 'screens/SharedScreens/BankingScreen'
+import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
+import PortfoliosScreen from 'screens/DashboardScreens/PortfoliosScreen'
+import StripeScreen from 'screens/SharedScreens/StripeScreen'
+import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
+import { getUser } from 'actions/user'
+import { getAccount } from 'actions/account'
+import { ReduxState } from 'reducers/rootReducer'
+import { AppLoader } from 'components/Common/Core/AppLoader'
+import clsx from 'clsx'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -52,7 +64,6 @@ const AccountTabIds = {
 
 const SharedTabIds = {
   invoices: 'invoices',
-  payments: 'payments',
   security: 'security'
 }
 
@@ -61,12 +72,35 @@ const ScreenViews = {
   account: 'account'
 }
 
-const MainScreen = (props: any) => {
+type DispatchProps = {
+  createNewProject: (project: Project) => void
+  getUser: (id: string) => void
+  getAccount: (id: string) => void
+}
+type StateProps = {
+  userRestored: boolean
+  accountRestored: boolean
+  user: User
+  account: Account
+}
+type Props = { history: any } & StateProps & DispatchProps
+
+const MainScreen = ({
+  createNewProject,
+  history,
+  userRestored,
+  accountRestored,
+  getUser,
+  getAccount,
+  user,
+  account
+}: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
 
   const getInitialScreenView = () => {
     return Object.values(DashboardTabIds).includes(
-      props.history.location.pathname.replace('/', '')
+      history.location.pathname.replace('/', '')
     )
       ? ScreenViews.dashboard
       : ScreenViews.account
@@ -83,10 +117,6 @@ const MainScreen = (props: any) => {
     () => setNewProjectModalOpen(false),
     []
   )
-  const createNewProject = useCallback((projectData) => {
-    props.createNewProject(projectData, props.userData.account)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const getTab = (id: string) => {
     switch (id) {
@@ -127,12 +157,6 @@ const MainScreen = (props: any) => {
           id,
           text: 'Invoices',
           icon: <InvoiceIcon className={classes.listIconStyle} />
-        }
-      case SharedTabIds.payments:
-        return {
-          id,
-          text: 'Payments',
-          icon: <PaymentIcon className={classes.listIconStyle} />
         }
       case SharedTabIds.security:
         return {
@@ -187,9 +211,8 @@ const MainScreen = (props: any) => {
   }, [screenView])
 
   const [activeTab, setActiveTab] = useState(
-    tabs.find(
-      (tab) => tab.id === props.history.location.pathname.replace('/', '')
-    ) || tabs[0]
+    tabs.find((tab) => tab.id === history.location.pathname.replace('/', '')) ||
+      tabs[0]
   )
 
   const getSidebarButtonConfig = (): ButtonConfig => {
@@ -212,20 +235,20 @@ const MainScreen = (props: any) => {
   }
 
   const handleActiveTabPress = (tab: Tab) => {
-    props.history.replace(`/${tab.id}`)
+    history.replace(`/${tab.id}`)
     if (tab.id !== activeTab.id) {
       setActiveTab(tab)
     }
   }
 
   const handleDashboardNavigation = () => {
-    props.history.replace(`/${DashboardTabIds.dashboard}`)
+    history.replace(`/${DashboardTabIds.dashboard}`)
     setScreenView(ScreenViews.dashboard)
     setActiveTab(getTab(DashboardTabIds.dashboard))
   }
 
   const handleProfileNavigation = () => {
-    props.history.replace(`/${AccountTabIds.profile}`)
+    history.replace(`/${AccountTabIds.profile}`)
     setScreenView(ScreenViews.account)
     setActiveTab(getTab(AccountTabIds.profile))
   }
@@ -242,13 +265,32 @@ const MainScreen = (props: any) => {
     }
   }
 
+  // useEffect(() => {
+  //   if (location.pathname === '/project') {
+  //     onEditProject(true)
+  //   } else {
+  //     onEditProject(false)
+  //   }
+  // }, [location])
+
+  const renderLoading = () => (
+    <div className={classes.splashScreen}>
+      <AppLoader color={theme.palette.primary.main} />
+    </div>
+  )
+
   useEffect(() => {
-    if (props.location.pathname === '/project') {
-      props.onEditProject(true)
-    } else {
-      props.onEditProject(false)
+    if (!userRestored) {
+      getUser(user.id)
     }
-  }, [props, props.location])
+    if (!accountRestored) {
+      getAccount(account.id)
+    }
+  }, [])
+
+  if (!(userRestored && accountRestored)) {
+    return renderLoading()
+  }
 
   return (
     <Layout {...getLayoutProps()}>
@@ -266,6 +308,12 @@ const MainScreen = (props: any) => {
           <Route path='/branding' component={BrandingScreen} />
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
+          <Route path='/invoices' component={InvoicesScreen} />
+          <Route path='/portfolio' component={PortfoliosScreen} />
+          <Route
+            path='/refresh_account_link/:id'
+            component={AccountLinkRefreshScreen}
+          />
           <Route path='/' component={HomeScreen} />
         </Switch>
       </div>
@@ -274,12 +322,23 @@ const MainScreen = (props: any) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  splashScreen: {
+    display: 'flex',
+    height: '100vh',
+    width: '100vw',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: theme.palette.background.default
+  },
   listIconStyle: {
     marginRight: theme.spacing(5),
     color: theme.palette.primary.light,
     fontSize: theme.spacing(3)
   },
   screen: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
     paddingTop: theme.spacing(5),
     minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
     [theme.breakpoints.down('sm')]: {
@@ -294,17 +353,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const mapStateToProps = (state: any) => ({
-  userData: state.auth
+const mapStateToProps = (state: ReduxState): StateProps => ({
+  accountRestored: state.auth.accountRestored,
+  userRestored: state.auth.userRestored,
+  user: state.auth.user as User,
+  account: state.auth.account as Account
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
-  createNewProject: (projectData: Project, account: Account) => {
-    return dispatch(createNewProjectRequest(projectData, account))
-  },
-  onEditProject: (isEditProject: boolean) => {
-    return dispatch(isOnEditProjectScreen(isEditProject))
-  }
-})
+const mapDispatchToProps: DispatchProps = {
+  createNewProject: (projectData: Project) =>
+    createNewProjectRequest(projectData),
+  getUser: (id: string) => getUser(id),
+  getAccount: (id: string) => getAccount(id)
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

@@ -36,11 +36,17 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.screenContainer': {
       display: 'flex',
+      flex: 1,
       flexDirection: 'column',
       color: theme.palette.text.background,
       alignItems: 'center',
-      justifyContent: 'center',
       width: '100%'
+    },
+    '.centerContent': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
     },
     '.add-more-button': {
       padding: '8px 20px !important',
@@ -62,6 +68,8 @@ export const useGlobalStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column'
       }
-    }
+    },
+    // Text
+    '.metaText': { color: theme.palette.text.meta }
   }
 }))
