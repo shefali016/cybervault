@@ -149,7 +149,7 @@ const handleClicked=()=>{
                         Edit Project Info
                       </div>
                     </MenuItem>
-                    {pendingInvoices?.length ==0 && <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
+                    {pendingInvoices?.length ==0 &&  <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}

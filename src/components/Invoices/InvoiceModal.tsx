@@ -140,6 +140,12 @@ const handleDoneClick=()=>{
         [editType]:true
       })
   }
+  const handleSave=(editType:string)=>{
+    setEdit({
+      ...edit,
+      [editType]:false
+    })
+}
 
   const handleChange = (event: any) => (key: string) => {
     const value = event.target.value
@@ -174,6 +180,7 @@ const handleDoneClick=()=>{
             handleSendInvoice={handleSendInvoice}
             edit={edit}
             handleEdit={handleEdit}
+            handleSave={handleSave}
             handleChange={handleChange}
             milestones={milestones}
             handleMilestone={handleMilestone}

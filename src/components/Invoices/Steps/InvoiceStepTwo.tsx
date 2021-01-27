@@ -33,6 +33,7 @@ import { GradiantButton } from '../../Common/Button/GradiantButton'
 import EditIcon from '@material-ui/icons/Edit'
 import AppTextField from '../../Common/Core/AppTextField'
 import CheckIcon from '@material-ui/icons/Check';
+import SaveIcon from '@material-ui/icons/Save';
 
 
 type InvoiceStepProps = {
@@ -43,6 +44,7 @@ type InvoiceStepProps = {
   handleSendInvoice: () => void
   edit: editType
   handleEdit: (editType: string) => void
+  handleSave:(type:string)=>void
   handleChange: (e: ChangeEvent) => (key: string) => void
   handleMilestone: (mile: MilestoneProps) => void
   handleMileChange: (id: string, key: string, e: any) => void
@@ -74,6 +76,7 @@ const InvoiceStepTwo = ({
   handleChange,
   handleMilestone,
   handleMileChange,
+  handleSave,
   milestones
 }: InvoiceStepProps) => {
   const classes = useStyles()
@@ -109,14 +112,16 @@ const InvoiceStepTwo = ({
           <Typography className={classes.subHeading}>
             Client Details:
           </Typography>
-          {!edit.clientDetails && (
+          
             <Typography>
-              <EditIcon
+            {!edit.clientDetails ? <EditIcon
                 className={classes.editicon}
                 onClick={() => handleEdit('clientDetails')}
-              />
+              />:<SaveIcon
+              className={classes.editicon}
+              onClick={() => handleSave('clientDetails')}/>}
             </Typography>
-          )}
+         
         </Grid>
         <Grid className={classes.detailsWrapper}>
           <Grid container alignItems='center'>
@@ -170,14 +175,14 @@ const InvoiceStepTwo = ({
           <Typography className={classes.subHeading}>
             Project Details:
           </Typography>
-          {!edit.projectDetails && (
-            <Typography>
-              <EditIcon
+          <Typography>
+            {!edit.projectDetails ? <EditIcon
                 className={classes.editicon}
                 onClick={() => handleEdit('projectDetails')}
-              />
+              />:<SaveIcon
+              className={classes.editicon}
+              onClick={() => handleSave('projectDetails')}/>}
             </Typography>
-          )}
         </Grid>
         <Grid className={classes.detailsWrapper}>
           <Grid container alignItems='center'>
@@ -258,14 +263,14 @@ const InvoiceStepTwo = ({
             <Typography className={classes.subHeading}>
               Invoice Details:
             </Typography>
-            {!edit.invoiceDetails && (
-              <Typography>
-                <EditIcon
-                  className={classes.editicon}
-                  onClick={() => handleEdit('invoiceDetails')}
-                />
-              </Typography>
-            )}
+            <Typography>
+            {!edit.invoiceDetails ? <EditIcon
+                className={classes.editicon}
+                onClick={() => handleEdit('invoiceDetails')}
+              />:<SaveIcon
+              className={classes.editicon}
+              onClick={() => handleSave('invoiceDetails')}/>}
+            </Typography>
           </Grid>
           <Grid className={classes.detailsWrapper}>
             <Grid container>
@@ -347,14 +352,14 @@ const InvoiceStepTwo = ({
             <Typography className={classes.subHeading}>
               Milestone Details:
             </Typography>
-            {!edit.milestoneDetails && (
-              <Typography>
-                <EditIcon
-                  className={classes.editicon}
-                  onClick={() => handleEdit('milestoneDetails')}
-                />
-              </Typography>
-            )}
+            <Typography>
+            {!edit.milestoneDetails ? <EditIcon
+                className={classes.editicon}
+                onClick={() => handleEdit('milestoneDetails')}
+              />:<SaveIcon
+              className={classes.editicon}
+              onClick={() => handleSave('milestoneDetails')}/>}
+            </Typography>
           </Grid>
           <Grid className={classes.detailsWrapper}>
             {milestones.map((mile, i) => {
