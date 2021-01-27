@@ -1,4 +1,5 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
+import {useDispatch,useSelector} from 'react-redux';
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
@@ -9,10 +10,12 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project,Account } from '../../../utils/types'
+import { Project,Account, Invoice } from '../../../utils/types'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils';
 import InvoiceModal from '../../../components/Invoices/InvoiceModal';
+import {getInvoiceRequest} from '../../../actions/invoiceActions';
+import { ReduxState } from 'reducers/rootReducer'
 
 type Props = {
   project: Project
@@ -30,6 +33,9 @@ const ProjectCard = ({
   account
   // data
 }: Props) => {
+
+  const dispatch=useDispatch();
+  const invoiceData=useSelector((state:ReduxState)=>state.invoice)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const [open, setOpen] = React.useState(false)
@@ -44,6 +50,25 @@ const ProjectCard = ({
   const onRequestClose=()=>{
     setOpen(false)
   }
+  
+const [pendingInvoices,setPendingInvoices]=useState(invoiceData.allInvoicesData)
+
+useEffect(()=>{
+
+  if(invoiceData.getInvoiceSuccess){
+    let pendingInvoices=invoiceData.allInvoicesData.filter((inv:Invoice)=>{
+        return !inv.isPaid
+    })
+    setPendingInvoices(pendingInvoices)
+  }
+  
+},[invoiceData.getInvoiceSuccess])
+
+const handleClicked=()=>{
+  dispatch(getInvoiceRequest(account,project))
+
+}
+console.log(pendingInvoices,'cauuuuuu')
 
   const ITEM_HEIGHT = 48
   const classes = useStyles()
@@ -80,16 +105,18 @@ const ProjectCard = ({
             <PopupState variant='popover' popupId='demo-popup-popover'>
               {(popupState) => (
                 <div>
+                  {console.log(popupState,"pop")}
                   <IconButton
                     aria-label='more'
                     aria-controls='long-menu'
                     aria-haspopup='true'
-                    {...bindTrigger(popupState)}>
-                    <MoreVertIcon />
+                    {...bindTrigger(popupState)}
+                    >
+                    <MoreVertIcon onClick={handleClicked}/>
                   </IconButton>
                   <Popover
                     id={'long-menu'}
-                    anchorEl={anchorEl}
+                    // anchorEl={anchorEl}
                     anchorOrigin={{
                       vertical: 'bottom',
                       horizontal: 'right'
@@ -123,7 +150,7 @@ const ProjectCard = ({
                         Edit Project Info
                       </div>
                     </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
+                    {pendingInvoices?.length ==0 && <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}
@@ -131,7 +158,7 @@ const ProjectCard = ({
                         />
                         Send Invoice
                       </div>
-                    </MenuItem>
+                    </MenuItem>}
                     <MenuItem style={{ fontSize: 12 }}>
                       <div style={{ display: FLEX, color: 'red' }}>
                         <DeleteSharpIcon

@@ -154,7 +154,7 @@ export type Project = {
   clientName:string
   clientEmail:string
   campaignObjective: string
-  campaignDeadline: Date
+  campaignDeadLine: Date
   tasks: Array<Task>
   description: string
   campaignBudget: number
@@ -169,6 +169,7 @@ export type Project = {
   images: Array<MediaObject>
 }
 
+
 export type Invoice= {
   id: String, // Using generateId function
   dateCreated: Date,
@@ -178,7 +179,9 @@ export type Invoice= {
   milestones: Array<Milestone> | null, // will contain milestones being invoiced or null if invoicing total amount
   clientEmail: String,
   isPaid: Boolean,
-  status:string // has client paid invoice or not
+  status:string,
+  projectName:string
+  campaignDeadLine:Date
 }
 
 export type AllProjects = Array<Project>

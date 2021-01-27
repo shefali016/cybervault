@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles'
+import {useDispatch} from 'react-redux'
 import { Card, CardContent, Typography, Grid } from '@material-ui/core'
 import logo from '../../../assets/logo.png'
 import {
@@ -21,41 +22,46 @@ import Milestone from '../../../assets/milestone.png';
 import {GradiantButton }from '../../Common/Button/GradiantButton';
 import CheckIcon from '@material-ui/icons/Check';
 
+
 type InvoiceStepThreeProps = {
   project: Project,
-  onRequestClose:()=>void
+  handleDoneClick:()=>void
+  getAmountByMilestone:()=>number
 }
 
 
-const InvoiceStepThree = ({ project,onRequestClose}: InvoiceStepThreeProps) => {
+const InvoiceStepThree = ({ project,handleDoneClick,getAmountByMilestone}: InvoiceStepThreeProps) => {
   const classes = useStyles()
+  const dispatch=useDispatch();
+
+
 
   return (
     
     <Grid container direction='column' alignItems='center'>
       <Grid item sm={2} className={classes.imageWrapper}>
-        <Card>
+        {project.logo && <Card>
           <CardContent>
             <Grid>
               <img
-                src={project.logo ? project.logo : logo}
+                src={project.logo ? project.logo : ""}
                 className={classes.img}
               />
             </Grid>
            
           </CardContent>
 
-        </Card>
+        </Card>}
         <Card className={classes.successIcon}> <CheckIcon className={classes.checkIcon}/></Card>
       </Grid>
       <Grid container direction='column' alignItems='center'>
         <Typography variant={'h4'} className={classes.headerTitle} paragraph>
-          {`Invoice Sent For $${Number(project.campaignBudget)+Number(project.campaignExpenses)}`}
+          {`Invoice Sent For $${getAmountByMilestone()}`}
         </Typography>
         <Typography variant={'body2'} paragraph>To: {project.clientEmail}</Typography>
         <Typography variant={'body2'} paragraph>A confirmation has been sent to your email.</Typography>
       </Grid>
-      <GradiantButton className={classes.btn} onClick={onRequestClose}>Done</GradiantButton>
+      <GradiantButton className={classes.btn} onClick={handleDoneClick}>Done</GradiantButton>
     </Grid>
   )
 }

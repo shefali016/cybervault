@@ -7,19 +7,26 @@ import { Account ,Project,Invoice} from '../utils/types'
 type Params = { account: Account; project:Project,invoice:Invoice; type: string }
 
 function* invoiceRequest({ account,project,invoice}: Params) {
-    console.log(account,project,invoice,"uuuuuuuuuuuu")
   try {
     const invoiceData = yield call(InvoiceApis.newInvoice, account,project,invoice)
-    console.log(invoiceData,"pppppppppppp")
     yield put(InvoiceActions.generateNewInvoiceSuccess(invoiceData))
   } catch (error: any) {
     yield put(InvoiceActions.generateNewInvoiceError(error?.message || 'default'))
   }
 }
+function* getAllInvoice({ account,project}: Params) {
+  try {
+    const invoiceData = yield call(InvoiceApis.getAllInvoices, account,project)
+    yield put(InvoiceActions.getInvoiceSuccess(invoiceData))
+  } catch (error: any) {
+    yield put(InvoiceActions.getInvoiceError(error?.message || 'default'))
+  }
+}
 
 function* watchRequests() {
-    console.log('ttttttttttt')
   yield takeLatest(ActionTypes.NEW_INVOICE_REQUEST, invoiceRequest)
+  yield takeLatest(ActionTypes.GET_INVOICE_REQUEST, getAllInvoice)
+
 }
 
 export default function* sagas() {

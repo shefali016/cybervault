@@ -1,3 +1,4 @@
+import {useEffect,useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Card, CardContent, Typography, Grid } from '@material-ui/core'
 import logo from '../../../assets/logo.png'
@@ -13,12 +14,13 @@ import {
   GREY_COLOR,
   BORDER_COLOR_GREY_LIGHT,
   SECONDARY_COLOR,
-  WHITE_COLOR
+  WHITE_COLOR,
 } from 'utils/constants/colorsConstants'
-import { Project } from '../../../utils/types';
-import Invoice from '../../../assets/invoice.png';
+import { Invoice, Project } from '../../../utils/types';
+import InvoiceLogo from '../../../assets/invoice.png';
 import Milestone from '../../../assets/milestone.png';
 import {GradiantButton }from '../../Common/Button/GradiantButton';
+
 
 type InvoiceStepProps = {
   project: Project
@@ -28,12 +30,14 @@ type InvoiceStepProps = {
 }
 
 
+
 const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
   const classes = useStyles()
 
   const handleClick=(invoiceType:string)=>{
         onNext(invoiceType)
 }
+
   return (
     <Grid>
       <div>
@@ -42,12 +46,13 @@ const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
         </Typography>
         <Typography variant={'body2'}>{project.campaignName}</Typography>
       </div>
+
       <Grid item sm={2} className={classes.imageWrapper}>
         <Card>
           <CardContent>
             <Grid>
               <img
-                src={project.logo ? project.logo : logo}
+                src={project.logo ? project.logo : ""}
                 className={classes.img}
               />
             </Grid>
@@ -56,7 +61,7 @@ const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
       </Grid>
       <Grid container justify='center' className={classes.wrapper} >
           <Grid item sm={5} className={`${classes.wrapperBorder}`}>
-              <img src={Invoice}/>
+              <img src={InvoiceLogo}/>
               <Typography className={`${classes.heading}`}>Invoice full amount</Typography>
               <Typography className={classes.subHeading}>Clients will receive Invoice and downloadable project fle</Typography>
               <GradiantButton className={classes.btn} onClick={()=>handleClick('fullAmount')}>Continue</GradiantButton>
@@ -68,7 +73,7 @@ const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
           <GradiantButton className={classes.btn} onClick={()=>handleClick('mileStone')}>Continue</GradiantButton>
           </Grid>
       </Grid>
-
+    
       {/* {allProjects.map((pro) => {
         return (
           <Grid item sm={3}>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect} from 'react'
+import React, { useState, useRef, useContext, useEffect,ChangeEvent} from 'react'
 import { connect,useSelector,useDispatch } from 'react-redux'
 // import './Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
@@ -17,12 +17,22 @@ import { Project, Account, Invoice } from '../../utils/types'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo';
 import InvoiceStepThree from './Steps/InvoiceStepThree';
 import { forEachChild } from 'typescript';
+import { resetInvoice } from '../../actions/invoiceActions'
+
+
 
 type InvoiceProps = {
   onRequestClose: () => void
   project: Project
   account: Account
   // allProjects:Array<Project>
+}
+type MilestoneProps={
+  id: string
+  title: string
+  cost: number
+  payment:number,
+  check:boolean
 }
 
 const InvoiceData = ({
@@ -35,29 +45,105 @@ InvoiceProps) => {
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
   const [invoiceType, setInvoiceType] = useState('')
-  const dispatch=useDispatch()
+  const [projectData,setProjectData]=useState(project)
+  const [edit,setEdit]=useState({
+    clientDetails:false,
+    projectDetails:false,
+    invoiceDetails:false,
+    milestoneDetails:false
+  })
 
-  const getFullAmount=(milestones:Array<Types.Milestone>)=>{
-    let totalCost=0
-    milestones.forEach((mile:Types.Milestone,i:number)=>{
-      totalCost=totalCost+Number(mile.payment)
+  const [milestones,setMilestones]=useState(projectData.milestones.map((mile)=>{
+    return {...mile,check:true}
+  }))
+  const dispatch=useDispatch();
+  const invoiceData=useSelector((state:ReduxState)=>state.invoice)
+
+  useEffect(()=>{
+   if(invoiceData.Success){
+    setCurrentStep((step) => step + 1)
+   }
+  },[invoiceData.Success])
+const handleMilestone=(selectedMile:MilestoneProps)=>{
+  setMilestones(milestones.map((mile)=>{
+      if(mile.id===selectedMile.id){
+        return {...mile,check:!mile.check}
+      }
+      else{
+        return mile
+      }
+  })
+)
+
+}
+
+const handleMileChange=(id:string,key:string,e:any) =>{
+  
+  setMilestones(milestones.map((mile)=>{
+      if(mile.id===id){
+        return {...mile,[key]:e.target.value}
+      }
+      else{
+        return mile
+      }
+  }))
+
+}
+const handleDoneClick=()=>{
+  dispatch(resetInvoice())
+  onRequestClose()
+}
+
+  useEffect(()=>{
+    setProjectData(projectData);
+    setMilestones(projectData.milestones.map((mile)=>{
+        return {...mile,check:true}
+    }))
+  },[project])
+
+
+  const getFullAmount=()=>{
+    return Number(projectData.campaignBudget)-Number(projectData.campaignExpenses)
+  }
+  const getAmountByMilestone=()=>{
+    let cost=0;
+    milestones.forEach((mile)=>{
+      if(mile.check){
+        cost=cost+Number(mile.payment)
+      }
     })
-    return totalCost
+    return cost
   }
   const handleSendInvoice=()=>{
         const invoice = {
           id: generateUid(), // Using generateId function
           dateCreated: new Date(),
           datePaid: null,
-          projectId: project.id, // Id of the project being invoiced
-          price: invoiceType==='fullAmount'?getFullAmount(project.milestones):0 ,// Amount that the client must pay
-          milestones: project.milestones, // will contain milestones being invoiced or null if invoicing total amount
-          clientEmail: project.clientEmail,
+          projectId: projectData.id, // Id of the project being invoiced
+          projectName:projectData.campaignName,
+          price: invoiceType==='fullAmount'?getFullAmount():getAmountByMilestone(),
+          milestones: milestones.filter((mile)=>{
+              return mile.check===true
+          }), // will contain milestones being invoiced or null if invoicing total amount
+          clientEmail: projectData.clientEmail,
+          campaignDeadLine:projectData.campaignDeadLine,
           isPaid: false,
-          status:'draft' // has client paid invoice or not
+          status:'pending', // has client paid invoice or not
         }
-        dispatch(generateNewInvoiceRequest(account,project,invoice))
+        dispatch(generateNewInvoiceRequest(account,projectData,invoice))
     
+  }
+
+  const handleEdit=(editType:string)=>{
+      setEdit({
+        ...edit,
+        [editType]:true
+      })
+  }
+
+  const handleChange = (event: any) => (key: string) => {
+    const value = event.target.value
+    setProjectData({ ...projectData, [key]: value })
   }
   
   const renderStepsView = () => {
@@ -74,7 +160,7 @@ InvoiceProps) => {
         return (
           <InvoiceStepOne
             headerTitle={'Send Invoice'}
-            project={project}
+            project={projectData}
             onNext={onNext}
           />
         )
@@ -82,17 +168,24 @@ InvoiceProps) => {
         return (
           <InvoiceStepTwo
           onNext={onNext}
-            project={project}
+            project={projectData}
             headerTitle={'Invoice'}
             invoiceType={invoiceType}
             handleSendInvoice={handleSendInvoice}
+            edit={edit}
+            handleEdit={handleEdit}
+            handleChange={handleChange}
+            milestones={milestones}
+            handleMilestone={handleMilestone}
+            handleMileChange={handleMileChange}
           />
         )
       case 3:
         return (
           <InvoiceStepThree
-            project={project} 
-            onRequestClose={onRequestClose}         
+            project={projectData} 
+            handleDoneClick={handleDoneClick}   
+            getAmountByMilestone={getAmountByMilestone}      
           />
         )
       default:
@@ -100,7 +193,8 @@ InvoiceProps) => {
           <InvoiceStepOne
           onNext={onNext}
             headerTitle={'Send Invoice'}
-            project={project}
+            project={projectData}
+
           />
         )
     }
@@ -110,7 +204,7 @@ InvoiceProps) => {
     <div className='new-project-modal-content' ref={modalContentRef}>
       {renderStepsView()}
       <CloseButton
-        onClick={onRequestClose}
+        onClick={handleDoneClick}
         style={{
           position: POSITION_ABSOLUTE,
           top: 10,
@@ -135,7 +229,6 @@ const InvoiceModal = ({
   account,
 }: 
 InvoiceModalProps) => {
-  console.log(account,"account")
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <InvoiceData

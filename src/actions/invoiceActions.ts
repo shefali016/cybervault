@@ -27,6 +27,33 @@ export function generateNewInvoiceRequest(
       error
     }
   }
+  export function resetInvoice() {
+    return {
+      type: ActionTypes.RESET_INVOICE
+    }
+  }
+  export function getInvoiceRequest(account: Types.Account,project:Types.Project) {
+    return {
+      type: ActionTypes.GET_INVOICE_REQUEST,
+      account,
+      project
+    }
+  }
+  export function getInvoiceSuccess(
+    invoicesData:Array<Types.Invoice>
+  ) {
+    console.log(invoicesData,"kkkkkkkkkk")
+    return {
+      type: ActionTypes.GET_INVOICE_SUCCESS,
+      payload:invoicesData
+    }
+  }
+  export function getInvoiceError(error: string) {
+    return {
+      type: ActionTypes.GET_INVOICE_ERROR,
+      error
+    }
+  }
   
   
   
