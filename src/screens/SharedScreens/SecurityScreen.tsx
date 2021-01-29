@@ -69,10 +69,10 @@ const SecurityScreen = ({ account }: Props) => {
                 </div>,
                 <GradiantButton
                   onClick={handleToggleTwoFactor}
-                  inActive={!security?.twoFactor}>
+                  inActive={!security?.twoFactorEnabled}>
                   <div className={'row'}>
                     <Typography style={{ marginRight: 5 }}>
-                      {!!security?.twoFactor ? 'Enabled' : 'Enable'}
+                      {!!security?.twoFactorEnabled ? 'Enabled' : 'Enable'}
                     </Typography>
                     <RightArrow style={{ fontSize: 15 }} />
                   </div>

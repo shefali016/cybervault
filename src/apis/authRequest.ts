@@ -91,7 +91,7 @@ export const createAccount = (
     type: 'creator',
     email: authUser.email,
     security: {
-      twoFactor: false,
+      twoFactorEnabled: false,
       textMessageVerification: false,
       securityQuestion: { question: '', answer: '' }
     },
