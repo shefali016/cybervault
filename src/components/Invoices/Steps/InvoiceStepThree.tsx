@@ -28,10 +28,12 @@ type InvoiceStepThreeProps = {
   project: Project,
   handleDoneClick:()=>void
   getAmountByMilestone:()=>number
+  invoiceType:string,
+  getFullAmount:()=>number
 }
 
 
-const InvoiceStepThree = ({ project,handleDoneClick,getAmountByMilestone}: InvoiceStepThreeProps) => {
+const InvoiceStepThree = ({ project,handleDoneClick,getAmountByMilestone,invoiceType,getFullAmount}: InvoiceStepThreeProps) => {
   const classes = useStyles()
   const dispatch=useDispatch();
 
@@ -57,7 +59,7 @@ const InvoiceStepThree = ({ project,handleDoneClick,getAmountByMilestone}: Invoi
       </Grid>
       <Grid container direction='column' alignItems='center'>
         <Typography variant={'h4'} className={classes.headerTitle} paragraph>
-          {`Invoice Sent For $${getAmountByMilestone()}`}
+          {`Invoice Sent For $${invoiceType==="fullAmount"?getFullAmount():getAmountByMilestone()}`}
         </Typography>
         <Typography variant={'body2'} paragraph>To: {project.clientEmail}</Typography>
         <Typography variant={'body2'} paragraph>A confirmation has been sent to your email.</Typography>

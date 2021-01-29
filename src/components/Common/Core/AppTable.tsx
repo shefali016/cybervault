@@ -43,7 +43,7 @@ export const AppTable = ({
   const classes = useStyles()
 
   const renderCell = ({ renderer, title, cellProps, key }: Cell) => (
-    <TableCell {...cellProps}>
+    <TableCell {...cellProps} className={clsx(classes.cellWrapper)}>
       {typeof renderer === 'function' ? renderer() : title}
     </TableCell>
   )
@@ -74,5 +74,6 @@ export const AppTable = ({
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: { background: theme.palette.background.surface },
-  emptyContainer: { display: 'flex', justifyContent: 'center' }
+  emptyContainer: { display: 'flex', justifyContent: 'center' },
+  cellWrapper:{color:'#fff'}
 }))

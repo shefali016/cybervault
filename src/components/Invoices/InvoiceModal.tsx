@@ -60,10 +60,10 @@ InvoiceProps) => {
   const invoiceData=useSelector((state:ReduxState)=>state.invoice)
 
   useEffect(()=>{
-   if(invoiceData.Success){
+   if(invoiceData.success){
     setCurrentStep((step) => step + 1)
    }
-  },[invoiceData.Success])
+  },[invoiceData.success])
 const handleMilestone=(selectedMile:MilestoneProps)=>{
   setMilestones(milestones.map((mile)=>{
       if(mile.id===selectedMile.id){
@@ -96,6 +96,10 @@ const handleDoneClick=()=>{
 
   useEffect(()=>{
     setProjectData(projectData);
+    if(!projectData.milestones.length){
+      setInvoiceType('fullAmount')
+      setCurrentStep((step)=>step+1)
+    }
     setMilestones(projectData.milestones.map((mile)=>{
         return {...mile,check:true}
     }))
@@ -117,7 +121,7 @@ const handleDoneClick=()=>{
   const handleSendInvoice=()=>{
         const invoice = {
           id: generateUid(), // Using generateId function
-          dateCreated: new Date(),
+          dateCreated: new Date().toLocaleString(),
           datePaid: null,
           projectId: projectData.id, // Id of the project being invoiced
           projectName:projectData.campaignName,
@@ -192,7 +196,9 @@ const handleDoneClick=()=>{
           <InvoiceStepThree
             project={projectData} 
             handleDoneClick={handleDoneClick}   
-            getAmountByMilestone={getAmountByMilestone}      
+            getAmountByMilestone={getAmountByMilestone} 
+            invoiceType={invoiceType}  
+            getFullAmount={getFullAmount}
           />
         )
       default:

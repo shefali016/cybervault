@@ -5,11 +5,15 @@
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "target": "es2017"
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src",
+    "src/typings.d.ts"
   ]
 }

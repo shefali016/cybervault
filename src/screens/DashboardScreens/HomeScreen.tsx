@@ -31,12 +31,14 @@ const HomeScreen = (props: any) => {
   ])
 
   useEffect(() => {
+    console.log(props.userData.account,"rrrrrrrrrrrr")
     props.getAllProjectsData(props.userData.account)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const classes = useStyles()
   const theme = useTheme()
+
 
   return (
     <div>

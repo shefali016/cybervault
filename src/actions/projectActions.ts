@@ -23,6 +23,7 @@ export function createNewProjectFailure(error: string) {
 }
 
 export function getAllProjectsRequest(account: Account) {
+  console.log(account,"acccccc")
   return {
     type: ActionTypes.GET_ALL_PROJECT_REQUEST,
     account

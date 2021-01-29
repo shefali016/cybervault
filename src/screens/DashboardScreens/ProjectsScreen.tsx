@@ -91,7 +91,8 @@ export const ProjectsScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
-  projects: state.project
+  projects: state.project,
+  userData:state.auth
 })
 
 export default connect(mapStateToProps)(ProjectsScreen)

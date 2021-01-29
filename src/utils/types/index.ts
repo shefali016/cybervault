@@ -199,12 +199,13 @@ export type Project = {
   campaignDate: string
   videos: Array<MediaObject>
   images: Array<MediaObject>
+  canInvoice:Boolean
 }
 
 
 export type Invoice= {
   id: String, // Using generateId function
-  dateCreated: Date,
+  dateCreated: Date|string,
   datePaid: Date | null,
   projectId: string, // Id of the project being invoiced
   price: number, // Amount that the client must pay
@@ -213,7 +214,7 @@ export type Invoice= {
   isPaid: Boolean,
   status:string,
   projectName:string
-  campaignDeadLine:Date
+  campaignDeadLine:Date,
 }
 
 export type AllProjects = Array<Project>

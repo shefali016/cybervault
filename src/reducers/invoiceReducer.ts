@@ -12,9 +12,9 @@ import { getProductData } from 'utils'
 import * as Types from '../utils/types'
 
 export type State = {
-  Loading: Boolean
-  Error: Boolean
-  Success: Boolean
+  loading: Boolean
+  error: Boolean
+  success: Boolean
   invoiceData: any
   allInvoicesData: any
   getInvoiceLoading: Boolean
@@ -28,9 +28,9 @@ export type Action = {
 }
 
 const initialState = {
-  Loading: false,
-  Success: false,
-  Error: false,
+  loading: false,
+  success: false,
+  error: false,
   invoiceData: {},
   allInvoicesData: {},
   getInvoiceLoading: false,
@@ -40,30 +40,30 @@ const initialState = {
 
 const generateNewInvoiceRequest = (state: State, action: Action) => ({
   ...state,
-  Loading: true,
-  Success: false,
-  Error: false,
+  loading: true,
+  success: false,
+  error: false,
   invoiceData: {}
 })
 const generateNewInvoiceError = (state: State, action: Action) => ({
   ...state,
-  Loading: false,
-  Success: false,
-  Error: true,
+  loading: false,
+  success: false,
+  error: true,
   invoiceData: {}
 })
 const generateNewInvoiceSuccess = (state: State, action: Action) => ({
   ...state,
-  Loading: false,
-  Success: true,
-  Error: false,
+  loading: false,
+  success: true,
+  error: false,
   invoiceData: action.payload
 })
 const resetInvoice = (state: State, action: Action) => ({
   ...state,
-  Loading: false,
-  Success: false,
-  Error: false,
+  loading: false,
+  success: false,
+  error: false,
   invoiceData: {}
 })
 const getInvoiceRequest = (state: State, action: Action) => ({
@@ -112,8 +112,8 @@ const projectReducer = (state = initialState, action: Action) => {
 //   (inboundState: State) => {
 //     return {
 //       ...inboundState,
-//       Error:false,
-//       Success:false,
+//       error:false,
+//       success:false,
 //       invoiceData:{}
 //     }
 //   },

@@ -64,10 +64,11 @@ useEffect(()=>{
   
 },[invoiceData.getInvoiceSuccess])
 
-const handleClicked=()=>{
-  dispatch(getInvoiceRequest(account,project))
+// const handleClicked=()=>{
+//   dispatch(getInvoiceRequest(account,project))
 
-}
+// }
+console.log(project,"uuuuuuuuuuu")
 
   const ITEM_HEIGHT = 48
   const classes = useStyles()
@@ -104,14 +105,13 @@ const handleClicked=()=>{
             <PopupState variant='popover' popupId='demo-popup-popover'>
               {(popupState) => (
                 <div>
-                  {console.log(popupState,"pop")}
                   <IconButton
                     aria-label='more'
                     aria-controls='long-menu'
                     aria-haspopup='true'
                     {...bindTrigger(popupState)}
                     >
-                    <MoreVertIcon onClick={handleClicked}/>
+                    <MoreVertIcon />
                   </IconButton>
                   <Popover
                     id={'long-menu'}
@@ -149,7 +149,7 @@ const handleClicked=()=>{
                         Edit Project Info
                       </div>
                     </MenuItem>
-                    {pendingInvoices?.length ==0 &&  <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
+                    <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}
@@ -157,7 +157,7 @@ const handleClicked=()=>{
                         />
                         Send Invoice
                       </div>
-                    </MenuItem>}
+                    </MenuItem>
                     <MenuItem style={{ fontSize: 12 }}>
                       <div style={{ display: FLEX, color: 'red' }}>
                         <DeleteSharpIcon

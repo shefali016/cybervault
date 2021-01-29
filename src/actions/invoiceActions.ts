@@ -32,11 +32,10 @@ export function generateNewInvoiceRequest(
       type: ActionTypes.RESET_INVOICE
     }
   }
-  export function getInvoiceRequest(account: Types.Account,project:Types.Project) {
+  export function getInvoiceRequest(account: Types.Account) {
     return {
       type: ActionTypes.GET_INVOICE_REQUEST,
       account,
-      project
     }
   }
   export function getInvoiceSuccess(

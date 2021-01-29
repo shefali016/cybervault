@@ -43,6 +43,7 @@ export const getProductData = () => {
     campaignObjective: '',
     campaignDeadLine: currentDate,
     description: '',
+    canInvoice:false,
     tasks: [
       {
         id: '0',
@@ -61,11 +62,7 @@ export const getProductData = () => {
       }
     ],
     milestones: [
-      {
-        id: '0',
-        title: '',
-        payment: ''
-      }
+      
     ],
     id: '',
     image: [],
