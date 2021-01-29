@@ -53,7 +53,6 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
   })
 
   const allInvoicesData=useSelector((state:ReduxState)=>state.invoice.allInvoicesData)
-  console.log(allInvoicesData,"innnnn")
 
   const {
     monthBalance,

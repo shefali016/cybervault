@@ -51,18 +51,6 @@ const ProjectCard = ({
     setOpen(false)
   }
   
-const [pendingInvoices,setPendingInvoices]=useState(invoiceData.allInvoicesData)
-
-useEffect(()=>{
-
-  if(invoiceData.getInvoiceSuccess){
-    let pendingInvoices=invoiceData.allInvoicesData.filter((inv:Invoice)=>{
-        return !inv.isPaid
-    })
-    setPendingInvoices(pendingInvoices)
-  }
-  
-},[invoiceData.getInvoiceSuccess])
 
   const ITEM_HEIGHT = 48
   const classes = useStyles()

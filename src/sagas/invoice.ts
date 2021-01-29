@@ -8,7 +8,6 @@ import { Account ,Project,Invoice} from '../utils/types'
 type Params = { account: Account; project:Project,invoice:Invoice; type: string }
 
 function* invoiceRequest({ account,project,invoice}: Params) {
-  console.log(account,"acccccc")
   try {
     const invoiceData = yield call(InvoiceApis.newInvoice, account,project,invoice);
     yield put(InvoiceActions.generateNewInvoiceSuccess(invoiceData));

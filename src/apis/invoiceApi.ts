@@ -9,7 +9,6 @@ export const newInvoice = async (
     project: Types.Project,
     invoice:Types.Invoice
   ) => {
-    console.log(invoice,"invooooo")
     await firebase
       .firestore()
       .collection('AccountData')
