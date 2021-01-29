@@ -12,6 +12,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
+import * as Types from '../../utils/types'
 
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
@@ -100,7 +101,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getAllProjectsData: (account: Account) => {
+  getAllProjectsData: (account: Types.Account) => {
     return dispatch(getAllProjectsRequest(account))
   }
 })

@@ -12,7 +12,7 @@ function* invoiceRequest({ account,project,invoice}: Params) {
   try {
     const invoiceData = yield call(InvoiceApis.newInvoice, account,project,invoice);
     yield put(InvoiceActions.generateNewInvoiceSuccess(invoiceData));
-    yield put(getAllProjectsRequest(account));
+    // yield put(getAllProjectsRequest(account));
   } catch (error: any) {
     yield put(InvoiceActions.generateNewInvoiceError(error?.message || 'default'))
   }

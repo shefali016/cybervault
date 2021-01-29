@@ -64,12 +64,6 @@ useEffect(()=>{
   
 },[invoiceData.getInvoiceSuccess])
 
-// const handleClicked=()=>{
-//   dispatch(getInvoiceRequest(account,project))
-
-// }
-console.log(project,"uuuuuuuuuuu")
-
   const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (
@@ -149,7 +143,9 @@ console.log(project,"uuuuuuuuuuu")
                         Edit Project Info
                       </div>
                     </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }} onClick={() => sendInvoice(project.id)}>
+                    
+                    <MenuItem style={{ fontSize: 12 }} 
+                    onClick={() => sendInvoice(project.id)} disabled={!project.canInvoice || !account.stripe.payoutsEnabled}>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}

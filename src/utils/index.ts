@@ -43,7 +43,7 @@ export const getProductData = () => {
     campaignObjective: '',
     campaignDeadLine: currentDate,
     description: '',
-    canInvoice:false,
+    canInvoice:true,
     tasks: [
       {
         id: '0',

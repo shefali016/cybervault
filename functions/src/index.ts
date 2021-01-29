@@ -36,7 +36,7 @@ export const myFunction = functions.firestore
         .collection('AccountData')
         .doc(accId)
         .collection('Projects').doc(projectId).update({
-            canInvoice:true
+            canInvoice:false
         })
         }
       } catch (error) {
