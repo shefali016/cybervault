@@ -53,12 +53,10 @@ export function isOnEditProjectScreen(isEditProject: boolean) {
 }
 
 export function requestGetProjectDetails(
-  account: Account,
   projectId: string | undefined
 ) {
   return {
     type: ActionTypes.GET_PROJECT_DETAILS_REQUEST,
-    account,
     projectId
   }
 }

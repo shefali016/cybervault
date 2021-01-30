@@ -48,32 +48,40 @@ export const getDownloadUrl = async (id: string) => {
 }
 
 export const addProjectAssets = async (
-  accountData: Account,
-  assetData: ProjectAsset
+  accountId: string,
+  asset: ProjectAsset
 ) => {
   try {
-    let id: string = generateUid()
-    let assectObject: ProjectAsset = {
-      type: assetData.type,
-      files: assetData.files,
-      fileName: assetData.fileName,
-      id: id
-    }
-    await firebase
+    return firebase
       .firestore()
       .collection('AccountData')
-      .doc(accountData.id)
+      .doc(accountId)
       .collection('Assets')
-      .doc(id)
-      .set(assectObject)
-    return id
+      .doc(asset.id)
+      .set(asset)
   } catch (error) {
     console.log('>>>>>>>>>>>Error', error)
     return error
   }
 }
 
-export const getAssets = async () => {
-  const snapshot = await firebase.firestore().collection('Assets').get()
-  return snapshot && snapshot.docs ? snapshot.docs.map((doc) => doc.data()) : []
+export const getAssets = async (
+  ids: Array<string>,
+  accountId: string
+): Promise<Array<ProjectAsset>> => {
+  console.log(ids, accountId)
+  const assetRequests = ids.map((id: string) =>
+    firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(accountId)
+      .collection('Assets')
+      .doc(id)
+      .get()
+      .then((snapshot) => {
+        console.log(snapshot, snapshot.data())
+        return snapshot.data() as ProjectAsset
+      })
+  )
+  return await Promise.all(assetRequests)
 }

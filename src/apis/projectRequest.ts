@@ -1,15 +1,13 @@
-import * as Types from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import ImagePreview from '../assets/imagePreview.png'
-import VideoPreview from '../assets/videoPreview.png'
+import { ProjectAsset, Project } from '../utils/Interface'
 
 /**
  * @deleteProject
  */
 export const deleteProject = async (
-  newProjectData: Types.Project,
+  newProjectData: Project,
   account: Account
 ) => {
   return firebase
@@ -25,7 +23,7 @@ export const deleteProject = async (
  * @createNewProject
  */
 export const createNewProjectRequest = async (
-  newProjectData: Types.Project,
+  newProjectData: Project,
   account: Account
 ) => {
   await firebase
@@ -42,7 +40,7 @@ export const createNewProjectRequest = async (
  * @getAllProjects
  */
 export const getAllProjectsRequest = async (account: Account) => {
-  let allProjectsData: Array<Types.Project> = []
+  let allProjectsData: Array<Project> = []
   let data: any = await firebase
     .firestore()
     .collection('AccountData')
@@ -64,7 +62,6 @@ export const getProjectDetailsRequest = async (
   projectId: string | undefined
 ) => {
   try {
-    let projectsData: Types.Project
     let data: any = await firebase
       .firestore()
       .collection('AccountData')
@@ -72,65 +69,9 @@ export const getProjectDetailsRequest = async (
       .collection('Projects')
       .doc(projectId)
       .get()
-    const project = data.data()
-    const imageIds: Array<string> = project.images
-    const videoIds: Array<string> = project.videos
-    let imageArray: Array<Types.ProjectAsset> | any = []
-    let videoArray: Array<Types.ProjectAsset> | any = []
-    if (imageIds && imageIds.length) {
-      for (let index = 0; index < imageIds.length; index++) {
-        const images = imageIds[index]
-        const imageAsset = await firebase
-          .firestore()
-          .collection('AccountData')
-          .doc(account.id)
-          .collection('Assets')
-          .doc(images)
-          .get()
-        imageArray.push(imageAsset.data())
-      }
-    }
-    if (videoIds && videoIds.length) {
-      for (let index = 0; index < videoIds.length; index++) {
-        const videos = videoIds[index]
-        const videoAssets = await firebase
-          .firestore()
-          .collection('AccountData')
-          .doc(account.id)
-          .collection('Assets')
-          .doc(videos)
-          .get()
-        videoArray.push(videoAssets.data())
-      }
-    }
-
-    const projectDetails: Types.Project = {
-      ...project,
-      images:
-        imageArray && imageArray.length
-          ? imageArray
-          : [
-              {
-                files: [{ url: ImagePreview }],
-                isPlaceHolder: true
-              }
-            ],
-      videos:
-        videoArray && videoArray.length
-          ? videoArray
-          : [
-              {
-                files: [{ url: VideoPreview }],
-                isPlaceHolder: true
-              }
-            ]
-    }
-
-    projectsData = projectDetails
-
-    return projectsData
+    return data.data()
   } catch (error) {
-    console.log('>>>>>>>>>>>>>error', error)
+    console.log('Error in getProjectDetailsRequest', error)
     return error
   }
 }
@@ -152,7 +93,7 @@ export const updateProjectDetailsRequest = async (
       .set(projectData)
     return data
   } catch (error) {
-    console.log('Errror in update Project details', error)
+    console.log('Error in update Project details', error)
     return error
   }
 }

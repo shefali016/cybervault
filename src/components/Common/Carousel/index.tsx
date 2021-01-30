@@ -1,43 +1,63 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
 import { Button } from '@material-ui/core'
 import arrowIcon from '../../../assets/Iconionic-ios-arrow-down.png'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { VideoComponent } from '../Video'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import { ProjectAsset } from 'utils/Interface'
 import ReactLoading from 'react-loading'
 import { CENTER, FLEX } from 'utils/constants/stringConstants'
+import ImagePreview from '../../../assets/imagePreview.png'
+import { getAssets } from 'apis/assets'
 
 export type Props = {
   isVideo?: boolean
-  source: Array<ProjectAsset>
+  assetIds: Array<string>
   isAssetLoading?: boolean | undefined
+  accountId: string
 }
 
-export const ImageCarousel = (props: Props) => {
+export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   const classes = useStyles()
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const theme = useTheme()
+
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const [assets, setAssets] = useState<Array<ProjectAsset>>([])
+
+  useEffect(() => {
+    loadAssets(assetIds)
+  }, [assetIds])
+
+  const loadAssets = async (ids: Array<string>) => {
+    const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
+    setAssets(assets)
+  }
+
   const next = () => {
-    setCurrentSlide(currentSlide + 1)
+    setCurrentIndex(Math.min(currentIndex + 1, assets.length - 1))
   }
 
   const prev = () => {
-    setCurrentSlide(currentSlide - 1)
+    setCurrentIndex(Math.max(currentIndex - 1, 0))
   }
 
-  const updateCurrentSlide = (index: number) => {
-    if (currentSlide !== index) {
-      setCurrentSlide(index)
-    }
+  const handleAssetClick = (index: number) => {
+    setCurrentIndex(index)
+  }
+
+  const getAssetTranslate = (position: number, offset: number) =>
+    90 * position - 20 * position * position * 0.5 - offset
+
+  const getAssetScale = (position: number) => {
+    return 1 / (position / 4 + 1)
   }
 
   return (
-    <div style={{ display: 'flex' }}>
-      <Button
-        className={classes.button}
-        style={{ marginTop: props.isVideo ? 110 : 80 }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Button className={classes.button}>
         <img
           src={arrowIcon}
           alt=''
@@ -46,68 +66,49 @@ export const ImageCarousel = (props: Props) => {
           onClick={prev}
         />
       </Button>
-      <div
-        className={
-          props.source && props.source.length ? classes.videoContainer : ''
-        }>
-        {
-          <Carousel
-            statusFormatter={(currentItem: number, total: number) => {
-              return ''
-            }}
-            renderArrowPrev={(onClickHandler, hasPrev, label) => {
-              return null
-            }}
-            renderArrowNext={(onClickHandler, hasNext, label) => {
-              return null
-            }}
-            renderIndicator={(onClickHandler, isSelected, index, label) => {
-              return null
-            }}
-            selectedItem={currentSlide}
-            onChange={updateCurrentSlide}>
-            {props.source.map((data: any, i: number) => {
-              return props.isVideo ? (
-                <div key={i} className={classes.videoComponentWrapper}>
-                  {props.isAssetLoading ? (
-                    <ReactLoading
-                      type={'bubbles'}
-                      color={'#fff'}
-                      className={classes.loader}
-                    />
-                  ) : data.isPlaceHolder ? (
-                    <img src={data.files[0].url} alt='' />
-                  ) : (
+      <div className={classes.assetContainer}>
+        {assets.length === 0
+          ? [<img src={ImagePreview} alt='' />]
+          : assets.map((data: ProjectAsset, index: number) => {
+              const position = index - currentIndex
+              const offset = (assets.length - 1) * 10
+              return (
+                <div
+                  onClick={() => handleAssetClick(index)}
+                  key={index}
+                  style={{
+                    width: 400,
+                    maxWidth: 400,
+                    zIndex: 1000 - index,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transform: `translateX(${getAssetTranslate(
+                      position,
+                      offset
+                    )}px) scale(${getAssetScale(position)})`,
+                    background: '#e6e6e6',
+                    opacity:
+                      position >= 0 && position <= 3 ? 1 / (position + 1) : 0,
+                    borderRadius: 5,
+                    overflow: 'hidden',
+                    position: 'absolute',
+                    transition: theme.transitions.create([
+                      'transform',
+                      'opacity'
+                    ]),
+                    pointerEvents: position >= 0 ? 'auto' : 'none'
+                  }}>
+                  {isVideo ? (
                     <VideoComponent url={data.files[0].url} />
-                  )}
-                </div>
-              ) : (
-                <div key={i} style={{ width: 400, maxWidth: 400 }}>
-                  {props.isAssetLoading ? (
-                    <ReactLoading
-                      type={'bubbles'}
-                      color={'#fff'}
-                      className={classes.loader}
-                    />
                   ) : (
-                    <img
-                      src={
-                        data.files && data.files.length
-                          ? data.files[0].url
-                          : null
-                      }
-                      alt=''
-                    />
+                    <img src={data.files[0].url} alt='' width={400} />
                   )}
                 </div>
               )
             })}
-          </Carousel>
-        }
       </div>
-      <Button
-        className={classes.button}
-        style={{ marginTop: props.isVideo ? 110 : 80 }}>
+      <Button className={classes.button}>
         <img
           src={arrowIcon}
           alt=''
@@ -126,33 +127,17 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     height: 30,
-    width: 30
+    width: 30,
+    zIndex: 2000
   },
-  videoComponentWrapper: {
-    margin: 0,
-    width: 400,
-    maxWidth: 400
-  },
-  videoContainer: {
-    margin: 0,
-    width: '100%',
-    borderWidth: 2,
-    borderColor: WHITE_COLOR
-  },
-  loaderWrapper: {
-    zIndex: 1000,
-    position: 'absolute',
-    right: '0px',
-    bottom: '0px',
-    height: '100%',
-    width: '100%',
-    display: FLEX,
-    alignItems: CENTER,
-    justifyContent: CENTER
-  },
-  loader: {
-    height: '200px !important',
-    width: '100px !important',
-    margin: '0 auto'
+  assetContainer: {
+    overflow: 'hidden',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    maxWidth: 600,
+    minWidth: 600,
+    height: 400,
+    position: 'relative'
   }
 }))

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   useCallback,
   useState,
@@ -27,18 +26,15 @@ import { RenderMilestonesDetails } from '../../../components/Common/Widget/Miles
 import { RenderBudgetDetails } from '../../../components/Common/Widget/BudgetDetailsWidget'
 import EditProjectModal from 'components/EditProjectModel'
 import ProjectStatusIndicator from '../../../components/Common/ProjectStatusIndicator'
-import {
-  addProjectAssets,
-  getDownloadUrl,
-  uploadMedia
-} from '../../../apis/assets'
+import { addProjectAssets, setMedia } from '../../../apis/assets'
 import { generateUid } from '../../../utils/index'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
-import { renderImageCarousel, renderVideoCarousel } from './UploadMedia'
+import { AssetUploadDisplay } from './UploadMedia'
 import '../../../App.css'
 import { Project, ProjectAsset } from 'utils/Interface'
 import ReactLoading from 'react-loading'
+import { useOnChange } from 'utils/hooks'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -50,7 +46,6 @@ type EditProjectStates = {
   isBudgetEdit: boolean | undefined
   isImageLoading: boolean | undefined
   isVideoLoading: boolean | undefined
-  projectId: string
   showTostify: boolean
 }
 
@@ -68,7 +63,6 @@ const EditProjectScreen = (props: any) => {
     isBudgetEdit: false,
     isImageLoading: false,
     isVideoLoading: false,
-    projectId: '',
     showTostify: false
   })
 
@@ -95,114 +89,75 @@ const EditProjectScreen = (props: any) => {
     []
   )
 
-  // Fetched Project Details
-  useEffect(() => {
-    const { projectDetails, isUpdatedSuccess, projectUpdateError } = props
-    if (projectDetails) {
-      setState({
-        ...state,
-        projectData: projectDetails
-      })
-    }
-    if (isUpdatedSuccess) {
+  useOnChange(props.isUpdatedSuccess, (success) => {
+    if (success) {
       toastContext.showToast({
         title: 'Project data updated successfully!',
-        type: 'success',
-        duration: 3000
+        type: 'success'
       })
     }
-    if (!isUpdatedSuccess && projectUpdateError) {
+  })
+
+  useOnChange(props.projectUpdateError, (error) => {
+    if (error) {
       toastContext.showToast({
-        title: projectUpdateError,
-        type: 'error',
-        duration: 3000
+        title: 'Failed to update project'
       })
     }
-  }, [props.projectDetails])
+  })
 
   useEffect(() => {
-    const { location, userData, getProjectDetails } = props
+    const { location, getProjectDetails } = props
     if (location.search) {
       const projectId = location.search.split(':')
-      setState({ ...state, projectId: projectId[1] })
-      getProjectDetails(userData.account, projectId[1])
+      getProjectDetails(projectId[1])
     }
   }, [])
 
-  const onImageUpload = async (file: File) => {
-    const { projectData } = state
-    const { userData } = props
-    setState({ ...state, isImageLoading: true })
-    let imageAssets: ProjectAsset = {
-      type: 'image',
-      files: [],
-      fileName: '',
-      id: ''
-    }
-    if (projectData.images[0].isPlaceHolder) {
-      projectData.images.splice(0, 1)
-    }
+  const onAssetUpload = (type: 'image' | 'video') => async (file: File) => {
+    try {
+      const { account } = props
 
-    const id = generateUid()
-    await uploadMedia(id, file)
-    const downloadUrl = await getDownloadUrl(id)
-    // @ts-ignore
-    imageAssets.files.push(getImageObject(file, downloadUrl, id))
+      setState({
+        ...state,
+        [type === 'image' ? 'isImageLoading' : 'isVideoLoading']: true
+      })
 
-    const assetId = await addProjectAssets(userData.account, imageAssets)
-    imageAssets.id = assetId
-    if (projectData.images && !projectData.images.length) {
-      imageAssets.fileName = file.name
-    } else {
-      imageAssets.fileName =
-        projectData.images && projectData.images.length
-          ? projectData.images[0].fileName
-          : ''
-    }
-    projectData.images.push(imageAssets)
+      console.log(file)
 
-    setState({
-      ...state,
-      projectData,
-      isImageLoading: false
-    })
-    props.updateProjectDetails(projectData)
-  }
+      const asset: ProjectAsset = {
+        type,
+        files: [],
+        fileName: file.name,
+        id: generateUid()
+      }
+      const downloadUrl = await setMedia(asset.id, file)
 
-  //Video File Upload
-  const onVideoUpload = async (file: File) => {
-    const { projectData } = state
-    const { userData } = props
-    setState({ ...state, isVideoLoading: true })
-    let videoAssets: ProjectAsset = {
-      type: 'image',
-      files: [],
-      fileName: '',
-      id: ''
-    }
-    if (projectData.videos[0].isPlaceHolder) {
-      projectData.videos.splice(0, 1)
-    }
-    const id = generateUid()
-    await uploadMedia(id, file)
-    const downloadUrl = await getDownloadUrl(id)
-    // @ts-ignore
-    videoAssets.files.push(getImageObject(file, downloadUrl, id))
-    const assetId = await addProjectAssets(userData.account, videoAssets)
-    videoAssets.id = assetId
-    if (projectData.videos && !projectData.videos.length) {
-      videoAssets.fileName = file.name
-    } else {
-      videoAssets.fileName = projectData.videos[0].fileName
-    }
+      if (typeof downloadUrl === 'string') {
+        asset.files.push(getImageObject(file, downloadUrl, asset.id))
+        await addProjectAssets(account.id, asset)
 
-    projectData.videos.push(videoAssets)
-    setState({
-      ...state,
-      projectData,
-      isVideoLoading: false
-    })
-    props.updateProjectDetails(projectData)
+        const project = Object.assign(
+          state.projectData,
+          type === 'image'
+            ? { images: [...state.projectData.images, asset.id] }
+            : { videos: [...state.projectData.videos, asset.id] }
+        )
+
+        setState({
+          ...state,
+          projectData: project,
+          isVideoLoading: false
+        })
+
+        props.updateProjectDetails(project)
+      } else {
+        throw Error('Download url is not a string')
+      }
+    } catch (error) {
+      console.log('Asset upload failed.', error)
+      toastContext.showToast({ title: `Failed to upload ${type}` })
+    }
   }
 
   const renderHeader = () => {
@@ -281,34 +236,27 @@ const EditProjectScreen = (props: any) => {
         {!props.isProjectDetailsLoading ? (
           <Fragment>
             {renderProjectDetails()}
-            {renderVideoCarousel({
-              uploadVideoContainer: classes.uploadVideoContainer,
-              textColor: classes.textColor,
-              videoCorouselContainer: classes.videoCorouselContainer,
-              onVideoUpload: onVideoUpload,
-              video:
-                state.projectData &&
-                state.projectData.videos &&
-                state.projectData.videos.length
-                  ? state.projectData.videos
-                  : [],
-              isVideoLoading: state.isVideoLoading,
-              generalMarginTop: classes.generalMarginTop
-            })}
-            {renderImageCarousel({
-              textColor: classes.textColor,
-              imageCorouselContainer: classes.imageCorouselContainer,
-              image:
-                state.projectData &&
-                state.projectData.images &&
-                state.projectData.images.length
-                  ? state.projectData.images
-                  : [],
-              generalMarginTop: classes.generalMarginTop,
-              onImageUpload: (file: File) => onImageUpload(file),
-              isImageLoading: state.isImageLoading,
-              button: classes.button
-            })}
+            <AssetUploadDisplay
+              {...{
+                containerClassName: classes.uploadVideoContainer,
+                onUpload: onAssetUpload('video'),
+                assetIds: state.projectData.videos,
+                accountId: props.account.id,
+                isLoading: state.isVideoLoading,
+                title: 'Videos',
+                isVideo: true
+              }}
+            />
+            <AssetUploadDisplay
+              {...{
+                containerClassName: classes.uploadVideoContainer,
+                onUpload: onAssetUpload('image'),
+                assetIds: state.projectData.images,
+                accountId: props.account.id,
+                isLoading: state.isVideoLoading,
+                title: 'Images'
+              }}
+            />
           </Fragment>
         ) : (
           <ReactLoading
@@ -355,15 +303,15 @@ const mapStateToProps = (state: any) => ({
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
   isUpdatedSuccess: state.project.isUpdatedSuccess,
-  userData: state.auth,
   updateDetails: state.project.updateDetails,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
-  projectUpdateError: state.project.projectUpdateError
+  projectUpdateError: state.project.projectUpdateError,
+  account: state.auth.account
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getProjectDetails: (account: Account, projectId: string | undefined) => {
-    return dispatch(requestGetProjectDetails(account, projectId))
+  getProjectDetails: (projectId: string) => {
+    return dispatch(requestGetProjectDetails(projectId))
   },
   updateProjectDetails: (projectData: Project) => {
     return dispatch(requestUpdateProjectDetails(projectData))
@@ -372,17 +320,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const useStyles = makeStyles((theme) => ({
   dashboardContainer: {},
-  generalMarginLeft: {
-    marginLeft: 10,
-    color: theme.palette.common.white
-  },
-  topCardsWrapper: {
-    marginLeft: 10,
-    marginTop: 20
-  },
-  textWrapper: {
-    display: FLEX
-  },
   wrapper: {
     backgroundColor: theme.palette.background.secondary,
     display: FLEX,
@@ -391,87 +328,19 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: COLUMN,
     borderRadius: 20,
     marginLeft: theme.spacing(5),
-    marginRight: theme.spacing(5)
-  },
-  title: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: 20,
-    color: WHITE_COLOR,
-    marginRight: 40
-  },
-  detailsContainer: {
-    display: FLEX,
-    marginLeft: 80,
-    marginTop: 75,
-    flexDirection: COLUMN
-  },
-  heading: {
-    display: FLEX,
-    marginTop: 40,
-    marginBottom: 40
-  },
-  textContent: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    color: WHITE_COLOR,
-    width: 197,
-    height: 30
-  },
-  textContentContainer: {},
-  root: {
-    borderColor: '5px solid white',
-    borderWidth: 5
-  },
-  focused: {
-    //<---- see here
-    backgroundColor: 'red',
-    borderColor: '2px solid green',
-    borderWidth: 10
-  },
-  imageCorouselContainer: {
-    width: theme.spacing(50),
-    marginTop: 20,
-    marginRight: 210
-  },
-  carouselChild: {
-    width: 350,
-    height: 150,
-    marginLeft: 25
-  },
-  textColor: {
-    color: 'white'
-  },
-  button: {
-    display: FLEX,
-    justifyContent: 'flex-end',
-    marginBottom: 20,
-    marginRight: 20
-  },
-  buttonText: {
-    fontSize: 8
-  },
-  videoCorouselContainer: {
-    width: theme.spacing(50),
-    marginTop: 20,
-    marginRight: 210
+    marginRight: theme.spacing(5),
+    padding: theme.spacing(6),
+    marginBottom: theme.spacing(5)
   },
   headText: {
     display: FLEX,
     justifyContent: FLEX_END,
-    color: 'white',
-    marginTop: 20,
-    marginRight: 20
+    color: 'white'
   },
   detailsWrapper: {
-    marginTop: 30,
-    marginLeft: 30
+    marginTop: 30
   },
-  generalMarginTop: {
-    marginTop: 40
-  },
-  uploadVideoContainer: {
-    marginBottom: 40
-  },
+  uploadVideoContainer: {},
   loader: {
     margin: '0 auto'
   }

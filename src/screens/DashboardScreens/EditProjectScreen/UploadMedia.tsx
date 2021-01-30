@@ -1,89 +1,72 @@
 import { Typography } from '@material-ui/core'
-import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { ImageCarousel } from 'components/Common/Carousel'
+import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+import { AssetCarousel } from 'components/Common/Carousel'
 import { DragAndDropUploader } from 'components/Common/DragAndDropFileUpload'
-import { renderDevider } from 'components/ProjectInfoDisplay/renderDetails'
-import { FLEX } from 'utils/constants/stringConstants'
-import { ProjectAsset } from 'utils/Interface'
 
-type UploadMediaImage = {
-  textColor: string
-  imageCorouselContainer: string
-  image: Array<ProjectAsset>
-  generalMarginTop: string
-  onImageUpload: (data: any) => void
-  isImageLoading: boolean | undefined
-  button: string
+type AssetUploadDisplayProps = {
+  containerClassName?: string
+  carouselClassName?: string
+  uploaderClassName?: string
+  titleClassName?: string
+  assetIds: Array<string>
+  accountId: string
+  onUpload: (data: any) => void
+  isLoading: boolean | undefined
+  title: string
+  isVideo?: boolean
 }
 
-type UploadMediaVideo = {
-  uploadVideoContainer: string
-  textColor: string
-  videoCorouselContainer: string
-  onVideoUpload: (data: any) => void
-  video: Array<ProjectAsset>
-  isVideoLoading: boolean | undefined
-  generalMarginTop: string
-}
-
-export const renderImageCarousel = (props: UploadMediaImage) => {
+export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
   const {
-    textColor,
-    imageCorouselContainer,
-    image,
-    generalMarginTop,
-    onImageUpload,
-    isImageLoading
+    titleClassName,
+    containerClassName,
+    carouselClassName,
+    uploaderClassName,
+    assetIds,
+    onUpload,
+    isLoading,
+    accountId,
+    title,
+    isVideo
   } = props
 
+  const classes = useStyles()
+
   return (
-    <>
-      <Typography className={textColor}>Upload Photo Content</Typography>
-      <div style={{ display: FLEX }}>
-        <div className={imageCorouselContainer}>
-          <ImageCarousel source={image} isAssetLoading={isImageLoading} />
+    <div className={clsx(classes.containerClassName, containerClassName)}>
+      {!!title && <Typography className={titleClassName}>{title}</Typography>}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          flex: 1,
+          justifyContent: 'space-around'
+        }}>
+        <div className={carouselClassName}>
+          <AssetCarousel
+            assetIds={assetIds}
+            accountId={accountId}
+            isVideo={isVideo}
+          />
         </div>
-        <div className={generalMarginTop}>
+        <div className={clsx(classes.uploaderClassName, uploaderClassName)}>
           <DragAndDropUploader
-            onSubmit={(file: File) => onImageUpload(file)}
-            isLoading={isImageLoading}
+            onSubmit={(file: File) => onUpload(file)}
+            isLoading={isLoading}
+            isVideo={isVideo}
           />
         </div>
       </div>
-    </>
-  )
-}
-
-export const renderVideoCarousel = (props: UploadMediaVideo) => {
-  const {
-    uploadVideoContainer,
-    textColor,
-    videoCorouselContainer,
-    onVideoUpload,
-    video,
-    isVideoLoading,
-    generalMarginTop
-  } = props
-  return (
-    <div className={uploadVideoContainer}>
-      <Typography className={textColor}>Upload Videos</Typography>
-      <div style={{ display: FLEX }}>
-        <div className={videoCorouselContainer}>
-          <ImageCarousel
-            isVideo
-            source={video}
-            isAssetLoading={isVideoLoading}
-          />
-        </div>
-        <div className={generalMarginTop}>
-          <DragAndDropUploader
-            isVideo
-            onSubmit={onVideoUpload}
-            isLoading={isVideoLoading}
-          />
-        </div>
-      </div>
-      {renderDevider({ editInfo: true })}
     </div>
   )
 }
+
+const useStyles = makeStyles((theme) => ({
+  containerClassName: {
+    display: 'flex',
+    flexDirection: 'column',
+    color: theme.palette.text.background
+  },
+  uploaderClassName: {}
+}))
