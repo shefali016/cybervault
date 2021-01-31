@@ -34,14 +34,20 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
   const classes = useStyles()
 
   return (
-    <div className={clsx(classes.containerClassName, containerClassName)}>
-      {!!title && <Typography className={titleClassName}>{title}</Typography>}
+    <div className={clsx(classes.container, containerClassName)}>
+      {!!title && (
+        <Typography
+          variant='h6'
+          className={clsx(classes.title, titleClassName)}>
+          {title}
+        </Typography>
+      )}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           flex: 1,
-          justifyContent: 'space-around'
+          justifyContent: 'space-between'
         }}>
         <div className={carouselClassName}>
           <AssetCarousel
@@ -50,7 +56,7 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
             isVideo={isVideo}
           />
         </div>
-        <div className={clsx(classes.uploaderClassName, uploaderClassName)}>
+        <div className={clsx(classes.uploader, uploaderClassName)}>
           <DragAndDropUploader
             onSubmit={(file: File) => onUpload(file)}
             isLoading={isLoading}
@@ -63,10 +69,15 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
 }
 
 const useStyles = makeStyles((theme) => ({
-  containerClassName: {
+  container: {
     display: 'flex',
     flexDirection: 'column',
     color: theme.palette.text.background
   },
-  uploaderClassName: {}
+  uploader: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  title: { fontWeight: 'bold', marginBottom: theme.spacing(3) }
 }))

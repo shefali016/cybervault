@@ -1,10 +1,7 @@
 import React from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import {
-  renderDetails,
-  renderDevider
-} from '../../ProjectInfoDisplay/renderDetails'
+import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
 
 export const RenderBudgetDetails = (props: any) => {
@@ -14,8 +11,8 @@ export const RenderBudgetDetails = (props: any) => {
       className={classes.clientDetailsContainer}
       style={{ color: props.editInfo ? 'white' : 'black' }}>
       <div className={classes.innerDiv}>
-        <Typography variant={'subtitle1'} className={classes.title}>
-          Project Details:
+        <Typography variant={'h6'} className={classes.title}>
+          Budget & Expenses
         </Typography>
         {props.editInfo ? (
           <Button className={classes.button} onClick={props.onEdit}>
@@ -29,22 +26,21 @@ export const RenderBudgetDetails = (props: any) => {
       </div>
       {renderDetails(
         'Production Budget:',
-        props.projectData ? props.projectData.campaignBudget : ''
+        `$${props.projectData ? props.projectData.campaignBudget : ''}`
       )}
       {renderDetails(
         'Production Expenses: ',
-        props.projectData ? props.projectData.campaignExpenses : ''
+        `$${props.projectData ? props.projectData.campaignExpenses : ''}`
       )}
-      {props.editInfo
-        ? renderDevider({ editInfo: props.editInfo })
-        : renderDevider()}
-      <Typography variant={'subtitle2'} style={{ marginTop: 10 }}>
-        Estimated Net Revenue: ${' '}
-        {props.projectData
-          ? props.projectData.campaignBudget -
-            props.projectData.campaignExpenses
-          : 0}
-      </Typography>
+      {renderDetails(
+        'Estimated Net Revenue: ',
+        `$${
+          props.projectData
+            ? props.projectData.campaignBudget -
+              props.projectData.campaignExpenses
+            : 0
+        }`
+      )}
     </div>
   )
 }

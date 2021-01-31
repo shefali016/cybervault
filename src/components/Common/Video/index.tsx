@@ -4,15 +4,15 @@ import { makeStyles } from '@material-ui/core/styles'
 export const VideoComponent = (props: any) => {
   const classes = useStyles()
   return (
-    <div>
+    <div style={{ borderRadius: 10, overflow: 'hidden' }}>
       <ReactPlayer
         width='100%'
-        height='250px'
-        key={'youtube'}
+        height='auto'
         className={classes.component}
         url={props.url}
         controls
         playing={props.isSelected}
+        pip={false}
       />
     </div>
   )

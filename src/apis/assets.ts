@@ -69,7 +69,6 @@ export const getAssets = async (
   ids: Array<string>,
   accountId: string
 ): Promise<Array<ProjectAsset>> => {
-  console.log(ids, accountId)
   const assetRequests = ids.map((id: string) =>
     firebase
       .firestore()
@@ -79,7 +78,6 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        console.log(snapshot, snapshot.data())
         return snapshot.data() as ProjectAsset
       })
   )

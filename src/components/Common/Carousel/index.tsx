@@ -49,7 +49,9 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   }
 
   const getAssetTranslate = (position: number, offset: number) =>
-    90 * position - 20 * position * position * 0.5 - offset
+    window.innerWidth * 0.06 * position -
+    20 * position * position * 0.5 -
+    offset
 
   const getAssetScale = (position: number) => {
     return 1 / (position / 4 + 1)
@@ -57,28 +59,26 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Button className={classes.button}>
+      <Button className={classes.button} onClick={prev}>
         <img
           src={arrowIcon}
           alt=''
           className={classes.buttonImage}
           style={{ transform: 'rotate(180deg)' }}
-          onClick={prev}
         />
       </Button>
       <div className={classes.assetContainer}>
         {assets.length === 0
           ? [<img src={ImagePreview} alt='' />]
-          : assets.map((data: ProjectAsset, index: number) => {
+          : assets.map((asset: ProjectAsset, index: number) => {
               const position = index - currentIndex
-              const offset = (assets.length - 1) * 10
+              const offset = 0
+              const file = asset.files[0]
               return (
                 <div
                   onClick={() => handleAssetClick(index)}
                   key={index}
                   style={{
-                    width: 400,
-                    maxWidth: 400,
                     zIndex: 1000 - index,
                     display: 'flex',
                     alignItems: 'center',
@@ -87,40 +87,58 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
                       position,
                       offset
                     )}px) scale(${getAssetScale(position)})`,
-                    background: '#e6e6e6',
                     opacity:
                       position >= 0 && position <= 3 ? 1 / (position + 1) : 0,
-                    borderRadius: 5,
-                    overflow: 'hidden',
                     position: 'absolute',
-                    transition: theme.transitions.create([
-                      'transform',
-                      'opacity'
-                    ]),
+                    transition: theme.transitions.create(
+                      ['transform', 'opacity'],
+                      { duration: 600 }
+                    ),
+                    background: isVideo ? 'transparent' : '#000',
+                    borderRadius: 10,
                     pointerEvents: position >= 0 ? 'auto' : 'none'
                   }}>
-                  {isVideo ? (
-                    <VideoComponent url={data.files[0].url} />
-                  ) : (
-                    <img src={data.files[0].url} alt='' width={400} />
-                  )}
+                  <div
+                    style={{
+                      position: 'relative',
+                      width: '40vw',
+                      maxWidth: '40vw',
+                      height: '25vw',
+                      display: 'inline-block',
+                      overflow: 'hidden',
+                      margin: 0
+                    }}>
+                    {isVideo ? (
+                      <VideoComponent url={file.url} />
+                    ) : (
+                      <img
+                        src={file.url}
+                        alt={asset.fileName}
+                        className={classes.img}
+                      />
+                    )}
+                  </div>
                 </div>
               )
             })}
       </div>
-      <Button className={classes.button}>
-        <img
-          src={arrowIcon}
-          alt=''
-          onClick={next}
-          className={classes.buttonImage}
-        />
+      <Button className={classes.button} onClick={next}>
+        <img src={arrowIcon} alt='' className={classes.buttonImage} />
       </Button>
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  img: {
+    display: 'block',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    maxHeight: '100%',
+    maxWidth: '100%',
+    transform: 'translate(-50%, -50%)'
+  },
   buttonImage: {
     height: 30,
     width: 30
@@ -135,9 +153,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    maxWidth: 600,
-    minWidth: 600,
-    height: 400,
+    maxWidth: '45vw',
+    minWidth: '45vw',
+    height: '26vw',
     position: 'relative'
   }
 }))

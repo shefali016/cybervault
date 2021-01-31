@@ -6,7 +6,7 @@ import React, {
   Fragment
 } from 'react'
 import { connect } from 'react-redux'
-import { Typography } from '@material-ui/core'
+import { Divider, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   COLUMN,
@@ -30,11 +30,15 @@ import { addProjectAssets, setMedia } from '../../../apis/assets'
 import { generateUid } from '../../../utils/index'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
-import { AssetUploadDisplay } from './UploadMedia'
+import { AssetUploadDisplay } from '../../../components/Assets/UploadMedia'
 import '../../../App.css'
 import { Project, ProjectAsset } from 'utils/Interface'
 import ReactLoading from 'react-loading'
 import { useOnChange } from 'utils/hooks'
+import { FeatureAssetList } from 'components/Common/Carousel/FeatureAssetList'
+import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
+import { updateAccount } from 'actions/account'
+import { AppDivider } from 'components/Common/Core/AppDivider'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -92,7 +96,7 @@ const EditProjectScreen = (props: any) => {
   useOnChange(props.isUpdatedSuccess, (success) => {
     if (success) {
       toastContext.showToast({
-        title: 'Project data updated successfully!',
+        title: 'Project updated',
         type: 'success'
       })
     }
@@ -169,10 +173,21 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  const handleFeaturedImageSelect = (id: string) => {
+    if (id === state.projectData.featuredImage) {
+      return
+    }
+
+    const updatedProject = { ...state.projectData, featuredImage: id }
+    setState({ ...state, projectData: updatedProject })
+    props.updateProjectDetails(updatedProject)
+  }
+
   //submit project details update
   const handleUpdateProject = async (projectData: Project) => {
     setState({
       ...state,
+      projectData,
       editProjectModalOpen: false
     })
     props.updateProjectDetails(projectData)
@@ -233,38 +248,34 @@ const EditProjectScreen = (props: any) => {
   const renderBody = () => {
     return (
       <div className={classes.detailsWrapper}>
-        {!props.isProjectDetailsLoading ? (
-          <Fragment>
-            {renderProjectDetails()}
-            <AssetUploadDisplay
-              {...{
-                containerClassName: classes.uploadVideoContainer,
-                onUpload: onAssetUpload('video'),
-                assetIds: state.projectData.videos,
-                accountId: props.account.id,
-                isLoading: state.isVideoLoading,
-                title: 'Videos',
-                isVideo: true
-              }}
-            />
-            <AssetUploadDisplay
-              {...{
-                containerClassName: classes.uploadVideoContainer,
-                onUpload: onAssetUpload('image'),
-                assetIds: state.projectData.images,
-                accountId: props.account.id,
-                isLoading: state.isVideoLoading,
-                title: 'Images'
-              }}
-            />
-          </Fragment>
-        ) : (
-          <ReactLoading
-            type={'bubbles'}
-            color={'#fff'}
-            className={classes.loader}
+        <Fragment>
+          {renderProjectDetails()}
+          <AppDivider spacing={6} />
+          <AssetUploadDisplay
+            {...{
+              containerClassName: classes.uploadVideoContainer,
+              onUpload: onAssetUpload('video'),
+              assetIds: state.projectData.videos,
+              accountId: props.account.id,
+              isLoading: state.isVideoLoading,
+              title: 'Upload Video Content',
+              isVideo: true
+            }}
           />
-        )}
+          <AppDivider spacing={6} />
+          <FeatureAssetUpload
+            {...{
+              containerClassName: classes.uploadImageContainer,
+              onUpload: onAssetUpload('image'),
+              assetIds: state.projectData.images,
+              accountId: props.account.id,
+              isLoading: state.isVideoLoading,
+              title: 'Upload Image Content',
+              onFeatureSelect: handleFeaturedImageSelect,
+              featuredAsset: state.projectData.featuredImage
+            }}
+          />
+        </Fragment>
       </div>
     )
   }
@@ -319,6 +330,11 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  divider: {
+    backgroundColor: theme.palette.background.surfaceHighlight,
+    marginTop: theme.spacing(6),
+    marginBottom: theme.spacing(6)
+  },
   dashboardContainer: {},
   wrapper: {
     backgroundColor: theme.palette.background.secondary,
@@ -341,6 +357,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 30
   },
   uploadVideoContainer: {},
+  uploadImageContainer: {},
   loader: {
     margin: '0 auto'
   }
