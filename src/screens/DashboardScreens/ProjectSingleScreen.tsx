@@ -8,33 +8,29 @@ import React, {
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import {
-  COLUMN,
-  FLEX,
-  FLEX_END
-} from '../../../utils/constants/stringConstants'
+import { COLUMN, FLEX, FLEX_END } from '../../utils/constants/stringConstants'
 import {
   requestGetProjectDetails,
   requestUpdateProjectDetails
-} from '../../../actions/projectActions'
-import { RenderClientDetails } from '../../../components/Common/Widget/ClientDetailsWidget'
-import { RenderTaskDetails } from '../../../components/Common/Widget/TaskDetailsWidget'
-import { RenderProjectDetails } from '../../../components/Common/Widget/ProjectDetailWidget'
-import { RenderExpenseDetails } from '../../../components/Common/Widget/ExpenseDetailsWidget'
-import { RenderMilestonesDetails } from '../../../components/Common/Widget/MilestonesDetailWidget'
-import { RenderBudgetDetails } from '../../../components/Common/Widget/BudgetDetailsWidget'
+} from '../../actions/projectActions'
+import { RenderClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
+import { RenderTaskDetails } from '../../components/Common/Widget/TaskDetailsWidget'
+import { RenderProjectDetails } from '../../components/Common/Widget/ProjectDetailWidget'
+import { RenderExpenseDetails } from '../../components/Common/Widget/ExpenseDetailsWidget'
+import { RenderMilestonesDetails } from '../../components/Common/Widget/MilestonesDetailWidget'
+import { RenderBudgetDetails } from '../../components/Common/Widget/BudgetDetailsWidget'
 import EditProjectModal from 'components/EditProjectModel'
-import ProjectStatusIndicator from '../../../components/Common/ProjectStatusIndicator'
-import { addProjectAssets, setMedia } from '../../../apis/assets'
-import { generateUid } from '../../../utils/index'
+import ProjectStatusIndicator from '../../components/Common/ProjectStatusIndicator'
+import { addProjectAssets, setMedia } from '../../apis/assets'
+import { generateUid } from '../../utils/index'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
-import { AssetUploadDisplay } from '../../../components/Assets/UploadMedia'
+import { AssetUploadDisplay } from '../../components/Assets/UploadMedia'
 import '../../../App.css'
 import { Project, ProjectAsset } from 'utils/Interface'
 import { useOnChange } from 'utils/hooks'
-import { FeatureAssetUpload } from '../../../components/Assets/FeatureAssetUpload'
-import { AppDivider } from '../../../components/Common/Core/AppDivider'
+import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
+import { AppDivider } from '../../components/Common/Core/AppDivider'
 
 type EditProjectStates = {
   projectData: Object | any
