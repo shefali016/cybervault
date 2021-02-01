@@ -6,7 +6,7 @@ import { ReduxState } from 'reducers/rootReducer'
 import { updateAccount } from 'actions/account'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext, ToastTypes } from 'context/Toast'
-import Section from 'components/Common/Section'
+import Section from '../../components/Common/Section'
 import { Typography } from '@material-ui/core'
 import RegionSelect from 'components/Selects/RegionSelect'
 import {
@@ -19,8 +19,8 @@ import {
 import SharingPrivacySelect from 'components/Selects/SharingPrivacySelect'
 import WatermarkStyleSelect from 'components/Selects/WatermarkStyleSelect'
 import WatermarkControlSelect from 'components/Selects/WatermarkControlSelect'
-import WatermarkPicker from 'components/Assets/WatermarkPicker'
-import { GradiantButton } from 'components/Common/Button/GradiantButton'
+import WatermarkPicker from '../../components/Assets/WatermarkPicker'
+import { GradiantButton } from '../../components/Common/Button/GradiantButton'
 import { setMedia } from 'apis/assets'
 
 type StateProps = {

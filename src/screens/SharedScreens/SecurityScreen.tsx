@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
-import Section from 'components/Common/Section'
-import { ResponsiveRow } from 'components/ResponsiveRow'
+import Section from '../../components/Common/Section'
+import { ResponsiveRow } from '../../components/ResponsiveRow'
 import React from 'react'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'

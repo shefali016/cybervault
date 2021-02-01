@@ -6,14 +6,13 @@ import React, {
   Fragment
 } from 'react'
 import { connect } from 'react-redux'
-import { Divider, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   COLUMN,
   FLEX,
   FLEX_END
 } from '../../../utils/constants/stringConstants'
-import { WHITE_COLOR } from '../../../utils/constants/colorsConstants'
 import {
   requestGetProjectDetails,
   requestUpdateProjectDetails
@@ -33,12 +32,9 @@ import { ToastContext } from 'context/Toast'
 import { AssetUploadDisplay } from '../../../components/Assets/UploadMedia'
 import '../../../App.css'
 import { Project, ProjectAsset } from 'utils/Interface'
-import ReactLoading from 'react-loading'
 import { useOnChange } from 'utils/hooks'
-import { FeatureAssetList } from 'components/Common/Carousel/FeatureAssetList'
-import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
-import { updateAccount } from 'actions/account'
-import { AppDivider } from 'components/Common/Core/AppDivider'
+import { FeatureAssetUpload } from '../../../components/Assets/FeatureAssetUpload'
+import { AppDivider } from '../../../components/Common/Core/AppDivider'
 
 type EditProjectStates = {
   projectData: Object | any

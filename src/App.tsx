@@ -1,6 +1,6 @@
 import { initFirebase } from './firebaseConfig'
 import { Router } from 'react-router-dom'
-import Routes from './sagas/routes/navigationRoutes'
+import Routes from './routes/navigationRoutes'
 import history from './services/history'
 import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'

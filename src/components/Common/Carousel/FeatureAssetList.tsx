@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import { Button, IconButton } from '@material-ui/core'
-import arrowIcon from '../../../assets/Iconionic-ios-arrow-down.png'
+import { IconButton } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { ProjectAsset } from 'utils/Interface'
 import ImagePreview from '../../../assets/imagePreview.png'
