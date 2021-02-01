@@ -284,7 +284,7 @@ export const FeatureAssetList = ({
 }
 
 const currentAssetTransitionDuration = 650
-const pickerTransitionDuration = 660
+const pickerTransitionDuration = 640
 
 const useStyles = makeStyles((theme) => ({
   featureButton: {
