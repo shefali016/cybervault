@@ -1,4 +1,12 @@
-import { Card, Grid, IconButton, MenuItem, Popover } from '@material-ui/core'
+import {
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography
+} from '@material-ui/core'
 import { Fragment, useState } from 'react'
 import { PortfolioFolder } from 'utils/types'
 import ReactLoading from 'react-loading'
@@ -37,14 +45,17 @@ const PortfolioFolders = ({
         folderList && folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
             return (
-              <Card
-                // onClick={() => handlePortfolioFolder(folder.id)}
-                key={index}
-                className={portfolioFolder}>
-                {folder.name}
-                <small style={{ marginTop: '10px' }}>
-                  {folder.description}
-                </small>
+              <Card key={index} className={portfolioFolder}>
+                <CardContent
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handlePortfolioFolder(folder.id)}>
+                  <Typography>{folder.name}</Typography>
+                  <Typography>
+                    <small style={{ marginTop: '10px' }}>
+                      {folder.description}
+                    </small>
+                  </Typography>
+                </CardContent>
                 <Grid style={{ position: 'absolute', top: 0, right: 0 }}>
                   <PopupState variant='popover' popupId='demo-popup-popover'>
                     {(popupState) => (

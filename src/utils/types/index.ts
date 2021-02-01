@@ -210,7 +210,7 @@ export interface PortfolioFolder {
 export interface Portfolio {
   id: string
   name: string
-  description: string
-  icon: string | null
-  projects: Array<string> // project ids
+  description?: string
+  icon?: string | null
+  projects?: Array<string> // project ids
 }
