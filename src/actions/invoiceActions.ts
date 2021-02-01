@@ -27,11 +27,7 @@ export function generateNewInvoiceRequest(
       error
     }
   }
-  export function resetInvoice() {
-    return {
-      type: ActionTypes.RESET_INVOICE
-    }
-  }
+ 
   export function getInvoiceRequest(account: Types.Account) {
     return {
       type: ActionTypes.GET_INVOICE_REQUEST,

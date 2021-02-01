@@ -17,7 +17,6 @@ import { Project, Account, Invoice } from '../../utils/types'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo';
 import InvoiceStepThree from './Steps/InvoiceStepThree';
 import { forEachChild } from 'typescript';
-import { resetInvoice } from '../../actions/invoiceActions'
 import {getAllProjectsRequest} from '../../actions/projectActions'
 
 
@@ -58,11 +57,11 @@ InvoiceProps) => {
     return {...mile,check:true}
   }))
   const dispatch=useDispatch();
-  
+
   const invoiceData=useSelector((state:ReduxState)=>state.invoice)
 
   useEffect(()=>{
-   if(invoiceData.success){
+   if(invoiceData.success && (invoiceData?.invoiceData?.projectId===projectData.id||!Object.keys(invoiceData.invoiceData).length)){
     setCurrentStep((step) => step + 1)
    }
   },[invoiceData.success])
@@ -93,7 +92,6 @@ const handleMileChange=(id:string,key:string,e:any) =>{
 
 }
 const handleDoneClick=()=>{
-  dispatch(resetInvoice())
   onRequestClose()
   dispatch(getAllProjectsRequest(account))
 }

@@ -2,11 +2,11 @@ import {
   NEW_INVOICE_REQUEST,
   NEW_INVOICE_SUCCESS,
   NEW_INVOICE_ERROR,
-  RESET_INVOICE,
   GET_INVOICE_REQUEST,
   GET_INVOICE_ERROR,
   GET_INVOICE_SUCCESS
 } from 'actions/actionTypes'
+import { act } from 'react-dom/test-utils'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'
 import * as Types from '../utils/types'
@@ -59,26 +59,19 @@ const generateNewInvoiceSuccess = (state: State, action: Action) => ({
   error: false,
   invoiceData: action.payload
 })
-const resetInvoice = (state: State, action: Action) => ({
-  ...state,
-  loading: false,
-  success: false,
-  error: false,
-  invoiceData: {}
-})
+
 const getInvoiceRequest = (state: State, action: Action) => ({
   ...state,
   getInvoiceLoading: true,
   getInvoiceSuccess: false,
   getInvoiceError: false,
-  allInvoicesData: {}
 })
 const getInvoiceError = (state: State, action: Action) => ({
   ...state,
   getInvoiceLoading: false,
   getInvoiceSuccess: false,
   getInvoiceError: true,
-  allInvoicesData: {}
+  allInvoicesData: action.payload
 })
 const getInvoiceSuccess = (state: State, action: Action) => ({
   ...state,
@@ -95,8 +88,6 @@ const projectReducer = (state = initialState, action: Action) => {
       return generateNewInvoiceSuccess(state, action)
     case NEW_INVOICE_ERROR:
       return generateNewInvoiceError(state, action)
-    case RESET_INVOICE:
-      return resetInvoice(state, action)
     case GET_INVOICE_REQUEST:
       return getInvoiceRequest(state, action)
     case GET_INVOICE_SUCCESS:

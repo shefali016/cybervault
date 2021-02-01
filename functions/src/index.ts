@@ -30,14 +30,24 @@ export const myFunction = functions.firestore
         let accId=context.params.accountId;
         let newData = change.after.data()
         let oldData = change.before.data()
-          if (newData && Object.keys(newData).length && (!oldData || (oldData && !oldData.length))){
-          let projectId = newData.projectId
+
+          if (newData && Object.keys(newData).length && (!oldData)){
+            let projectId = newData.projectId
           admin.firestore()
         .collection('AccountData')
         .doc(accId)
         .collection('Projects').doc(projectId).update({
             canInvoice:false
         })
+        }
+        else if(newData && Object.keys(newData).length && newData.isPaid && oldData && Object.keys(oldData).length && !oldData.isPaid){
+          let projectId = newData.projectId
+          admin.firestore()
+          .collection('AccountData')
+          .doc(accId)
+          .collection('Projects').doc(projectId).update({
+              canInvoice:true
+          })
         }
       } catch (error) {
         console.log(error, "error occurs");
