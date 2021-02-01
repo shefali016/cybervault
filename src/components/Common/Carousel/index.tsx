@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import { Carousel } from 'react-responsive-carousel'
-import { Button } from '@material-ui/core'
-import arrowIcon from '../../../assets/Iconionic-ios-arrow-down.png'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import { VideoComponent } from '../Video'
-import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import { ProjectAsset } from 'utils/Interface'
-import ReactLoading from 'react-loading'
-import { CENTER, FLEX } from 'utils/constants/stringConstants'
 import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
-import clsx from 'clsx'
 import { CarouselButton } from './CarouselButton'
 
 export type Props = {
@@ -23,7 +16,6 @@ export type Props = {
 
 export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   const classes = useStyles()
-  const theme = useTheme()
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -50,13 +42,23 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
     setCurrentIndex(index)
   }
 
-  const getAssetTranslate = (position: number, offset: number) =>
-    window.innerWidth * 0.06 * position -
-    20 * position * position * 0.5 -
-    offset
-
   const getAssetScale = (position: number) => {
     return 1 / (position / 4 + 1)
+  }
+
+  const getAnimatedAssetStyle = (index: number): any => {
+    const position = index - currentIndex
+    return {
+      position: index === 0 ? 'relative' : 'absolute',
+      zIndex: 1000 - index,
+      transform: `translateX(${13 * position}%) translateX(-${Math.max(
+        0,
+        4 * (position - 1)
+      )}%) scale(${getAssetScale(position)})`,
+      opacity: position >= 0 && position <= 2 ? 1 / (position + 1) : 0,
+      background: isVideo ? 'transparent' : '#000',
+      pointerEvents: position >= 0 ? 'auto' : 'none'
+    }
   }
 
   return (
@@ -77,28 +79,13 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
           {assets.length === 0
             ? [<img src={ImagePreview} alt='' />]
             : assets.map((asset: ProjectAsset, index: number) => {
-                const position = index - currentIndex
-                const offset = 0
                 const file = asset.files[0]
                 return (
                   <div
                     onClick={() => handleAssetClick(index)}
-                    key={index}
+                    key={index.toString()}
                     className={classes.assetOuter}
-                    style={{
-                      position: index === 0 ? 'relative' : 'absolute',
-                      zIndex: 1000 - index,
-                      transform: `translateX(${
-                        13 * position
-                      }%) translateX(-${Math.max(
-                        0,
-                        4 * (position - 1)
-                      )}%) scale(${getAssetScale(position)})`,
-                      opacity:
-                        position >= 0 && position <= 2 ? 1 / (position + 1) : 0,
-                      background: isVideo ? 'transparent' : '#000',
-                      pointerEvents: position >= 0 ? 'auto' : 'none'
-                    }}>
+                    style={getAnimatedAssetStyle(index)}>
                     <div className={classes.assetInner}>
                       {isVideo ? (
                         <VideoComponent url={file.url} />
