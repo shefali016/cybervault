@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: 'column',
     height: '100vh',
-    width: '100vw',
+    width: '100%',
     overflowX: 'auto',
     flexWrap: 'nowrap'
   }

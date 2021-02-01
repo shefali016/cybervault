@@ -9,6 +9,7 @@ import { getAssets } from 'apis/assets'
 import Star from '@material-ui/icons/Star'
 import StarOutline from '@material-ui/icons/StarOutline'
 import clsx from 'clsx'
+import { CarouselButton } from './CarouselButton'
 
 export type Props = {
   isVideo?: boolean
@@ -160,14 +161,11 @@ export const FeatureAssetList = ({
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div className={classes.assetContainer}>
         <div className={classes.currentSwitchContainer}>
-          <Button className={classes.button} onClick={prev}>
-            <img
-              src={arrowIcon}
-              alt=''
-              className={classes.buttonImage}
-              style={{ transform: 'rotate(180deg)' }}
-            />
-          </Button>
+          <CarouselButton
+            onClick={prev}
+            direction={'left'}
+            inActive={currentIndex === 0}
+          />
 
           <div className={classes.currentAssetContainer}>
             {!hasAsset && <img src={ImagePreview} alt='' />}
@@ -179,9 +177,11 @@ export const FeatureAssetList = ({
             {renderCurrentAsset({ visible: renderTopAsset, asset: topAsset })}
           </div>
 
-          <Button className={classes.button} onClick={next}>
-            <img src={arrowIcon} alt='' className={classes.buttonImage} />
-          </Button>
+          <CarouselButton
+            onClick={next}
+            direction={'right'}
+            inActive={currentIndex === assets.length - 1}
+          />
         </div>
         <div className={classes.assetPickerContainer}>
           {assets.map((asset, index) => {

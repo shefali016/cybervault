@@ -340,10 +340,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     flex: 1,
     paddingTop: theme.spacing(5),
-    minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
-    [theme.breakpoints.down('sm')]: {
-      minWidth: window.outerWidth - theme.spacing(8)
-    }
+    overflowX: 'hidden'
   },
   buttonIcon: {
     marginRight: 15,

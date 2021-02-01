@@ -42,14 +42,8 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
           {title}
         </Typography>
       )}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          flex: 1,
-          justifyContent: 'space-between'
-        }}>
-        <div className={carouselClassName}>
+      <div className={classes.wrapper}>
+        <div className={clsx(classes.carousel, carouselClassName)}>
           <AssetCarousel
             assetIds={assetIds}
             accountId={accountId}
@@ -72,12 +66,31 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
+    flex: 1,
     color: theme.palette.text.background
   },
-  uploader: {
-    flex: 1,
+  wrapper: {
     display: 'flex',
-    justifyContent: 'center'
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column'
+    }
+  },
+  carousel: { display: 'flex', flex: 1 },
+  uploader: {
+    flexShrink: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(3),
+    paddingLeft: theme.spacing(6),
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: 0,
+      padding: 0,
+      paddingTop: theme.spacing(3)
+    }
   },
   title: { fontWeight: 'bold', marginBottom: theme.spacing(3) }
 }))

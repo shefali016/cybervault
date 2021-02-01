@@ -11,6 +11,8 @@ import ReactLoading from 'react-loading'
 import { CENTER, FLEX } from 'utils/constants/stringConstants'
 import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
+import clsx from 'clsx'
+import { CarouselButton } from './CarouselButton'
 
 export type Props = {
   isVideo?: boolean
@@ -58,73 +60,67 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Button className={classes.button} onClick={prev}>
-        <img
-          src={arrowIcon}
-          alt=''
-          className={classes.buttonImage}
-          style={{ transform: 'rotate(180deg)' }}
-        />
-      </Button>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        flexGrow: 1
+      }}>
+      <CarouselButton
+        direction={'left'}
+        onClick={prev}
+        inActive={currentIndex === 0}
+      />
+
       <div className={classes.assetContainer}>
-        {assets.length === 0
-          ? [<img src={ImagePreview} alt='' />]
-          : assets.map((asset: ProjectAsset, index: number) => {
-              const position = index - currentIndex
-              const offset = 0
-              const file = asset.files[0]
-              return (
-                <div
-                  onClick={() => handleAssetClick(index)}
-                  key={index}
-                  style={{
-                    zIndex: 1000 - index,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transform: `translateX(${getAssetTranslate(
-                      position,
-                      offset
-                    )}px) scale(${getAssetScale(position)})`,
-                    opacity:
-                      position >= 0 && position <= 3 ? 1 / (position + 1) : 0,
-                    position: 'absolute',
-                    transition: theme.transitions.create(
-                      ['transform', 'opacity'],
-                      { duration: 600 }
-                    ),
-                    background: isVideo ? 'transparent' : '#000',
-                    borderRadius: 10,
-                    pointerEvents: position >= 0 ? 'auto' : 'none'
-                  }}>
+        <div style={{ position: 'relative', display: 'flex' }}>
+          {assets.length === 0
+            ? [<img src={ImagePreview} alt='' />]
+            : assets.map((asset: ProjectAsset, index: number) => {
+                const position = index - currentIndex
+                const offset = 0
+                const file = asset.files[0]
+                return (
                   <div
+                    onClick={() => handleAssetClick(index)}
+                    key={index}
+                    className={classes.assetOuter}
                     style={{
-                      position: 'relative',
-                      width: '40vw',
-                      maxWidth: '40vw',
-                      height: '25vw',
-                      display: 'inline-block',
-                      overflow: 'hidden',
-                      margin: 0
+                      position: index === 0 ? 'relative' : 'absolute',
+                      zIndex: 1000 - index,
+                      transform: `translateX(${
+                        13 * position
+                      }%) translateX(-${Math.max(
+                        0,
+                        4 * (position - 1)
+                      )}%) scale(${getAssetScale(position)})`,
+                      opacity:
+                        position >= 0 && position <= 2 ? 1 / (position + 1) : 0,
+                      background: isVideo ? 'transparent' : '#000',
+                      pointerEvents: position >= 0 ? 'auto' : 'none'
                     }}>
-                    {isVideo ? (
-                      <VideoComponent url={file.url} />
-                    ) : (
-                      <img
-                        src={file.url}
-                        alt={asset.fileName}
-                        className={classes.img}
-                      />
-                    )}
+                    <div className={classes.assetInner}>
+                      {isVideo ? (
+                        <VideoComponent url={file.url} />
+                      ) : (
+                        <img
+                          src={file.url}
+                          alt={asset.fileName}
+                          className={classes.img}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+        </div>
       </div>
-      <Button className={classes.button} onClick={next}>
-        <img src={arrowIcon} alt='' className={classes.buttonImage} />
-      </Button>
+
+      <CarouselButton
+        direction={'right'}
+        onClick={next}
+        inActive={currentIndex === assets.length - 1}
+      />
     </div>
   )
 }
@@ -140,22 +136,47 @@ const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)'
   },
   buttonImage: {
-    height: 30,
-    width: 30
+    fontSize: 50,
+    color: theme.palette.grey[500],
+    transition: theme.transitions.create(['color'], { duration: 500 })
   },
+  inActiveButtonImage: { color: theme.palette.grey[800] },
   button: {
-    height: 30,
-    width: 30,
-    zIndex: 2000
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: theme.shape.borderRadius,
+    zIndex: 2000,
+    flex: 1,
+    height: '23vw',
+    [theme.breakpoints.down('md')]: {
+      height: '38vw'
+    },
+    '&:hover': {
+      background: 'rgba(0,0,0,0.2)'
+    },
+    transition: theme.transitions.create(['background'])
   },
   assetContainer: {
-    overflow: 'hidden',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    maxWidth: '45vw',
-    minWidth: '45vw',
-    height: '26vw',
-    position: 'relative'
+    position: 'relative',
+    flex: 1,
+    padding: `20px 40px`
+  },
+  assetOuter: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: theme.transitions.create(['transform', 'opacity'], {
+      duration: 600
+    }),
+    borderRadius: 10
+  },
+  assetInner: {
+    position: 'relative',
+    display: 'inline-block',
+    overflow: 'hidden',
+    margin: 0
   }
 }))
