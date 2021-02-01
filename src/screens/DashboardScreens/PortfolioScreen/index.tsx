@@ -1,4 +1,4 @@
-import { PortfolioFolder } from '../../../utils/types'
+import { Portfolio, PortfolioFolder } from '../../../utils/types'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -14,8 +14,10 @@ import {
 import {
   CENTER,
   FLEX,
+  POSITION_ABSOLUTE,
   POSITION_RELATIVE
 } from 'utils/constants/stringConstants'
+import { GREY_COLOR, TRANSPARENT } from 'utils/constants/colorsConstants'
 
 type StateProps = {
   folderList: Array<PortfolioFolder>
@@ -27,6 +29,8 @@ type PortfolioStates = {
   isModalOpen: boolean
   folder: PortfolioFolder
   isError: boolean
+  portfolio: Portfolio
+  isPortfolioModalOpen: boolean
 }
 type Props = {
   updatePortfolioFolder: (folder: PortfolioFolder) => void
@@ -59,7 +63,15 @@ const PortfoliosScreen = ({
       description: '',
       portfolios: []
     },
-    isError: false
+    portfolio: {
+      id: '',
+      name: '',
+      description: '',
+      icon: '',
+      projects: []
+    },
+    isError: false,
+    isPortfolioModalOpen: false
   })
 
   const resetStateData = () => {
@@ -84,12 +96,30 @@ const PortfoliosScreen = ({
     })
   }
 
+  const handlePortfolioModalRequest = () => {
+    setState({
+      ...state,
+      isPortfolioModalOpen: !state.isPortfolioModalOpen
+    })
+  }
+
   const handleInputChange = (e: any, key: string) => {
     const { value } = e.target
     setState({
       ...state,
       folder: {
         ...state.folder,
+        [key]: value
+      }
+    })
+  }
+
+  const handlePortfolioInputchange = (e: any, key: string) => {
+    const { value } = e.target
+    setState({
+      ...state,
+      portfolio: {
+        ...state.portfolio,
         [key]: value
       }
     })
@@ -116,6 +146,8 @@ const PortfoliosScreen = ({
     }
   }
 
+  const handlePortfolioSubmit = () => {}
+
   const handleDeleteFolder = (folderId: string) => {
     try {
       deletePortfolioFolder(folderId)
@@ -124,8 +156,16 @@ const PortfoliosScreen = ({
     }
   }
 
-  const handlePortfolioFolder = (folderId: string) => {
-    history.push(`/portfolio/id=${folderId}`)
+  const handleImageChange = async (event: any) => {
+    if (event.target && event.target.files && event.target.files.length > 0) {
+      setState({
+        ...state,
+        portfolio: {
+          ...state.portfolio,
+          icon: URL.createObjectURL(event.target.files[0])
+        }
+      })
+    }
   }
 
   const renderPortfolioFolderModal = () => {
@@ -158,12 +198,24 @@ const PortfoliosScreen = ({
               handleEditFolderDetail(folder)
             }
             deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
-            handlePortfolioFolder={(folderId: string) =>
-              handlePortfolioFolder(folderId)
-            }
             portfoliosCard={classes.portfoliosCard}
             portfolioFolderTitle={classes.portfolioFolderTitle}
             buttonIcon={classes.buttonIcon}
+            logoCOntent={classes.logoCOntent}
+            cardLogo={classes.cardLogo}
+            portfolio={state.portfolio}
+            isModalOpen={state.isPortfolioModalOpen}
+            handleModalRequest={handlePortfolioModalRequest}
+            handleSubmit={handlePortfolioSubmit}
+            handleInputChange={handlePortfolioInputchange}
+            portfolioModal={classes.portfolioModal}
+            portfolioModalBtn={classes.portfolioModalBtn}
+            portfolioModalHead={classes.portfolioModalHead}
+            handleImageChange={handleImageChange}
+            portfolioLogo={classes.portfolioLogo}
+            portfolioLogoImg={classes.portfolioLogoImg}
+            addLogoText={classes.addLogoText}
+            portfolioLogoContainer={classes.portfolioLogoContainer}
           />
         </div>
         <div
@@ -214,20 +266,80 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 30
   },
   portfoliosCard: {
-    width: '230px',
-    height: '50px',
     display: 'flex',
     borderRadius: '15px',
     alignItems: 'center',
     justifyContent: 'center',
     color: '#5ea5fc',
     fontWeight: 600,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    padding: '15px 4px 15px 15px',
+    height: '100%',
+    boxSizing: 'border-box'
   },
   portfolioFolderTitle: {
-    marginBottom: '10px'
+    marginBottom: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    '& span': {
+      marginLeft: 10,
+      cursor: 'pointer',
+      '& svg': {
+        width: 18
+      }
+    }
+  },
+  portfolioLogo: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    backgroundColor: TRANSPARENT,
+    marginBottom: 5,
+    overflow: 'hidden'
+  },
+  logoCOntent: {
+    width: 'calc(100% - 108px)',
+    padding: '0 0px 0 15px',
+
+    '& h5': {
+      color: '#353535',
+      fontSize: '14px',
+      margin: '0 0 5px 0',
+      fontWeight: 500,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    '& p ': {
+      fontSize: '10px',
+      color: '#000',
+      fontWeight: 300,
+      margin: 0,
+      textAlign: 'right'
+    }
+  },
+  cardLogo: {
+    width: 60,
+    '& img': {
+      maxWidth: '100%'
+    }
   },
   portfolioBox: {},
+  portfolioLogoImg: {
+    height: 80,
+    borderRadius: 40,
+    position: POSITION_ABSOLUTE
+  },
+  addLogoText: {
+    fontSize: 10,
+    color: GREY_COLOR
+  },
+  portfolioLogoContainer: {
+    display: FLEX,
+    marginTop: 3,
+    alignItems: CENTER,
+    justifyContent: CENTER
+  },
   portfolioModalBtn: {
     width: '200px',
     margin: '50px auto 0'
