@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
     zIndex: 2000,
-
     height: '100%',
     '&:hover': {
       background: 'rgba(0,0,0,0.2)'

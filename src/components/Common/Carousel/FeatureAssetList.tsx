@@ -158,7 +158,11 @@ export const FeatureAssetList = ({
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        flex: 1
+      }}>
       <div className={classes.assetContainer}>
         <div className={classes.currentSwitchContainer}>
           <CarouselButton
@@ -168,13 +172,27 @@ export const FeatureAssetList = ({
           />
 
           <div className={classes.currentAssetContainer}>
-            {!hasAsset && <img src={ImagePreview} alt='' />}
-            {renderCurrentAsset({
-              visible: true,
-              asset: bottomAsset,
-              style: { position: 'absolute' }
-            })}
-            {renderCurrentAsset({ visible: renderTopAsset, asset: topAsset })}
+            <div
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexGrow: 1,
+                alignSelf: 'stretch'
+              }}>
+              {!hasAsset && <img src={ImagePreview} alt='' />}
+              {renderCurrentAsset({
+                visible: !renderTopAsset,
+                asset: bottomAsset,
+                style: {
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0
+                }
+              })}
+              {renderCurrentAsset({ visible: renderTopAsset, asset: topAsset })}
+            </div>
           </div>
 
           <CarouselButton
@@ -248,7 +266,12 @@ const currentAssetTransitionDuration = 650
 const pickerTransitionDuration = 660
 
 const useStyles = makeStyles((theme) => ({
-  featureButton: { position: 'absolute', right: 0, top: 0 },
+  featureButton: {
+    position: 'absolute',
+    right: 35,
+    top: 10,
+    background: 'rgba(0,0,0,0.2)'
+  },
   featureIcon: { color: 'gold' },
 
   assetPickerContainer: {
@@ -265,7 +288,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create(['transform', 'opacity', 'width'], {
       duration: pickerTransitionDuration
     }),
-    background: '#000',
+    background: 'rgba(0,0,0,0.1)',
     borderRadius: 5,
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
@@ -288,7 +311,8 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     maxHeight: '100%',
     maxWidth: '100%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    borderRadius: 10
   },
   buttonImage: {
     height: 30,
@@ -300,45 +324,41 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 2000
   },
   assetContainer: {
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative'
+    flex: 1,
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column'
   },
   currentSwitchContainer: {
     flex: 1,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '23vw'
+    display: 'flex'
   },
   currentAssetContainer: {
     display: 'flex',
-    maxWidth: '45vw',
-    minWidth: '45vw',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative'
+    position: 'relative',
+    minHeight: 300,
+    padding: `20px 40px`
   },
   currentAssetOuter: {
     display: 'flex',
+    flex: 1,
+    alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
     transition: theme.transitions.create(['opacity'], {
       duration: currentAssetTransitionDuration
     }),
-    background: '#000',
     borderRadius: 10,
-    width: '40vw',
-    maxWidth: '40vw',
     zIndex: 3000,
     overflow: 'hidden'
   },
   currentAssetInner: {
+    flex: 1,
+    alignSelf: 'stretch',
     position: 'relative',
-    width: '40vw',
-    maxWidth: '40vw',
-    height: '22vw',
     display: 'inline-block',
     overflow: 'hidden',
     margin: 0

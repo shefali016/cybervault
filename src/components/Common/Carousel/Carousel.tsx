@@ -64,9 +64,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        flexGrow: 1
+        display: 'flex'
       }}>
       <CarouselButton
         direction={'left'}

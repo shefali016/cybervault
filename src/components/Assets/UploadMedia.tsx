@@ -74,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
     [theme.breakpoints.down('md')]: {
       flexDirection: 'column'
     }
