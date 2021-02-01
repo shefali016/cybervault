@@ -26,7 +26,6 @@ import { generateUid } from '../../utils/index'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
 import { AssetUploadDisplay } from '../../components/Assets/UploadMedia'
-import '../../../App.css'
 import { Project, ProjectAsset } from 'utils/Interface'
 import { useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
@@ -102,11 +101,16 @@ const EditProjectScreen = (props: any) => {
     }
   })
 
+  useOnChange(props.projectDetails, (projectData: Project | null) => {
+    if (projectData) {
+      setState({ ...state, projectData })
+    }
+  })
+
   useEffect(() => {
-    const { location, getProjectDetails } = props
-    if (location.search) {
-      const projectId = location.search.split(':')
-      getProjectDetails(projectId[1])
+    const { getProjectDetails, match } = props
+    if (match.params && match.params.id) {
+      getProjectDetails(match.params.id)
     }
   }, [])
 

@@ -22,7 +22,9 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   const [assets, setAssets] = useState<Array<ProjectAsset>>([])
 
   useEffect(() => {
-    loadAssets(assetIds)
+    if (Array.isArray(assetIds) && assetIds) {
+      loadAssets(assetIds)
+    }
   }, [assetIds])
 
   const loadAssets = async (ids: Array<string>) => {
@@ -31,7 +33,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   }
 
   const next = () => {
-    setCurrentIndex(Math.min(currentIndex + 1, assets.length - 1))
+    setCurrentIndex(Math.min(currentIndex + 1, Math.max(assets.length - 1, 0)))
   }
 
   const prev = () => {
@@ -46,25 +48,11 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
     return 1 / (position / 4 + 1)
   }
 
-  const getAnimatedAssetStyle = (index: number): any => {
-    const position = index - currentIndex
-    return {
-      position: index === 0 ? 'relative' : 'absolute',
-      zIndex: 1000 - index,
-      transform: `translateX(${13 * position}%) translateX(-${Math.max(
-        0,
-        4 * (position - 1)
-      )}%) scale(${getAssetScale(position)})`,
-      opacity: position >= 0 && position <= 2 ? 1 / (position + 1) : 0,
-      background: isVideo ? 'transparent' : '#000',
-      pointerEvents: position >= 0 ? 'auto' : 'none'
-    }
-  }
-
   return (
     <div
       style={{
-        display: 'flex'
+        display: 'flex',
+        flex: 1
       }}>
       <CarouselButton
         direction={'left'}
@@ -73,38 +61,64 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
       />
 
       <div className={classes.assetContainer}>
-        <div style={{ position: 'relative', display: 'flex' }}>
-          {assets.length === 0
-            ? [<img src={ImagePreview} alt='' />]
-            : assets.map((asset: ProjectAsset, index: number) => {
-                const file = asset.files[0]
-                return (
+        <div style={{ position: 'relative', display: 'flex', flex: 1 }}>
+          {assets.length === 0 ? (
+            <div className={classes.assetOuter} style={{ minHeight: 300 }}>
+              <div className={classes.assetInner}>
+                <img
+                  src={ImagePreview}
+                  alt='default-asset'
+                  className={classes.img}
+                />
+              </div>
+            </div>
+          ) : (
+            assets.map((asset: ProjectAsset, index: number) => {
+              const file = asset.files[0]
+              const position = index - currentIndex
+              return (
+                <div
+                  onClick={() => handleAssetClick(index)}
+                  key={index.toString()}
+                  className={classes.assetOuter}
+                  style={{
+                    position: index === 0 ? 'relative' : 'absolute',
+                    zIndex: 1000 - index,
+                    transform: `translateX(${
+                      13 * position
+                    }%) translateX(-${Math.max(
+                      0,
+                      4 * (position - 1)
+                    )}%) scale(${getAssetScale(position)})`,
+                    opacity:
+                      position >= 0 && position <= 2 ? 1 / (position + 1) : 0,
+                    background: isVideo ? 'transparent' : '#000',
+                    pointerEvents: position >= 0 ? 'auto' : 'none'
+                  }}>
                   <div
-                    onClick={() => handleAssetClick(index)}
-                    key={index.toString()}
-                    className={classes.assetOuter}
-                    style={getAnimatedAssetStyle(index)}>
-                    <div className={classes.assetInner}>
-                      {isVideo ? (
-                        <VideoComponent url={file.url} />
-                      ) : (
-                        <img
-                          src={file.url}
-                          alt={asset.fileName}
-                          className={classes.img}
-                        />
-                      )}
-                    </div>
+                    className={classes.assetInner}
+                    style={{ pointerEvents: position === 0 ? 'auto' : 'none' }}>
+                    {isVideo ? (
+                      <VideoComponent url={file.url} />
+                    ) : (
+                      <img
+                        src={file.url}
+                        alt={asset.fileName}
+                        className={classes.img}
+                      />
+                    )}
                   </div>
-                )
-              })}
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
 
       <CarouselButton
         direction={'right'}
         onClick={next}
-        inActive={currentIndex === assets.length - 1}
+        inActive={!assets.length || currentIndex === assets.length - 1}
       />
     </div>
   )
@@ -116,8 +130,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    maxHeight: '100%',
-    maxWidth: '100%',
+    minHeight: '100%',
+    width: '100%',
     transform: 'translate(-50%, -50%)'
   },
   buttonImage: {
@@ -143,25 +157,24 @@ const useStyles = makeStyles((theme) => ({
   },
   assetContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'relative',
     flex: 1,
-    padding: `20px 40px`
+    padding: `20px 30px`
   },
   assetOuter: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
     transition: theme.transitions.create(['transform', 'opacity'], {
       duration: 600
     }),
     borderRadius: 10
   },
   assetInner: {
+    flex: 1,
     position: 'relative',
     display: 'inline-block',
     overflow: 'hidden',
-    margin: 0
+    margin: 0,
+    borderRadius: 10
   }
 }))

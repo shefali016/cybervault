@@ -24,7 +24,7 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
   const [anchorEl] = React.useState<null | HTMLElement>(null)
 
   const editProject = (projectId: string) => {
-    history.push(`/project?id:${projectId}`)
+    history.push(`/project/${projectId}`)
   }
 
   const ITEM_HEIGHT = 48

@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'column'
     }
   },
-  carousel: { display: 'flex', flex: 1 },
+  carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' },
   uploader: {
     flexShrink: 1,
     display: 'flex',

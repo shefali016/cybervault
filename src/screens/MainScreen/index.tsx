@@ -295,7 +295,7 @@ const MainScreen = ({
         <Switch>
           <Route path='/projects' component={ProjectsScreen} />
           <Route path='/profile' component={ProfileScreen} />
-          <Route path='/project/{id}' component={ProjectSingleScreen} />
+          <Route path='/project/:id' component={ProjectSingleScreen} />
           <Route path='/manage' component={ManageAccountScreen} />
           <Route path='/branding' component={BrandingScreen} />
           <Route path='/subscription' component={SubscriptionScreen} />

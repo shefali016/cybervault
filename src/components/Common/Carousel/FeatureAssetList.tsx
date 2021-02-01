@@ -48,7 +48,9 @@ export const FeatureAssetList = ({
   const { currentIndex, renderTopAsset, topAsset, bottomAsset, assets } = state
 
   useEffect(() => {
-    loadAssets(assetIds)
+    if (Array.isArray(assetIds) && assetIds) {
+      loadAssets(assetIds)
+    }
   }, [assetIds])
 
   const loadAssets = async (ids: Array<string>) => {
@@ -93,7 +95,7 @@ export const FeatureAssetList = ({
   }
 
   const next = () => {
-    const index = Math.min(currentIndex + 1, assets.length - 1)
+    const index = Math.min(currentIndex + 1, Math.max(assets.length - 1, 0))
     setAssetState(index)
   }
 
@@ -120,6 +122,10 @@ export const FeatureAssetList = ({
     asset: ProjectAsset | null
     style?: {}
   }) => {
+    if (!currentAsset) {
+      return null
+    }
+
     return (
       <div
         className={classes.currentAssetOuter}
@@ -133,10 +139,9 @@ export const FeatureAssetList = ({
             <img
               src={asset.files[0].url}
               alt={asset.fileName}
-              className={clsx(classes.img)}
+              className={classes.img}
             />
           )}
-
           {!!asset && (
             <IconButton
               className={classes.featureButton}
@@ -152,6 +157,68 @@ export const FeatureAssetList = ({
             </IconButton>
           )}
         </div>
+      </div>
+    )
+  }
+
+  const renderAssetPicker = () => {
+    if (!assets.length) {
+      return null
+    }
+    return (
+      <div className={classes.assetPickerContainer}>
+        {assets.map((asset, index) => {
+          const file = asset.files[0]
+          const isCurrent = index === currentIndex ? -200 : 0
+          return (
+            <div
+              style={{ position: 'relative' }}
+              key={`feature-asset-picker-${index}`}>
+              <div
+                onClick={() => handleAssetClick(index)}
+                style={{
+                  zIndex: 1000 - index,
+                  opacity: isCurrent ? 0.2 : 1,
+                  pointerEvents: isCurrent ? 'none' : 'auto'
+                }}
+                className={classes.assetPickerItemOuter}>
+                <div className={classes.assetPickerItemInner}>
+                  <img
+                    src={file.url}
+                    alt={asset.fileName}
+                    className={classes.coverImage}
+                  />
+                </div>
+              </div>
+              <div
+                onClick={() => handleAssetClick(index)}
+                key={index}
+                style={{
+                  zIndex: 1000 - index,
+                  position: 'absolute',
+                  top: 0,
+                  transform: `translateY(${
+                    isCurrent ? -window.innerWidth * 0.15 : 0
+                  }px) scale(${
+                    isCurrent ? 4 * (window.innerWidth / 1300) : 1
+                  }) translateX(${
+                    isCurrent ? ((assets.length - 1) / 2 - index) * 20 : 0
+                  }px)`,
+                  opacity: isCurrent ? 0 : 1,
+                  pointerEvents: isCurrent ? 'none' : 'auto'
+                }}
+                className={classes.assetPickerItemOuter}>
+                <div className={classes.assetPickerItemInner}>
+                  <img
+                    src={file.url}
+                    alt={asset.fileName}
+                    className={classes.coverImage}
+                  />
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
     )
   }
@@ -178,7 +245,17 @@ export const FeatureAssetList = ({
                 flexGrow: 1,
                 alignSelf: 'stretch'
               }}>
-              {!hasAsset && <img src={ImagePreview} alt='' />}
+              {!hasAsset && (
+                <div className={classes.currentAssetOuter}>
+                  <div className={classes.currentAssetInner}>
+                    <img
+                      src={ImagePreview}
+                      alt='image-default'
+                      className={classes.coverImage}
+                    />
+                  </div>
+                </div>
+              )}
               {renderCurrentAsset({
                 visible: !renderTopAsset,
                 asset: bottomAsset,
@@ -197,65 +274,10 @@ export const FeatureAssetList = ({
           <CarouselButton
             onClick={next}
             direction={'right'}
-            inActive={currentIndex === assets.length - 1}
+            inActive={!assets.length || currentIndex === assets.length - 1}
           />
         </div>
-        <div className={classes.assetPickerContainer}>
-          {assets.map((asset, index) => {
-            const file = asset.files[0]
-            const isCurrent = index === currentIndex ? -200 : 0
-            return (
-              <div
-                style={{ position: 'relative' }}
-                key={`feature-asset-picker-${index}`}>
-                <div
-                  onClick={() => handleAssetClick(index)}
-                  style={{
-                    zIndex: 1000 - index,
-                    opacity: isCurrent ? 0.2 : 1,
-                    pointerEvents: isCurrent ? 'none' : 'auto'
-                  }}
-                  className={classes.assetPickerItemOuter}>
-                  <div className={classes.assetPickerItemInner}>
-                    <img
-                      src={file.url}
-                      alt={asset.fileName}
-                      className={classes.img}
-                    />
-                  </div>
-                </div>
-                <div
-                  onClick={() => handleAssetClick(index)}
-                  key={index}
-                  style={{
-                    zIndex: 1000 - index,
-                    position: 'absolute',
-                    top: 0,
-                    transform: `translateY(${
-                      isCurrent ? -window.innerWidth * 0.15 : 0
-                    }px) scale(${
-                      isCurrent ? 4 * (window.innerWidth / 1300) : 1
-                    }) translateX(${
-                      isCurrent
-                        ? (Math.floor(assets.length / 2) - index) * 30
-                        : 0
-                    }px)`,
-                    opacity: isCurrent ? 0 : 1,
-                    pointerEvents: isCurrent ? 'none' : 'auto'
-                  }}
-                  className={classes.assetPickerItemOuter}>
-                  <div className={classes.assetPickerItemInner}>
-                    <img
-                      src={file.url}
-                      alt={asset.fileName}
-                      className={classes.img}
-                    />
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        {renderAssetPicker()}
       </div>
     </div>
   )
@@ -267,8 +289,8 @@ const pickerTransitionDuration = 660
 const useStyles = makeStyles((theme) => ({
   featureButton: {
     position: 'absolute',
-    right: 35,
-    top: 10,
+    right: 0,
+    top: 0,
     background: 'rgba(0,0,0,0.2)'
   },
   featureIcon: { color: 'gold' },
@@ -278,7 +300,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     justifyContent: 'center',
     height: 80,
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(3)
   },
   assetPickerItemOuter: {
     display: 'flex',
@@ -288,21 +310,29 @@ const useStyles = makeStyles((theme) => ({
       duration: pickerTransitionDuration
     }),
     background: 'rgba(0,0,0,0.1)',
-    borderRadius: 5,
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    borderRadius: 15,
+    marginLeft: theme.spacing(1.2),
+    marginRight: theme.spacing(1.2),
     overflow: 'hidden'
   },
   assetPickerItemInner: {
     position: 'relative',
-    width: 100,
-    maxWidth: 100,
-    height: 56,
+    width: 60,
+    height: 60,
     display: 'inline-block',
     overflow: 'hidden',
     margin: 0
   },
-
+  coverImage: {
+    display: 'block',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    minHeight: '100%',
+    width: '100%',
+    transform: 'translate(-50%, -50%)',
+    borderRadius: 10
+  },
   img: {
     display: 'block',
     position: 'absolute',
@@ -339,7 +369,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     position: 'relative',
     minHeight: 300,
-    padding: `20px 40px`
+    padding: `20px 20px`
   },
   currentAssetOuter: {
     display: 'flex',

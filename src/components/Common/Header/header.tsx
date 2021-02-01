@@ -242,7 +242,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.palette.background.default
   }
 }))
 
