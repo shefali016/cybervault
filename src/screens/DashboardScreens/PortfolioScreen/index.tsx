@@ -1,7 +1,6 @@
 import { PortfolioFolder } from '../../../utils/types'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
 import PortfolioFolders from './portfolioFolders'
 import { PortfolioFolderModal } from 'components/Portfolio/PortfolioFolderModal'
@@ -11,11 +10,7 @@ import {
   getPortfolioFolderRequest,
   updatePortfolioFolderRequest
 } from 'actions/portfolioActions'
-import {
-  CENTER,
-  FLEX,
-  POSITION_RELATIVE
-} from 'utils/constants/stringConstants'
+import { useStyles } from './style'
 
 type StateProps = {
   folderList: Array<PortfolioFolder>
@@ -150,10 +145,8 @@ const PortfoliosScreen = ({
       <div className={classes.portfolioBoxMainWrap}>
         <div>
           <PortfolioFolders
-            portfolioFolder={classes.portfolioFolder}
             folderList={folderList}
             loading={loading}
-            loader={classes.loader}
             handleEditFolderDetail={(folder: PortfolioFolder) =>
               handleEditFolderDetail(folder)
             }
@@ -161,9 +154,6 @@ const PortfoliosScreen = ({
             handlePortfolioFolder={(folderId: string) =>
               handlePortfolioFolder(folderId)
             }
-            portfoliosCard={classes.portfoliosCard}
-            portfolioFolderTitle={classes.portfolioFolderTitle}
-            buttonIcon={classes.buttonIcon}
           />
         </div>
         <div
@@ -197,70 +187,4 @@ const mapDispatchToProps = (dispatch: any) => ({
   }
 })
 
-const useStyles = makeStyles((theme) => ({
-  portfolioBoxMainWrap: {
-    width: '95%',
-    display: 'block',
-    margin: '0 auto',
-    color: '#9ea0a28c'
-  },
-  portfolioFolder: {
-    color: '#fff',
-    marginBottom: '20px'
-  },
-  buttonIcon: {
-    marginRight: 5,
-    marginLeft: -30,
-    fontSize: 30
-  },
-  portfoliosCard: {
-    width: '230px',
-    height: '50px',
-    display: 'flex',
-    borderRadius: '15px',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#5ea5fc',
-    fontWeight: 600,
-    cursor: 'pointer'
-  },
-  portfolioFolderTitle: {
-    marginBottom: '10px'
-  },
-  portfolioBox: {},
-  portfolioModalBtn: {
-    width: '200px',
-    margin: '50px auto 0'
-  },
-  portfolioModal: {
-    color: '#24262b',
-    display: FLEX,
-    outline: 'none',
-    padding: '52px 54px',
-    position: POSITION_RELATIVE,
-    maxHeight: '80vh',
-    overflowY: 'scroll',
-    borderRadius: '42px',
-    flexDirection: 'column',
-    backgroundColor: '#ffffff',
-    width: '100%',
-    maxWidth: '500px'
-  },
-  portfolioBoxWrap: {
-    borderRadius: '18px',
-    border: '4px dashed #9ea0a28c',
-    textAlign: 'center',
-    marginTop: '30px',
-    padding: '40px',
-    cursor: 'pointer'
-  },
-  portfolioModalHead: {
-    margin: 0
-  },
-  loader: {
-    textAlign: CENTER,
-    margin: '0 auto'
-  },
-  image: {}
-}))
 export default connect(mapStateToProps, mapDispatchToProps)(PortfoliosScreen)

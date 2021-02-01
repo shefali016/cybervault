@@ -9,50 +9,41 @@ import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import ConfirmBox from 'utils/confirmBox'
 import AddIcon from '@material-ui/icons/Add'
+import { useStyles } from './style'
 
 type Props = {
-  portfolioFolder: string
   folderList: Array<PortfolioFolder>
   loading: boolean
-  loader: string
   handleEditFolderDetail: (folder: PortfolioFolder) => void
   deletefolder: (folderId: string) => void
   handlePortfolioFolder: (folderId: string) => void
-  portfoliosCard: string
-  portfolioFolderTitle: string
-  buttonIcon: string
 }
 const PortfolioFolders = ({
-  portfolioFolder,
   folderList,
   loading,
-  loader,
   handleEditFolderDetail,
   deletefolder,
-  handlePortfolioFolder,
-  portfoliosCard,
-  portfolioFolderTitle,
-  buttonIcon
+  handlePortfolioFolder
 }: Props) => {
   const [anchorEl] = useState<null | HTMLElement>(null)
   const [open, setOpen] = useState<boolean>(false)
   const [folderId, setFolderId] = useState<string>('')
-
+  const classes = useStyles()
   return (
     <Fragment>
       {!loading ? (
         folderList && folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
             return (
-              <div key={index} className={portfolioFolder}>
-                <div className={portfolioFolderTitle}>
+              <div key={index} className={classes.portfolioFolder}>
+                <div className={classes.portfolioFolderTitle}>
                   {folder.name}
                   <small style={{ marginTop: '10px' }}>
                     {folder.description}
                   </small>
                 </div>
-                <Card className={portfoliosCard}>
-                  <AddIcon className={buttonIcon} />
+                <Card className={classes.portfoliosCard}>
+                  <AddIcon className={classes.buttonIcon} />
                   Add Portfolio
                 </Card>
               </div>
@@ -60,7 +51,7 @@ const PortfolioFolders = ({
           })
         ) : null
       ) : (
-        <div className={loader}>
+        <div className={classes.loader}>
           <ReactLoading
             type={'bubbles'}
             color={'#fff'}
