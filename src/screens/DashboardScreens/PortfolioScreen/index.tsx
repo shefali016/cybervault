@@ -148,15 +148,7 @@ const PortfoliosScreen = ({
   return (
     <div>
       <div className={classes.portfolioBoxMainWrap}>
-        <div
-          onClick={() => handleModalRequest()}
-          className={classes.portfolioBoxWrap}>
-          <div className={classes.portfolioBox}>
-            <img src={iconFolderUpload} alt='icon' className={classes.image} />
-            <h5>Create Folder</h5>
-          </div>
-        </div>
-        <div className={`row`}>
+        <div>
           <PortfolioFolders
             portfolioFolder={classes.portfolioFolder}
             folderList={folderList}
@@ -169,7 +161,18 @@ const PortfoliosScreen = ({
             handlePortfolioFolder={(folderId: string) =>
               handlePortfolioFolder(folderId)
             }
+            portfoliosCard={classes.portfoliosCard}
+            portfolioFolderTitle={classes.portfolioFolderTitle}
+            buttonIcon={classes.buttonIcon}
           />
+        </div>
+        <div
+          onClick={() => handleModalRequest()}
+          className={classes.portfolioBoxWrap}>
+          <div className={classes.portfolioBox}>
+            <img src={iconFolderUpload} alt='icon' className={classes.image} />
+            <h5>Create Folder</h5>
+          </div>
         </div>
       </div>
       {renderPortfolioFolderModal()}
@@ -202,15 +205,27 @@ const useStyles = makeStyles((theme) => ({
     color: '#9ea0a28c'
   },
   portfolioFolder: {
-    width: '200px',
-    height: '200px',
+    color: '#fff',
+    marginBottom: '20px'
+  },
+  buttonIcon: {
+    marginRight: 5,
+    marginLeft: -30,
+    fontSize: 30
+  },
+  portfoliosCard: {
+    width: '230px',
+    height: '50px',
     display: 'flex',
-    position: 'relative',
     borderRadius: '15px',
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: '10px'
+    color: '#5ea5fc',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  portfolioFolderTitle: {
+    marginBottom: '10px'
   },
   portfolioBox: {},
   portfolioModalBtn: {
@@ -235,7 +250,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '18px',
     border: '4px dashed #9ea0a28c',
     textAlign: 'center',
-    marginBottom: '30px',
+    marginTop: '30px',
     padding: '40px',
     cursor: 'pointer'
   },

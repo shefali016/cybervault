@@ -16,6 +16,7 @@ import { FLEX } from 'utils/constants/stringConstants'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import ConfirmBox from 'utils/confirmBox'
+import AddIcon from '@material-ui/icons/Add'
 
 type Props = {
   portfolioFolder: string
@@ -25,6 +26,9 @@ type Props = {
   handleEditFolderDetail: (folder: PortfolioFolder) => void
   deletefolder: (folderId: string) => void
   handlePortfolioFolder: (folderId: string) => void
+  portfoliosCard: string
+  portfolioFolderTitle: string
+  buttonIcon: string
 }
 const PortfolioFolders = ({
   portfolioFolder,
@@ -33,7 +37,10 @@ const PortfolioFolders = ({
   loader,
   handleEditFolderDetail,
   deletefolder,
-  handlePortfolioFolder
+  handlePortfolioFolder,
+  portfoliosCard,
+  portfolioFolderTitle,
+  buttonIcon
 }: Props) => {
   const [anchorEl] = useState<null | HTMLElement>(null)
   const [open, setOpen] = useState<boolean>(false)
@@ -45,84 +52,18 @@ const PortfolioFolders = ({
         folderList && folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
             return (
-              <Card key={index} className={portfolioFolder}>
-                <CardContent
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handlePortfolioFolder(folder.id)}>
-                  <Typography>{folder.name}</Typography>
-                  <Typography>
-                    <small style={{ marginTop: '10px' }}>
-                      {folder.description}
-                    </small>
-                  </Typography>
-                </CardContent>
-                <Grid style={{ position: 'absolute', top: 0, right: 0 }}>
-                  <PopupState variant='popover' popupId='demo-popup-popover'>
-                    {(popupState) => (
-                      <div>
-                        <IconButton
-                          aria-label='more'
-                          aria-controls='long-menu'
-                          aria-haspopup='true'
-                          {...bindTrigger(popupState)}>
-                          <MoreVertIcon />
-                        </IconButton>
-                        <Popover
-                          id={'long-menu'}
-                          anchorEl={anchorEl}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'left'
-                          }}
-                          PaperProps={{
-                            style: {
-                              maxHeight: 48 * 2.5,
-                              borderRadius: 15,
-                              border: 1,
-                              fontSize: 12,
-                              borderColor: 'black',
-                              paddingTop: 8,
-                              paddingBottom: 8,
-                              color: '#000'
-                            }
-                          }}
-                          style={{ marginLeft: -20, marginTop: -20 }}
-                          {...bindPopover(popupState)}>
-                          <MenuItem
-                            style={{ fontSize: 12 }}
-                            onClick={() => handleEditFolderDetail(folder)}>
-                            <div style={{ display: FLEX }}>
-                              <AddBoxIcon
-                                style={{ marginRight: 5 }}
-                                fontSize='small'
-                              />
-                              Edit Folder Info
-                            </div>
-                          </MenuItem>
-                          <MenuItem
-                            style={{ fontSize: 12 }}
-                            onClick={() => {
-                              setFolderId(folder.id)
-                              setOpen(!open)
-                            }}>
-                            <div style={{ display: FLEX, color: 'red' }}>
-                              <DeleteSharpIcon
-                                style={{ marginRight: 5 }}
-                                fontSize='small'
-                              />
-                              Delete Folder
-                            </div>
-                          </MenuItem>
-                        </Popover>
-                      </div>
-                    )}
-                  </PopupState>
-                </Grid>
-              </Card>
+              <div key={index} className={portfolioFolder}>
+                <div className={portfolioFolderTitle}>
+                  {folder.name}
+                  <small style={{ marginTop: '10px' }}>
+                    {folder.description}
+                  </small>
+                </div>
+                <Card className={portfoliosCard}>
+                  <AddIcon className={buttonIcon} />
+                  Add Portfolio
+                </Card>
+              </div>
             )
           })
         ) : null
