@@ -7,7 +7,7 @@ import { generateUid } from 'utils'
 /**
  * @updatePortfoliFolder
  */
-export const updatePortfolioFolderApi = async (
+export const updatePortfolioFolderRequest = async (
   folder: PortfolioFolder,
   account: Account
 ) => {
@@ -39,7 +39,7 @@ export const updatePortfolioFolderApi = async (
 /**
  * @getAllPortfoliFolder
  */
-export const getPortfolioFolderApi = async (account: Account) => {
+export const getPortfolioFolderRequest = async (account: Account) => {
   try {
     let folderList: Array<PortfolioFolder> = []
     const data: Document | any = await firebase
@@ -62,19 +62,18 @@ export const getPortfolioFolderApi = async (account: Account) => {
 /**
  * @deletePortfoliFolder
  */
-export const deletePortfolioFolderApi = async (
+export const deletePortfolioFolderRequest = async (
   folderId: string,
   account: Account
 ) => {
   try {
-    await firebase
+    return firebase
       .firestore()
       .collection('AccountData')
       .doc(account.id)
       .collection('PortfolioFolders')
       .doc(folderId)
       .delete()
-    return
   } catch (error) {
     console.log('Errooorrrrr', error)
     return error

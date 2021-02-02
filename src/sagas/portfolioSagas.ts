@@ -3,9 +3,9 @@ import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import { ReduxState } from 'reducers/rootReducer'
 import {
-  updatePortfolioFolderApi,
-  getPortfolioFolderApi,
-  deletePortfolioFolderApi
+  deletePortfolioFolderRequest,
+  getPortfolioFolderRequest,
+  updatePortfolioFolderRequest
 } from '../apis/portfolioRequest'
 import {
   deletePortfolioFolderFailure,
@@ -27,7 +27,7 @@ function* getPortfolioFolders() {
       (state: ReduxState) => state.auth.account
     )
     const folderList: Array<Types.PortfolioFolder> = yield call(
-      getPortfolioFolderApi,
+      getPortfolioFolderRequest,
       account
     )
 
@@ -45,7 +45,7 @@ function* updatePortfolioFolder({ folder }: UpdateParams) {
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
-    const folderData = yield call(updatePortfolioFolderApi, folder, account)
+    const folderData = yield call(updatePortfolioFolderRequest, folder, account)
     const folderIndex: number = folderArray.findIndex(
       (data: any) => data.id === folder.id
     )
@@ -71,7 +71,7 @@ function* deletePortfolioFolder({ folderId }: UpdateParams) {
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
-    yield call(deletePortfolioFolderApi, folderId, account)
+    yield call(deletePortfolioFolderRequest, folderId, account)
     const folderList: Array<Types.PortfolioFolder> = folderArray.filter(
       (data: any) => data.id !== folderId
     )
