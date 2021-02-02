@@ -1,5 +1,4 @@
 export default function validate(step: number, projectData: any) {
-  console.log(step,projectData,"hhhhhh")
 
   switch (step) {
     case 1:
