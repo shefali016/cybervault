@@ -38,6 +38,8 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 // import BankingScreen from 'screens/SharedScreens/BankingScreen'
 import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
+import EditPortfolioScreen from 'screens/DashboardScreens/EditPortfolioScreen'
+
 import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
 import { getUser } from 'actions/user'
@@ -310,6 +312,7 @@ const MainScreen = ({
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
+          <Route path='/portfolio/:id' component={EditPortfolioScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}

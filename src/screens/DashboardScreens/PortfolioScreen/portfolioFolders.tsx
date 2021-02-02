@@ -21,7 +21,7 @@ type Props = {
   deletefolder: (folderId: string) => void
   portfolio: Portfolio
   isModalOpen: boolean
-  handleModalRequest: (type: string) => void
+  handleModalRequest: ({ type, folder }: any) => void
   handleSubmit: () => void
   handleInputChange: (e: any, key: string) => void
   handleImageChange: (e: any) => void
@@ -30,6 +30,7 @@ type Props = {
   isChooseProject: boolean
   projectList: Array<Project>
   handleProjectSelect: (projectId: string) => void
+  portfolioLoading: boolean
 }
 const PortfolioFolders = ({
   folderList,
@@ -46,7 +47,8 @@ const PortfolioFolders = ({
   isError,
   isChooseProject,
   projectList,
-  handleProjectSelect
+  handleProjectSelect,
+  portfolioLoading
 }: Props) => {
   const [open, setOpen] = useState<boolean>(false)
   const [folderId, setFolderId] = useState<string>('')
@@ -56,7 +58,7 @@ const PortfolioFolders = ({
     return (
       <PortfolioModal
         open={isModalOpen}
-        onRequestClose={() => handleModalRequest('portfolio')}
+        onRequestClose={() => handleModalRequest({ type: 'portfolio' })}
         portfolio={portfolio}
         onSubmit={() => handleSubmit()}
         handleInputChange={(e: any, key: string) => handleInputChange(e, key)}
@@ -66,15 +68,14 @@ const PortfolioFolders = ({
         handleChange={(event: any) => handleImageChange(event)}
         portfolioLogo={classes.portfolioLogo}
         portfolioLogoImg={classes.portfolioLogoImg}
-        addLogoText={classes.addLogoText}
         portfolioLogoContainer={classes.portfolioLogoContainer}
         handleProjectSection={handleProjectSection}
         isError={isError}
         isChooseProject={isChooseProject}
         projectList={projectList}
-        cardLogo={classes.cardLogo}
-        logoCOntent={classes.logoCOntent}
+        listItemText={classes.listItemText}
         handleProjectSelect={handleProjectSelect}
+        portfolioLoading={portfolioLoading}
       />
     )
   }
@@ -103,37 +104,35 @@ const PortfolioFolders = ({
                   </small>
                 </div>
                 <Grid container spacing={2}>
-                  <Grid item lg={3} md={4} sm={6}>
-                    <Card className={classes.portfoliosCard}>
-                      <div className={classes.cardLogo}>
-                        <img src={Dummy} alt='' />
-                      </div>
-                      <div className={classes.logoCOntent}>
-                        <h5>Audi Q5 Commercial'19</h5>
-                        <p>Audi Q5 Commercial'19 Audi Q5 Commerci</p>
-                      </div>
-                      <Box pl={2}>
-                        <KeyboardArrowRightIcon style={{ color: '#797979' }} />
-                      </Box>
-                    </Card>
-                  </Grid>
-                  <Grid item lg={3} md={4} sm={6}>
-                    <Card className={classes.portfoliosCard}>
-                      <div className={classes.cardLogo}>
-                        <img src={logo} alt='' />
-                      </div>
-                      <div className={classes.logoCOntent}>
-                        <h5>Toyota Corolla Campaign</h5>
-                        <p>This is the demo conent</p>
-                      </div>
-                      <Box pl={2}>
-                        <KeyboardArrowRightIcon style={{ color: '#797979' }} />
-                      </Box>
-                    </Card>
-                  </Grid>
+                  {folder && folder.portfolios && folder.portfolios.length
+                    ? folder.portfolios.map(
+                        (data: Portfolio | any, i: number) => {
+                          return (
+                            <Grid item lg={3} md={4} sm={6}>
+                              <Card className={classes.portfoliosCard}>
+                                <div className={classes.cardLogo}>
+                                  <img src={data.logo} alt='' />
+                                </div>
+                                <div className={classes.logoCOntent}>
+                                  <h5>{data.name}</h5>
+                                  <p>{data.description}</p>
+                                </div>
+                                <Box pl={2}>
+                                  <KeyboardArrowRightIcon
+                                    style={{ color: '#797979' }}
+                                  />
+                                </Box>
+                              </Card>
+                            </Grid>
+                          )
+                        }
+                      )
+                    : null}
                   <Grid item md={3}>
                     <Card
-                      onClick={() => handleModalRequest('portfolio')}
+                      onClick={() => {
+                        handleModalRequest({ type: 'portfolio', folder })
+                      }}
                       className={classes.portfoliosCard}>
                       <AddIcon className={classes.buttonIcon} />
                       Add Portfolio

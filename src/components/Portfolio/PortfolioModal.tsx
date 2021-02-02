@@ -4,7 +4,18 @@ import { Portfolio, Project } from 'utils/types'
 import AppTextField from 'components/Common/Core/AppTextField'
 import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { Button, Grid, Typography } from '@material-ui/core'
+import {
+  Button,
+  Box,
+  Typography,
+  List,
+  ListItemIcon,
+  ListItem,
+  Checkbox,
+  ListItemText,
+  ListItemAvatar,
+  Avatar
+} from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 
 type Props = {
@@ -21,14 +32,13 @@ type Props = {
   handleChange: (event: any) => void
   portfolioLogo: string
   portfolioLogoImg: string
-  addLogoText: string
   portfolioLogoContainer: string
   handleProjectSection: () => void
   isChooseProject: boolean
   projectList: Array<Project>
-  cardLogo: string
-  logoCOntent: string
+  listItemText: string
   handleProjectSelect: (projectId: string) => void
+  portfolioLoading: boolean
 }
 
 export const PortfolioModal = ({
@@ -45,14 +55,13 @@ export const PortfolioModal = ({
   handleChange,
   portfolioLogo,
   portfolioLogoImg,
-  addLogoText,
   portfolioLogoContainer,
   handleProjectSection,
   projectList,
   isChooseProject,
-  cardLogo,
-  logoCOntent,
-  handleProjectSelect
+  listItemText,
+  handleProjectSelect,
+  portfolioLoading
 }: Props) => {
   let imageInputRef: any = useRef()
 
@@ -116,30 +125,36 @@ export const PortfolioModal = ({
     return (
       <Fragment>
         <div style={{ marginTop: '10px' }}>
-          {projectList && projectList.length
-            ? projectList.map((project: Project, index: number) => {
-                console.log('>>>>>>>>>>>>>portfolio', portfolio)
-
-                const isProjectSelected = portfolio?.projects?.includes(
-                  project.id
-                )
-                return (
-                  <Grid
-                    key={index}
-                    onClick={() => handleProjectSelect(project.id)}
-                    container
-                    spacing={2}>
-                    <div>{isProjectSelected ? <CheckIcon /> : null}</div>
-                    <div className={cardLogo}>
-                      <img src={project.logo} alt='Project' />
-                    </div>
-                    <div className={logoCOntent}>
-                      <h5>{project.campaignName}</h5>
-                    </div>
-                  </Grid>
-                )
-              })
-            : null}
+          <List>
+            {projectList && projectList.length
+              ? projectList.map((value: any, index: number) => {
+                  const isProjectSelected = portfolio?.projects?.includes(
+                    value.id
+                  )
+                  return (
+                    <ListItem
+                      key={index}
+                      role={undefined}
+                      dense
+                      button
+                      onClick={() => handleProjectSelect(value.id)}>
+                      <ListItemIcon>
+                        {isProjectSelected ? (
+                          <CheckIcon color={'primary'} fontSize={'large'} />
+                        ) : null}
+                      </ListItemIcon>
+                      <ListItemAvatar>
+                        <Avatar alt='' src={value.logo} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        classes={{ root: listItemText }}
+                        primary={value.campaignName}
+                      />
+                    </ListItem>
+                  )
+                })
+              : null}
+          </List>
         </div>
       </Fragment>
     )
@@ -160,16 +175,14 @@ export const PortfolioModal = ({
             isLarge={true}
           />
         </div>
-        {!isChooseProject
-          ? (renderPortfolioLogoView(), renderDetails())
-          : renderProjectDetails()}
-
+        {!isChooseProject ? renderPortfolioLogoView() : null}
+        {!isChooseProject ? renderDetails() : renderProjectDetails()}
         <GradiantButton
           onClick={() => {
             !isChooseProject ? handleProjectSection() : onSubmit()
           }}
           className={portfolioModalBtn}
-          loading={updatingFolder}>
+          loading={portfolioLoading}>
           <Typography variant={'button'}>
             {!isChooseProject ? 'Continue' : 'Create portfolio'}
           </Typography>

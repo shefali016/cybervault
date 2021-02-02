@@ -212,5 +212,5 @@ export interface Portfolio {
   name: string
   description?: string
   icon?: string | null
-  projects?: Array<string> | undefined // project ids
+  projects?: Array<string> // project ids
 }

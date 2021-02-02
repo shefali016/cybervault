@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react'
 import {
   deletePortfolioFolderRequest,
   getPortfolioFolderRequest,
-  updatePortfolioFolderRequest
+  updatePortfolioFolderRequest,
+  updatePortfolioRequest
 } from 'actions/portfolioActions'
 import { useStyles } from './style'
 
@@ -17,6 +18,7 @@ type StateProps = {
   loading: boolean
   updatingFolder: boolean
   allProjectsData: Array<Project>
+  portfolioLoading: boolean
 }
 
 type PortfolioStates = {
@@ -32,6 +34,7 @@ type Props = {
   getPortfolioFolders: () => void
   deletePortfolioFolder: (folderId: string) => void
   history: any
+  updatePortfolio: (portfolio: Portfolio, folderId: string) => void
 } & StateProps
 
 const PortfoliosScreen = ({
@@ -42,7 +45,9 @@ const PortfoliosScreen = ({
   loading,
   updatingFolder,
   deletePortfolioFolder,
-  history
+  history,
+  updatePortfolio,
+  portfolioLoading
 }: Props) => {
   const classes = useStyles()
 
@@ -73,19 +78,27 @@ const PortfoliosScreen = ({
 
   const resetStateData = () => {
     setState({
-      ...state,
+      isModalOpen: false,
+      isChooseProject: false,
       folder: {
         id: '',
         name: '',
         description: '',
         portfolios: []
       },
-      isModalOpen: !state.isModalOpen,
-      isError: false
+      portfolio: {
+        id: '',
+        name: '',
+        description: '',
+        icon: '',
+        projects: []
+      },
+      isError: false,
+      isPortfolioModalOpen: false
     })
   }
 
-  const handleModalRequest = (type: string) => {
+  const handleModalRequest = ({ type, folder }: any) => {
     if (type === 'folder') {
       setState({
         ...state,
@@ -95,6 +108,7 @@ const PortfoliosScreen = ({
     } else {
       setState({
         ...state,
+        folder: folder,
         isPortfolioModalOpen: !state.isPortfolioModalOpen,
         isError: false
       })
@@ -143,7 +157,11 @@ const PortfoliosScreen = ({
     }
   }
 
-  const handlePortfolioSubmit = () => {}
+  const handlePortfolioSubmit = () => {
+    const { folder, portfolio } = state
+    updatePortfolio(portfolio, folder.id)
+    // resetStateData()
+  }
 
   const handleDeleteFolder = (folderId: string) => {
     try {
@@ -182,21 +200,20 @@ const PortfoliosScreen = ({
 
   const handleProjectSelect = (projectId: string) => {
     const { portfolio } = state
-    const projects = portfolio && portfolio.projects ? portfolio.projects : []
-    const isProjectSelected = portfolio?.projects?.includes(projectId)
-    console.log('>>>>>>>>>>>>isProjectSelected', isProjectSelected)
-
-    if (isProjectSelected) {
-      projects.filter((item: any) => item !== projectId)
-      console.log('projectsprojectsprojects', projects)
+    let projectsData = portfolio && portfolio.projects ? portfolio.projects : []
+    const isProjectId = portfolio?.projects?.includes(projectId)
+    if (isProjectId) {
+      if (portfolio && portfolio.projects && portfolio.projects.length) {
+        projectsData = portfolio.projects.filter((item) => item !== projectId)
+      }
     } else {
-      projects.push(projectId)
+      projectsData.push(projectId)
     }
     setState({
       ...state,
       portfolio: {
         ...state.portfolio,
-        projects
+        projects: projectsData
       }
     })
   }
@@ -205,7 +222,7 @@ const PortfoliosScreen = ({
     return (
       <PortfolioFolderModal
         open={state.isModalOpen}
-        onRequestClose={(type: string) => handleModalRequest(type)}
+        onRequestClose={(type: string) => handleModalRequest({ type })}
         folder={state.folder}
         onSubmit={() => handleSubmit()}
         handleInputChange={(e: any, key: string) =>
@@ -246,10 +263,11 @@ const PortfoliosScreen = ({
             handleProjectSelect={(projectId: string) =>
               handleProjectSelect(projectId)
             }
+            portfolioLoading={portfolioLoading}
           />
         </div>
         <div
-          onClick={() => handleModalRequest('folder')}
+          onClick={() => handleModalRequest({ type: 'folder' })}
           className={classes.portfolioBoxWrap}>
           <div className={classes.portfolioBox}>
             <img src={iconFolderUpload} alt='icon' className={classes.image} />
@@ -264,7 +282,8 @@ const PortfoliosScreen = ({
 
 const mapStateToProps = (state: ReduxState): StateProps => ({
   folderList: state.portfolio.folders as Array<PortfolioFolder>,
-  loading: state.portfolio.loading as boolean,
+  loading: state.portfolio.getFoldersLoading as boolean,
+  portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
   allProjectsData: state.project.allProjectsData as Array<Project>
 })
@@ -277,6 +296,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   deletePortfolioFolder: (folderId: string) => {
     return dispatch(deletePortfolioFolderRequest(folderId))
+  },
+  updatePortfolio: (portfolio: Portfolio, folderId: string) => {
+    return dispatch(updatePortfolioRequest(portfolio, folderId))
   }
 })
 

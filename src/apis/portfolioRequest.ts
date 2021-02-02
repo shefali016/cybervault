@@ -50,7 +50,24 @@ export const getPortfolioFolderApi = async (account: Account) => {
       .get()
 
     for (const doc of data.docs) {
-      folderList.push(doc.data())
+      let folderData: PortfolioFolder = doc.data()
+      const portfolios: Array<Portfolio> | any = []
+      for (let index = 0; index < doc.data().portfolios.length; index++) {
+        const portfolioId = doc.data().portfolios[index]
+        const portfolioData = await firebase
+          .firestore()
+          .collection('AccountData')
+          .doc(account.id)
+          .collection('Portfolio')
+          .doc(portfolioId)
+          .get()
+        portfolios.push(portfolioData.data())
+      }
+      folderData = {
+        ...folderData,
+        portfolios
+      }
+      folderList.push(folderData)
     }
     return folderList
   } catch (error) {
@@ -84,7 +101,7 @@ export const deletePortfolioFolderApi = async (
 /**
  * @updatePortfoli
  */
-export const updatePortfolioApi = async (
+export const updatePortfolioRequest = async (
   portfolio: Portfolio,
   account: Account
 ) => {
@@ -106,7 +123,7 @@ export const updatePortfolioApi = async (
       .collection('Portfolio')
       .doc(portfolioData.id)
       .set(portfolioData)
-    return portfolioData
+    return portfolioData.id
   } catch (error) {
     console.log('Errooorrrrr', error)
     return error

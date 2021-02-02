@@ -70,17 +70,21 @@ export function deletePortfolioFolderFailure(error: string) {
 }
 
 /* Portfolio Requests Action */
-export function updatePortfolioRequest(portfolio: Types.Portfolio) {
+export function updatePortfolioRequest(
+  portfolio: Types.Portfolio,
+  folderId: string
+) {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO,
-    portfolio
+    portfolio,
+    folderId
   }
 }
 
-export function updatePortfolioSuccess(portfolio: Array<Types.Portfolio>) {
+export function updatePortfolioSuccess(portfolio: Types.Portfolio) {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO_SUCCESS,
-    payload: portfolio
+    portfolio
   }
 }
 

@@ -3,15 +3,18 @@ import {
   DELETE_PORTFOLIO_FOLDER_SUCCESS,
   GET_PORTFOLIO_FOLDER_REQUEST,
   GET_PORTFOLIO_FOLDER_SUCCESS,
+  UPDATE_PORTFOLIO,
   UPDATE_PORTFOLIO_FOLDER,
-  UPDATE_PORTFOLIO_FOLDER_SUCCESS
+  UPDATE_PORTFOLIO_FOLDER_SUCCESS,
+  UPDATE_PORTFOLIO_SUCCESS
 } from 'actions/actionTypes'
 import * as Types from '../utils/types'
 
 export type State = {
   folders?: Array<Types.PortfolioFolder>
   portfolios?: Map<string, Types.Portfolio> | any
-  loading: boolean
+  getFoldersLoading: boolean
+  getPortfolioLoading: boolean
   updatingFolder: boolean
   error: string | null
 }
@@ -28,20 +31,21 @@ export type Action = {
 const initialState = {
   folders: [],
   portfolios: [],
-  loading: false,
+  getFoldersLoading: false,
   error: '',
-  updatingFolder: false
+  updatingFolder: false,
+  getPortfolioLoading: false
 }
 
 const getPrortfolioFolders = (state: State, action: Action) => ({
   ...state,
-  loading: true,
+  getFoldersLoading: true,
   updatingFolder: false
 })
 
 const getPrortfolioFoldersSuccess = (state: State, action: Action) => ({
   ...state,
-  loading: false,
+  getFoldersLoading: false,
   folders: action.payload,
   updatingFolder: false
 })
@@ -49,23 +53,32 @@ const getPrortfolioFoldersSuccess = (state: State, action: Action) => ({
 const updatePrortfolioFolder = (state: State, action: Action) => ({
   ...state,
   updatingFolder: true,
-  loading: true
+  getFoldersLoading: true
 })
 const updatePrortfolioFoldersSuccess = (state: State, action: Action) => ({
   ...state,
   updatingFolder: false,
-  loading: false,
+  getFoldersLoading: false,
   folders: action.payload
 })
 
 const deletePrortfolioFolder = (state: State, action: Action) => ({
   ...state,
-  loading: true
+  getFoldersLoading: true
 })
 const deletePrortfolioFoldersSuccess = (state: State, action: Action) => ({
   ...state,
-  loading: false,
+  getFoldersLoading: false,
   folders: action.payload
+})
+
+const updatePrortfolio = (state: State, action: Action) => ({
+  ...state,
+  getPortfolioLoading: true
+})
+const updatePrortfolioSuccess = (state: State, action: Action) => ({
+  ...state,
+  getPortfolioLoading: false
 })
 
 const portfoliosReducer = (state = initialState, action: Action) => {
@@ -82,6 +95,10 @@ const portfoliosReducer = (state = initialState, action: Action) => {
       return deletePrortfolioFolder(state, action)
     case DELETE_PORTFOLIO_FOLDER_SUCCESS:
       return deletePrortfolioFoldersSuccess(state, action)
+    case UPDATE_PORTFOLIO:
+      return updatePrortfolio(state, action)
+    case UPDATE_PORTFOLIO_SUCCESS:
+      return updatePrortfolioSuccess(state, action)
     default:
       return state
   }

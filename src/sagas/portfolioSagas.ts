@@ -1,19 +1,24 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects'
+import { push } from 'react-router-redux'
 import * as Types from '../utils/types'
 import * as ActionTypes from '../actions/actionTypes'
 import { ReduxState } from 'reducers/rootReducer'
 import {
   updatePortfolioFolderApi,
   getPortfolioFolderApi,
-  deletePortfolioFolderApi
+  deletePortfolioFolderApi,
+  updatePortfolioRequest
 } from '../apis/portfolioRequest'
 import {
   deletePortfolioFolderFailure,
   getPortfolioFolderSuccess,
   updatePortfolioFolderFailure,
   updatePortfolioFolderSuccess,
-  deletePortfolioFolderSuccess
+  deletePortfolioFolderSuccess,
+  updatePortfolioSuccess,
+  updatePortfolioFailure
 } from '../actions/portfolioActions'
+import history from 'services/history'
 type UpdateParams = {
   type: string
   account: Account
@@ -85,14 +90,44 @@ function* deletePortfolioFolder({ folderId }: UpdateParams) {
   }
 }
 
-function* updatePortfolio({ portfolio }: UpdateParams) {
+function* updatePortfolio({ portfolio, folderId }: UpdateParams) {
   try {
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
+    const folderArray: Array<Types.PortfolioFolder> = yield select(
+      (state: ReduxState) => state.portfolio.folders
+    )
+    const portfolioId: string = yield call(
+      updatePortfolioRequest,
+      portfolio,
+      account
+    )
+    const folder: Types.PortfolioFolder | any = folderArray.filter(
+      (item: any) => item.id === folderId
+    )[0]
+    const folderPortfolios: Array<string> = []
+    if (folder.portfolios && folder.portfolios.length) {
+      for (let index = 0; index < folder.portfolios.length; index++) {
+        const portfolios = folder.portfolios[index]
+        if (portfolios.id) {
+          folderPortfolios.push(portfolios.id, portfolioId)
+        }
+      }
+    } else {
+      folderPortfolios.push(portfolioId)
+    }
+    const folderData = {
+      ...folder,
+      portfolios: folderPortfolios
+    }
+    yield call(updatePortfolioFolderApi, folderData, account)
+    history.push(`/portfolio/${portfolioId}`)
+    // yield put(push(`/portfolio/${portfolioId}`))
+    yield put(updatePortfolioSuccess(portfolio))
   } catch (error: any) {
     console.log('>>>>>>>>>>>>>>Errror', error)
-    yield put(updatePortfolioFolderFailure(error))
+    yield put(updatePortfolioFailure(error))
     throw (Error = error)
   }
 }

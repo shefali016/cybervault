@@ -82,6 +82,11 @@ export const useStyles = makeStyles((theme) => ({
       maxWidth: '100%'
     }
   },
+  listItemText: {
+    '& span': {
+      fontSize: '1.3rem'
+    }
+  },
   portfolioBox: {},
   portfolioLogoImg: {
     height: 80,
@@ -100,7 +105,11 @@ export const useStyles = makeStyles((theme) => ({
   },
   portfolioModalBtn: {
     width: '200px',
-    margin: '50px auto 0'
+    margin: '50px auto 0',
+    borderRadius: '30px',
+    '& span': {
+      textTransform: 'capitalize'
+    }
   },
   portfolioModal: {
     color: '#24262b',
