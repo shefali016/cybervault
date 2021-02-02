@@ -1,17 +1,17 @@
-import { makeStyles } from '@material-ui/core/styles'
 import React, { ChangeEvent, Fragment, useRef } from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
-import { Portfolio, PortfolioFolder } from 'utils/types'
+import { Portfolio, Project } from 'utils/types'
 import AppTextField from 'components/Common/Core/AppTextField'
 import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Grid, Typography } from '@material-ui/core'
+import CheckIcon from '@material-ui/icons/Check'
 
 type Props = {
   open: boolean
   onRequestClose: () => void
   portfolio: Portfolio | null
-  onSubmit: (folder: PortfolioFolder) => void
+  onSubmit: () => void
   handleInputChange: (event: any, key: string) => void
   portfolioModal: string
   portfolioModalBtn: string
@@ -23,6 +23,12 @@ type Props = {
   portfolioLogoImg: string
   addLogoText: string
   portfolioLogoContainer: string
+  handleProjectSection: () => void
+  isChooseProject: boolean
+  projectList: Array<Project>
+  cardLogo: string
+  logoCOntent: string
+  handleProjectSelect: (projectId: string) => void
 }
 
 export const PortfolioModal = ({
@@ -40,7 +46,13 @@ export const PortfolioModal = ({
   portfolioLogo,
   portfolioLogoImg,
   addLogoText,
-  portfolioLogoContainer
+  portfolioLogoContainer,
+  handleProjectSection,
+  projectList,
+  isChooseProject,
+  cardLogo,
+  logoCOntent,
+  handleProjectSelect
 }: Props) => {
   let imageInputRef: any = useRef()
 
@@ -96,12 +108,39 @@ export const PortfolioModal = ({
             onChange={(e: ChangeEvent) => handleInputChange(e, 'description')}
           />
         </div>
-        <GradiantButton
-          onClick={(folder: PortfolioFolder) => onSubmit(folder)}
-          className={portfolioModalBtn}
-          loading={updatingFolder}>
-          <Typography variant={'button'}>Continue</Typography>
-        </GradiantButton>
+      </Fragment>
+    )
+  }
+
+  const renderProjectDetails = () => {
+    return (
+      <Fragment>
+        <div style={{ marginTop: '10px' }}>
+          {projectList && projectList.length
+            ? projectList.map((project: Project, index: number) => {
+                console.log('>>>>>>>>>>>>>portfolio', portfolio)
+
+                const isProjectSelected = portfolio?.projects?.includes(
+                  project.id
+                )
+                return (
+                  <Grid
+                    key={index}
+                    onClick={() => handleProjectSelect(project.id)}
+                    container
+                    spacing={2}>
+                    <div>{isProjectSelected ? <CheckIcon /> : null}</div>
+                    <div className={cardLogo}>
+                      <img src={project.logo} alt='Project' />
+                    </div>
+                    <div className={logoCOntent}>
+                      <h5>{project.campaignName}</h5>
+                    </div>
+                  </Grid>
+                )
+              })
+            : null}
+        </div>
       </Fragment>
     )
   }
@@ -111,9 +150,9 @@ export const PortfolioModal = ({
       <div className={portfolioModal}>
         <div>
           <h2 className={portfolioModalHead}>
-            {portfolio && portfolio.id ? 'Edit Portfolio' : 'New Portfolio'}
+            {!isChooseProject ? 'New Portfolio' : 'Choose Projects'}
           </h2>
-          <span>Get Started</span>
+          <span>{!isChooseProject ? 'Get Started' : 'Display your work'}</span>
 
           <CloseButton
             onClick={onRequestClose}
@@ -121,8 +160,20 @@ export const PortfolioModal = ({
             isLarge={true}
           />
         </div>
-        {renderPortfolioLogoView()}
-        {renderDetails()}
+        {!isChooseProject
+          ? (renderPortfolioLogoView(), renderDetails())
+          : renderProjectDetails()}
+
+        <GradiantButton
+          onClick={() => {
+            !isChooseProject ? handleProjectSection() : onSubmit()
+          }}
+          className={portfolioModalBtn}
+          loading={updatingFolder}>
+          <Typography variant={'button'}>
+            {!isChooseProject ? 'Continue' : 'Create portfolio'}
+          </Typography>
+        </GradiantButton>
       </div>
     </AppModal>
   )

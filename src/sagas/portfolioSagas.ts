@@ -19,6 +19,7 @@ type UpdateParams = {
   account: Account
   folder: Types.PortfolioFolder
   folderId: string
+  portfolio: Types.Portfolio
 }
 
 function* getPortfolioFolders() {
@@ -84,6 +85,18 @@ function* deletePortfolioFolder({ folderId }: UpdateParams) {
   }
 }
 
+function* updatePortfolio({ portfolio }: UpdateParams) {
+  try {
+    const account: Account = yield select(
+      (state: ReduxState) => state.auth.account
+    )
+  } catch (error: any) {
+    console.log('>>>>>>>>>>>>>>Errror', error)
+    yield put(updatePortfolioFolderFailure(error))
+    throw (Error = error)
+  }
+}
+
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.UPDATE_PORTFOLIO_FOLDER, updatePortfolioFolder)
   yield takeLatest(ActionTypes.DELETE_PORTFOLIO_FOLDER, deletePortfolioFolder)
@@ -91,6 +104,7 @@ function* watchGetRequest() {
     ActionTypes.GET_PORTFOLIO_FOLDER_REQUEST,
     getPortfolioFolders
   )
+  yield takeLatest(ActionTypes.UPDATE_PORTFOLIO, updatePortfolio)
 }
 
 export default function* sagas() {

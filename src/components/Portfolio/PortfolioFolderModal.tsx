@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core'
 
 type Props = {
   open: boolean
-  onRequestClose: () => void
+  onRequestClose: (type: string) => void
   folder: PortfolioFolder | null
   onSubmit: (folder: PortfolioFolder) => void
   handleInputChange: (event: any, key: string) => void
@@ -63,14 +63,17 @@ export const PortfolioFolderModal = ({
   }
 
   return (
-    <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
+    <AppModal
+      open={open}
+      onRequestClose={() => onRequestClose('folder')}
+      clickToClose={true}>
       <div className={portfolioModal}>
         <h2 className={portfolioModalHead}>
           {folder && folder.id ? 'Edit Folder' : 'New Folder'}
         </h2>
         <span>Add Content & information</span>
         <CloseButton
-          onClick={onRequestClose}
+          onClick={() => onRequestClose('folder')}
           style={{ position: 'absolute', top: 10, right: 10, fontSize: 50 }}
           isLarge={true}
         />
@@ -79,5 +82,3 @@ export const PortfolioFolderModal = ({
     </AppModal>
   )
 }
-
-const useStyles = makeStyles((theme) => ({}))

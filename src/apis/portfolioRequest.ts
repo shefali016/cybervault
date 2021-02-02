@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { PortfolioFolder } from 'utils/types'
+import { Portfolio, PortfolioFolder } from 'utils/types'
 import { generateUid } from 'utils'
 
 /**
@@ -75,6 +75,38 @@ export const deletePortfolioFolderApi = async (
       .doc(folderId)
       .delete()
     return
+  } catch (error) {
+    console.log('Errooorrrrr', error)
+    return error
+  }
+}
+
+/**
+ * @updatePortfoli
+ */
+export const updatePortfolioApi = async (
+  portfolio: Portfolio,
+  account: Account
+) => {
+  try {
+    let id: string
+    if (!portfolio.id) {
+      id = generateUid()
+    } else {
+      id = portfolio.id
+    }
+    const portfolioData: Portfolio = {
+      ...portfolio,
+      id
+    }
+    await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Portfolio')
+      .doc(portfolioData.id)
+      .set(portfolioData)
+    return portfolioData
   } catch (error) {
     console.log('Errooorrrrr', error)
     return error

@@ -1,6 +1,6 @@
 import { Card, Box } from '@material-ui/core'
 import { Fragment, useState } from 'react'
-import { Portfolio, PortfolioFolder } from 'utils/types'
+import { Portfolio, PortfolioFolder, Project } from 'utils/types'
 import ReactLoading from 'react-loading'
 import ConfirmBox from 'utils/confirmBox'
 import AddIcon from '@material-ui/icons/Add'
@@ -12,78 +12,69 @@ import logo from '../../../assets/nike.png'
 
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
+import { useStyles } from './style'
 
 type Props = {
-  portfolioFolder: string
   folderList: Array<PortfolioFolder>
   loading: boolean
-  loader: string
   handleEditFolderDetail: (folder: PortfolioFolder) => void
   deletefolder: (folderId: string) => void
-  portfoliosCard: string
-  portfolioFolderTitle: string
-  buttonIcon: string
-  cardLogo: string
-  logoCOntent: string
   portfolio: Portfolio
   isModalOpen: boolean
-  handleModalRequest: () => void
+  handleModalRequest: (type: string) => void
   handleSubmit: () => void
   handleInputChange: (e: any, key: string) => void
-  portfolioModal: string
-  portfolioModalBtn: string
-  portfolioModalHead: string
   handleImageChange: (e: any) => void
-  portfolioLogo: string
-  portfolioLogoImg: string
-  addLogoText: string
-  portfolioLogoContainer: string
+  handleProjectSection: () => void
+  isError: boolean
+  isChooseProject: boolean
+  projectList: Array<Project>
+  handleProjectSelect: (projectId: string) => void
 }
 const PortfolioFolders = ({
-  portfolioFolder,
   folderList,
   loading,
-  loader,
   handleEditFolderDetail,
   deletefolder,
-  portfoliosCard,
-  portfolioFolderTitle,
-  buttonIcon,
-  cardLogo,
-  logoCOntent,
   portfolio,
   isModalOpen,
   handleModalRequest,
   handleSubmit,
   handleInputChange,
-  portfolioModal,
-  portfolioModalBtn,
-  portfolioModalHead,
   handleImageChange,
-  portfolioLogo,
-  portfolioLogoImg,
-  addLogoText,
-  portfolioLogoContainer
+  handleProjectSection,
+  isError,
+  isChooseProject,
+  projectList,
+  handleProjectSelect
 }: Props) => {
   const [open, setOpen] = useState<boolean>(false)
   const [folderId, setFolderId] = useState<string>('')
+  const classes = useStyles()
 
   const renderPortfolioModal = () => {
     return (
       <PortfolioModal
         open={isModalOpen}
-        onRequestClose={() => handleModalRequest()}
+        onRequestClose={() => handleModalRequest('portfolio')}
         portfolio={portfolio}
         onSubmit={() => handleSubmit()}
         handleInputChange={(e: any, key: string) => handleInputChange(e, key)}
-        portfolioModal={portfolioModal}
-        portfolioModalBtn={portfolioModalBtn}
-        portfolioModalHead={portfolioModalHead}
+        portfolioModal={classes.portfolioModal}
+        portfolioModalBtn={classes.portfolioModalBtn}
+        portfolioModalHead={classes.portfolioModalHead}
         handleChange={(event: any) => handleImageChange(event)}
-        portfolioLogo={portfolioLogo}
-        portfolioLogoImg={portfolioLogoImg}
-        addLogoText={addLogoText}
-        portfolioLogoContainer={portfolioLogoContainer}
+        portfolioLogo={classes.portfolioLogo}
+        portfolioLogoImg={classes.portfolioLogoImg}
+        addLogoText={classes.addLogoText}
+        portfolioLogoContainer={classes.portfolioLogoContainer}
+        handleProjectSection={handleProjectSection}
+        isError={isError}
+        isChooseProject={isChooseProject}
+        projectList={projectList}
+        cardLogo={classes.cardLogo}
+        logoCOntent={classes.logoCOntent}
+        handleProjectSelect={handleProjectSelect}
       />
     )
   }
@@ -94,8 +85,8 @@ const PortfolioFolders = ({
         folderList && folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
             return (
-              <div key={index} className={portfolioFolder}>
-                <div className={portfolioFolderTitle}>
+              <div key={index} className={classes.portfolioFolder}>
+                <div className={classes.portfolioFolderTitle}>
                   {folder.name}
                   <span onClick={() => handleEditFolderDetail(folder)}>
                     <EditIcon />
@@ -113,11 +104,11 @@ const PortfolioFolders = ({
                 </div>
                 <Grid container spacing={2}>
                   <Grid item lg={3} md={4} sm={6}>
-                    <Card className={portfoliosCard}>
-                      <div className={cardLogo}>
+                    <Card className={classes.portfoliosCard}>
+                      <div className={classes.cardLogo}>
                         <img src={Dummy} alt='' />
                       </div>
-                      <div className={logoCOntent}>
+                      <div className={classes.logoCOntent}>
                         <h5>Audi Q5 Commercial'19</h5>
                         <p>Audi Q5 Commercial'19 Audi Q5 Commerci</p>
                       </div>
@@ -127,11 +118,11 @@ const PortfolioFolders = ({
                     </Card>
                   </Grid>
                   <Grid item lg={3} md={4} sm={6}>
-                    <Card className={portfoliosCard}>
-                      <div className={cardLogo}>
+                    <Card className={classes.portfoliosCard}>
+                      <div className={classes.cardLogo}>
                         <img src={logo} alt='' />
                       </div>
-                      <div className={logoCOntent}>
+                      <div className={classes.logoCOntent}>
                         <h5>Toyota Corolla Campaign</h5>
                         <p>This is the demo conent</p>
                       </div>
@@ -142,9 +133,9 @@ const PortfolioFolders = ({
                   </Grid>
                   <Grid item md={3}>
                     <Card
-                      onClick={handleModalRequest}
-                      className={portfoliosCard}>
-                      <AddIcon className={buttonIcon} />
+                      onClick={() => handleModalRequest('portfolio')}
+                      className={classes.portfoliosCard}>
+                      <AddIcon className={classes.buttonIcon} />
                       Add Portfolio
                     </Card>
                   </Grid>
@@ -154,7 +145,7 @@ const PortfolioFolders = ({
           })
         ) : null
       ) : (
-        <div className={loader}>
+        <div className={classes.loader}>
           <ReactLoading
             type={'bubbles'}
             color={'#fff'}
