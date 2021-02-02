@@ -25,24 +25,26 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: '20px'
   },
   buttonIcon: {
-    marginRight: 5,
-    marginLeft: -30,
-    fontSize: 30
+    fontSize: 30,
+    marginRight: 10
   },
-  portfoliosCard: {
-    width: '230px',
-    height: '50px',
-    display: 'flex',
-    borderRadius: '15px',
-    alignItems: 'center',
-    justifyContent: 'center',
+  createPortfolioButton: {
+    padding: `13px 28px`,
     color: '#5ea5fc',
-    fontWeight: 600,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    background: theme.palette.common.white,
+    transition: theme.transitions.create(['background', 'color'], {
+      duration: 600
+    }),
+    '&:hover': {
+      background: theme.palette.primary.main,
+      color: theme.palette.common.white
+    }
   },
   portfolioFolderTitle: {
-    marginBottom: '10px'
+    marginBottom: theme.spacing(2)
   },
+  folderDescription: { color: theme.palette.text.meta },
   portfolioBox: {},
   portfolioModalBtn: {
     width: '200px',

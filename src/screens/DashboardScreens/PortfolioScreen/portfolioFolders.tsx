@@ -1,4 +1,11 @@
-import { Card, Grid, IconButton, MenuItem, Popover } from '@material-ui/core'
+import {
+  Card,
+  Grid,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography
+} from '@material-ui/core'
 import { Fragment, useState } from 'react'
 import { PortfolioFolder } from 'utils/Interface'
 import ReactLoading from 'react-loading'
@@ -10,6 +17,7 @@ import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import ConfirmBox from 'utils/confirmBox'
 import AddIcon from '@material-ui/icons/Add'
 import { useStyles } from './style'
+import { AppButton } from '../../../components/Common/Core/AppButton'
 
 type Props = {
   folderList: Array<PortfolioFolder>
@@ -37,15 +45,23 @@ const PortfolioFolders = ({
             return (
               <div key={index} className={classes.portfolioFolder}>
                 <div className={classes.portfolioFolderTitle}>
-                  {folder.name}
-                  <small style={{ marginTop: '10px' }}>
+                  <Typography variant='h6'>{folder.name}</Typography>
+                  <Typography
+                    variant='caption'
+                    className={classes.folderDescription}>
                     {folder.description}
-                  </small>
+                  </Typography>
                 </div>
-                <Card className={classes.portfoliosCard}>
-                  <AddIcon className={classes.buttonIcon} />
-                  Add Portfolio
-                </Card>
+                <AppButton
+                  variant='contained'
+                  className={classes.createPortfolioButton}>
+                  <div className='row'>
+                    <AddIcon className={classes.buttonIcon} />
+                    <Typography style={{ fontWeight: 'bold' }}>
+                      Add Portfolio
+                    </Typography>
+                  </div>
+                </AppButton>
               </div>
             )
           })
