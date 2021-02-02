@@ -24,7 +24,7 @@ const composeEnhancers =
 const persistConfig = {
   key: 'root',
   storage,
-  transforms: [authTransform, projectTransform]
+  transforms: [authTransform]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any)

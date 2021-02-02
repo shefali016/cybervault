@@ -3,37 +3,53 @@ import { CENTER, FLEX } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
   ul: {
-    margin: 0,
+    margin: 0
   },
   strong: {
     display: 'inline-block',
-    marginTop: '20px',
+    marginTop: '20px'
   },
   dropzone: {
     textAlign: 'center',
     padding: '20px',
-    border: '2px dashed #DDDDDD',
-    backgroundColor: 'transparent',
+    border: `2px dashed ${theme.palette.background.surfaceHighlight}`,
+    background: 'transparent',
     color: '#bdbdbd',
-    width: 150,
-    height: 120,
+    width: 140,
+    height: 110,
     borderRadius: 25,
     position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: theme.transitions.create(['border', 'background', 'color'], {
+      duration: 500
+    }),
+    '&:hover': {
+      border: `2px dashed ${theme.palette.grey[600]}`,
+      color: theme.palette.common.white,
+      background: 'rgba(0,0,0,0.1)',
+      transition: theme.transitions.create(['border', 'background', 'color'], {
+        duration: 500
+      })
+    }
   },
+
   text: {
     fontSize: 13,
+    fontWeight: 'bold'
   },
   bottomText: {
     fontSize: 11
   },
   image: {
-    margin: 20,
+    marginBottom: 10,
     width: 62,
     height: 52
   },
   topContainer: {
     display: FLEX,
-    justifyContent: 'space-around',
+    justifyContent: 'space-around'
   },
   addedImage: {
     height: 70,
@@ -42,10 +58,10 @@ export const useStyles = makeStyles((theme) => ({
   container: {
     display: FLEX,
     alignItems: 'center',
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
   loader: {
-    zIndex: 100,
+    zIndex: 100
   },
   loaderWrapper: {
     zIndex: 1000,
@@ -56,6 +72,6 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: FLEX,
     alignItems: CENTER,
-    justifyContent: CENTER,
+    justifyContent: CENTER
   }
 }))

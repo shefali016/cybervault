@@ -9,17 +9,17 @@ export const renderDetails = (
   nextRightValue?: string
 ) => {
   return (
-    <div style={{ display: FLEX, flexDirection: ROW }}>
-      <Typography variant={'caption'} style={{ minWidth: 150 }}>
+    <div style={{ display: FLEX, flexDirection: ROW, marginTop: 10 }}>
+      <Typography variant={'body1'} style={{ minWidth: 250 }}>
         {leftLabel}
       </Typography>
-      <Typography variant={'caption'}>
+      <Typography variant={'body1'}>
         {' '}
         {nextRightValue ? 'Start Date:  ' : ''}
         {rightValue}
       </Typography>
       {nextRightValue ? (
-        <Typography style={{ marginLeft: 20 }} variant={'caption'}>
+        <Typography style={{ marginLeft: 20 }} variant={'body1'}>
           {'End Date:  '} {nextRightValue}
         </Typography>
       ) : null}

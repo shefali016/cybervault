@@ -170,11 +170,11 @@ export type Milestone = {
 }
 
 export type MediaObject = {
-  id?: string
+  id: string
   original?: boolean
-  url?: string
-  width?: number
-  height?: number
+  url: string
+  width: number
+  height: number
 }
 
 export type Project = {
@@ -196,6 +196,14 @@ export type Project = {
   campaignDate: string
   videos: Array<MediaObject>
   images: Array<MediaObject>
+  featuredImage?: string
+}
+
+export interface ProjectAsset {
+  id: string
+  files: Array<MediaObject>
+  fileName: string
+  type: string
 }
 
 export type AllProjects = Array<Project>

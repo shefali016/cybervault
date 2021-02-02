@@ -59,7 +59,7 @@ export const ToastProvider = ({
             <Alert
               severity={toast.type as any}
               variant='filled'
-              style={{ zIndex: 100 }}>
+              style={{ zIndex: 30000 }}>
               {toast.title}
             </Alert>
           </div>

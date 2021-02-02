@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
 import Modal from './index'
 import AppTextField from '../Core/AppTextField'
-import { InputChangeEvent } from 'utils/types'
+import { InputChangeEvent } from 'utils/Interface'
 import { GradiantButton } from '../Button/GradiantButton'
 import clsx from 'clsx'
 

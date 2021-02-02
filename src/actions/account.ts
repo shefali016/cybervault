@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes'
-import { Account } from '../utils/types'
+import { Account } from '../utils/Interface'
 
 export const getAccount = (id: string) => ({
   type: ActionTypes.GET_ACCOUNT,

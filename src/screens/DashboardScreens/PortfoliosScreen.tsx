@@ -1,4 +1,4 @@
-import { Account } from '../../utils/types'
+import { Account } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
