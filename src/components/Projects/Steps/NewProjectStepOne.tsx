@@ -1,6 +1,6 @@
 import '../Projects.css'
-import React, { ChangeEvent } from 'react'
-import { makeStyles, Typography, Button } from '@material-ui/core'
+import React, { ChangeEvent,useState } from 'react'
+import { makeStyles, Typography, Button,Grid } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -19,11 +19,16 @@ import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks/'
+import {GradiantButton} from '../../Common/Button/GradiantButton'
+import AppSelect from '../../Common/Core/AppSelect'
+import {Client} from '../../../utils/types';
+
+
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const isTablet = useTabletLayout()
-  const { projectData, setProjectData, haveError, setLogoFile } = props
+  const { projectData, setProjectData, haveError, setLogoFile,clients,addClient ,setAddClient} = props
   let imageInputRef: any = React.useRef()
 
   const handleChange = async (event: any) => {
@@ -73,41 +78,52 @@ const NewProjectStepOne = (props: any) => {
       </div>
     )
   }
+  const handleChooseClient=(event:any)=>{
+    const val=event.target.value
+    let item =clients.find((cl:Client,i:number)=>{
+        return cl.id===val
+    })
+    setProjectData({...projectData,clientId:item.id,
+      clientName:item.name,city:item.city,
+      state:item.state,country:item.country,
+      address:item.address,
+      clientEmail:item.email,
+    })
+  }
+
 
   const renderMiddleView = () => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        {!props.isEdit ? (
-          <div className={'input-row'} style={{ marginBottom: 30 }}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={
-                  haveError && projectData.campaignName === '' ? true : false
-                }
-                type={''}
-                label={'Campaign Name'}
-                value={projectData.campaignName}
-                onChange={(e: ChangeEvent) =>
-                  handleInputChange(e)('campaignName')
-                }
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={
-                  haveError && projectData.campaignDate === '' ? true : false
-                }
-                type={'date'}
-                label={'Campaign Date'}
-                value={projectData.campaignDate}
-                onChange={(e: ChangeEvent) =>
-                  handleInputChange(e)('campaignDate')
-                }
-              />
-            </div>
-          </div>
-        ) : null}
+         {!addClient ?<Grid item sm={8} className={classes.chooseClientWrapper}>
+            <Typography paragraph>
+              {' '}
+              Add a new Client or get started with existing client
+            </Typography>
+            <Typography paragraph className={classes.textSecondary}>
+              {' '}
+              Choose an existing client
+            </Typography>
+            <AppSelect
+              className={classes.select}
+              items={clients.map((cl:Client)=>{
+                return {value:cl.id,title:cl.name}
+              })}
+              // value={clients[0].id}
+              onChange={(event: any) => {
+                handleChooseClient(event)
+              }}
+            />
+            <Typography className={`${classes.bar} ${classes.textCenter}`}>Or</Typography>
+            <Typography className={classes.gradientBtnWrapper}>
+            <GradiantButton onClick={()=>setAddClient(!addClient)} className={classes.addClientBtn}>Add Client</GradiantButton>
+
+            </Typography>
+            </Grid>
+      : <>
+        {!props.isEdit ? renderClientLogoView() : null}
+
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
@@ -172,6 +188,8 @@ const NewProjectStepOne = (props: any) => {
             </div>
           </div>
         ) : null}
+        </>
+      }
       </div>
     )
   }
@@ -183,10 +201,9 @@ const NewProjectStepOne = (props: any) => {
       ) : (
         <NewProjectTitle title={'Edit Client Details'} subtitle={''} />
       )}
-      {!props.isEdit ? renderClientLogoView() : null}
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 4 of 5'}
+        title={props.isEdit ? '' : 'Step 1 of 6'}
         onNext={props.onNext}
         onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}
@@ -225,7 +242,7 @@ const useStyles = makeStyles((theme) => ({
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN
+    flexDirection: COLUMN,
   },
   textFiledContainer: {
     display: FLEX,
@@ -287,6 +304,48 @@ const useStyles = makeStyles((theme) => ({
     position: POSITION_ABSOLUTE,
     top: 10,
     right: 10
+  },
+  textSecondary:{
+    color:GREY_COLOR
+  },
+  select:{
+    width:'100%'
+  },
+  chooseClientWrapper:{
+    margin:'auto',
+  },
+  textCenter:{
+    textAlign:CENTER
+  },
+  bar:{
+    color: GREY_COLOR,
+    position:'relative',
+    padding:'15px',
+    '&:before':{
+      content:'close-quote',
+      position:'absolute',
+      width:'50%',
+      height:'1px',
+      backgroundColor:GREY_COLOR,
+      top:'50%',
+      left:'-20px'
+    },
+    '&:after':{
+      content:'close-quote',
+      position:'absolute',
+      width:'50%',
+      height:'1px',
+      backgroundColor:GREY_COLOR,
+      top:'50%',
+      right:'-20px'
+    }
+  },
+  addClientBtn:{
+    minWidth:'125px',
+    borderRadius:'24px'
+  },
+  gradientBtnWrapper:{
+    textAlign:'right'
   }
 }))
 

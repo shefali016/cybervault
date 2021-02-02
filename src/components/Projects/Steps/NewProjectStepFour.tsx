@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -16,12 +16,11 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Milestone } from '../../../utils/types'
-import { useTabletLayout } from '../../../utils/hooks'
-import NewProjectTitle from '../NewProjectTitle'
+import { Expense, InputChangeEvent } from '../../../utils/types'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import { InputChangeEvent } from '../../../utils/types'
+import NewProjectTitle from '../NewProjectTitle'
+import { useTabletLayout } from '../../../utils/hooks'
 import AddMoreButton from '../../Common/Button/MoreButton'
 import { generateUid } from '../../../utils'
 import CloseButton from '../../Common/Button/CloseButton'
@@ -29,35 +28,40 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepFour = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData } = props
+  const { projectData, setProjectData, haveError } = props
 
-  const addMilestone = () => {
-    const milestones: Array<Milestone> = [
-      ...projectData.milestones,
-      { id: generateUid(), title: '', cost: 0 }
-    ]
-    setProjectData({ ...projectData, milestones })
+  const handleInputChange = (event: InputChangeEvent, key: string) => {
+    const value = event.target.value
+    setProjectData({ ...projectData, [key]: value })
   }
 
-  const onMilestoneChange = (
+  const addExpense = () => {
+    const expenses: Array<Expense> = [
+      ...projectData.expenses,
+      { id: generateUid(), title: '', cost: 0 }
+    ]
+    setProjectData({ ...projectData, expenses })
+  }
+
+  const handleExpenseChange = (
     event: InputChangeEvent,
     key: string,
     index: number
   ) => {
     const value = event.target.value
-    const updatedMilestones = [...projectData.milestones]
-    updatedMilestones[index][key] = value
-    setProjectData({ ...projectData, milestones: updatedMilestones })
+    const expenses = [...projectData.expenses]
+    expenses[index][key] = value
+    setProjectData({ ...projectData, expenses })
   }
 
-  const deleteMilestone = (id: string) => {
-    const milestones = projectData.milestones.filter(
-      (expense: Milestone) => expense.id !== id
+  const deleteExpense = (id: string) => {
+    const expenses = projectData.expenses.filter(
+      (expense: Expense) => expense.id !== id
     )
-    setProjectData({ ...projectData, milestones })
+    setProjectData({ ...projectData, expenses })
   }
 
-  const renderTasksView = (data: Milestone, index: number) => {
+  const renderTasksView = (data: Expense, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
     const closeButton = (
       <div
@@ -66,70 +70,113 @@ const NewProjectStepFour = (props: any) => {
             ? { alignSelf: 'flex-start', marginLeft: -10 }
             : { marginLeft: 10 }
         }>
-        <CloseButton onClick={() => deleteMilestone(data.id)} />
+        <CloseButton onClick={() => deleteExpense(data.id)} />
       </div>
     )
-    return (
-      <div className={'task-row'} key={`milestone-${data.id}`}>
+    return props.newProject || props.editExpenses ? (
+      <div className={'task-row'} key={`expense-${data.id}`}>
         {isTablet && closeButton}
         <div style={{ flex: 1, marginRight: leftInputMargin }}>
           <AppTextField
             type={''}
-            label={`Milestone ${index + 1}`}
-            value={projectData.milestones[index].title}
+            label={`Expense ${index + 1}`}
+            value={projectData.expenses[index].title}
             onChange={(e: InputChangeEvent) =>
-              onMilestoneChange(e, 'title', index)
+              handleExpenseChange(e, 'title', index)
             }
           />
         </div>
         <div style={{ flex: 1 }}>
           <AppTextField
             type={'number'}
-            label={`Payment`}
-            value={projectData.milestones[index].payment}
+            label={`Estimated Cost $`}
+            value={projectData.expenses[index].cost}
             onChange={(e: InputChangeEvent) =>
-              onMilestoneChange(e, 'payment', index)
+              handleExpenseChange(e, 'cost', index)
             }
           />
         </div>
         {!isTablet && closeButton}
       </div>
-    )
+    ) : null
   }
 
   const renderMiddleView = () => {
+    const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        {projectData.milestones && projectData.milestones.length > 0
-          ? projectData.milestones.map((data: Milestone, index: number) => {
+        <div>
+          {props.newProject || props.editBudget ? (
+            <div className={'input-row'} style={{ marginBottom: 30 }}>
+              <div style={{ flex: 1, marginRight: leftInputMargin }}>
+                <AppTextField
+                  error={
+                    haveError && projectData.campaignBudget === ''
+                      ? true
+                      : false
+                  }
+                  type={'number'}
+                  label={'Campaign Budget'}
+                  value={projectData.campaignBudget}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e, 'campaignBudget')
+                  }
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <AppTextField
+                  error={
+                    haveError && projectData.campaignExpenses === ''
+                      ? true
+                      : false
+                  }
+                  type={'number'}
+                  label={'Campaign Expenses'}
+                  value={projectData.campaignExpenses}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e, 'campaignExpenses')
+                  }
+                />
+              </div>
+            </div>
+          ) : null}
+        </div>
+        {props.newProject || props.isBudgetEdit ? (
+          <Typography
+            variant={'caption'}
+            className={classes.estimatedCostLabel}>
+            Add your estimated cost of expenses:
+          </Typography>
+        ) : null}
+        {projectData.expenses && projectData.expenses.length > 0
+          ? projectData.expenses.map((data: Expense, index: number) => {
               return renderTasksView(data, index)
             })
           : null}
-        <AddMoreButton onClick={addMilestone} title={'Add Milestone'} />
+        {props.newProject || props.editExpenses ? (
+          <AddMoreButton onClick={addExpense} title={'Add Expense'} />
+        ) : null}
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      {!props.isEdit ? (
-        <NewProjectTitle
-          title={'Set Milestone Payments.'}
-          subtitle={'Get paid upon completion of each task or date.'}
-        />
-      ) : (
-        <NewProjectTitle
-          title={'Edit Milestone Payments.'}
-          subtitle={'Get paid upon completion of each task or date.'}
-        />
-      )}
+      <NewProjectTitle
+        title={'Budget & expenses.'}
+        subtitle={'Set your campaign budget & estimated expenses.'}
+      />
       {renderMiddleView()}
       <NewProjectFooter
-        onBack={props.onBack}
+        title={props.isEdit ? '' : 'Step 4 of 6'}
         onNext={props.onNext}
-        onUpdate={props.onUpdate}
-        title={props.isEdit ? '' : 'Step 1 of 5'}
+        onBack={props.onBack}
+        description={
+          '*This will be added to the final invoice sent to client. The campaign budget will be the total amount due to the client. You can go back and edit this page again if needed.'
+        }
         projectData={projectData}
+        onUpdate={props.onUpdate}
+        haveError={haveError ? haveError : false}
       />
     </div>
   )
@@ -176,7 +223,8 @@ const useStyles = makeStyles((theme) => ({
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN
+    flexDirection: COLUMN,
+    justifyContent: 'flex-start'
   },
   textFiledContainer: {
     display: FLEX,
@@ -210,13 +258,6 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
       borderColor: PRIMARY_COLOR
     }
-  },
-  moreButton: {
-    width: 120,
-    height: 30,
-    fontSize: 8,
-    borderRadius: 20,
-    textTransform: NONE
   },
   input: {
     color: PRIMARY_COLOR,
@@ -287,19 +328,12 @@ const useStyles = makeStyles((theme) => ({
   bottomView: {
     flex: 0.1,
     display: FLEX,
-    alignItems: CENTER,
-    justifyContent: FLEX_END
-  },
-  addMore: {
-    flex: 0.1,
-    display: FLEX,
     alignItems: CENTER
   },
   stepLabel: {
     color: GREY_COLOR,
     fontSize: 10,
-    marginRight: 30,
-    justifyContent: FLEX_END
+    marginRight: 30
   },
   bottomLeftView: {
     flex: 0.65,
@@ -314,15 +348,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: CENTER,
     justifyContent: FLEX_END
   },
-  addMoreLabel: {
-    color: GREY_COLOR,
-    fontSize: 10,
-    marginRight: 10
-  },
   estimatedCostLabel: {
     color: GREY_COLOR,
     fontSize: 10,
-    marginTop: 30
+    marginBottom: 5
   },
   button: {
     width: 70,
@@ -332,14 +361,25 @@ const useStyles = makeStyles((theme) => ({
     background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
     textTransform: NONE
   },
-  closeButton: {
-    position: POSITION_ABSOLUTE,
-    top: 10,
-    right: 10
+  addMore: {
+    marginTop: -10,
+    marginBottom: 20
   },
-  backButton: {
-    width: 12,
-    height: 18
+  addMoreLabel: {
+    color: GREY_COLOR,
+    fontSize: 10
+  },
+  moreButton: {
+    width: 120,
+    height: 30,
+    fontSize: 8,
+    borderRadius: 20,
+    textTransform: NONE
+  },
+  addMoreButton: {
+    width: 20,
+    height: 20,
+    marginLeft: 10
   }
 }))
 

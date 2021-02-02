@@ -1,12 +1,13 @@
-import React, { useState, useRef, useContext } from 'react'
-import { connect } from 'react-redux'
+import React, { useState, useRef, useContext ,useEffect} from 'react'
+import { connect,useDispatch } from 'react-redux'
 import './Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
-import NewProjectStepTwo from './Steps/NewProjectStepTwo'
+import NewProjectStepTwo from './Steps/NewProjectStepTwo';
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import NewProjectStepFive from './Steps/NewProjectStepFive'
+import NewProjectStepSix from './Steps/NewProjectStepSix'
 import { getProductData, generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
@@ -16,27 +17,35 @@ import { setMedia } from '../../apis/assets'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
+import {getClientsRequest,addClientRequest} from '../../actions/clientActions';
 
 type NewProjectProps = {
   onRequestClose: () => void
   onSubmitClicked: (projectData: any) => void
   success: boolean
   error: null | string
+  account:Types.Account,
+  clients:Array<Types.Client>
 }
 
 const NewProject = ({
   onRequestClose,
   onSubmitClicked,
   success,
-  error
+  error,
+  account,
+  clients
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
   const [logoFile, setLogoFile] = useState(null)
   const [haveError, setHaveError] = useState(false)
+  const [addClient,setAddClient]=useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
+  const dispatch=useDispatch();
+
 
   useOnChange(success, (success) => {
     if (success) {
@@ -52,7 +61,11 @@ const NewProject = ({
       })
     }
   })
+// useEffect(()=>{
+//   if(addClientSuccess){
 
+//   }
+// },[addClientSuccess])
   const onSubmitData = async () => {
     try {
       // @ts-ignorets
@@ -75,6 +88,19 @@ const NewProject = ({
       })
     }
   }
+  const handleAddClient=()=>{
+    const payload={
+      name :projectData.clientName,
+      email:projectData.clientEmail,
+      city:projectData.city,
+      country:projectData.country,
+      id:generateUid(),
+      state:projectData.state,
+      address:projectData.address
+    }
+    dispatch(addClientRequest(account,payload))
+    console.log(projectData,"proooo")
+  }
   const newProject = true
   const renderStepsView = () => {
     const props = {
@@ -85,13 +111,22 @@ const NewProject = ({
       newProject,
       setProjectData,
       setLogoFile,
+      account,
+      clients,
+      addClient,
+      setAddClient,
       onNext: () => {
         const isError = validate(currentStep, projectData)
         if (isError) {
           setHaveError(true)
         } else {
           setHaveError(false)
-          setCurrentStep((step) => step + 1)
+          if(addClient && currentStep==1 ){
+            handleAddClient()
+          }
+          else{
+            setCurrentStep((step) => step + 1)
+          }
           if (modalContentRef.current) {
             modalContentRef.current.scrollTop = 0
           }
@@ -106,17 +141,19 @@ const NewProject = ({
       },
       onSubmit: () => onSubmitData()
     }
-    switch (currentStep) {
+    switch (currentStep) {    
       case 1:
         return <NewProjectStepOne {...props} />
       case 2:
-        return <NewProjectStepTwo {...props} />
+        return <NewProjectStepTwo {...props}/>
       case 3:
         return <NewProjectStepThree {...props} />
       case 4:
         return <NewProjectStepFour {...props} />
       case 5:
         return <NewProjectStepFive {...props} />
+      case 6:
+        return <NewProjectStepSix {...props} />
       default:
         return <NewProjectStepOne {...props} />
     }
@@ -141,6 +178,8 @@ type NewProjectModalProps = {
   open: boolean
   onRequestClose: () => void
   onSubmitClicked: (projectData: Types.Project) => void
+  account:Types.Account
+  clients:Array<Types.Client>
 }
 
 const NewProjectModal = ({
@@ -148,8 +187,16 @@ const NewProjectModal = ({
   onRequestClose,
   onSubmitClicked,
   success,
-  error
+  error,
+  account,
+  clients
 }: NewProjectModalProps & StateProps) => {
+
+  const dispatch=useDispatch();
+  useEffect(()=>{
+    dispatch(getClientsRequest(account))
+  },[])
+
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
@@ -157,6 +204,8 @@ const NewProjectModal = ({
         onSubmitClicked={onSubmitClicked}
         error={error}
         success={success}
+        account={account}
+        clients={clients}
       />
     </AppModal>
   )
@@ -164,12 +213,18 @@ const NewProjectModal = ({
 
 type StateProps = {
   success: boolean
-  error: string | null
+  error: string | null,
+  account:Types.Account,
+  clients:Array<Types.Client>
 }
 
 const mapState = (state: ReduxState): StateProps => ({
   success: state.project.updateSuccess,
-  error: state.project.updateError
+  error: state.project.updateError,
+  account: state.auth.account as Types.Account ,
+  clients:state.clients.clientsData as Array<Types.Client>
+
+  
 })
 
 export default connect(mapState)(NewProjectModal)

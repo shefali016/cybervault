@@ -1,9 +1,9 @@
 export default function validate(step: number, projectData: any) {
+  console.log(step,projectData,"hhhhhh")
+
   switch (step) {
     case 1:
       if (
-        projectData.campaignName.trim() === '' ||
-        projectData.campaignDate.trim() === '' ||
         projectData.clientName.trim() === '' ||
         projectData.clientEmail.trim() === '' ||
         projectData.address.trim() === '' ||
@@ -16,13 +16,22 @@ export default function validate(step: number, projectData: any) {
       break
     case 2:
       if (
+        projectData.campaignName.trim() === '' ||
+        projectData.campaignDate.trim() === '' 
+      ) {
+        return true
+      }
+      break
+
+    case 3:
+      if (
         projectData.campaignObjective.trim() === '' ||
         projectData.campaignDeadLine.trim() === ''
       ) {
         return true
       }
       break
-    case 3:
+    case 4:
       if (
         projectData.campaignBudget.trim() === '' ||
         projectData.campaignExpenses.trim() === ''

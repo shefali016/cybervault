@@ -198,4 +198,14 @@ export type Project = {
   images: Array<MediaObject>
 }
 
+export type Client ={
+  id: string, // Randomly generated
+  name: string
+  email: string
+  address: string
+  city: string
+  state: string
+  country: string
+}
+
 export type AllProjects = Array<Project>
