@@ -87,7 +87,7 @@ export type Account = {
   name?: string
   customerId?: string // Stripe customer ID
   security: {
-    twoFactor: boolean
+    twoFactorEnabled: boolean
     textMessageVerification: boolean
     securityQuestion: { question: string; answer: string }
   }
