@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { logout } from '../../../actions/authActions'
 import { makeStyles } from '@material-ui/core/styles'
 import { FLEX } from 'utils/constants/stringConstants'
-import { Tab, User } from 'utils/types'
+import { Tab, User } from 'utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 
 type StateProps = { user: User }
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: 'column',
     height: '100vh',
-    width: '100vw',
+    width: '100%',
     overflowX: 'auto',
     flexWrap: 'nowrap'
   }

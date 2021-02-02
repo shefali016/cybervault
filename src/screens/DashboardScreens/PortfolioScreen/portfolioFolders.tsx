@@ -1,6 +1,6 @@
 import { Card, Grid, IconButton, MenuItem, Popover } from '@material-ui/core'
 import { Fragment, useState } from 'react'
-import { PortfolioFolder } from 'utils/types'
+import { PortfolioFolder } from 'utils/Interface'
 import ReactLoading from 'react-loading'
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state'
 import MoreVertIcon from '@material-ui/icons/MoreVert'

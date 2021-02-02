@@ -22,7 +22,7 @@ import {
   BORDER_COLOR
 } from '../../../utils/constants/colorsConstants'
 import { Link } from 'react-router-dom'
-import { Tab, ButtonConfig } from 'utils/types'
+import { Tab, ButtonConfig } from 'utils/Interface'
 import LogoutIcon from '@material-ui/icons/ExitToApp'
 
 type Props = {
@@ -257,7 +257,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 30
   },
   listIconStyle: {
-    marginRight: 10,
+    marginRight: 40,
     color: theme.palette.primary.light,
     fontSize: theme.spacing(3)
   },

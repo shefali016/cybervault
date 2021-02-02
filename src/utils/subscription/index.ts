@@ -1,5 +1,5 @@
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { SubscriptionType } from 'utils/types'
+import { SubscriptionType } from 'utils/Interface'
 
 export const getSubscriptionDetails = (
   type: SubscriptionType

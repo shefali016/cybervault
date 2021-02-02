@@ -1,19 +1,29 @@
 import React from 'react'
 import { Divider } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
 type Props = {
   className?: string
+  spacing?: number
 }
 
-export const AppDivider = ({ className }: Props) => {
+export const AppDivider = ({ className, spacing = 3 }: Props) => {
   const classes = useStyles()
-  return <Divider className={clsx(classes.divider, className)} />
+  const theme = useTheme()
+  return (
+    <Divider
+      className={clsx(classes.divider, className)}
+      style={{
+        marginTop: theme.spacing(spacing),
+        marginBottom: theme.spacing(spacing)
+      }}
+    />
+  )
 }
 
 const useStyles = makeStyles((theme) => ({
   divider: {
-    backgroundColor: theme.palette.grey[300]
+    backgroundColor: theme.palette.background.surfaceHighlight
   }
 }))

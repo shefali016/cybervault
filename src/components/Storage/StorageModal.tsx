@@ -9,7 +9,7 @@ import Modal from 'components/Common/Modal'
 import React, { useState } from 'react'
 import { SubscriptionTypes } from 'utils/enums'
 import { getSubscriptionDetails } from 'utils/subscription'
-import { Account } from '../../utils/types'
+import { Account } from '../../utils/Interface'
 
 type Props = {
   open: boolean
