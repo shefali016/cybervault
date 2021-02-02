@@ -1,4 +1,4 @@
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
@@ -37,6 +37,7 @@ export const addClient = async (
     .collection('AccountData')
     .doc(account.id)
     .collection('Clients').doc(client.id).set(client)
+
     // for (const doc of data.docs) {
     //   clientsData.push(doc.data())
     // }

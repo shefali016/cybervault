@@ -5,7 +5,7 @@ import {
   addClientError,
   addClientSuccess
 } from '../actions/clientActions'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import { ReduxState } from 'reducers/rootReducer'
 import {addClient, getClients} from '../apis/clients'

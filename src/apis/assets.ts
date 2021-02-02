@@ -1,7 +1,8 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Asset } from '../utils/types'
+import { Asset, Project, ProjectAsset } from '../utils/Interface'
+import { generateUid } from 'utils'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 
@@ -46,37 +47,39 @@ export const getDownloadUrl = async (id: string) => {
   })
 }
 
-export const updateProjectAssets = async (
-  accountData: Account,
-  file: Object,
-  type: string,
-  fileName: string,
-  id: string
+export const addProjectAssets = async (
+  accountId: string,
+  asset: ProjectAsset
 ) => {
   try {
-    const assectObjet = {
-      createdAt: firebase.firestore.Timestamp.now(),
-      type: type,
-      files: file,
-      fileName: fileName,
-      id
-    }
-    console.log('>>>>>>>>>>>>>>assectObjet', assectObjet)
-
-    return await firebase
+    return firebase
       .firestore()
       .collection('AccountData')
-      .doc(accountData.id)
+      .doc(accountId)
       .collection('Assets')
-      .doc()
-      .set(assectObjet)
+      .doc(asset.id)
+      .set(asset)
   } catch (error) {
     console.log('>>>>>>>>>>>Error', error)
     return error
   }
 }
 
-export const getAssets = async () => {
-  const snapshot = await firebase.firestore().collection('Assets').get()
-  return snapshot && snapshot.docs ? snapshot.docs.map((doc) => doc.data()) : []
+export const getAssets = async (
+  ids: Array<string>,
+  accountId: string
+): Promise<Array<ProjectAsset>> => {
+  const assetRequests = ids.map((id: string) =>
+    firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(accountId)
+      .collection('Assets')
+      .doc(id)
+      .get()
+      .then((snapshot) => {
+        return snapshot.data() as ProjectAsset
+      })
+  )
+  return await Promise.all(assetRequests)
 }

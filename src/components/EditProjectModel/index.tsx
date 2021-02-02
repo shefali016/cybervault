@@ -9,7 +9,7 @@ import NewProjectStepFive from '../Projects/Steps/NewProjectStepFive'
 import { generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
-import * as Types from '../../utils/types'
+import * as Types from '../../utils/Interface'
 
 type EditProjectProps = {
   onRequestClose: () => void

@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import { Region } from 'utils/types'
+import { Region } from 'utils/Interface'
 import AppSelect, { Item } from '../Common/Core/AppSelect'
 
 type Props = {

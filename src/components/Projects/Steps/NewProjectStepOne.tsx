@@ -21,7 +21,7 @@ import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks/'
 import {GradiantButton} from '../../Common/Button/GradiantButton'
 import AppSelect from '../../Common/Core/AppSelect'
-import {Client} from '../../../utils/types';
+import {Client} from '../../../utils/Interface';
 
 
 

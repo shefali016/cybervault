@@ -16,11 +16,12 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Expense, InputChangeEvent } from '../../../utils/types'
+import { Milestone } from '../../../utils/Interface'
+import { useTabletLayout } from '../../../utils/hooks'
+import NewProjectTitle from '../NewProjectTitle'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import NewProjectTitle from '../NewProjectTitle'
-import { useTabletLayout } from '../../../utils/hooks'
+import { InputChangeEvent ,Expense} from '../../../utils/Interface'
 import AddMoreButton from '../../Common/Button/MoreButton'
 import { generateUid } from '../../../utils'
 import CloseButton from '../../Common/Button/CloseButton'

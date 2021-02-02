@@ -1,13 +1,13 @@
-import * as Types from '../utils/types'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
+import { ProjectAsset, Project } from '../utils/Interface'
 
 /**
  * @deleteProject
  */
 export const deleteProject = async (
-  newProjectData: Types.Project,
+  newProjectData: Project,
   account: Account
 ) => {
   return firebase
@@ -23,7 +23,7 @@ export const deleteProject = async (
  * @createNewProject
  */
 export const createNewProjectRequest = async (
-  newProjectData: Types.Project,
+  newProjectData: Project,
   account: Account
 ) => {
   await firebase
@@ -40,7 +40,7 @@ export const createNewProjectRequest = async (
  * @getAllProjects
  */
 export const getAllProjectsRequest = async (account: Account) => {
-  let allProjectsData: Array<{}> = []
+  let allProjectsData: Array<Project> = []
   let data: any = await firebase
     .firestore()
     .collection('AccountData')
@@ -61,21 +61,19 @@ export const getProjectDetailsRequest = async (
   account: Account,
   projectId: string | undefined
 ) => {
-  let allProjectsData: Array<{}> = []
-  let data: any = await firebase
-    .firestore()
-    .collection('AccountData')
-    .doc(account.id)
-    .collection('Projects')
-    .get()
-
-  for (const doc of data.docs) {
-    const projectData = doc.data()
-    if (projectData.id === projectId) {
-      allProjectsData.push(doc.data())
-    }
+  try {
+    let data: any = await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Projects')
+      .doc(projectId)
+      .get()
+    return data.data()
+  } catch (error) {
+    console.log('Error in getProjectDetailsRequest', error)
+    return error
   }
-  return allProjectsData
 }
 
 /**
@@ -85,24 +83,17 @@ export const updateProjectDetailsRequest = async (
   account: Account,
   projectData: Object | undefined | any
 ) => {
-  let setProjectDetail: Object = {}
-  const data = await firebase
-    .firestore()
-    .collection('AccountData')
-    .doc(account.id)
-    .collection('Projects')
-    .get()
-  for (const doc of data.docs) {
-    const project = doc.data()
-    if (project.id === projectData.id) {
-      setProjectDetail = firebase
-        .firestore()
-        .collection('AccountData')
-        .doc(account.id)
-        .collection('Projects')
-        .doc(projectData.id)
-        .set(projectData)
-    }
+  try {
+    const data = await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Projects')
+      .doc(projectData.id)
+      .set(projectData)
+    return data
+  } catch (error) {
+    console.log('Error in update Project details', error)
+    return error
   }
-  return setProjectDetail
 }

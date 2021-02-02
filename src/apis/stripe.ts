@@ -4,7 +4,7 @@ import {
   StripeAccount,
   StripeAccountLink,
   StripeLoginLink
-} from '../utils/types'
+} from '../utils/Interface'
 import { updateAccount } from './account'
 
 const { server_url, domain } = require('../config.json')

@@ -7,7 +7,7 @@ import {
     ADD_CLIENT_ERROR
   } from 'actions/actionTypes'
   import { createTransform } from 'redux-persist'
-  import * as Types from '../utils/types'
+  import * as Types from '../utils/Interface'
   
   export type State = {
    clientsData:Array<Types.Client>

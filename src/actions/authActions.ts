@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes'
-import { User, UserLoginInfo, Account } from '../utils/types'
+import { User, UserLoginInfo, Account } from '../utils/Interface'
 
 export function login(loginInfo: UserLoginInfo) {
   return {
