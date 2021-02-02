@@ -40,7 +40,7 @@ const PortfolioFolders = ({
   return (
     <Fragment>
       {!loading ? (
-        folderList && folderList.length ? (
+        folderList && !!folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
             return (
               <div key={index} className={classes.portfolioFolder}>

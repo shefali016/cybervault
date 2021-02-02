@@ -29,12 +29,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
 const mapDispatchToProps = (dispatch: any) => ({})
 
 const useStyles = makeStyles((theme) => ({
-  portfolioBoxMainWrap: {
-    width: '95%',
-    display: 'block',
-    margin: '0 auto',
-    color: '#9ea0a28c'
-  },
+  portfolioBoxMainWrap: {},
   portfolioFolder: {
     width: '200px',
     height: '200px',

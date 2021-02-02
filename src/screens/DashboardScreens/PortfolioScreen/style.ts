@@ -14,15 +14,10 @@ export const useStyles = makeStyles((theme) => ({
       duration: 500
     })
   },
-  portfolioBoxMainWrap: {
-    width: '95%',
-    display: 'block',
-    margin: '0 auto',
-    color: '#9ea0a28c'
-  },
+  portfolioBoxMainWrap: {},
   portfolioFolder: {
     color: '#fff',
-    marginBottom: '20px'
+    marginBottom: theme.spacing(6)
   },
   buttonIcon: {
     fontSize: 30,
@@ -68,7 +63,6 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: '18px',
     border: '2px dashed #9ea0a28c',
     textAlign: 'center',
-    marginTop: '30px',
     padding: '40px',
     cursor: 'pointer',
     color: theme.palette.text.meta,
