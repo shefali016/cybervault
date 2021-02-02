@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import { Account } from 'utils/types'
+import { Account } from 'utils/Interface'
 
 export const getAccount = (id: string): Promise<Account> => {
   return firebase

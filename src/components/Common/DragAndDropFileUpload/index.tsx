@@ -5,28 +5,31 @@ import { useStyles } from './style'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
 import ReactLoading from 'react-loading'
 
-export const DragAndDropUploader = (props?: any) => {
+type Props = {
+  isVideo?: boolean
+  isLoading: boolean
+  onSubmit: (file: File) => void
+}
+
+export const DragAndDropUploader = ({ isVideo, isLoading, onSubmit }: any) => {
   const classes = useStyles()
-  const [image, setImageSource] = useState([])
-  const [isImage, setIsImage] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
 
   // receives array of files that are done uploading when submit button is clicked
-  const onDrop = useCallback((acceptedFiles) => {
-    setImageSource(acceptedFiles)
-    props.onSubmit(acceptedFiles[0])
-    setIsImage(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onDrop = useCallback((files) => {
+    setFile(files)
+    onSubmit(files[0])
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: props.isVideo ? 'video/*' : 'image/jpeg, image/png'
+    accept: isVideo ? 'video/*' : 'image/*'
   })
 
   return (
     <div {...getRootProps({ className: classes.dropzone })}>
       <input {...getInputProps()} />
-      {props.isLoading && (
+      {isLoading && (
         <div className={classes.loaderWrapper}>
           <ReactLoading
             type={'bubbles'}
@@ -35,38 +38,17 @@ export const DragAndDropUploader = (props?: any) => {
           />
         </div>
       )}
-      {props.isLoading && props.isVideo && (
-        <div className={classes.loaderWrapper}>
-          <ReactLoading
-            type={'bubbles'}
-            color={'#fff'}
-            className={classes.loader}
-          />
-        </div>
-      )}
-      <div className={classes.topContainer}>
-        {isImage
-          ? image.map((file: any, index: number) => {
-              // props.onSubmit(file)
-              return (
-                <Fragment key={index}>
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt='icon'
-                    className={classes.addedImage}
-                  />
-                </Fragment>
-              )
-            })
-          : null}
-      </div>
       <div className={classes.container}>
-        {!isImage ? (
+        {!(file && file.name) ? (
           <img src={iconFolderUpload} alt='icon' className={classes.image} />
-        ) : null}
-        <Typography className={classes.text}> Drag {`&`} Drop Media</Typography>
+        ) : (
+          <Typography>{file.name}</Typography>
+        )}
+        <Typography className={classes.text}>
+          Add {isVideo ? 'Video' : 'Image'}
+        </Typography>
         <Typography className={classes.bottomText}>
-          {!props.isVideo ? '.jpg or .png' : '.mp4 or .mov'}
+          {!isVideo ? '.jpg or .png' : '.mp4 or .mov'}
         </Typography>
       </div>
     </div>

@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import { CENTER, FLEX } from 'utils/constants/stringConstants'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
-import { User } from 'utils/types'
+import { User } from 'utils/Interface'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -237,16 +237,15 @@ const useStyles = makeStyles((theme) => ({
   notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
     height: theme.spacing(7),
-    width: '100%',
     background: theme.palette.background.secondary,
     display: 'flex',
+    minWidth: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
     boxSizing: 'border-box',
-    minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
-    [theme.breakpoints.down('sm')]: {
-      minWidth: window.outerWidth - theme.spacing(8)
-    }
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.palette.background.default
   }
 }))
 

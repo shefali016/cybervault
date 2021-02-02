@@ -1,6 +1,6 @@
 import { makeStyles, TextField, useTheme } from '@material-ui/core'
 import React, { useMemo, forwardRef } from 'react'
-import { InputChangeEvent } from '../../../utils/types'
+import { InputChangeEvent } from '../../../utils/Interface'
 
 type Props = {
   type?: string

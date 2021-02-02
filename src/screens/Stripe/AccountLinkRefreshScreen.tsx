@@ -1,7 +1,7 @@
 import { useTheme } from '@material-ui/core/styles'
 import React, { useEffect } from 'react'
 import ReactLoading from 'react-loading'
-import { Account } from '../../utils/types'
+import { Account } from '../../utils/Interface'
 import { createStripeAccountLink } from '../../apis/stripe'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'

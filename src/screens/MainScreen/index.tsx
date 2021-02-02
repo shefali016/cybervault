@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core'
 
 import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
-import EditProjectScreen from 'screens/DashboardScreens/EditProjectScreen'
+import ProjectSingleScreen from 'screens/DashboardScreens/ProjectSingleScreen'
 import HomeScreen from 'screens/DashboardScreens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
@@ -14,8 +14,7 @@ import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
-import { ButtonConfig, Project, Tab, User, Account } from 'utils/types'
-import { isOnEditProjectScreen } from '../../actions/projectActions'
+import { ButtonConfig, Project, Tab, User, Account } from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
 import DashboardIcon from '@material-ui/icons/Home'
@@ -24,28 +23,20 @@ import PortfolioIcon from '@material-ui/icons/FolderSpecial'
 import SettingsIcon from '@material-ui/icons/Settings'
 import StorageIcon from '@material-ui/icons/Storage'
 import InvoiceIcon from '@material-ui/icons/Receipt'
-import PaymentIcon from '@material-ui/icons/Payment'
 import SecurityIcon from '@material-ui/icons/Security'
 import ProfileIcon from '@material-ui/icons/Person'
 import ManageIcon from '@material-ui/icons/Apartment'
 import BrandingIcon from '@material-ui/icons/Brush'
 import SubscriptionIcon from '@material-ui/icons/LocalActivity'
-import BankingIcon from '@material-ui/icons/AccountBalance'
 
-import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
-// import BankingScreen from 'screens/SharedScreens/BankingScreen'
-import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
-import PortfoliosFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
-import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
-import { getUser } from 'actions/user'
-import { getAccount } from 'actions/account'
-import { ReduxState } from 'reducers/rootReducer'
-import { AppLoader } from 'components/Common/Core/AppLoader'
-import clsx from 'clsx'
+import { getUser } from '../../actions/user'
+import { getAccount } from '../../actions/account'
+import { ReduxState } from '../../reducers/rootReducer'
+import { AppLoader } from '../../components/Common/Core/AppLoader'
 
 const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -304,14 +295,13 @@ const MainScreen = ({
         <Switch>
           <Route path='/projects' component={ProjectsScreen} />
           <Route path='/profile' component={ProfileScreen} />
-          <Route path='/project' component={EditProjectScreen} />
+          <Route path='/project/:id' component={ProjectSingleScreen} />
           <Route path='/manage' component={ManageAccountScreen} />
           <Route path='/branding' component={BrandingScreen} />
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
-          <Route path='/portfolio/:id' component={PortfoliosFolderScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}
@@ -342,10 +332,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     flex: 1,
     paddingTop: theme.spacing(5),
-    minWidth: window.outerWidth - SIDE_DRAWER_WIDTH,
-    [theme.breakpoints.down('sm')]: {
-      minWidth: window.outerWidth - theme.spacing(8)
-    }
+    overflowX: 'hidden'
   },
   buttonIcon: {
     marginRight: 15,

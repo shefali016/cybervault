@@ -9,7 +9,7 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project } from '../../../utils/types'
+import { Project } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 
@@ -24,7 +24,7 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
   const [anchorEl] = React.useState<null | HTMLElement>(null)
 
   const editProject = (projectId: string) => {
-    history.push(`/project?id:${projectId}`)
+    history.push(`/project/${projectId}`)
   }
 
   const ITEM_HEIGHT = 48
@@ -97,7 +97,7 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
                           style={{ marginRight: 5 }}
                           fontSize='small'
                         />
-                        Edit Project Info
+                        View Project
                       </div>
                     </MenuItem>
                     <MenuItem style={{ fontSize: 12 }}>
