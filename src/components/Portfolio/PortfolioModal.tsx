@@ -121,7 +121,7 @@ export const PortfolioModal = ({
     )
   }
 
-  const renderProjectDetails = () => {
+  const renderProjectList = () => {
     return (
       <Fragment>
         <div style={{ marginTop: '10px' }}>
@@ -176,7 +176,7 @@ export const PortfolioModal = ({
           />
         </div>
         {!isChooseProject ? renderPortfolioLogoView() : null}
-        {!isChooseProject ? renderDetails() : renderProjectDetails()}
+        {!isChooseProject ? renderDetails() : renderProjectList()}
         <GradiantButton
           onClick={() => {
             !isChooseProject ? handleProjectSection() : onSubmit()

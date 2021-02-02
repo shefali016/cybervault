@@ -110,7 +110,15 @@ const PortfoliosScreen = ({
         ...state,
         folder: folder,
         isPortfolioModalOpen: !state.isPortfolioModalOpen,
-        isError: false
+        isChooseProject: false,
+        isError: false,
+        portfolio: {
+          id: '',
+          name: '',
+          description: '',
+          icon: '',
+          projects: []
+        }
       })
     }
   }
