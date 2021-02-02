@@ -20,7 +20,6 @@ export const getClients = async (
   for (const doc of data.docs) {
     clientsData.push(doc.data())
   }
-  console.log(clientsData,"clientssss")
   return clientsData
 }
 

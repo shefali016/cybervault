@@ -99,7 +99,6 @@ const NewProject = ({
       address:projectData.address
     }
     dispatch(addClientRequest(account,payload))
-    console.log(projectData,"proooo")
   }
   const newProject = true
   const renderStepsView = () => {
