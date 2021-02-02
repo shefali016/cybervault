@@ -97,7 +97,7 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
                           style={{ marginRight: 5 }}
                           fontSize='small'
                         />
-                        Edit Project Info
+                        View Project
                       </div>
                     </MenuItem>
                     <MenuItem style={{ fontSize: 12 }}>
