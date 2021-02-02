@@ -6,6 +6,14 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  uploadFolderIcon: {
+    fontSize: 60,
+    color: theme.palette.primary.light,
+    opacity: 0.6,
+    transition: theme.transitions.create(['opacity'], {
+      duration: 500
+    })
+  },
   portfolioBoxMainWrap: {
     width: '95%',
     display: 'block',
@@ -56,11 +64,26 @@ export const useStyles = makeStyles((theme) => ({
   },
   portfolioBoxWrap: {
     borderRadius: '18px',
-    border: '4px dashed #9ea0a28c',
+    border: '2px dashed #9ea0a28c',
     textAlign: 'center',
     marginTop: '30px',
     padding: '40px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    color: theme.palette.text.meta,
+    transition: theme.transitions.create(
+      ['border', 'background', 'color', 'opacity'],
+      {
+        duration: 500
+      }
+    ),
+    '&:hover': {
+      border: `2px dashed ${theme.palette.grey[600]}`,
+      color: theme.palette.common.white,
+      background: 'rgba(0,0,0,0.1)',
+      '& $uploadFolderIcon': {
+        opacity: 1
+      }
+    }
   },
   portfolioModalHead: {
     margin: 0

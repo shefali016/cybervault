@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { PortfolioFolder } from 'utils/types'
+import { PortfolioFolder } from 'utils/Interface'
 import { generateUid } from 'utils'
 
 /**

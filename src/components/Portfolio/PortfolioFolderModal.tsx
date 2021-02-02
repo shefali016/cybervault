@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
 import React, { ChangeEvent, Fragment } from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
-import { PortfolioFolder } from 'utils/types'
+import { PortfolioFolder } from 'utils/Interface'
 import AppTextField from 'components/Common/Core/AppTextField'
 import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'

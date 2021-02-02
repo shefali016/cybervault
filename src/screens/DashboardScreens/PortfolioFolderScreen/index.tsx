@@ -1,4 +1,4 @@
-import { PortfolioFolder } from '../../../utils/types'
+import { PortfolioFolder } from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'

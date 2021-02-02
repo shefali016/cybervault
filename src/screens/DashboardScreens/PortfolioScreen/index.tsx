@@ -1,4 +1,4 @@
-import { PortfolioFolder } from '../../../utils/types'
+import { PortfolioFolder } from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
@@ -11,6 +11,8 @@ import {
   updatePortfolioFolderRequest
 } from 'actions/portfolioActions'
 import { useStyles } from './style'
+import FolderIcon from '@material-ui/icons/Folder'
+import { Typography } from '@material-ui/core'
 
 type StateProps = {
   folderList: Array<PortfolioFolder>
@@ -160,8 +162,8 @@ const PortfoliosScreen = ({
           onClick={() => handleModalRequest()}
           className={classes.portfolioBoxWrap}>
           <div className={classes.portfolioBox}>
-            <img src={iconFolderUpload} alt='icon' className={classes.image} />
-            <h5>Create Folder</h5>
+            <FolderIcon className={classes.uploadFolderIcon} />
+            <Typography variant='h6'>Create Folder</Typography>
           </div>
         </div>
       </div>

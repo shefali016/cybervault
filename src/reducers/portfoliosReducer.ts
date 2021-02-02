@@ -6,7 +6,7 @@ import {
   UPDATE_PORTFOLIO_FOLDER,
   UPDATE_PORTFOLIO_FOLDER_SUCCESS
 } from 'actions/actionTypes'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export type State = {
   folders?: Array<Types.PortfolioFolder>
