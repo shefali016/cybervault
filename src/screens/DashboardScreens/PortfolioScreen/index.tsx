@@ -2,7 +2,7 @@ import { PortfolioFolder } from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
-import PortfolioFolders from '../../../components/Portfolio/portfolioFolders'
+import PortfolioFolders from '../../../components/Portfolio/PortfolioFolders'
 import { PortfolioFolderModal } from 'components/Portfolio/PortfolioFolderModal'
 import { useEffect, useState } from 'react'
 import {
