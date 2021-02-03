@@ -69,7 +69,8 @@ export const getClientData=()=>{
     country:'',
     email:'',
     id:'',
-    name:''
+    name:'',
+    logo:''
   }
 }
 

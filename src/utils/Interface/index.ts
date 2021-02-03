@@ -213,7 +213,8 @@ export type Client ={
   address: string
   city: string
   state: string
-  country: string
+  country: string,
+  logo: any
 }
 
 export type AllProjects = Array<Project>

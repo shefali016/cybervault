@@ -40,8 +40,8 @@ const NewProjectStepOne = (props: any) => {
   const handleChange = async (event: any) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
       setLogoFile(event.target.files[0])
-      setProjectData({
-        ...projectData,
+      setClientData({
+        ...clientData,
         logo: URL.createObjectURL(event.target.files[0])
       })
     }
@@ -80,9 +80,9 @@ const NewProjectStepOne = (props: any) => {
             onChange={handleChange}
             style={{ display: 'none' }}
           />
-          {!!projectData.logo && (
+          {!!clientData.logo && (
             <img
-              src={projectData.logo}
+              src={clientData.logo}
               className={classes.clientLogoImg}
               alt={'client-logo'}
             />
