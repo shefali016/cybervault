@@ -7,7 +7,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { FLEX } from 'utils/constants/stringConstants'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
-import ConfirmBox from 'utils/confirmBox'
+import ConfirmBox from 'components/Common/confirmBox'
 import AddIcon from '@material-ui/icons/Add'
 import { useStyles } from './style'
 
@@ -60,19 +60,19 @@ const PortfolioFolders = ({
           />
         </div>
       )}
-      {ConfirmBox({
-        open: open,
-        handleClose: () => setOpen(!open),
-        cancleBtnText: 'Cancel',
-        allowBtnText: 'Delete',
-        confBoxTitle: 'Are you sure?',
-        confBoxText: 'You want to delete this folder',
-        setConfirmed: (value: boolean) => {
+      <ConfirmBox
+        open={open}
+        handleClose={() => setOpen(!open)}
+        cancleBtnText={'Cancel'}
+        allowBtnText={'Delete'}
+        confBoxTitle={'Are you sure?'}
+        confBoxText={'You want to delete this folder'}
+        setConfirmed={(value: boolean) => {
           if (value) {
             deletefolder(folderId)
           }
-        }
-      })}
+        }}
+      />
     </Fragment>
   )
 }

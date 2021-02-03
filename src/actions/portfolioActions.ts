@@ -9,11 +9,13 @@ export function updatePortfolioFolderRequest(folder: Types.PortfolioFolder) {
 }
 
 export function updatePortfolioFolderSuccess(
-  folder: Array<Types.PortfolioFolder>
+  folderId: string,
+  folder: Types.PortfolioFolder
 ) {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO_FOLDER_SUCCESS,
-    payload: folder
+    payload: folderId,
+    folder
   }
 }
 
@@ -54,11 +56,11 @@ export function deletePortfolioFolderRequest(folderId: string) {
 }
 
 export function deletePortfolioFolderSuccess(
-  folder: Array<Types.PortfolioFolder>
+  folderId: string
 ) {
   return {
     type: ActionTypes.DELETE_PORTFOLIO_FOLDER_SUCCESS,
-    payload: folder
+    payload: folderId
   }
 }
 

@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles'
 import React, { ChangeEvent, Fragment } from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { PortfolioFolder } from 'utils/Interface'
@@ -6,6 +5,7 @@ import AppTextField from 'components/Common/Core/AppTextField'
 import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Typography } from '@material-ui/core'
+import { useStyles } from './style'
 
 type Props = {
   open: boolean
@@ -13,9 +13,6 @@ type Props = {
   folder: PortfolioFolder | null
   onSubmit: (folder: PortfolioFolder) => void
   handleInputChange: (event: any, key: string) => void
-  portfolioModal: string
-  portfolioModalBtn: string
-  portfolioModalHead: string
   updatingFolder: boolean
   isError: boolean
 }
@@ -26,12 +23,11 @@ export const PortfolioFolderModal = ({
   folder,
   handleInputChange,
   onSubmit,
-  portfolioModal,
-  portfolioModalBtn,
-  portfolioModalHead,
   updatingFolder,
   isError
 }: Props) => {
+  const classes = useStyles()
+
   const renderDetails = () => {
     return (
       <Fragment>
@@ -54,7 +50,7 @@ export const PortfolioFolderModal = ({
         </div>
         <GradiantButton
           onClick={(folder: PortfolioFolder) => onSubmit(folder)}
-          className={portfolioModalBtn}
+          className={classes.portfolioModalBtn}
           loading={updatingFolder}>
           <Typography variant={'button'}>Continue</Typography>
         </GradiantButton>
@@ -64,8 +60,8 @@ export const PortfolioFolderModal = ({
 
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-      <div className={portfolioModal}>
-        <h2 className={portfolioModalHead}>
+      <div className={classes.portfolioModal}>
+        <h2 className={classes.portfolioModalHead}>
           {folder && folder.id ? 'Edit Folder' : 'New Folder'}
         </h2>
         <span>Add Content & information</span>
@@ -79,5 +75,3 @@ export const PortfolioFolderModal = ({
     </AppModal>
   )
 }
-
-const useStyles = makeStyles((theme) => ({}))

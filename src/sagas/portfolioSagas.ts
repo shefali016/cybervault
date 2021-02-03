@@ -39,23 +39,12 @@ function* getPortfolioFolders() {
 
 function* updatePortfolioFolder({ folder }: UpdateParams) {
   try {
-    const folderArray: Array<Types.PortfolioFolder> | any = yield select(
-      (state: ReduxState) => state.portfolio.folders
-    )
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     const folderData = yield call(updatePortfolioFolderRequest, folder, account)
-    const folderIndex: number = folderArray.findIndex(
-      (data: any) => data.id === folder.id
-    )
-    if (folderIndex > -1) {
-      folderArray.splice(folderIndex, 1, folder)
-    } else {
-      folderArray.push(folderData)
-    }
-
-    yield put(updatePortfolioFolderSuccess(folderArray))
+    const folderId: string = folder.id
+    yield put(updatePortfolioFolderSuccess(folderId, folderData))
   } catch (error: any) {
     console.log('>>>>>>>>>>>>>>Errror', error)
     yield put(updatePortfolioFolderFailure(error))
@@ -65,18 +54,12 @@ function* updatePortfolioFolder({ folder }: UpdateParams) {
 
 function* deletePortfolioFolder({ folderId }: UpdateParams) {
   try {
-    const folderArray: Array<Types.PortfolioFolder> | any = yield select(
-      (state: ReduxState) => state.portfolio.folders
-    )
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     yield call(deletePortfolioFolderRequest, folderId, account)
-    const folderList: Array<Types.PortfolioFolder> = folderArray.filter(
-      (data: any) => data.id !== folderId
-    )
 
-    yield put(deletePortfolioFolderSuccess(folderList))
+    yield put(deletePortfolioFolderSuccess(folderId))
   } catch (error: any) {
     console.log('>>>>>>>>>>>>>>Errror', error)
     yield put(deletePortfolioFolderFailure(error))

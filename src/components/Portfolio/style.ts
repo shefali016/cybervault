@@ -1,34 +1,11 @@
-import { PortfolioFolder } from '../../../utils/Interface'
-import { ReduxState } from 'reducers/rootReducer'
-import { connect } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core'
 import {
   CENTER,
   FLEX,
   POSITION_RELATIVE
 } from 'utils/constants/stringConstants'
 
-type StateProps = {
-  folderList: Array<PortfolioFolder>
-  loading: boolean
-  updatingFolder: boolean
-}
-type Props = {} & StateProps
-
-const PortfoliosScreen = ({}: Props) => {
-  const classes = useStyles()
-
-  return <div>Portfolio Folder works!!</div>
-}
-
-const mapStateToProps = (state: ReduxState): StateProps => ({
-  folderList: state.portfolio.folders as Array<PortfolioFolder>,
-  loading: state.portfolio.loading as boolean,
-  updatingFolder: state.portfolio.updatingFolder as boolean
-})
-const mapDispatchToProps = (dispatch: any) => ({})
-
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   portfolioBoxMainWrap: {
     width: '95%',
     display: 'block',
@@ -36,15 +13,27 @@ const useStyles = makeStyles((theme) => ({
     color: '#9ea0a28c'
   },
   portfolioFolder: {
-    width: '200px',
-    height: '200px',
+    color: '#fff',
+    marginBottom: '20px'
+  },
+  buttonIcon: {
+    marginRight: 5,
+    marginLeft: -30,
+    fontSize: 30
+  },
+  portfoliosCard: {
+    width: '230px',
+    height: '50px',
     display: 'flex',
-    position: 'relative',
     borderRadius: '15px',
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: '10px'
+    color: '#5ea5fc',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  portfolioFolderTitle: {
+    marginBottom: '10px'
   },
   portfolioBox: {},
   portfolioModalBtn: {
@@ -69,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '18px',
     border: '4px dashed #9ea0a28c',
     textAlign: 'center',
-    marginBottom: '30px',
+    marginTop: '30px',
     padding: '40px',
     cursor: 'pointer'
   },
@@ -82,4 +71,3 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {}
 }))
-export default connect(mapStateToProps, mapDispatchToProps)(PortfoliosScreen)

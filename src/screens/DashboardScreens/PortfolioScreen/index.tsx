@@ -2,7 +2,7 @@ import { PortfolioFolder } from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
-import PortfolioFolders from './portfolioFolders'
+import PortfolioFolders from '../../../components/Portfolio/portfolioFolders'
 import { PortfolioFolderModal } from 'components/Portfolio/PortfolioFolderModal'
 import { useEffect, useState } from 'react'
 import {
@@ -131,9 +131,6 @@ const PortfoliosScreen = ({
         folder={state.folder}
         onSubmit={() => handleSubmit()}
         handleInputChange={(e: any, key: string) => handleInputChange(e, key)}
-        portfolioModal={classes.portfolioModal}
-        portfolioModalBtn={classes.portfolioModalBtn}
-        portfolioModalHead={classes.portfolioModalHead}
         updatingFolder={updatingFolder}
         isError={state.isError}
       />
@@ -172,7 +169,7 @@ const PortfoliosScreen = ({
 
 const mapStateToProps = (state: ReduxState): StateProps => ({
   folderList: state.portfolio.folders as Array<PortfolioFolder>,
-  loading: state.portfolio.loading as boolean,
+  loading: state.portfolio.getFoldersLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean
 })
 const mapDispatchToProps = (dispatch: any) => ({
