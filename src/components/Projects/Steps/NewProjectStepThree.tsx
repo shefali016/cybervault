@@ -1,6 +1,5 @@
 import React from 'react'
-import '../Projects.css'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -12,15 +11,17 @@ import {
   CENTER,
   COLUMN,
   FLEX,
+  FLEX_END,
   NONE,
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Expense, InputChangeEvent,Task } from '../../../utils/Interface'
+import { Milestone } from '../../../utils/Interface'
+import { useTabletLayout } from '../../../utils/hooks'
+import NewProjectTitle from '../NewProjectTitle'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import NewProjectTitle from '../NewProjectTitle'
-import { useTabletLayout } from '../../../utils/hooks'
+import { InputChangeEvent ,Expense} from '../../../utils/Interface'
 import AddMoreButton from '../../Common/Button/MoreButton'
 import { generateUid } from '../../../utils'
 import CloseButton from '../../Common/Button/CloseButton'
@@ -28,38 +29,40 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepThree = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, haveError } = props
+  const { projectData, setProjectData, haveError,currentStep } = props
 
-  const handleInputChange = (event: InputChangeEvent) => (key: string) => {
+  const handleInputChange = (event: InputChangeEvent, key: string) => {
     const value = event.target.value
     setProjectData({ ...projectData, [key]: value })
   }
 
-  const addTask = () => {
-    const tasks = [
-      ...projectData.tasks,
-      { id: generateUid(), title: '', endDate: '', startDate: '' }
+  const addExpense = () => {
+    const expenses: Array<Expense> = [
+      ...projectData.expenses,
+      { id: generateUid(), title: '', cost: 0 }
     ]
-    setProjectData({ ...projectData, tasks })
+    setProjectData({ ...projectData, expenses })
   }
 
-  const handleTaskChange = (
+  const handleExpenseChange = (
     event: InputChangeEvent,
     key: string,
     index: number
   ) => {
     const value = event.target.value
-    const tasks = [...projectData.tasks]
-    tasks[index][key] = value
-    setProjectData({ ...projectData, tasks })
+    const expenses = [...projectData.expenses]
+    expenses[index][key] = value
+    setProjectData({ ...projectData, expenses })
   }
 
-  const deleteTask = (id: string) => {
-    const tasks = projectData.tasks.filter((task: Task) => task.id !== id)
-    setProjectData({ ...projectData, tasks })
+  const deleteExpense = (id: string) => {
+    const expenses = projectData.expenses.filter(
+      (expense: Expense) => expense.id !== id
+    )
+    setProjectData({ ...projectData, expenses })
   }
 
-  const renderTasksView = (data: Task, index: number) => {
+  const renderTasksView = (data: Expense, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
     const closeButton = (
       <div
@@ -68,57 +71,33 @@ const NewProjectStepThree = (props: any) => {
             ? { alignSelf: 'flex-start', marginLeft: -10 }
             : { marginLeft: 10 }
         }>
-        <CloseButton onClick={() => deleteTask(data.id)} />
+        <CloseButton onClick={() => deleteExpense(data.id)} />
       </div>
     )
-    return props.newProject || props.editTask ? (
-      <div className={'task-row'} key={`task-${data.id}`}>
+    return props.newProject || props.editExpenses ? (
+      <div className={'task-row'} key={`expense-${data.id}`}>
         {isTablet && closeButton}
-        <div style={{ flex: 2, marginRight: leftInputMargin }}>
+        <div style={{ flex: 1, marginRight: leftInputMargin }}>
           <AppTextField
             type={''}
-            label={`Task ${index + 1}`}
-            value={data.title}
+            label={`Expense ${index + 1}`}
+            value={projectData.expenses[index].title}
             onChange={(e: InputChangeEvent) =>
-              handleTaskChange(e, 'title', index)
+              handleExpenseChange(e, 'title', index)
             }
           />
         </div>
-        <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
+        <div style={{ flex: 1 }}>
           <AppTextField
-            type={'date'}
-            label={'Start Date'}
-            value={data.startDate}
+            type={'number'}
+            label={`Estimated Cost $`}
+            value={projectData.expenses[index].cost}
             onChange={(e: InputChangeEvent) =>
-              handleTaskChange(e, 'startDate', index)
-            }
-          />
-        </div>
-        <div style={{ flex: 0.2 }}>
-          <AppTextField
-            type={'date'}
-            label={'End Date'}
-            value={data.endDate}
-            onChange={(e: InputChangeEvent) =>
-              handleTaskChange(e, 'endDate', index)
+              handleExpenseChange(e, 'cost', index)
             }
           />
         </div>
         {!isTablet && closeButton}
-      </div>
-    ) : null
-  }
-
-  const renderProjectDescriptionView = () => {
-    return props.newProject || props.editCampaign ? (
-      <div style={{ marginTop: 30 }}>
-        <AppTextField
-          label={'Project Description'}
-          type={'text'}
-          onChange={(e) => handleInputChange(e)('description')}
-          value={projectData.description}
-          multiline={true}
-        />
       </div>
     ) : null
   }
@@ -128,65 +107,78 @@ const NewProjectStepThree = (props: any) => {
     return (
       <div className={classes.middleView}>
         <div>
-          {props.newProject || props.editCampaign ? (
+          {props.newProject || props.editBudget ? (
             <div className={'input-row'} style={{ marginBottom: 30 }}>
-              <div style={{ flex: 4, marginRight: leftInputMargin }}>
+              <div style={{ flex: 1, marginRight: leftInputMargin }}>
                 <AppTextField
-                  type={''}
-                  label={'Campaign Objective'}
-                  value={projectData.campaignObjective}
-                  onChange={(e: InputChangeEvent) =>
-                    handleInputChange(e)('campaignObjective')
-                  }
                   error={
-                    haveError && projectData.campaignObjective === ''
+                    haveError && projectData.campaignBudget === ''
                       ? true
                       : false
+                  }
+                  type={'number'}
+                  label={'Campaign Budget'}
+                  value={projectData.campaignBudget}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e, 'campaignBudget')
                   }
                 />
               </div>
               <div style={{ flex: 1 }}>
                 <AppTextField
-                  type={'date'}
-                  label={'Campaign Deadline'}
-                  value={projectData.campaignDeadLine}
-                  onChange={(e: InputChangeEvent) =>
-                    handleInputChange(e)('campaignDeadLine')
-                  }
                   error={
-                    haveError && projectData.campaignDeadLine === ''
+                    haveError && projectData.campaignExpenses === ''
                       ? true
                       : false
+                  }
+                  type={'number'}
+                  label={'Campaign Expenses'}
+                  value={projectData.campaignExpenses}
+                  onChange={(e: InputChangeEvent) =>
+                    handleInputChange(e, 'campaignExpenses')
                   }
                 />
               </div>
             </div>
           ) : null}
         </div>
-        {projectData.tasks && projectData.tasks.length > 0
-          ? projectData.tasks.map((data: Task, index: number) => {
+        {props.newProject || props.isBudgetEdit ? (
+          <Typography
+            variant={'caption'}
+            className={classes.estimatedCostLabel}>
+            Add your estimated cost of expenses:
+          </Typography>
+        ) : null}
+        {projectData.expenses && projectData.expenses.length > 0
+          ? projectData.expenses.map((data: Expense, index: number) => {
               return renderTasksView(data, index)
             })
           : null}
-        {props.newProject || props.editTask ? (
-          <AddMoreButton onClick={addTask} title={'Add Task'} />
+        {props.newProject || props.editExpenses ? (
+          <AddMoreButton onClick={addExpense} title={'Add Expense'} />
         ) : null}
-        {renderProjectDescriptionView()}
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      <NewProjectTitle title={'Plan The Strategy.'} subtitle={'Work scope.'} />
+      <NewProjectTitle
+        title={'Budget & expenses.'}
+        subtitle={'Set your campaign budget & estimated expenses.'}
+      />
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 3 of 6'}
-        onBack={props.onBack}
+        title={props.isEdit ? '' : 'Step 3 of 5'}
         onNext={props.onNext}
-        onUpdate={props.onUpdate}
+        onBack={props.onBack}
+        description={
+          '*This will be added to the final invoice sent to client. The campaign budget will be the total amount due to the client. You can go back and edit this page again if needed.'
+        }
         projectData={projectData}
+        onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}
+        currentStep={currentStep}
       />
     </div>
   )
@@ -233,19 +225,21 @@ const useStyles = makeStyles((theme) => ({
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN
+    flexDirection: COLUMN,
+    justifyContent: 'flex-start'
   },
   textFiledContainer: {
     display: FLEX,
-    flex: 1,
+    flex: 0.25,
     flexDirection: ROW,
-    marginBottom: 20
+    marginTop: 20
   },
   tasksContainer: {
     display: FLEX,
-    flex: 1,
+    flex: 0.25,
     flexDirection: ROW,
-    marginBottom: 20
+    marginTop: 15,
+    marginBottom: 15
   },
   textField: {
     width: '90%',
@@ -272,6 +266,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8
   },
   textFieldDes: {
+    marginTop: 10,
+    marginBottom: 0,
     fontWeight: 500,
     fontSize: 8,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
@@ -283,32 +279,90 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
       borderColor: PRIMARY_COLOR
-    },
-    marginBottom: 20
+    }
   },
   inputRootDes: {
-    fontSize: 12,
-    minHeight: 31
+    fontSize: 10,
+    height: 80
   },
   inputRoot: {
-    fontSize: 12,
-    height: 31
+    fontSize: 10,
+    height: 25
   },
   labelRoot: {
-    fontSize: 12,
+    fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
-    }
+      color: PRIMARY_DARK_COLOR,
+      marginTop: 2
+    },
+    height: 25,
+    marginTop: -5
   },
   labelRootFilled: {
-    fontSize: 12,
+    fontSize: 10,
+    color: GREY_COLOR,
+    '&$labelFocused': {
+      color: PRIMARY_DARK_COLOR,
+      marginTop: 2
+    },
+    height: 25,
+    marginTop: 0
+  },
+  dateRoot: {
+    fontSize: 10,
     color: GREY_COLOR,
     '&$labelFocused': {
       color: PRIMARY_DARK_COLOR
-    }
+    },
+    height: 25
+  },
+  dateRootFilled: {
+    fontSize: 10,
+    color: GREY_COLOR,
+    '&$labelFocused': {
+      color: PRIMARY_DARK_COLOR
+    },
+    height: 25,
+    marginTop: 0
   },
   labelFocused: {},
+  bottomView: {
+    flex: 0.1,
+    display: FLEX,
+    alignItems: CENTER
+  },
+  stepLabel: {
+    color: GREY_COLOR,
+    fontSize: 10,
+    marginRight: 30
+  },
+  bottomLeftView: {
+    flex: 0.65,
+    display: FLEX,
+    alignItems: CENTER,
+    color: GREY_COLOR,
+    fontSize: 10
+  },
+  bottomRightView: {
+    flex: 0.35,
+    display: FLEX,
+    alignItems: CENTER,
+    justifyContent: FLEX_END
+  },
+  estimatedCostLabel: {
+    color: GREY_COLOR,
+    fontSize: 10,
+    marginBottom: 5
+  },
+  button: {
+    width: 70,
+    height: 25,
+    fontSize: 8,
+    borderRadius: 15,
+    background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
+    textTransform: NONE
+  },
   addMore: {
     marginTop: -10,
     marginBottom: 20

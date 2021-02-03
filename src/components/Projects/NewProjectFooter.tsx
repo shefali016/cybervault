@@ -21,6 +21,8 @@ type Props = {
   onUpdate?: (projectData: any) => void
   projectData?: any
   isLoading?: boolean
+  addClient?:boolean
+  currentStep?:number
 }
 
 const NewProjectFooter = ({
@@ -32,7 +34,9 @@ const NewProjectFooter = ({
   haveError,
   onUpdate,
   projectData,
-  isLoading
+  isLoading,
+  addClient,
+  currentStep
 }: Props) => {
   const classes = useStyles()
 
@@ -68,13 +72,13 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {typeof onBack === 'function' && renderBackButton()}
+        {typeof onBack === 'function' && (currentStep!==1 || (currentStep==1 && addClient) ) && renderBackButton()}
         <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
         </Typography>
         {typeof onNext === 'function' && (
-          <GradiantButton onClick={onNext} className={classes.continueButton}>
-            <Typography variant={'button'}>Continue</Typography>
+          <GradiantButton onClick={onNext} className={classes.continueButton} loading={isLoading}>
+            <Typography variant={'button'}>{currentStep==1 && addClient?'Add Client':'Continue'}</Typography>
           </GradiantButton>
         )}
         {typeof onUpdate === 'function' && (
@@ -94,7 +98,10 @@ const useStyles = makeStyles((theme) => ({
   stepLabel: {
     color: theme.palette.grey[500]
   },
-  continueButton: { marginLeft: 25 },
+  continueButton: { marginLeft: 25,
+      minWidth:'125px',
+      borderRadius:'24px'
+    },
   button: {
     width: 110,
     height: 40,

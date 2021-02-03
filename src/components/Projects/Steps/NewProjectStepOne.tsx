@@ -1,11 +1,14 @@
 import '../Projects.css'
-import React, { ChangeEvent,useState } from 'react'
+import React, { ChangeEvent,useState,useEffect } from 'react'
+import {useDispatch} from 'react-redux';
 import { makeStyles, Typography, Button,Grid } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
   PRIMARY_DARK_COLOR,
-  GREY_COLOR
+  GREY_COLOR,
+  SECONDARY_COLOR,
+  LIGHT_GREY_BG
 } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -22,13 +25,16 @@ import { useTabletLayout } from '../../../utils/hooks/'
 import {GradiantButton} from '../../Common/Button/GradiantButton'
 import AppSelect from '../../Common/Core/AppSelect'
 import {Client} from '../../../utils/Interface';
+import {getClientsRequest} from '../../../actions/clientActions';
 
 
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const isTablet = useTabletLayout()
-  const { projectData, setProjectData, haveError, setLogoFile,clients,addClient ,setAddClient} = props
+  const { projectData, setProjectData, haveError,
+     setLogoFile,clients,addClient ,setAddClient,
+     currentStep,account,addClientLoading,setClientData,clientData} = props
   let imageInputRef: any = React.useRef()
 
   const handleChange = async (event: any) => {
@@ -43,9 +49,19 @@ const NewProjectStepOne = (props: any) => {
 
   const handleInputChange = (event: any) => (key: string) => {
     const value = event.target.value
-    setProjectData({ ...projectData, [key]: value })
+    setClientData({ ...clientData, [key]: value })
   }
 
+  const dispatch=useDispatch();
+  useEffect(()=>{
+    dispatch(getClientsRequest(account))
+  },[])
+
+  useEffect(()=>{
+    if(clients.length){
+      setClientData(clients[0])
+    }
+  },[clients])
   const renderClientLogoView = () => {
     return (
       <div className={'client-logo-container'}>
@@ -83,14 +99,8 @@ const NewProjectStepOne = (props: any) => {
     let item =clients.find((cl:Client,i:number)=>{
         return cl.id===val
     })
-    setProjectData({...projectData,clientId:item.id,
-      clientName:item.name,city:item.city,
-      state:item.state,country:item.country,
-      address:item.address,
-      clientEmail:item.email,
-    })
+    setClientData(item)
   }
-
 
   const renderMiddleView = () => {
     const leftInputMargin = !isTablet ? 15 : 0
@@ -110,14 +120,14 @@ const NewProjectStepOne = (props: any) => {
               items={clients.map((cl:Client)=>{
                 return {value:cl.id,title:cl.name}
               })}
-              // value={clients[0].id}
+              value={clientData.id}
               onChange={(event: any) => {
                 handleChooseClient(event)
               }}
             />
             <Typography className={`${classes.bar} ${classes.textCenter}`}>Or</Typography>
             <Typography className={classes.gradientBtnWrapper}>
-            <GradiantButton onClick={()=>setAddClient(!addClient)} className={classes.addClientBtn}>Add Client</GradiantButton>
+            <GradiantButton onClick={()=>setAddClient(!addClient)} className={classes.gradientBtn}>Add Client</GradiantButton>
 
             </Typography>
             </Grid>
@@ -127,20 +137,20 @@ const NewProjectStepOne = (props: any) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
-              error={haveError && projectData.clientName === '' ? true : false}
+              error={haveError && clientData.name === '' ? true : false}
               type={''}
               label={'Client Name'}
-              value={projectData.clientName}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('clientName')}
+              value={clientData.name}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('name')}
             />
           </div>
           <div style={{ flex: 1 }}>
             <AppTextField
-              error={haveError && projectData.clientEmail === '' ? true : false}
+              error={haveError && clientData.email === '' ? true : false}
               type={''}
               label={'Client Email'}
-              value={projectData.clientEmail}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('clientEmail')}
+              value={clientData.email}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('email')}
             />
           </div>
         </div>
@@ -148,19 +158,19 @@ const NewProjectStepOne = (props: any) => {
           <div className={'input-row'}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
-                error={haveError && projectData.address === '' ? true : false}
+                error={haveError && clientData.address === '' ? true : false}
                 type={''}
                 label={'Address'}
-                value={projectData.address}
+                value={clientData.address}
                 onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
               />
             </div>
             <div style={{ flex: 1 }}>
               <AppTextField
-                error={haveError && projectData.city === '' ? true : false}
+                error={haveError && clientData.city === '' ? true : false}
                 type={''}
                 label={'City'}
-                value={projectData.city}
+                value={clientData.city}
                 onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
               />
             </div>
@@ -170,19 +180,19 @@ const NewProjectStepOne = (props: any) => {
           <div className={'input-row'}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
-                error={haveError && projectData.state === '' ? true : false}
+                error={haveError && clientData.state === '' ? true : false}
                 type={''}
                 label={'State/Province'}
-                value={projectData.state}
+                value={clientData.state}
                 onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
               />
             </div>
             <div style={{ flex: 1 }}>
               <AppTextField
-                error={haveError && projectData.country === '' ? true : false}
+                error={haveError && clientData.country === '' ? true : false}
                 type={''}
                 label={'Country'}
-                value={projectData.country}
+                value={clientData.country}
                 onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
               />
             </div>
@@ -203,11 +213,15 @@ const NewProjectStepOne = (props: any) => {
       )}
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 1 of 6'}
+        title={props.isEdit ? '' : 'Step 1 of 5'}
         onNext={props.onNext}
         onUpdate={props.onUpdate}
+        onBack={props.onBack}
         haveError={haveError ? haveError : false}
         projectData={projectData}
+        addClient={addClient}
+        currentStep={currentStep}
+        isLoading={addClientLoading}
       />
     </div>
   )
@@ -309,7 +323,10 @@ const useStyles = makeStyles((theme) => ({
     color:GREY_COLOR
   },
   select:{
-    width:'100%'
+    width:'100%',
+    '& div':{
+      padding:'12px'
+    }
   },
   chooseClientWrapper:{
     margin:'auto',
@@ -328,7 +345,11 @@ const useStyles = makeStyles((theme) => ({
       height:'1px',
       backgroundColor:GREY_COLOR,
       top:'50%',
-      left:'-20px'
+      left:'-40px',
+      [theme.breakpoints.down('sm')]: {
+        left:'0',
+        width:'45%'
+      }
     },
     '&:after':{
       content:'close-quote',
@@ -337,15 +358,20 @@ const useStyles = makeStyles((theme) => ({
       height:'1px',
       backgroundColor:GREY_COLOR,
       top:'50%',
-      right:'-20px'
+      right:'-40px',
+      [theme.breakpoints.down('sm')]: {
+        right:'0',
+        width:'45%'
+
+      }
     }
   },
-  addClientBtn:{
+  gradientBtn:{
     minWidth:'125px',
     borderRadius:'24px'
   },
   gradientBtnWrapper:{
-    textAlign:'right'
+    textAlign:CENTER
   }
 }))
 

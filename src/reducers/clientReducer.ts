@@ -33,7 +33,9 @@ import {
   
   const getClientsRequest = (state: State, action: Action) => ({
     ...state,
-    loading:true
+    loading:true,
+    success:false,
+    error:false
   })
   
   const getClientsSuccess = (state: State, action: Action) => {
@@ -41,13 +43,16 @@ import {
       ...state,
       clientsData:action.payload,
       loading:false,
-      success:true
+      success:true,
+      error:false
     }
   }
   
   const getClientsError = (state: State, action: Action) => ({
     ...state,
-    error:true
+    error:true,
+    loading:false,
+    success:false
   })
   const addClientRequest = (state: State, action: Action) => ({
     ...state,
@@ -99,6 +104,13 @@ import {
     (inboundState: State) => {
       return {
         ...inboundState,
+        loading:false,
+        success:false,
+        error:false,
+        clientsData:[],
+        addClientSuccess:false,
+        addClientError:false,
+        addClientLoading:false
       }
     },
     (outboundState: State) => outboundState,

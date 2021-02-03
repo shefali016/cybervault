@@ -1,11 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core'
-import {
-  PRIMARY_COLOR,
-  TRANSPARENT,
-  PRIMARY_DARK_COLOR,
-  GREY_COLOR
-} from 'utils/constants/colorsConstants'
+import { makeStyles, Button } from '@material-ui/core'
+import { TRANSPARENT, GREY_COLOR } from 'utils/constants/colorsConstants'
 import {
   BOLD,
   CENTER,
@@ -16,83 +11,31 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Milestone } from '../../../utils/Interface'
-import { useTabletLayout } from '../../../utils/hooks'
 import NewProjectTitle from '../NewProjectTitle'
-import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import { InputChangeEvent } from '../../../utils/Interface'
-import AddMoreButton from '../../Common/Button/MoreButton'
-import { generateUid } from '../../../utils'
-import CloseButton from '../../Common/Button/CloseButton'
+import { RenderClientDetails } from '../../Common/Widget/ClientDetailsWidget'
+import { RenderTaskDetails } from '../../Common/Widget/TaskDetailsWidget'
+import { RenderProjectDetails } from '../../Common/Widget/ProjectDetailWidget'
+import { RenderExpenseDetails } from '../../Common/Widget/ExpenseDetailsWidget'
+import { RenderMilestonesDetails } from '../../Common/Widget/MilestonesDetailWidget'
+import { RenderBudgetDetails } from '../../Common/Widget/BudgetDetailsWidget'
 
 const NewProjectStepFive = (props: any) => {
-  const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData } = props
+  const { projectData, onSubmit,currentStep } = props
 
-  const addMilestone = () => {
-    const milestones: Array<Milestone> = [
-      ...projectData.milestones,
-      { id: generateUid(), title: '', cost: 0 }
-    ]
-    setProjectData({ ...projectData, milestones })
-  }
-
-  const onMilestoneChange = (
-    event: InputChangeEvent,
-    key: string,
-    index: number
-  ) => {
-    const value = event.target.value
-    const updatedMilestones = [...projectData.milestones]
-    updatedMilestones[index][key] = value
-    setProjectData({ ...projectData, milestones: updatedMilestones })
-  }
-
-  const deleteMilestone = (id: string) => {
-    const milestones = projectData.milestones.filter(
-      (expense: Milestone) => expense.id !== id
-    )
-    setProjectData({ ...projectData, milestones })
-  }
-
-  const renderTasksView = (data: Milestone, index: number) => {
-    const leftInputMargin = !isTablet ? 15 : 0
-    const closeButton = (
-      <div
-        style={
-          isTablet
-            ? { alignSelf: 'flex-start', marginLeft: -10 }
-            : { marginLeft: 10 }
-        }>
-        <CloseButton onClick={() => deleteMilestone(data.id)} />
-      </div>
-    )
+  const renderClientLogoView = () => {
     return (
-      <div className={'task-row'} key={`milestone-${data.id}`}>
-        {isTablet && closeButton}
-        <div style={{ flex: 1, marginRight: leftInputMargin }}>
-          <AppTextField
-            type={''}
-            label={`Milestone ${index + 1}`}
-            value={projectData.milestones[index].title}
-            onChange={(e: InputChangeEvent) =>
-              onMilestoneChange(e, 'title', index)
-            }
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <AppTextField
-            type={'number'}
-            label={`Payment`}
-            value={projectData.milestones[index].payment}
-            onChange={(e: InputChangeEvent) =>
-              onMilestoneChange(e, 'payment', index)
-            }
-          />
-        </div>
-        {!isTablet && closeButton}
+      <div className={'client-logo-container'}>
+        <Button variant='contained' className={classes.clientLogo}>
+          {!!projectData.logo && (
+            <img
+              src={projectData.logo}
+              className={classes.clientLogoImg}
+              alt={'client-logo'}
+            />
+          )}
+        </Button>
       </div>
     )
   }
@@ -100,36 +43,37 @@ const NewProjectStepFive = (props: any) => {
   const renderMiddleView = () => {
     return (
       <div className={classes.middleView}>
-        {projectData.milestones && projectData.milestones.length > 0
-          ? projectData.milestones.map((data: Milestone, index: number) => {
-              return renderTasksView(data, index)
-            })
-          : null}
-        <AddMoreButton onClick={addMilestone} title={'Add Milestone'} />
+        <RenderClientDetails projectData={projectData} />
+        <RenderProjectDetails projectData={projectData} />
+        {projectData?.tasks?.length > 0 &&
+        projectData?.tasks[0]?.title.trim() !== '' ? (
+          <RenderTaskDetails projectData={projectData} />
+        ) : null}
+        {projectData?.expenses?.length > 0 &&
+        projectData?.expenses[0]?.title.trim() !== '' ? (
+          <RenderExpenseDetails projectData={projectData} />
+        ) : null}
+        {projectData?.milestones?.length > 0 &&
+        projectData?.milestones[0]?.title.trim() !== '' ? (
+          <RenderMilestonesDetails projectData={projectData} />
+        ) : null}
+        <RenderBudgetDetails projectData={projectData} />
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      {!props.isEdit ? (
-        <NewProjectTitle
-          title={'Set Milestone Payments.'}
-          subtitle={'Get paid upon completion of each task or date.'}
-        />
-      ) : (
-        <NewProjectTitle
-          title={'Edit Milestone Payments.'}
-          subtitle={'Get paid upon completion of each task or date.'}
-        />
-      )}
+      <NewProjectTitle title={'New Project'} subtitle={'Review Details'} />
+      {renderClientLogoView()}
       {renderMiddleView()}
       <NewProjectFooter
+        title={'Step 5 of 5'}
+        onStartProject={onSubmit}
         onBack={props.onBack}
-        onNext={props.onNext}
-        onUpdate={props.onUpdate}
-        title={props.isEdit ? '' : 'Step 5 of 6'}
-        projectData={projectData}
+        isLoading={props.isLoading}
+        currentStep={currentStep}
+
       />
     </div>
   )
@@ -160,8 +104,7 @@ const useStyles = makeStyles((theme) => ({
     height: 80,
     width: 80,
     borderRadius: 40,
-    backgroundColor: TRANSPARENT,
-    marginBottom: 5
+    backgroundColor: TRANSPARENT
   },
   clientLogoImg: {
     height: 80,
@@ -169,14 +112,17 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 40,
     position: POSITION_ABSOLUTE
   },
-  addLogoText: {
-    fontSize: 10,
+  detailsHeaderTitle: {
+    fontSize: 20,
     color: GREY_COLOR
   },
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN
+    flexDirection: COLUMN,
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: 30
+    }
   },
   textFiledContainer: {
     display: FLEX,
@@ -184,106 +130,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: ROW,
     marginTop: 20
   },
-  tasksContainer: {
-    display: FLEX,
-    flex: 0.25,
-    flexDirection: ROW,
-    marginTop: 15,
-    marginBottom: 15
-  },
-  textField: {
-    width: '90%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    paddingBottom: 0,
-    marginTop: 0,
-    marginBottom: 0,
-    fontWeight: 500,
-    fontSize: 8,
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
-      borderRadius: 20
-    },
-    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    }
-  },
-  moreButton: {
-    width: 120,
-    height: 30,
-    fontSize: 8,
-    borderRadius: 20,
-    textTransform: NONE
-  },
-  input: {
-    color: PRIMARY_COLOR,
-    fontSize: 8
-  },
-  textFieldDes: {
-    marginTop: 10,
-    marginBottom: 0,
-    fontWeight: 500,
-    fontSize: 8,
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
-      borderRadius: 20
-    },
-    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    }
-  },
-  inputRootDes: {
-    fontSize: 10,
-    height: 80
-  },
-  inputRoot: {
-    fontSize: 10,
-    height: 25
-  },
-  labelRoot: {
-    fontSize: 10,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-      marginTop: 2
-    },
-    height: 25,
-    marginTop: -5
-  },
-  labelRootFilled: {
-    fontSize: 10,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-      marginTop: 2
-    },
-    height: 25,
-    marginTop: 0
-  },
-  dateRoot: {
-    fontSize: 10,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
-    },
-    height: 25
-  },
-  dateRootFilled: {
-    fontSize: 10,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
-    },
-    height: 25,
-    marginTop: 0
-  },
-  labelFocused: {},
   bottomView: {
     flex: 0.1,
     display: FLEX,
