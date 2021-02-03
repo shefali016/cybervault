@@ -16,7 +16,7 @@ import {
   SECONDARY_COLOR,
   WHITE_COLOR
 } from 'utils/constants/colorsConstants'
-import { Project } from '../../../utils/types';
+import { Project } from '../../../utils/Interface';
 import Invoice from '../../../assets/invoice.png';
 import Milestone from '../../../assets/milestone.png';
 import {GradiantButton }from '../../Common/Button/GradiantButton';

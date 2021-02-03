@@ -1,4 +1,4 @@
-import { User, UserLoginInfo, AuthUser, Account } from '../utils/types'
+import { User, UserLoginInfo, AuthUser, Account } from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { generateUid } from 'utils'
@@ -91,7 +91,7 @@ export const createAccount = (
     type: 'creator',
     email: authUser.email,
     security: {
-      twoFactor: false,
+      twoFactorEnabled: false,
       textMessageVerification: false,
       securityQuestion: { question: '', answer: '' }
     },

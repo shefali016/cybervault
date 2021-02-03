@@ -9,7 +9,7 @@ import {
 import { act } from 'react-dom/test-utils'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export type State = {
   loading: Boolean

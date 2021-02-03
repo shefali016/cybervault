@@ -87,7 +87,7 @@ export type Account = {
   name?: string
   customerId?: string // Stripe customer ID
   security: {
-    twoFactor: boolean
+    twoFactorEnabled: boolean
     textMessageVerification: boolean
     securityQuestion: { question: string; answer: string }
   }
@@ -171,11 +171,11 @@ export type Milestone = {
 }
 
 export type MediaObject = {
-  id?: string
+  id: string
   original?: boolean
-  url?: string
-  width?: number
-  height?: number
+  url: string
+  width: number
+  height: number
 }
 
 export type Project = {
@@ -215,6 +215,14 @@ export type Invoice= {
   status:string,
   projectName:string
   campaignDeadLine:Date,
+  featuredImage?: string
+}
+
+export interface ProjectAsset {
+  id: string
+  files: Array<MediaObject>
+  fileName: string
+  type: string
 }
 
 export type AllProjects = Array<Project>

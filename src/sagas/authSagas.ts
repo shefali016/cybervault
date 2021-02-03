@@ -9,7 +9,7 @@ import {
   googleLoginSuccess,
   googleLoginFailure
 } from '../actions/authActions'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import {
   authRequest,

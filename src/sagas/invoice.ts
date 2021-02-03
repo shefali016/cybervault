@@ -3,7 +3,7 @@ import * as ActionTypes from '../actions/actionTypes'
 import * as InvoiceApis from '../apis/invoiceApi'
 import * as InvoiceActions from '../actions/invoiceActions'
 import {getAllProjectsRequest} from '../actions/projectActions'
-import { Account ,Project,Invoice} from '../utils/types'
+import { Account ,Project,Invoice} from '../utils/Interface'
 
 type Params = { account: Account; project:Project,invoice:Invoice; type: string }
 

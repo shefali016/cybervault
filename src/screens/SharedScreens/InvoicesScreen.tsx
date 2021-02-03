@@ -2,7 +2,7 @@ import Section from 'components/Common/Section'
 import React, { useState, useEffect, useContext,useMemo } from 'react'
 import {useDispatch,useSelector} from 'react-redux';
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { Account, StripeAccount, StripeLoginLink } from '../../utils/types'
+import { Account, StripeAccount, StripeLoginLink } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -22,7 +22,7 @@ import { updateAccount } from 'actions/account'
 import { AppTable } from 'components/Common/Core/AppTable'
 import InvoiceIcon from '@material-ui/icons/Receipt'
 import ErrorIcon from '@material-ui/icons/Error'
-import {Invoice} from '../../utils/types'
+import {Invoice} from '../../utils/Interface'
 
 type DispatchProps = { updateAccount: (account: Account) => void }
 type StateProps = { account: Account }

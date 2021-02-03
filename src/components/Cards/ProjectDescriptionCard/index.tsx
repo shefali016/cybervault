@@ -10,7 +10,7 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project,Account, Invoice } from '../../../utils/types'
+import { Project,Account, Invoice } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils';
 import InvoiceModal from '../../../components/Invoices/InvoiceModal';
@@ -41,7 +41,7 @@ const ProjectCard = ({
   const [open, setOpen] = React.useState(false)
 
   const editProject = (projectId: string) => {
-    history.push(`/project?id:${projectId}`)
+    history.push(`/project/${projectId}`)
   }
   const sendInvoice=(projectId: string)=>{
     setOpen(true)
@@ -128,7 +128,7 @@ const ProjectCard = ({
                           style={{ marginRight: 5 }}
                           fontSize='small'
                         />
-                        Edit Project Info
+                        View Project
                       </div>
                     </MenuItem>
                     

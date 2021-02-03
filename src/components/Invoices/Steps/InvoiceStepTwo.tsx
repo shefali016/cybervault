@@ -26,7 +26,7 @@ import {
   WHITE_COLOR,
   PRIMARY_COLOR
 } from 'utils/constants/colorsConstants'
-import { Project, Milestone } from '../../../utils/types'
+import { Project, Milestone } from '../../../utils/Interface'
 import Invoice from '../../../assets/invoice.png'
 // import Milestone from '../../../assets/milestone.png'
 import { GradiantButton } from '../../Common/Button/GradiantButton'

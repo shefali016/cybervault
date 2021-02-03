@@ -6,14 +6,13 @@ import InvoiceStepOne from './Steps/InvoiceStepOne'
 import { getProductData, generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
-import * as Types from '../../utils/types'
 import validate from '../../utils/helpers'
 import { setMedia } from '../../apis/assets'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
-import { Project, Account, Invoice } from '../../utils/types'
+import { Project, Account, Invoice } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo';
 import InvoiceStepThree from './Steps/InvoiceStepThree';
 import { forEachChild } from 'typescript';

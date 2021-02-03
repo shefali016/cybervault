@@ -7,7 +7,7 @@ import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import ProjectArchives from '../../components/Cards/ProjectArchives'
 import Widget from '../../components/Common/Widget'
 import { useTabletLayout } from '../../utils/hooks'
-import * as Types from '../../utils/types'
+import * as Types from '../../utils/Interface'
 
 const PROJECT_DATA = [
   {

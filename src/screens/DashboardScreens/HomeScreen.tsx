@@ -12,7 +12,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
-import * as Types from '../../utils/types'
+import * as Types from '../../utils/Interface'
 
 const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
 
@@ -49,17 +49,20 @@ const HomeScreen = (props: any) => {
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
         renderItem={(item) => (
-          <ProjectCard
-            // data={allProjects}
-            project={item}
-            isPopover={true}
-            key={`project-card-${item.projectId}`}
-            style={{
-              paddingRight: theme.spacing(3)
-            }}
-            account={props.userData.account}
-            history={props.history}
-          />
+          <ul className={classes.projectCardsUl}>
+            <li className={classes.projectCardsli}>
+              <ProjectCard
+                project={item}
+                isPopover={true}
+                key={`project-card-${item.projectId}`}
+                style={{
+                  paddingRight: theme.spacing(3)
+                }}
+                history={props.history}
+                account={props.userData.account}
+              />
+            </li>
+          </ul>
         )}
       />
       <div className={classes.invoicingWrapper}>
@@ -136,6 +139,17 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing(3)
     }
+  },
+  projectCardsUl: {
+    margin: 0,
+    padding: 0,
+    overflow: 'hidden',
+    listStyle: 'none'
+  },
+  projectCardsli: {
+    float: 'left',
+    margin: '0 0 20px 0',
+    width: '25%'
   }
 }))
 

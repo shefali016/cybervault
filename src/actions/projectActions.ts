@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export function createNewProjectRequest(newProjectData: Types.Project) {
   return {
@@ -53,12 +53,10 @@ export function isOnEditProjectScreen(isEditProject: boolean) {
 }
 
 export function requestGetProjectDetails(
-  account: Account,
   projectId: string | undefined
 ) {
   return {
     type: ActionTypes.GET_PROJECT_DETAILS_REQUEST,
-    account,
     projectId
   }
 }
@@ -77,19 +75,18 @@ export function getProjectDetailsFailure(error: string) {
 }
 
 export function requestUpdateProjectDetails(
-  account: Account,
-  projectdata: Object | undefined
+  projectdata: Types.Project | undefined
 ) {
   return {
     type: ActionTypes.UPDATE_PROJECT_DETAILS_REQUEST,
-    account,
     projectdata
   }
 }
 
-export function updateProjectDetailsSuccess() {
+export function updateProjectDetailsSuccess(projectData: Types.Project) {
   return {
-    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS
+    type: ActionTypes.UPDATE_PROJECT_DETAILS_SUCCESS,
+    projectData
   }
 }
 export function updateProjectDetailsFailure(error: string) {
