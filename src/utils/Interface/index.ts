@@ -212,7 +212,7 @@ export type Invoice= {
   milestones: Array<Milestone> | null, // will contain milestones being invoiced or null if invoicing total amount
   clientEmail: String,
   isPaid: Boolean,
-  status:string,
+  status:'pending'|'paid'|'viewed',
   projectName:string
   campaignDeadLine:Date,
   featuredImage?: string
