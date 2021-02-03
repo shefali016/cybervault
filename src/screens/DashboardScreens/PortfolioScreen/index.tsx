@@ -11,6 +11,8 @@ import {
   updatePortfolioFolderRequest
 } from 'actions/portfolioActions'
 import { useStyles } from './style'
+import FolderIcon from '@material-ui/icons/Folder'
+import { Typography } from '@material-ui/core'
 
 type StateProps = {
   folderList: Array<PortfolioFolder>
@@ -138,30 +140,27 @@ const PortfoliosScreen = ({
   }
 
   return (
-    <div>
-      <div className={classes.portfolioBoxMainWrap}>
-        <div>
-          <PortfolioFolders
-            folderList={folderList}
-            loading={loading}
-            handleEditFolderDetail={(folder: PortfolioFolder) =>
-              handleEditFolderDetail(folder)
-            }
-            deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
-            handlePortfolioFolder={(folderId: string) =>
-              handlePortfolioFolder(folderId)
-            }
-          />
-        </div>
-        <div
-          onClick={() => handleModalRequest()}
-          className={classes.portfolioBoxWrap}>
-          <div className={classes.portfolioBox}>
-            <img src={iconFolderUpload} alt='icon' className={classes.image} />
-            <h5>Create Folder</h5>
-          </div>
+    <div className={'dashboardScreen'}>
+      <PortfolioFolders
+        folderList={folderList}
+        loading={loading}
+        handleEditFolderDetail={(folder: PortfolioFolder) =>
+          handleEditFolderDetail(folder)
+        }
+        deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
+        handlePortfolioFolder={(folderId: string) =>
+          handlePortfolioFolder(folderId)
+        }
+      />
+      <div
+        onClick={() => handleModalRequest()}
+        className={classes.portfolioBoxWrap}>
+        <div className={classes.portfolioBox}>
+          <FolderIcon className={classes.uploadFolderIcon} />
+          <Typography variant='h6'>Create Folder</Typography>
         </div>
       </div>
+
       {renderPortfolioFolderModal()}
     </div>
   )

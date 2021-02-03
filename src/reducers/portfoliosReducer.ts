@@ -6,7 +6,6 @@ import {
   UPDATE_PORTFOLIO_FOLDER,
   UPDATE_PORTFOLIO_FOLDER_SUCCESS
 } from 'actions/actionTypes'
-import { Type } from 'typescript'
 import * as Types from '../utils/Interface'
 
 export type State = {
