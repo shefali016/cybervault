@@ -1,11 +1,10 @@
 import React from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import {
-  renderDetails,
-  renderDevider
-} from '../../ProjectInfoDisplay/renderDetails'
+import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
+import { AppDivider } from '../Core/AppDivider'
+
 export const RenderProjectDetails = (props: any) => {
   const classes = useStyles()
   return (
@@ -13,8 +12,8 @@ export const RenderProjectDetails = (props: any) => {
       className={classes.clientDetailsContainer}
       style={{ color: props.editInfo ? 'white' : 'black' }}>
       <div className={classes.innerDiv}>
-        <Typography variant={'subtitle1'} className={classes.title}>
-          Project Details:
+        <Typography variant={'h6'} className={classes.title}>
+          Project Details
         </Typography>
         {props.editInfo ? (
           <Button className={classes.button} onClick={props.onEdit}>
@@ -28,13 +27,19 @@ export const RenderProjectDetails = (props: any) => {
       </div>
       {renderDetails(
         'Campaign Objective:',
-        props.projectData.campaignObjective
+        props.projectData ? props.projectData.campaignObjective : ''
       )}
-      {renderDetails('Deadline: ', props.projectData.campaignDeadLine)}
-      {renderDetails('Project Summary: ', props.projectData.description)}
-      {props.editInfo
-        ? renderDevider({ editInfo: props.editInfo })
-        : renderDevider()}
+      {renderDetails(
+        'Deadline: ',
+        props.projectData ? props.projectData.campaignDeadLine : ''
+      )}
+      {props.projectData &&
+        props.projectData.description &&
+        renderDetails(
+          'Project Summary: ',
+          props.projectData ? props.projectData.description : ''
+        )}
+      <AppDivider />
     </div>
   )
 }

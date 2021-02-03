@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export function updatePortfolioFolderRequest(folder: Types.PortfolioFolder) {
   return {
@@ -9,11 +9,13 @@ export function updatePortfolioFolderRequest(folder: Types.PortfolioFolder) {
 }
 
 export function updatePortfolioFolderSuccess(
-  folder: Array<Types.PortfolioFolder>
+  folderId: string,
+  folder: Types.PortfolioFolder
 ) {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO_FOLDER_SUCCESS,
-    payload: folder
+    payload: folderId,
+    folder
   }
 }
 
@@ -31,11 +33,13 @@ export function getPortfolioFolderRequest() {
 }
 
 export function getPortfolioFolderSuccess(
-  folderList: Array<Types.PortfolioFolder>
+  folderList: Array<Types.PortfolioFolder>,
+  portfolios: Map<string, Types.Portfolio>
 ) {
   return {
     type: ActionTypes.GET_PORTFOLIO_FOLDER_SUCCESS,
-    payload: folderList
+    payload: folderList,
+    portfolios
   }
 }
 
@@ -53,12 +57,10 @@ export function deletePortfolioFolderRequest(folderId: string) {
   }
 }
 
-export function deletePortfolioFolderSuccess(
-  folder: Array<Types.PortfolioFolder>
-) {
+export function deletePortfolioFolderSuccess(folderId: string) {
   return {
     type: ActionTypes.DELETE_PORTFOLIO_FOLDER_SUCCESS,
-    payload: folder
+    payload: folderId
   }
 }
 

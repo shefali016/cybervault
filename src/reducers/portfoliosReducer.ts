@@ -8,7 +8,7 @@ import {
   UPDATE_PORTFOLIO_FOLDER_SUCCESS,
   UPDATE_PORTFOLIO_SUCCESS
 } from 'actions/actionTypes'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 
 export type State = {
   folders?: Array<Types.PortfolioFolder>
@@ -16,16 +16,15 @@ export type State = {
   getFoldersLoading: boolean
   getPortfolioLoading: boolean
   updatingFolder: boolean
-  error: string | null
+  getFoldersError: string | null
 }
 
 export type Action = {
   type: string
   payload: {}
-  error: string
-  projectData?: {}
-  newProjectData?: {}
-  allProjectsData?: {}
+  getFoldersError: string
+  portfolios?: []
+  folder?: {}
 }
 
 const initialState = {
@@ -34,7 +33,8 @@ const initialState = {
   getFoldersLoading: false,
   error: '',
   updatingFolder: false,
-  getPortfolioLoading: false
+  getPortfolioLoading: false,
+  getFoldersError: ''
 }
 
 const getPrortfolioFolders = (state: State, action: Action) => ({
@@ -47,6 +47,7 @@ const getPrortfolioFoldersSuccess = (state: State, action: Action) => ({
   ...state,
   getFoldersLoading: false,
   folders: action.payload,
+  portfolios: action.portfolios,
   updatingFolder: false
 })
 
@@ -55,21 +56,29 @@ const updatePrortfolioFolder = (state: State, action: Action) => ({
   updatingFolder: true,
   getFoldersLoading: true
 })
-const updatePrortfolioFoldersSuccess = (state: State, action: Action) => ({
+const updatePrortfolioFoldersSuccess = (
+  state: State,
+  action: Action,
+  folders: Array<Types.PortfolioFolder>
+) => ({
   ...state,
   updatingFolder: false,
   getFoldersLoading: false,
-  folders: action.payload
+  folders
 })
 
 const deletePrortfolioFolder = (state: State, action: Action) => ({
   ...state,
   getFoldersLoading: true
 })
-const deletePrortfolioFoldersSuccess = (state: State, action: Action) => ({
+const deletePrortfolioFoldersSuccess = (
+  state: State,
+  action: Action,
+  folderList: Array<Types.PortfolioFolder>
+) => ({
   ...state,
   getFoldersLoading: false,
-  folders: action.payload
+  folders: folderList
 })
 
 const updatePrortfolio = (state: State, action: Action) => ({
@@ -90,11 +99,27 @@ const portfoliosReducer = (state = initialState, action: Action) => {
     case UPDATE_PORTFOLIO_FOLDER:
       return updatePrortfolioFolder(state, action)
     case UPDATE_PORTFOLIO_FOLDER_SUCCESS:
-      return updatePrortfolioFoldersSuccess(state, action)
+      let currentFolders: Array<Types.PortfolioFolder> | any = state.folders
+      {
+        const folderIndex: number = state.folders.findIndex(
+          (data: any) => data.id === action.payload
+        )
+        const folder: Types.PortfolioFolder | any = action.folder
+        if (folderIndex > -1) {
+          currentFolders.splice(folderIndex, 1, folder)
+        } else {
+          currentFolders.push(folder)
+        }
+      }
+      return updatePrortfolioFoldersSuccess(state, action, currentFolders)
     case DELETE_PORTFOLIO_FOLDER:
       return deletePrortfolioFolder(state, action)
     case DELETE_PORTFOLIO_FOLDER_SUCCESS:
-      return deletePrortfolioFoldersSuccess(state, action)
+      let currentFolder: Array<Types.PortfolioFolder> = state.folders
+      const folderList: Array<Types.PortfolioFolder> = currentFolder.filter(
+        (data: any) => data.id !== action.payload
+      )
+      return deletePrortfolioFoldersSuccess(state, action, folderList)
     case UPDATE_PORTFOLIO:
       return updatePrortfolio(state, action)
     case UPDATE_PORTFOLIO_SUCCESS:

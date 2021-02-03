@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Fragment, useRef } from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
-import { Portfolio, Project } from 'utils/types'
+import { Portfolio, Project } from 'utils/Interface'
 import AppTextField from 'components/Common/Core/AppTextField'
 import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
@@ -17,6 +17,7 @@ import {
   Avatar
 } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
+import { useStyles } from './style'
 
 type Props = {
   open: boolean
@@ -24,19 +25,12 @@ type Props = {
   portfolio: Portfolio | null
   onSubmit: () => void
   handleInputChange: (event: any, key: string) => void
-  portfolioModal: string
-  portfolioModalBtn: string
-  portfolioModalHead: string
   updatingFolder?: boolean
   isError?: boolean
   handleChange: (event: any) => void
-  portfolioLogo: string
-  portfolioLogoImg: string
-  portfolioLogoContainer: string
   handleProjectSection: () => void
   isChooseProject: boolean
   projectList: Array<Project>
-  listItemText: string
   handleProjectSelect: (projectId: string) => void
   portfolioLoading: boolean
 }
@@ -47,31 +41,26 @@ export const PortfolioModal = ({
   portfolio,
   handleInputChange,
   onSubmit,
-  portfolioModal,
-  portfolioModalBtn,
-  portfolioModalHead,
   updatingFolder,
   isError,
   handleChange,
-  portfolioLogo,
-  portfolioLogoImg,
-  portfolioLogoContainer,
   handleProjectSection,
   projectList,
   isChooseProject,
-  listItemText,
   handleProjectSelect,
   portfolioLoading
 }: Props) => {
   let imageInputRef: any = useRef()
 
+  const classes = useStyles()
+
   const renderPortfolioLogoView = () => {
     return (
-      <div className={portfolioLogoContainer}>
+      <div className={classes.portfolioLogoContainer}>
         <Button
           variant='contained'
           onClick={() => imageInputRef.click()}
-          className={portfolioLogo}>
+          className={classes.portfolioLogo}>
           <input
             type='file'
             accept='image/*'
@@ -86,7 +75,7 @@ export const PortfolioModal = ({
           {portfolio && !!portfolio.icon && (
             <img
               src={portfolio.icon}
-              className={portfolioLogoImg}
+              className={classes.portfolioLogoImg}
               alt={'portfolio-logo'}
             />
           )}
@@ -147,7 +136,7 @@ export const PortfolioModal = ({
                         <Avatar alt='' src={value.logo} />
                       </ListItemAvatar>
                       <ListItemText
-                        classes={{ root: listItemText }}
+                        classes={{ root: classes.listItemText }}
                         primary={value.campaignName}
                       />
                     </ListItem>
@@ -162,9 +151,9 @@ export const PortfolioModal = ({
 
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-      <div className={portfolioModal}>
+      <div className={classes.portfolioModal}>
         <div>
-          <h2 className={portfolioModalHead}>
+          <h2 className={classes.portfolioModalHead}>
             {!isChooseProject ? 'New Portfolio' : 'Choose Projects'}
           </h2>
           <span>{!isChooseProject ? 'Get Started' : 'Display your work'}</span>
@@ -181,7 +170,7 @@ export const PortfolioModal = ({
           onClick={() => {
             !isChooseProject ? handleProjectSection() : onSubmit()
           }}
-          className={portfolioModalBtn}
+          className={classes.portfolioModalBtn}
           loading={portfolioLoading}>
           <Typography variant={'button'}>
             {!isChooseProject ? 'Continue' : 'Create portfolio'}

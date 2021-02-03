@@ -1,13 +1,13 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Portfolio, PortfolioFolder } from 'utils/types'
+import { Portfolio, PortfolioFolder } from 'utils/Interface'
 import { generateUid } from 'utils'
 
 /**
  * @updatePortfoliFolder
  */
-export const updatePortfolioFolderApi = async (
+export const updatePortfolioFolderRequest = async (
   folder: PortfolioFolder,
   account: Account
 ) => {
@@ -39,9 +39,10 @@ export const updatePortfolioFolderApi = async (
 /**
  * @getAllPortfoliFolder
  */
-export const getPortfolioFolderApi = async (account: Account) => {
+export const getPortfolioFolderRequest = async (account: Account) => {
   try {
     let folderList: Array<PortfolioFolder> = []
+    let portfolioList: Map<string, Portfolio> | any = []
     const data: Document | any = await firebase
       .firestore()
       .collection('AccountData')
@@ -63,13 +64,18 @@ export const getPortfolioFolderApi = async (account: Account) => {
           .get()
         portfolios.push(portfolioData.data())
       }
-      folderData = {
-        ...folderData,
+      const data = {
+        folderId: folderData.id,
         portfolios
       }
       folderList.push(folderData)
+      portfolioList.push(data)
     }
-    return folderList
+    const result = {
+      folderList,
+      portfolioList
+    }
+    return result
   } catch (error) {
     console.log('Errooorrrrr', error)
     return error
@@ -79,19 +85,18 @@ export const getPortfolioFolderApi = async (account: Account) => {
 /**
  * @deletePortfoliFolder
  */
-export const deletePortfolioFolderApi = async (
+export const deletePortfolioFolderRequest = async (
   folderId: string,
   account: Account
 ) => {
   try {
-    await firebase
+    return firebase
       .firestore()
       .collection('AccountData')
       .doc(account.id)
       .collection('PortfolioFolders')
       .doc(folderId)
       .delete()
-    return
   } catch (error) {
     console.log('Errooorrrrr', error)
     return error

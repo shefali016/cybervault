@@ -1,8 +1,7 @@
-import { Portfolio, PortfolioFolder, Project } from '../../../utils/types'
+import { Portfolio, PortfolioFolder, Project } from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
-import iconFolderUpload from '../../../assets/iconFolderUpload.png'
-import PortfolioFolders from './portfolioFolders'
+import PortfolioFolders from '../../../components/Portfolio/PortfolioFolders'
 import { PortfolioFolderModal } from 'components/Portfolio/PortfolioFolderModal'
 import { useEffect, useState } from 'react'
 import {
@@ -12,6 +11,8 @@ import {
   updatePortfolioRequest
 } from 'actions/portfolioActions'
 import { useStyles } from './style'
+import FolderIcon from '@material-ui/icons/Folder'
+import { Typography } from '@material-ui/core'
 
 type StateProps = {
   folderList: Array<PortfolioFolder>
@@ -19,6 +20,7 @@ type StateProps = {
   updatingFolder: boolean
   allProjectsData: Array<Project>
   portfolioLoading: boolean
+  portfolios: Array<Portfolio>
 }
 
 type PortfolioStates = {
@@ -47,7 +49,8 @@ const PortfoliosScreen = ({
   deletePortfolioFolder,
   history,
   updatePortfolio,
-  portfolioLoading
+  portfolioLoading,
+  portfolios
 }: Props) => {
   const classes = useStyles()
 
@@ -236,9 +239,6 @@ const PortfoliosScreen = ({
         handleInputChange={(e: any, key: string) =>
           handleInputChange(e, key, 'folder')
         }
-        portfolioModal={classes.portfolioModal}
-        portfolioModalBtn={classes.portfolioModalBtn}
-        portfolioModalHead={classes.portfolioModalHead}
         updatingFolder={updatingFolder}
         isError={state.isError}
       />
@@ -267,6 +267,7 @@ const PortfoliosScreen = ({
             handleProjectSection={handleProjectSection}
             isError={state.isError}
             isChooseProject={state.isChooseProject}
+            portfolios={portfolios}
             projectList={allProjectsData}
             handleProjectSelect={(projectId: string) =>
               handleProjectSelect(projectId)
@@ -278,11 +279,12 @@ const PortfoliosScreen = ({
           onClick={() => handleModalRequest({ type: 'folder' })}
           className={classes.portfolioBoxWrap}>
           <div className={classes.portfolioBox}>
-            <img src={iconFolderUpload} alt='icon' className={classes.image} />
-            <h5>Create Folder</h5>
+            <FolderIcon className={classes.uploadFolderIcon} />
+            <Typography variant='h6'>Create Folder</Typography>
           </div>
         </div>
       </div>
+
       {renderPortfolioFolderModal()}
     </div>
   )
@@ -293,7 +295,8 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   loading: state.portfolio.getFoldersLoading as boolean,
   portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
-  allProjectsData: state.project.allProjectsData as Array<Project>
+  allProjectsData: state.project.allProjectsData as Array<Project>,
+  portfolios: state.portfolio.portfolios as Array<Portfolio>
 })
 const mapDispatchToProps = (dispatch: any) => ({
   updatePortfolioFolder: (folder: PortfolioFolder) => {

@@ -1,7 +1,7 @@
 import Section from 'components/Common/Section'
 import React, { useState, useEffect, useContext } from 'react'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { Account, StripeAccount, StripeLoginLink } from '../../utils/types'
+import { Account, StripeAccount, StripeLoginLink } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles'

@@ -16,7 +16,7 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Expense, InputChangeEvent } from '../../../utils/types'
+import { Expense, InputChangeEvent } from '../../../utils/Interface'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'

@@ -1,18 +1,15 @@
-import { Card, Box } from '@material-ui/core'
+import { Box, Card, Grid, Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
-import { Portfolio, PortfolioFolder, Project } from 'utils/types'
+import { Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
-import ConfirmBox from 'utils/confirmBox'
+import ConfirmBox from 'components/Common/ConfirmBox'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Grid from '@material-ui/core/Grid'
-import Dummy from '../../../assets/Dummy.jpg'
-import logo from '../../../assets/nike.png'
-
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { useStyles } from './style'
+import { AppButton } from 'components/Common/Core/AppButton'
 
 type Props = {
   folderList: Array<PortfolioFolder>
@@ -31,6 +28,7 @@ type Props = {
   projectList: Array<Project>
   handleProjectSelect: (projectId: string) => void
   portfolioLoading: boolean
+  portfolios: Array<Portfolio>
 }
 const PortfolioFolders = ({
   folderList,
@@ -48,7 +46,8 @@ const PortfolioFolders = ({
   isChooseProject,
   projectList,
   handleProjectSelect,
-  portfolioLoading
+  portfolioLoading,
+  portfolios
 }: Props) => {
   const [open, setOpen] = useState<boolean>(false)
   const [folderId, setFolderId] = useState<string>('')
@@ -62,18 +61,11 @@ const PortfolioFolders = ({
         portfolio={portfolio}
         onSubmit={() => handleSubmit()}
         handleInputChange={(e: any, key: string) => handleInputChange(e, key)}
-        portfolioModal={classes.portfolioModal}
-        portfolioModalBtn={classes.portfolioModalBtn}
-        portfolioModalHead={classes.portfolioModalHead}
         handleChange={(event: any) => handleImageChange(event)}
-        portfolioLogo={classes.portfolioLogo}
-        portfolioLogoImg={classes.portfolioLogoImg}
-        portfolioLogoContainer={classes.portfolioLogoContainer}
         handleProjectSection={handleProjectSection}
         isError={isError}
         isChooseProject={isChooseProject}
         projectList={projectList}
-        listItemText={classes.listItemText}
         handleProjectSelect={handleProjectSelect}
         portfolioLoading={portfolioLoading}
       />
@@ -83,29 +75,38 @@ const PortfolioFolders = ({
   return (
     <Fragment>
       {!loading ? (
-        folderList && folderList.length ? (
+        folderList && !!folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
+            const portFolioList: any = portfolios.filter(
+              (item: any) => item.folderId === folder.id
+            )[0]
             return (
               <div key={index} className={classes.portfolioFolder}>
                 <div className={classes.portfolioFolderTitle}>
-                  {folder.name}
-                  <span onClick={() => handleEditFolderDetail(folder)}>
-                    <EditIcon />
-                  </span>
-                  <span
-                    onClick={() => {
-                      setOpen(true)
-                      setFolderId(folder.id)
-                    }}>
-                    <DeleteIcon />
-                  </span>
-                  <small style={{ marginTop: '10px' }}>
-                    {folder.description}
-                  </small>
+                  <Typography variant='h6'>
+                    {folder.name}
+                    <Typography
+                      variant='caption'
+                      className={classes.folderDescription}>
+                      {folder.description}
+                    </Typography>
+                    <span onClick={() => handleEditFolderDetail(folder)}>
+                      <EditIcon />
+                    </span>
+                    <span
+                      onClick={() => {
+                        setOpen(true)
+                        setFolderId(folder.id)
+                      }}>
+                      <DeleteIcon />
+                    </span>
+                  </Typography>
                 </div>
                 <Grid container spacing={2}>
-                  {folder && folder.portfolios && folder.portfolios.length
-                    ? folder.portfolios.map(
+                  {portFolioList &&
+                  portFolioList.portfolios &&
+                  portFolioList.portfolios.length
+                    ? portFolioList.portfolios.map(
                         (data: Portfolio | any, i: number) => {
                           return (
                             <Grid item lg={3} md={4} sm={6}>
@@ -128,15 +129,20 @@ const PortfolioFolders = ({
                         }
                       )
                     : null}
-                  <Grid item md={3}>
-                    <Card
+                  <Grid item lg={3} md={4} sm={6}>
+                    <AppButton
+                      variant='contained'
+                      className={classes.createPortfolioButton}
                       onClick={() => {
                         handleModalRequest({ type: 'portfolio', folder })
-                      }}
-                      className={classes.portfoliosCard}>
-                      <AddIcon className={classes.buttonIcon} />
-                      Add Portfolio
-                    </Card>
+                      }}>
+                      <div className='row'>
+                        <AddIcon className={classes.buttonIcon} />
+                        <Typography style={{ fontWeight: 'bold' }}>
+                          Add Portfolio
+                        </Typography>
+                      </div>
+                    </AppButton>
                   </Grid>
                 </Grid>
               </div>
@@ -154,20 +160,19 @@ const PortfolioFolders = ({
         </div>
       )}
       {renderPortfolioModal()}
-      {ConfirmBox({
-        open: open,
-        handleClose: () => setOpen(!open),
-        cancleBtnText: 'Cancel',
-        allowBtnText: 'Delete',
-        confBoxTitle: 'Are you sure?',
-        confBoxText: 'You want to delete this folder',
-        setConfirmed: (value: boolean) => {
+      <ConfirmBox
+        open={open}
+        handleClose={() => setOpen(!open)}
+        cancleBtnText={'Cancel'}
+        allowBtnText={'Delete'}
+        confBoxTitle={'Are you sure?'}
+        confBoxText={'You want to delete this folder'}
+        setConfirmed={(value: boolean) => {
           if (value) {
             deletefolder(folderId)
           }
-        }
-      })}
-      {}
+        }}
+      />
     </Fragment>
   )
 }

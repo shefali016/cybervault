@@ -16,10 +16,7 @@ export const useStyles = makeStyles((theme) => ({
       duration: 500
     })
   },
-  portfolioBoxMainWrap: {
-    paddingLeft: '25px',
-    paddingRight: '25px'
-  },
+  portfolioBoxMainWrap: {},
   portfolioFolder: {
     color: '#fff',
     marginBottom: theme.spacing(6)

@@ -6,6 +6,7 @@ import {
   renderDevider
 } from '../../ProjectInfoDisplay/renderDetails'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
+import { AppDivider } from '../Core/AppDivider'
 
 export const RenderTaskDetails = (props: any) => {
   const classes = useStyles()
@@ -14,8 +15,8 @@ export const RenderTaskDetails = (props: any) => {
       className={classes.clientDetailsContainer}
       style={{ color: props.editInfo ? 'white' : 'black' }}>
       <div className={classes.innerDiv}>
-        <Typography variant={'subtitle1'} className={classes.title}>
-          Tasks Details:
+        <Typography variant={'h6'} className={classes.title}>
+          Tasks Details
         </Typography>
         {props.editInfo ? (
           <Button className={classes.button} onClick={props.onEdit}>
@@ -31,9 +32,7 @@ export const RenderTaskDetails = (props: any) => {
         return renderDetails(item.title, item.startDate, item.endDate)
       })}
 
-      {props.editInfo
-        ? renderDevider({ editInfo: props.editInfo })
-        : renderDevider()}
+      <AppDivider />
     </div>
   )
 }

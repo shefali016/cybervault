@@ -7,9 +7,10 @@ import {
   getProjectDetailsSuccess,
   getProjectDetailsFailure,
   updateProjectDetailsSuccess,
-  updateProjectDetailsFailure
+  updateProjectDetailsFailure,
+  requestGetProjectDetails
 } from '../actions/projectActions'
-import * as Types from '../utils/types'
+import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import {
   createNewProjectRequest,
@@ -22,9 +23,8 @@ import { ReduxState } from 'reducers/rootReducer'
 type Params = { newProjectData: Types.Project; type: string; account: Account }
 type GetParams = {
   type: string
-  account: Account
   projectId: string | undefined
-  projectdata: string | undefined
+  projectdata: Types.Project
 }
 
 function* createNewProject({ newProjectData }: Params) {
@@ -41,8 +41,9 @@ function* createNewProject({ newProjectData }: Params) {
   }
 }
 
-function* getAllProjects({ account }: GetParams) {
+function* getAllProjects() {
   try {
+    const account = yield select((state) => state.auth.account)
     const response = yield call(getAllProjectsRequest, account)
     yield put(getAllProjectsRequestSuccess(response))
   } catch (error: any) {
@@ -50,28 +51,26 @@ function* getAllProjects({ account }: GetParams) {
   }
 }
 
-function* getProjectDetails({ account, projectId }: GetParams) {
+function* getProjectDetails({ projectId }: GetParams) {
   try {
+    const account = yield select((state) => state.auth.account)
     const response = yield call(getProjectDetailsRequest, account, projectId)
 
-    yield put(
-      getProjectDetailsSuccess(response && response.length ? response[0] : {})
-    )
+    yield put(getProjectDetailsSuccess(response ? response : {}))
   } catch (error: any) {
     yield put(getProjectDetailsFailure(error?.message || 'default'))
   }
 }
 
-function* updateProjectDetails({ account, projectdata }: GetParams) {
+function* updateProjectDetails({ projectdata }: GetParams) {
   try {
+    const account = yield select((state) => state.auth.account)
     yield call(updateProjectDetailsRequest, account, projectdata)
-    yield put(updateProjectDetailsSuccess())
-    yield put(getProjectDetailsSuccess(projectdata))
+    yield put(updateProjectDetailsSuccess(projectdata))
   } catch (error: any) {
     yield put(updateProjectDetailsFailure(error?.message || 'default'))
   }
 }
-
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.NEW_PROJECT_REQUEST, createNewProject)
   yield takeLatest(ActionTypes.GET_ALL_PROJECT_REQUEST, getAllProjects)
