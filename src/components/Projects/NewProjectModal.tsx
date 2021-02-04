@@ -16,7 +16,6 @@ import { setMedia } from '../../apis/assets'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
-import {addClientRequest} from '../../actions/clientActions';
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -26,7 +25,7 @@ type NewProjectProps = {
   account:Types.Account,
   clients:Array<Types.Client>,
   addClientSuccess:Boolean,
-  addClientLoading:Boolean
+  newClientData:Types.Client
 }
 
 const NewProject = ({
@@ -37,7 +36,7 @@ const NewProject = ({
   account,
   clients,
   addClientSuccess,
-  addClientLoading
+  newClientData
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
@@ -48,7 +47,6 @@ const NewProject = ({
   const [addClient,setAddClient]=useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
-  const dispatch=useDispatch();
 
   useOnChange(success, (success) => {
     if (success) {
@@ -64,11 +62,14 @@ const NewProject = ({
       })
     }
   })
+
 useEffect(()=>{
-  if(addClientSuccess && addClient && currentStep==1){
-    setCurrentStep((step) => step + 1)
+  if(addClientSuccess && addClient && currentStep==1 && Object.keys(newClientData).length){
+      setClientData(newClientData)
+      setCurrentStep((step) => step + 1)
   }
 },[addClientSuccess])
+
   const onSubmitData = async () => {
     try {
       // @ts-ignorets
@@ -91,15 +92,7 @@ useEffect(()=>{
       })
     }
   }
-  const handleAddClient=()=>{
-    let clientId=generateUid()
-    setClientData({...clientData,id:clientId})
-    const payload={
-      ...clientData,
-      id:clientId,
-    }
-    dispatch(addClientRequest(account,payload))
-  }
+  
   const newProject = true
   const renderStepsView = () => {
     const props = {
@@ -115,7 +108,6 @@ useEffect(()=>{
       addClient,
       setAddClient,
       currentStep,
-      addClientLoading,
       clientData,
       setClientData,
       onNext: () => {
@@ -124,10 +116,7 @@ useEffect(()=>{
           setHaveError(true)
         } else {
           setHaveError(false)
-          if(addClient && currentStep==1 ){
-            handleAddClient()
-          }
-          else{
+          if(!addClient || (addClient && currentStep!==1)){
             setCurrentStep((step) => step + 1)
           }
           if (modalContentRef.current) {
@@ -197,8 +186,8 @@ const NewProjectModal = ({
   account,
   clients,
 }: NewProjectModalProps & StateProps) => {
-const addClientSuccess=useSelector((state:any)=>state.clients.addClientSuccess)
-const addClientLoading=useSelector((state:any)=>state.clients.addClientLoading)
+const newClientSuccess=useSelector((state:any)=>state.clients.newClientSuccess)
+const newClientData=useSelector((state:any)=>state.clients.newClientData)
 
 
   return (
@@ -210,8 +199,8 @@ const addClientLoading=useSelector((state:any)=>state.clients.addClientLoading)
         success={success}
         account={account}
         clients={clients}
-        addClientSuccess={addClientSuccess}
-        addClientLoading={addClientLoading}
+        addClientSuccess={newClientSuccess}
+        newClientData={newClientData}
       />
     </AppModal>
   )

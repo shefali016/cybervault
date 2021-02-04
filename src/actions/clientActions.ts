@@ -29,9 +29,10 @@ export function addClientRequest(account: Types.Account,client:Types.Client){
     client
   }
 }
-export function addClientSuccess(){
+export function addClientSuccess(client:Types.Client){
   return {
     type: ActionTypes.ADD_CLIENT_SUCCESS,
+    payload:client
   }
 }
 export function addClientError(error:string){

@@ -25,9 +25,9 @@ import {
     success:false,
     error:false,
     clientsData:[],
-    addClientSuccess:false,
-    addClientError:false,
-    addClientLoading:false
+    newClientSuccess:false,
+    newClientError:false,
+    newClientLoading:false
   }
   
   
@@ -54,28 +54,29 @@ import {
     loading:false,
     success:false
   })
-  const addClientRequest = (state: State, action: Action) => ({
+  const newClientRequest = (state: State, action: Action) => ({
     ...state,
-    addClientSuccess:false,
-    addClientError:false,
-    addClientLoading:true
+    newClientSuccess:false,
+    newClientError:false,
+    newClientLoading:true
     
   })
   
-  const addClientSuccess = (state: State, action: Action) => {
+  const newClientSuccess = (state: State, action: Action) => {
     return {
       ...state,
-      addClientSuccess:true,
-      addClientError:false,
-      addClientLoading:false
+      newClientSuccess:true,
+      newClientError:false,
+      newClientLoading:false,
+      newClientData:action.payload
     }
   }
 
-  const addClientError = (state: State, action: Action) => ({
+  const newClientError = (state: State, action: Action) => ({
     ...state,
-    addClientSuccess:false,
-    addClientError:true,
-    addClientLoading:false
+    newClientSuccess:false,
+    newClientError:true,
+    newClientLoading:false
 
   })
 
@@ -89,11 +90,11 @@ import {
       case GET_CLIENTS_ERROR:
         return getClientsError(state, action)
       case ADD_CLIENT_REQUEST:
-          return addClientRequest(state, action)
+          return newClientRequest(state, action)
       case ADD_CLIENT_ERROR:
-            return addClientError(state, action)
+            return newClientError(state, action)
       case ADD_CLIENT_SUCCESS:
-          return addClientSuccess(state, action)
+          return newClientSuccess(state, action)
       
       default:
         return state
@@ -108,9 +109,9 @@ import {
         success:false,
         error:false,
         clientsData:[],
-        addClientSuccess:false,
-        addClientError:false,
-        addClientLoading:false
+        newClientSuccess:false,
+        newClientError:false,
+        newClientLoading:false
       }
     },
     (outboundState: State) => outboundState,

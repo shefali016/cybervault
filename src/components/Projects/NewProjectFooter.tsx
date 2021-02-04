@@ -23,6 +23,8 @@ type Props = {
   isLoading?: boolean
   addClient?:boolean
   currentStep?:number
+  buttonText?:string
+  disabled?:boolean
 }
 
 const NewProjectFooter = ({
@@ -36,7 +38,9 @@ const NewProjectFooter = ({
   projectData,
   isLoading,
   addClient,
-  currentStep
+  currentStep,
+  buttonText,
+  disabled
 }: Props) => {
   const classes = useStyles()
 
@@ -72,13 +76,13 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {typeof onBack === 'function' && (currentStep!==1 || (currentStep==1 && addClient) ) && renderBackButton()}
+        {typeof onBack === 'function' && currentStep!==1 && renderBackButton()}
         <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
         </Typography>
         {typeof onNext === 'function' && (
-          <GradiantButton onClick={onNext} className={classes.continueButton} loading={isLoading}>
-            <Typography variant={'button'}>{currentStep==1 && addClient?'Add Client':'Continue'}</Typography>
+          <GradiantButton onClick={onNext} className={classes.continueButton} loading={isLoading} disabled={disabled}>
+            <Typography variant={'button'}>{buttonText?buttonText:'Continue'}</Typography>
           </GradiantButton>
         )}
         {typeof onUpdate === 'function' && (

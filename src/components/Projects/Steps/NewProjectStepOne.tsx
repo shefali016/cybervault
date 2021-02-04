@@ -18,18 +18,16 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
-import { useTabletLayout } from '../../../utils/hooks/'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import AppSelect from '../../Common/Core/AppSelect'
 import { Client } from '../../../utils/Interface'
 import { getClientsRequest } from '../../../actions/clientActions'
+import AddClient from '../../Client/AddClient'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
-  const isTablet = useTabletLayout()
   const {
     projectData,
     setProjectData,
@@ -40,26 +38,9 @@ const NewProjectStepOne = (props: any) => {
     setAddClient,
     currentStep,
     account,
-    addClientLoading,
     setClientData,
     clientData
   } = props
-  let imageInputRef: any = React.useRef()
-
-  const handleChange = async (event: any) => {
-    if (event.target && event.target.files && event.target.files.length > 0) {
-      setLogoFile(event.target.files[0])
-      setClientData({
-        ...clientData,
-        logo: URL.createObjectURL(event.target.files[0])
-      })
-    }
-  }
-
-  const handleInputChange = (event: any) => (key: string) => {
-    const value = event.target.value
-    setClientData({ ...clientData, [key]: value })
-  }
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -71,38 +52,7 @@ const NewProjectStepOne = (props: any) => {
       setClientData(clients[0])
     }
   }, [clients])
-  const renderClientLogoView = () => {
-    return (
-      <div className={'client-logo-container'}>
-        <Button
-          variant='contained'
-          onClick={() => imageInputRef.click()}
-          className={classes.clientLogo}>
-          <input
-            type='file'
-            accept='image/*'
-            capture='camera'
-            name='avatar'
-            ref={(input) => {
-              imageInputRef = input
-            }}
-            onChange={handleChange}
-            style={{ display: 'none' }}
-          />
-          {!!clientData.logo && (
-            <img
-              src={clientData.logo}
-              className={classes.clientLogoImg}
-              alt={'client-logo'}
-            />
-          )}
-        </Button>
-        <Typography variant={'caption'} className={classes.addLogoText}>
-          Add Client Logo
-        </Typography>
-      </div>
-    )
-  }
+  
   const handleChooseClient = (event: any) => {
     const val = event.target.value
     let item = clients.find((cl: Client, i: number) => {
@@ -115,6 +65,8 @@ const NewProjectStepOne = (props: any) => {
     if (addClient) return null
 
     return (
+      <>
+      <NewProjectTitle title={'New Project'} subtitle={'Choose a client'} />
       <Grid item sm={8} className={classes.chooseClientWrapper}>
         <Typography>
           Add a new Client or get started with existing client
@@ -143,83 +95,19 @@ const NewProjectStepOne = (props: any) => {
           </GradiantButton>
         </Typography>
       </Grid>
+      </>
     )
   }
 
   const renderAddClient = () => {
     if (!addClient) return null
 
-    const leftInputMargin = !isTablet ? 15 : 0
-
     return (
-      <>
-        {!props.isEdit ? renderClientLogoView() : null}
-
-        <div className={'input-row'}>
-          <div style={{ flex: 1, marginRight: leftInputMargin }}>
-            <AppTextField
-              error={haveError && clientData.name === '' ? true : false}
-              type={''}
-              label={'Client Name'}
-              value={clientData.name}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('name')}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <AppTextField
-              error={haveError && clientData.email === '' ? true : false}
-              type={''}
-              label={'Client Email'}
-              value={clientData.email}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('email')}
-            />
-          </div>
-        </div>
-        {!props.isEdit ? (
-          <div className={'input-row'}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={haveError && clientData.address === '' ? true : false}
-                type={''}
-                label={'Address'}
-                value={clientData.address}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={haveError && clientData.city === '' ? true : false}
-                type={''}
-                label={'City'}
-                value={clientData.city}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
-              />
-            </div>
-          </div>
-        ) : null}
-        {!props.isEdit ? (
-          <div className={'input-row'}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={haveError && clientData.state === '' ? true : false}
-                type={''}
-                label={'State/Province'}
-                value={clientData.state}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={haveError && clientData.country === '' ? true : false}
-                type={''}
-                label={'Country'}
-                value={clientData.country}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
-              />
-            </div>
-          </div>
-        ) : null}
-      </>
+      <AddClient 
+       isEdit={false}
+       onBack={props.onBack}
+       account={account}
+      />
     )
   }
 
@@ -234,12 +122,8 @@ const NewProjectStepOne = (props: any) => {
 
   return (
     <div className={classes.container}>
-      {addClient ? (
-        <NewProjectTitle title={'New Project'} subtitle={'Choose a client'} />
-      ) : (
-        <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
-      )}
       {renderMiddleView()}
+      {!addClient?
       <NewProjectFooter
         title={props.isEdit ? '' : 'Step 1 of 5'}
         onNext={props.onNext}
@@ -247,10 +131,10 @@ const NewProjectStepOne = (props: any) => {
         onBack={props.onBack}
         haveError={haveError ? haveError : false}
         projectData={projectData}
-        addClient={addClient}
         currentStep={currentStep}
-        isLoading={addClientLoading}
-      />
+        disabled={!clients.length}
+      />  
+      :null}
     </div>
   )
 }

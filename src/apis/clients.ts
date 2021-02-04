@@ -35,4 +35,5 @@ export const addClient = async (
     .collection('AccountData')
     .doc(account.id)
     .collection('Clients').doc(client.id).set(client)
+    return client
 }
