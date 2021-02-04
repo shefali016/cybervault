@@ -116,12 +116,10 @@ const NewProjectStepOne = (props: any) => {
 
     return (
       <Grid item sm={8} className={classes.chooseClientWrapper}>
-        <Typography paragraph>
-          {' '}
+        <Typography>
           Add a new Client or get started with existing client
         </Typography>
-        <Typography paragraph className={classes.textSecondary}>
-          {' '}
+        <Typography className={classes.textSecondary}>
           Choose an existing client
         </Typography>
         <AppSelect
@@ -350,7 +348,9 @@ const useStyles = makeStyles((theme) => ({
     right: 10
   },
   textSecondary: {
-    color: GREY_COLOR
+    color: theme.palette.text.meta,
+    marginTop: theme.spacing(0.5),
+    marginBottom: theme.spacing(3)
   },
   select: {
     width: '100%',
@@ -359,7 +359,10 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   chooseClientWrapper: {
-    margin: 'auto'
+    alignSelf: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   textCenter: {
     textAlign: CENTER
