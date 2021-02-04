@@ -104,7 +104,6 @@ const NewProjectStepOne = (props: any) => {
 
     return (
       <AddClient 
-       isEdit={false}
        onBack={props.onBack}
        account={account}
       />

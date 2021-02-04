@@ -27,7 +27,7 @@ import {addClientRequest} from '../../actions/clientActions';
 import {validateAddClient} from '../../utils/helpers'
 
 type AddClientProps = {
-  isEdit: Boolean
+  isEdit?: Boolean
   onBack:()=>void
   onUpdate?:()=>void
   account:Account
