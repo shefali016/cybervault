@@ -14,7 +14,14 @@ import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
-import { ButtonConfig, Project, Tab, User, Account } from 'utils/Interface'
+import {
+  ButtonConfig,
+  Project,
+  Tab,
+  User,
+  Account,
+  Portfolio
+} from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
 import DashboardIcon from '@material-ui/icons/Home'
@@ -79,6 +86,7 @@ type StateProps = {
   accountRestored: boolean
   user: User
   account: Account
+  portfolio: Portfolio
 }
 type Props = { history: any; location: any } & StateProps & DispatchProps
 
@@ -91,7 +99,8 @@ const MainScreen = ({
   getAccount,
   user,
   account,
-  location
+  location,
+  portfolio
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -257,7 +266,7 @@ const MainScreen = ({
     const sidebarButtonConfig = getSidebarButtonConfig()
     return {
       actionButtonConfig: sidebarButtonConfig,
-      headerTitle: activeTab.text,
+      headerTitle: !isPortfolioSingleScreen ? activeTab.text : portfolio.name,
       tabs,
       onTabPress: handleActiveTabPress,
       activeTab,
@@ -301,7 +310,10 @@ const MainScreen = ({
         onRequestClose={closeNewProjectModal}
         onSubmitClicked={createNewProject}
       />
-      <div className={classes.screen}>
+      <div
+        className={
+          isPortfolioSingleScreen ? classes.portfolioScreen : classes.screen
+        }>
         <Switch>
           <Route path='/projects' component={ProjectsScreen} />
           <Route path='/profile' component={ProfileScreen} />
@@ -345,6 +357,12 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(5),
     overflowX: 'hidden'
   },
+  portfolioScreen: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    overflowX: 'hidden'
+  },
   buttonIcon: {
     marginRight: 15,
     marginLeft: -30,
@@ -357,7 +375,8 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   accountRestored: state.auth.accountRestored,
   userRestored: state.auth.userRestored,
   user: state.auth.user as User,
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  portfolio: state.portfolio.portfolio as Portfolio
 })
 
 const mapDispatchToProps: DispatchProps = {

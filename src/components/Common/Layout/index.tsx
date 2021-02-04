@@ -56,7 +56,9 @@ const Layout = (props: LayoutProps & ReduxProps) => {
         />
       ) : null}
       <div className={classes.main}>
-        <ToolBar {...{ headerTitle, onProfileClick, user }} />
+        <ToolBar
+          {...{ headerTitle, onProfileClick, user, isPortfolioSingleScreen }}
+        />
         {props.children}
       </div>
     </div>

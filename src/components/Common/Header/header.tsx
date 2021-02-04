@@ -1,5 +1,11 @@
 import React from 'react'
-import { IconButton, Typography, MenuItem, Grid } from '@material-ui/core'
+import {
+  IconButton,
+  Typography,
+  MenuItem,
+  Grid,
+  Avatar
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
 import { SIDE_DRAWER_WIDTH } from 'utils/constants/stringConstants'
@@ -16,7 +22,8 @@ import { CENTER, FLEX } from 'utils/constants/stringConstants'
 import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
 import { User } from 'utils/Interface'
-
+import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
+import Dummy from '../../../assets/Dummy.jpg'
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
@@ -26,6 +33,7 @@ type Props = {
   projectName?: string
   user: User
   onEditProject?: boolean
+  isPortfolioSingleScreen?: boolean
 }
 const ITEM_HEIGHT = 48
 
@@ -201,27 +209,43 @@ function Toolbar(props: Props) {
   }
 
   return (
-    <div className={classes.Toolbar}>
-      <div style={{ marginLeft: 25, display: FLEX }}>
+    <div
+      className={
+        !props.isPortfolioSingleScreen
+          ? classes.Toolbar
+          : classes.portfolioHeader
+      }>
+      {props.isPortfolioSingleScreen ? (
+        <div>
+          <PolymerSharpIcon className={classes.appIcon} />
+        </div>
+      ) : null}
+      <div style={{ marginLeft: 25, display: FLEX }} className='portfolioTitle'>
+        {props.isPortfolioSingleScreen ? (
+          <Avatar alt='Remy Sharp' src={Dummy} />
+        ) : null}
         <h3 className={classes.title}>{props.headerTitle}</h3>
         {renderEditInfoData()}
       </div>
-      <div>
-        {!props.isNotificationIcon ? (
-          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
-            <NotificationIcon className={classes.notificationIcon} />
+      {!props.isPortfolioSingleScreen ? (
+        <div>
+          {!props.isNotificationIcon ? (
+            <IconButton
+              style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
+              <NotificationIcon className={classes.notificationIcon} />
+            </IconButton>
+          ) : null}
+          <IconButton
+            style={{ borderRadius: 100, width: 45, marginRight: 22 }}
+            onClick={props.onProfileClick}>
+            <img
+              src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
+              style={{ borderRadius: 20, height: 33, width: 33 }}
+              alt={'img'}
+            />
           </IconButton>
-        ) : null}
-        <IconButton
-          style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-          onClick={props.onProfileClick}>
-          <img
-            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
-            style={{ borderRadius: 20, height: 33, width: 33 }}
-            alt={'img'}
-          />
-        </IconButton>
-      </div>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -246,6 +270,28 @@ const useStyles = makeStyles((theme) => ({
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
     borderBottomColor: theme.palette.background.default
+  },
+  appIcon: {
+    color: theme.palette.primary.light,
+    fontSize: 43
+  },
+  portfolioHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 15px',
+    height: theme.spacing(7),
+    background: theme.palette.background.secondary,
+    boxSizing: 'border-box',
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.palette.background.default,
+    '& .portfolioTitle': {
+      marginLeft: '50px !important',
+      alignItems: 'center',
+      '& h3': {
+        margin: '0 0 0 25px'
+      }
+    }
   }
 }))
 
