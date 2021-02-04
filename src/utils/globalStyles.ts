@@ -34,6 +34,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'column'
     },
+    '.dashboardScreen': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5)
+    },
     '.screenContainer': {
       display: 'flex',
       flex: 1,

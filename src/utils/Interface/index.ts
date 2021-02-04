@@ -207,3 +207,18 @@ export interface ProjectAsset {
 }
 
 export type AllProjects = Array<Project>
+
+export interface PortfolioFolder {
+  id: string
+  name: string
+  description?: string
+  portfolios: Array<string>
+}
+
+export interface Portfolio {
+  id: string
+  name: string
+  description: string
+  icon: string | null
+  projects: Array<string> // project ids
+}
