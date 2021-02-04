@@ -1,7 +1,7 @@
 import '../Projects.css'
-import React, { ChangeEvent,useState,useEffect } from 'react'
-import {useDispatch} from 'react-redux';
-import { makeStyles, Typography, Button,Grid } from '@material-ui/core'
+import React, { ChangeEvent, useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { makeStyles, Typography, Button, Grid } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -22,19 +22,28 @@ import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
 import { useTabletLayout } from '../../../utils/hooks/'
-import {GradiantButton} from '../../Common/Button/GradiantButton'
+import { GradiantButton } from '../../Common/Button/GradiantButton'
 import AppSelect from '../../Common/Core/AppSelect'
-import {Client} from '../../../utils/Interface';
-import {getClientsRequest} from '../../../actions/clientActions';
-
-
+import { Client } from '../../../utils/Interface'
+import { getClientsRequest } from '../../../actions/clientActions'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const isTablet = useTabletLayout()
-  const { projectData, setProjectData, haveError,
-     setLogoFile,clients,addClient ,setAddClient,
-     currentStep,account,addClientLoading,setClientData,clientData} = props
+  const {
+    projectData,
+    setProjectData,
+    haveError,
+    setLogoFile,
+    clients,
+    addClient,
+    setAddClient,
+    currentStep,
+    account,
+    addClientLoading,
+    setClientData,
+    clientData
+  } = props
   let imageInputRef: any = React.useRef()
 
   const handleChange = async (event: any) => {
@@ -52,16 +61,16 @@ const NewProjectStepOne = (props: any) => {
     setClientData({ ...clientData, [key]: value })
   }
 
-  const dispatch=useDispatch();
-  useEffect(()=>{
+  const dispatch = useDispatch()
+  useEffect(() => {
     dispatch(getClientsRequest(account))
-  },[])
+  }, [])
 
-  useEffect(()=>{
-    if(clients.length){
+  useEffect(() => {
+    if (clients.length) {
       setClientData(clients[0])
     }
-  },[clients])
+  }, [clients])
   const renderClientLogoView = () => {
     return (
       <div className={'client-logo-container'}>
@@ -94,44 +103,58 @@ const NewProjectStepOne = (props: any) => {
       </div>
     )
   }
-  const handleChooseClient=(event:any)=>{
-    const val=event.target.value
-    let item =clients.find((cl:Client,i:number)=>{
-        return cl.id===val
+  const handleChooseClient = (event: any) => {
+    const val = event.target.value
+    let item = clients.find((cl: Client, i: number) => {
+      return cl.id === val
     })
     setClientData(item)
   }
 
-  const renderMiddleView = () => {
-    const leftInputMargin = !isTablet ? 15 : 0
-    return (
-      <div className={classes.middleView}>
-         {!addClient ?<Grid item sm={8} className={classes.chooseClientWrapper}>
-            <Typography paragraph>
-              {' '}
-              Add a new Client or get started with existing client
-            </Typography>
-            <Typography paragraph className={classes.textSecondary}>
-              {' '}
-              Choose an existing client
-            </Typography>
-            <AppSelect
-              className={classes.select}
-              items={clients.map((cl:Client)=>{
-                return {value:cl.id,title:cl.name}
-              })}
-              value={clientData.id}
-              onChange={(event: any) => {
-                handleChooseClient(event)
-              }}
-            />
-            <Typography className={`${classes.bar} ${classes.textCenter}`}>Or</Typography>
-            <Typography className={classes.gradientBtnWrapper}>
-            <GradiantButton onClick={()=>setAddClient(!addClient)} className={classes.gradientBtn}>Add Client</GradiantButton>
+  const renderClientSelect = () => {
+    if (addClient) return null
 
-            </Typography>
-            </Grid>
-      : <>
+    return (
+      <Grid item sm={8} className={classes.chooseClientWrapper}>
+        <Typography paragraph>
+          {' '}
+          Add a new Client or get started with existing client
+        </Typography>
+        <Typography paragraph className={classes.textSecondary}>
+          {' '}
+          Choose an existing client
+        </Typography>
+        <AppSelect
+          className={classes.select}
+          items={clients.map((cl: Client) => {
+            return { value: cl.id, title: cl.name }
+          })}
+          value={clientData.id}
+          onChange={(event: any) => {
+            handleChooseClient(event)
+          }}
+        />
+        <Typography className={`${classes.bar} ${classes.textCenter}`}>
+          Or
+        </Typography>
+        <Typography className={classes.gradientBtnWrapper}>
+          <GradiantButton
+            onClick={() => setAddClient(!addClient)}
+            className={classes.gradientBtn}>
+            Add Client
+          </GradiantButton>
+        </Typography>
+      </Grid>
+    )
+  }
+
+  const renderAddClient = () => {
+    if (!addClient) return null
+
+    const leftInputMargin = !isTablet ? 15 : 0
+
+    return (
+      <>
         {!props.isEdit ? renderClientLogoView() : null}
 
         <div className={'input-row'}>
@@ -198,18 +221,25 @@ const NewProjectStepOne = (props: any) => {
             </div>
           </div>
         ) : null}
-        </>
-      }
+      </>
+    )
+  }
+
+  const renderMiddleView = () => {
+    return (
+      <div className={classes.middleView}>
+        {renderClientSelect()}
+        {renderAddClient()}
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      {!props.isEdit ? (
-        <NewProjectTitle title={'New Project'} subtitle={'Get Started'} />
+      {addClient ? (
+        <NewProjectTitle title={'New Project'} subtitle={'Choose a client'} />
       ) : (
-        <NewProjectTitle title={'Edit Client Details'} subtitle={''} />
+        <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
       )}
       {renderMiddleView()}
       <NewProjectFooter
@@ -256,7 +286,7 @@ const useStyles = makeStyles((theme) => ({
   middleView: {
     flex: 1,
     display: FLEX,
-    flexDirection: COLUMN,
+    flexDirection: COLUMN
   },
   textFiledContainer: {
     display: FLEX,
@@ -319,59 +349,58 @@ const useStyles = makeStyles((theme) => ({
     top: 10,
     right: 10
   },
-  textSecondary:{
-    color:GREY_COLOR
+  textSecondary: {
+    color: GREY_COLOR
   },
-  select:{
-    width:'100%',
-    '& div':{
-      padding:'12px'
+  select: {
+    width: '100%',
+    '& div': {
+      padding: '12px'
     }
   },
-  chooseClientWrapper:{
-    margin:'auto',
+  chooseClientWrapper: {
+    margin: 'auto'
   },
-  textCenter:{
-    textAlign:CENTER
+  textCenter: {
+    textAlign: CENTER
   },
-  bar:{
+  bar: {
     color: GREY_COLOR,
-    position:'relative',
-    padding:'15px',
-    '&:before':{
-      content:'close-quote',
-      position:'absolute',
-      width:'50%',
-      height:'1px',
-      backgroundColor:GREY_COLOR,
-      top:'50%',
-      left:'-40px',
+    position: 'relative',
+    padding: '15px',
+    '&:before': {
+      content: 'close-quote',
+      position: 'absolute',
+      width: '50%',
+      height: '1px',
+      backgroundColor: GREY_COLOR,
+      top: '50%',
+      left: '-40px',
       [theme.breakpoints.down('sm')]: {
-        left:'0',
-        width:'45%'
+        left: '0',
+        width: '45%'
       }
     },
-    '&:after':{
-      content:'close-quote',
-      position:'absolute',
-      width:'50%',
-      height:'1px',
-      backgroundColor:GREY_COLOR,
-      top:'50%',
-      right:'-40px',
+    '&:after': {
+      content: 'close-quote',
+      position: 'absolute',
+      width: '50%',
+      height: '1px',
+      backgroundColor: GREY_COLOR,
+      top: '50%',
+      right: '-40px',
       [theme.breakpoints.down('sm')]: {
-        right:'0',
-        width:'45%'
-
+        right: '0',
+        width: '45%'
       }
     }
   },
-  gradientBtn:{
-    minWidth:'125px',
-    borderRadius:'24px'
+  gradientBtn: {
+    minWidth: '125px',
+    borderRadius: '24px'
   },
-  gradientBtnWrapper:{
-    textAlign:CENTER
+  gradientBtnWrapper: {
+    textAlign: CENTER
   }
 }))
 
