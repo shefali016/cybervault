@@ -30,14 +30,9 @@ export const addClient = async (
   account: Account,
   client:Types.Client
 ) => {
-  let clientsData:Array<{}>=[]
-    let data: any = await firebase
+    await firebase
     .firestore()
     .collection('AccountData')
     .doc(account.id)
     .collection('Clients').doc(client.id).set(client)
-
-    // for (const doc of data.docs) {
-    //   clientsData.push(doc.data())
-    // }
 }

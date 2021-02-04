@@ -16,20 +16,6 @@ type GetParams = {
   client:Types.Client
 }
 
-// function* createNewProject({ newProjectData }: Params) {
-//   try {
-//     const account = yield select((state: ReduxState) => state.auth.account)
-//     const response = yield call(
-//       createNewProjectRequest,
-//       newProjectData,
-//       account
-//     )
-//     yield put(createNewProjectSuccess(response))
-//   } catch (error: any) {
-//     yield put(createNewProjectFailure(error?.message || 'default'))
-//   }
-// }
-
 function* getClientRequest({ account }: GetParams) {
   try {
     const response = yield call(getClients, account)
@@ -40,8 +26,8 @@ function* getClientRequest({ account }: GetParams) {
 }
 function* addClientRequest({ account,client }: GetParams) {
     try {
-      const response = yield call(addClient, account,client)
-      yield put(addClientSuccess(response))
+      yield call(addClient, account,client)
+      yield put(addClientSuccess())
     } catch (error: any) {
       yield put(addClientError(error?.message || 'default'))
     }
