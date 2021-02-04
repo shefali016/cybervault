@@ -6,7 +6,8 @@ import {
   updatePortfolioFolderRequest,
   getPortfolioFolderRequest,
   deletePortfolioFolderRequest,
-  updatePortfolioRequest
+  updatePortfolioRequest,
+  getPortfolioRequest
 } from '../apis/portfolioRequest'
 import {
   deletePortfolioFolderFailure,
@@ -15,7 +16,8 @@ import {
   updatePortfolioFolderSuccess,
   deletePortfolioFolderSuccess,
   updatePortfolioSuccess,
-  updatePortfolioFailure
+  updatePortfolioFailure,
+  getPortfolioSuccess
 } from '../actions/portfolioActions'
 import history from 'services/history'
 type UpdateParams = {
@@ -24,6 +26,7 @@ type UpdateParams = {
   folder: Types.PortfolioFolder
   folderId: string
   portfolio: Types.Portfolio
+  portfolioId: string
 }
 
 function* getPortfolioFolders() {
@@ -111,6 +114,23 @@ function* updatePortfolio({ portfolio, folderId }: UpdateParams) {
   }
 }
 
+function* getPortfolio({ portfolioId }: UpdateParams) {
+  try {
+    const account: Account = yield select(
+      (state: ReduxState) => state.auth.account
+    )
+    const result: Object | any = yield call(
+      getPortfolioRequest,
+      portfolioId,
+      account
+    )
+    console.log('>>>>>>>>>>>>>>>>>Result', result)
+    yield put(getPortfolioSuccess(result.portfolio, result.projectDataList))
+  } catch (error: any) {
+    yield put(updatePortfolioFolderFailure(error))
+  }
+}
+
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.UPDATE_PORTFOLIO_FOLDER, updatePortfolioFolder)
   yield takeLatest(ActionTypes.DELETE_PORTFOLIO_FOLDER, deletePortfolioFolder)
@@ -119,6 +139,7 @@ function* watchGetRequest() {
     getPortfolioFolders
   )
   yield takeLatest(ActionTypes.UPDATE_PORTFOLIO, updatePortfolio)
+  yield takeLatest(ActionTypes.GET_PORTFOLIO_REQUEST, getPortfolio)
 }
 
 export default function* sagas() {

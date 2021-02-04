@@ -1,8 +1,9 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Portfolio, PortfolioFolder } from 'utils/Interface'
+import { Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import { generateUid } from 'utils'
+import { getProjectDetailsRequest } from './projectRequest'
 
 /**
  * @updatePortfoliFolder
@@ -129,6 +130,43 @@ export const updatePortfolioRequest = async (
       .doc(portfolioData.id)
       .set(portfolioData)
     return portfolioData.id
+  } catch (error) {
+    console.log('Errooorrrrr', error)
+    return error
+  }
+}
+
+/**
+ * @getPortfolio
+ */
+export const getPortfolioRequest = async (
+  portfolioId: string,
+  account: Account
+) => {
+  try {
+    const portfolioData: Document | any = await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Portfolio')
+      .doc(portfolioId)
+      .get()
+    const portfolio = portfolioData.data()
+    const portfolioPorijects = portfolioData.data().projects
+    let projectDataList: Array<Project> = []
+    for (let index = 0; index < portfolioPorijects.length; index++) {
+      const projectId = portfolioPorijects[index]
+      const projects: Project | any = await getProjectDetailsRequest(
+        account,
+        projectId
+      )
+      projectDataList.push(projects)
+    }
+    const result = {
+      portfolio,
+      projectDataList
+    }
+    return result
   } catch (error) {
     console.log('Errooorrrrr', error)
     return error

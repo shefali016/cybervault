@@ -97,16 +97,21 @@ export function updatePortfolioFailure(error: string) {
   }
 }
 /* GET PORTFOLIO REQUEST ACTIONS */
-export function getPortfolioRequest() {
+export function getPortfolioRequest(portfolioId: string) {
   return {
-    type: ActionTypes.GET_PORTFOLIO_REQUEST
+    type: ActionTypes.GET_PORTFOLIO_REQUEST,
+    portfolioId
   }
 }
 
-export function getPortfolioSuccess(portfolioList: Array<Types.Portfolio>) {
+export function getPortfolioSuccess(
+  portfolio: Types.Portfolio,
+  projects: Array<Types.Project>
+) {
   return {
     type: ActionTypes.GET_PORTFOLIO_SUCCESS,
-    payload: portfolioList
+    payload: portfolio,
+    projects
   }
 }
 

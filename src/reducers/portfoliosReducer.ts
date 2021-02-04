@@ -3,6 +3,8 @@ import {
   DELETE_PORTFOLIO_FOLDER_SUCCESS,
   GET_PORTFOLIO_FOLDER_REQUEST,
   GET_PORTFOLIO_FOLDER_SUCCESS,
+  GET_PORTFOLIO_REQUEST,
+  GET_PORTFOLIO_SUCCESS,
   UPDATE_PORTFOLIO,
   UPDATE_PORTFOLIO_FOLDER,
   UPDATE_PORTFOLIO_FOLDER_SUCCESS,
@@ -17,6 +19,8 @@ export type State = {
   getPortfolioLoading: boolean
   updatingFolder: boolean
   getFoldersError: string | null
+  portfolio: Types.Portfolio | any
+  portfolioProjects: Array<Types.Project>
 }
 
 export type Action = {
@@ -25,6 +29,7 @@ export type Action = {
   getFoldersError: string
   portfolios?: []
   folder?: {}
+  projects?: Array<Types.Project>
 }
 
 const initialState = {
@@ -34,7 +39,9 @@ const initialState = {
   error: '',
   updatingFolder: false,
   getPortfolioLoading: false,
-  getFoldersError: ''
+  getFoldersError: '',
+  portfolio: {},
+  portfolioProjects: []
 }
 
 const getPrortfolioFolders = (state: State, action: Action) => ({
@@ -90,6 +97,17 @@ const updatePrortfolioSuccess = (state: State, action: Action) => ({
   getPortfolioLoading: false
 })
 
+const getPrortfolio = (state: State, action: Action) => ({
+  ...state,
+  getPortfolio: true
+})
+
+const getPrortfolioSuccess = (state: State, action: Action) => ({
+  ...state,
+  getPortfolio: false,
+  portfolio: action.payload,
+  portfolioProjects: action.projects
+})
 const portfoliosReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case GET_PORTFOLIO_FOLDER_REQUEST:
@@ -124,6 +142,10 @@ const portfoliosReducer = (state = initialState, action: Action) => {
       return updatePrortfolio(state, action)
     case UPDATE_PORTFOLIO_SUCCESS:
       return updatePrortfolioSuccess(state, action)
+    case GET_PORTFOLIO_REQUEST:
+      return getPrortfolio(state, action)
+    case GET_PORTFOLIO_SUCCESS:
+      return getPrortfolioSuccess(state, action)
     default:
       return state
   }

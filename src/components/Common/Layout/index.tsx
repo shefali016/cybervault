@@ -22,6 +22,7 @@ export type LayoutProps = {
   onProfileClick?: () => void
   onActionButtonPress?: () => void
   actionButtonTitle?: string
+  isPortfolioSingleScreen?: boolean
 }
 
 const Layout = (props: LayoutProps & ReduxProps) => {
@@ -33,6 +34,7 @@ const Layout = (props: LayoutProps & ReduxProps) => {
     onTabPress,
     activeTab,
     onProfileClick,
+    isPortfolioSingleScreen,
     user
   } = props
   const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
@@ -40,17 +42,19 @@ const Layout = (props: LayoutProps & ReduxProps) => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <SideBarComponent
-        {...{
-          actionButtonConfig,
-          onLogout,
-          open: drawerOpen,
-          setOpen: setDrawerOpen,
-          tabs,
-          onTabPress,
-          activeTab
-        }}
-      />
+      {!isPortfolioSingleScreen ? (
+        <SideBarComponent
+          {...{
+            actionButtonConfig,
+            onLogout,
+            open: drawerOpen,
+            setOpen: setDrawerOpen,
+            tabs,
+            onTabPress,
+            activeTab
+          }}
+        />
+      ) : null}
       <div className={classes.main}>
         <ToolBar {...{ headerTitle, onProfileClick, user }} />
         {props.children}

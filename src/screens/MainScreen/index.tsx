@@ -80,7 +80,7 @@ type StateProps = {
   user: User
   account: Account
 }
-type Props = { history: any } & StateProps & DispatchProps
+type Props = { history: any; location: any } & StateProps & DispatchProps
 
 const MainScreen = ({
   createNewProject,
@@ -90,7 +90,8 @@ const MainScreen = ({
   getUser,
   getAccount,
   user,
-  account
+  account,
+  location
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -106,6 +107,8 @@ const MainScreen = ({
   const [screenView, setScreenView] = useState(getInitialScreenView())
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+  const [isPortfolioSingleScreen, setIsPortfolioSingleScreen] = useState(false)
+
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
     []
@@ -258,17 +261,19 @@ const MainScreen = ({
       tabs,
       onTabPress: handleActiveTabPress,
       activeTab,
-      onProfileClick: handleProfileNavigation
+      onProfileClick: handleProfileNavigation,
+      isPortfolioSingleScreen: isPortfolioSingleScreen
     }
   }
 
-  // useEffect(() => {
-  //   if (location.pathname === '/project') {
-  //     onEditProject(true)
-  //   } else {
-  //     onEditProject(false)
-  //   }
-  // }, [location])
+  useEffect(() => {
+    const paths = location.pathname.split('/')
+    if (paths[1] === 'portfolio' && paths.length > 2) {
+      setIsPortfolioSingleScreen(true)
+    } else {
+      setIsPortfolioSingleScreen(false)
+    }
+  }, [location])
 
   const renderLoading = () => (
     <div className={classes.splashScreen}>

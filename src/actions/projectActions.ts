@@ -95,3 +95,4 @@ export function updateProjectDetailsFailure(error: string) {
     error
   }
 }
+

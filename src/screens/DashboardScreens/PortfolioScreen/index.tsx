@@ -229,6 +229,10 @@ const PortfoliosScreen = ({
     })
   }
 
+  const handlePortfolioView = (portfolioId: string) => {
+    history.push(`/portfolio/${portfolioId}`)
+  }
+
   const renderPortfolioFolderModal = () => {
     return (
       <PortfolioFolderModal
@@ -273,6 +277,9 @@ const PortfoliosScreen = ({
               handleProjectSelect(projectId)
             }
             portfolioLoading={portfolioLoading}
+            handlePortfolioView={(portfolioId: string) =>
+              handlePortfolioView(portfolioId)
+            }
           />
         </div>
         <div

@@ -29,6 +29,7 @@ type Props = {
   handleProjectSelect: (projectId: string) => void
   portfolioLoading: boolean
   portfolios: Array<Portfolio>
+  handlePortfolioView: (portfolioId: string) => void
 }
 const PortfolioFolders = ({
   folderList,
@@ -47,7 +48,8 @@ const PortfolioFolders = ({
   projectList,
   handleProjectSelect,
   portfolioLoading,
-  portfolios
+  portfolios,
+  handlePortfolioView
 }: Props) => {
   const [open, setOpen] = useState<boolean>(false)
   const [folderId, setFolderId] = useState<string>('')
@@ -110,7 +112,9 @@ const PortfolioFolders = ({
                         (data: Portfolio | any, i: number) => {
                           return (
                             <Grid item lg={3} md={4} sm={6}>
-                              <Card className={classes.portfoliosCard}>
+                              <Card
+                                onClick={() => handlePortfolioView(data.id)}
+                                className={classes.portfoliosCard}>
                                 <div className={classes.cardLogo}>
                                   <img src={data.logo} alt='' />
                                 </div>
