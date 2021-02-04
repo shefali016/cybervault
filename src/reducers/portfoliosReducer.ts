@@ -9,8 +9,8 @@ import {
 import * as Types from '../utils/Interface'
 
 export type State = {
-  folders?: Array<Types.PortfolioFolder>
-  portfolios?: Map<string, Types.Portfolio> | any
+  folders: Array<Types.PortfolioFolder | never>
+  portfolios: {[id: string]: Types.Portfolio}
   getFoldersLoading: boolean
   updatingFolder: boolean
   getFoldersError: string | null
@@ -20,13 +20,13 @@ export type Action = {
   type: string
   payload: {}
   getFoldersError: string
-  portfolios?: []
-  folder?: {}
+  portfolios: Array<Types.PortfolioFolder>
+  folder: Types.PortfolioFolder
 }
 
 const initialState = {
   folders: [],
-  portfolios: [],
+  portfolios: {},
   getFoldersLoading: false,
   getFoldersError: '',
   updatingFolder: false
@@ -50,16 +50,26 @@ const updatePrortfolioFolder = (state: State, action: Action) => ({
   updatingFolder: true,
   getFoldersLoading: true
 })
-const updatePrortfolioFoldersSuccess = (
-  state: State,
-  action: Action,
-  folders: Array<Types.PortfolioFolder>
-) => ({
-  ...state,
-  updatingFolder: false,
-  getFoldersLoading: false,
-  folders
-})
+const updatePrortfolioFoldersSuccess = (state: State, action: Action) => {
+  let folders: Array<Types.PortfolioFolder> | any = state.folders
+
+  const folderIndex: number = state.folders.findIndex(
+    (data: any) => data.id === action.payload
+  )
+  const folder: Types.PortfolioFolder = action.folder
+  if (folderIndex > -1) {
+    folders.splice(folderIndex, 1, folder)
+  } else {
+    folders.push(folder)
+  }
+
+  return {
+    ...state,
+    updatingFolder: false,
+    getFoldersLoading: false,
+    folders
+  }
+}
 
 const deletePrortfolioFolder = (state: State, action: Action) => ({
   ...state,
@@ -84,19 +94,7 @@ const portfoliosReducer = (state = initialState, action: Action) => {
     case UPDATE_PORTFOLIO_FOLDER:
       return updatePrortfolioFolder(state, action)
     case UPDATE_PORTFOLIO_FOLDER_SUCCESS:
-      let currentFolders: Array<Types.PortfolioFolder> | any = state.folders
-      {
-        const folderIndex: number = state.folders.findIndex(
-          (data: any) => data.id === action.payload
-        )
-        const folder: Types.PortfolioFolder | any = action.folder
-        if (folderIndex > -1) {
-          currentFolders.splice(folderIndex, 1, folder)
-        } else {
-          currentFolders.push(folder)
-        }
-      }
-      return updatePrortfolioFoldersSuccess(state, action, currentFolders)
+      return updatePrortfolioFoldersSuccess(state, action)
     case DELETE_PORTFOLIO_FOLDER:
       return deletePrortfolioFolder(state, action)
     case DELETE_PORTFOLIO_FOLDER_SUCCESS:
