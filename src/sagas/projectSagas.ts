@@ -71,7 +71,6 @@ function* updateProjectDetails({ projectdata }: GetParams) {
     yield put(updateProjectDetailsFailure(error?.message || 'default'))
   }
 }
-
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.NEW_PROJECT_REQUEST, createNewProject)
   yield takeLatest(ActionTypes.GET_ALL_PROJECT_REQUEST, getAllProjects)

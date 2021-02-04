@@ -13,26 +13,36 @@ import {
   Action as ClientsActions,
 } from './clientReducer'
 
+import {
+
+  State as PorfolioState,
+  Action as PortfolioAction
+} from './portfoliosReducer'
+import portfoliosReducer from './portfoliosReducer'
+
 const appReducer = combineReducers({
   auth: authReducer,
   project: projectReducer,
-  clients:clientReducer
+  clients:clientReducer,
+  portfolio: portfoliosReducer
 })
 
 export type ReduxState = {
   auth: AuthState
-  project: ProjectState,
+  project: ProjectState
+  portfolio: PorfolioState
   clients:ClientsState
 }
 
-export type Action = AuthAction & ProjectAction & ClientsActions
+export type Action = AuthAction & ProjectAction & PortfolioAction & ClientsActions
 
 const rootReducer = (state: CombinedState<ReduxState>, action: Action) => {
   if (action.type === 'RESET_ALL_DATA') {
     state = {
       auth: state.auth,
       project: state.project,
-      clients:state.clients
+      clients:state.clients,
+      portfolio: state.portfolio
     }
   }
   return appReducer(state as any, action)
