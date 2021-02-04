@@ -16,7 +16,7 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Expense, InputChangeEvent,Task } from '../../../utils/Interface'
+import { Expense, InputChangeEvent, Task } from '../../../utils/Interface'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
@@ -28,7 +28,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, haveError,currentStep } = props
+  const { projectData, setProjectData, haveError, currentStep } = props
 
   const handleInputChange = (event: InputChangeEvent) => (key: string) => {
     const value = event.target.value
@@ -127,7 +127,7 @@ const NewProjectStepTwo = (props: any) => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-         {!props.isEdit ? (
+        {props.newProject || props.editCampaign ? (
           <div className={'input-row'} style={{ marginBottom: 30 }}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
