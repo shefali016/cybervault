@@ -17,6 +17,7 @@ import InvoiceStepTwo from './Steps/InvoiceStepTwo';
 import InvoiceStepThree from './Steps/InvoiceStepThree';
 import { forEachChild } from 'typescript';
 import {getAllProjectsRequest} from '../../actions/projectActions'
+import { sendMsg } from 'apis/stripe'
 
 
 
@@ -135,6 +136,7 @@ const handleDoneClick=()=>{
           isPaid: false,
           status:'pending', // has client paid invoice or not
         }
+        sendMsg(invoice.clientEmail,"hello how are you")
         dispatch(generateNewInvoiceRequest(account,projectData,invoice))
     
   }

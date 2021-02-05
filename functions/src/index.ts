@@ -2,6 +2,8 @@ import * as functions from 'firebase-functions'
 import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin';
+const sgMail = require("@sendgrid/mail");
+
 // import firebaseAccountCredentials from "./cybervault-8cfe9-firebase-adminsdk-kpppk-d07b59a821.json";
 
 // const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
@@ -21,7 +23,44 @@ admin.initializeApp({
   databaseURL: 'https://cybervault-8cfe9.firebaseio.com'
 });
 
+export const emailMessage=(req:any,res:any)=>{
+  const { email,message } = req.body;
+  return corsHandler(req, res, () => {
+    var text = `<div>
+      <h4>Information</h4>
+      <ul>
+        <li>
+          Name - ${ "cybervault"}
+        </li>
+        <li>
+          Email - ${email || ""}
+        </li>
+        <li>
+          Phone - ${"cybervault"}
+        </li>
+      </ul>
+      <h4>Message</h4>
+      <p>${message || ""}</p>
+    </div>`;
+    const msg = {
+      to: "cybervault@mailinator.com",
+      from: "cybervault@mailinator.com",
+      subject: `${"cybervault"} sent you a new message`,
+      text: text,
+      html: text
+    };
+    sgMail.setApiKey(
+      "SENDGRID API KEY"
+    );
+    sgMail.send(msg);
+    res.status(200).send("success");
+  })
+}
+
 export const httpsRequests = functions.https.onRequest(app)
+app.use('/api/v1/sendEmail',emailMessage)
+
+
 
 export const myFunction = functions.firestore
   .document(`AccountData/{accountId}/Invoices/{invoiceId}`)
