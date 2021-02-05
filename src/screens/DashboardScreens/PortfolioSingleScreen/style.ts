@@ -2,6 +2,8 @@ import { makeStyles } from '@material-ui/core'
 import {
   BLOCK,
   CENTER,
+  COLUMN,
+  FLEX,
   POSITION_ABSOLUTE,
   POSITION_RELATIVE
 } from 'utils/constants/stringConstants'
@@ -34,7 +36,20 @@ export const useStyles = makeStyles((theme) => ({
       position: POSITION_ABSOLUTE,
       left: '50%',
       transform: 'translateX(-50%)',
-      bottom:0,
+      bottom: 0
     }
+  },
+  portfolioWrapper: {
+    backgroundColor: theme.palette.background.secondary,
+    display: FLEX,
+    flex: 1,
+    flexGrow: 1,
+    flexDirection: COLUMN,
+    borderRadius: 20,
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(5),
+    padding: theme.spacing(6),
+    marginBottom: theme.spacing(5),
+    marginTop: '20px'
   }
 }))

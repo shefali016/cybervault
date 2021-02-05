@@ -41,7 +41,7 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 // import BankingScreen from 'screens/SharedScreens/BankingScreen'
 import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
-import EditPortfolioScreen from 'screens/DashboardScreens/EditPortfolioScreen'
+import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 
 import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
@@ -302,7 +302,7 @@ const MainScreen = ({
   if (!(userRestored && accountRestored)) {
     return renderLoading()
   }
-
+  const portfolioBackgroundColor = account.branding.portfolio.backgroundColor
   return (
     <Layout {...getLayoutProps()}>
       <NewProjectModal
@@ -313,7 +313,12 @@ const MainScreen = ({
       <div
         className={
           isPortfolioSingleScreen ? classes.portfolioScreen : classes.screen
-        }>
+        }
+        style={{
+          backgroundColor: isPortfolioSingleScreen
+            ? portfolioBackgroundColor
+            : '#181818'
+        }}>
         <Switch>
           <Route path='/projects' component={ProjectsScreen} />
           <Route path='/profile' component={ProfileScreen} />
@@ -324,7 +329,7 @@ const MainScreen = ({
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
-          <Route path='/portfolio/:id' component={EditPortfolioScreen} />
+          <Route path='/portfolio/:id' component={PortfolioSingleScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}

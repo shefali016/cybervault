@@ -10,7 +10,14 @@ export const RenderProjectDetails = (props: any) => {
   return (
     <div
       className={classes.clientDetailsContainer}
-      style={{ color: props.editInfo ? 'white' : 'black' }}>
+      style={{
+        color:
+          props.editInfo || props.isPortfolioScreen
+            ? props.portfolioTestColor
+              ? props.portfolioTestColor
+              : 'white'
+            : 'black'
+      }}>
       <div className={classes.innerDiv}>
         <Typography variant={'h6'} className={classes.title}>
           Project Details
@@ -29,10 +36,12 @@ export const RenderProjectDetails = (props: any) => {
         'Campaign Objective:',
         props.projectData ? props.projectData.campaignObjective : ''
       )}
-      {renderDetails(
-        'Deadline: ',
-        props.projectData ? props.projectData.campaignDeadLine : ''
-      )}
+      {!props.isPortfolioScreen
+        ? renderDetails(
+            'Deadline: ',
+            props.projectData ? props.projectData.campaignDeadLine : ''
+          )
+        : null}
       {props.projectData &&
         props.projectData.description &&
         renderDetails(

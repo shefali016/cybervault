@@ -124,6 +124,8 @@ function* getPortfolio({ portfolioId }: UpdateParams) {
       portfolioId,
       account
     )
+    console.log('>>>>>>>>>>>>>>>Result', result)
+
     console.log('>>>>>>>>>>>>>>>>>Result', result)
     yield put(getPortfolioSuccess(result.portfolio, result.projectDataList))
   } catch (error: any) {
