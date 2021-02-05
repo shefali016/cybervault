@@ -22,5 +22,8 @@ export const useStyles = makeStyles((theme) => ({
   editIcon: {
     height: 15,
     width: 15
+  },
+  bgNone:{
+    backgroundColor: "unset !important"
   }
 }))

@@ -48,7 +48,7 @@ export const RenderProjectDetails = (props: any) => {
           'Project Summary: ',
           props.projectData ? props.projectData.description : ''
         )}
-      <AppDivider />
+      <AppDivider className={!props.isPortfolioScreen ? '' : classes.bgNone} />
     </div>
   )
 }

@@ -19,7 +19,7 @@ export const RenderCampaignDetails = (props: any) => {
       <Typography>
         {props.projectData ? props.projectData.description : ''}
       </Typography>
-      <AppDivider />
+      <AppDivider className={classes.bgNone} />
     </div>
   )
 }

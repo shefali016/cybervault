@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core'
 import {
+  AUTO,
   BLOCK,
   CENTER,
   COLUMN,
@@ -51,5 +52,9 @@ export const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(6),
     marginBottom: theme.spacing(5),
     marginTop: '20px'
+  },
+  corosalWrapper:{
+    maxWidth: 800,
+    margin: AUTO,
   }
 }))

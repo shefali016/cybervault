@@ -60,9 +60,20 @@ const PortfolioSingleScreen = ({
     ? account.branding.portfolio.foregroundColor
     : ''
   const portfolioTestColor = account ? account.branding.portfolio.text : ''
+  const portfolioHeaderGradient1 = account
+    ? account.branding.portfolio.headerGradient1
+    : ''
+  const portfolioHeaderGradient2 = account
+    ? account.branding.portfolio.headerGradient2
+    : ''
+
   return (
     <Fragment>
-      <Box className={classes.portfolioTabsWrap}>
+      <Box
+        className={classes.portfolioTabsWrap}
+        style={{
+          backgroundImage: `linear-gradient(to right ,${portfolioHeaderGradient1}, ${portfolioHeaderGradient2})`
+        }}>
         <Container maxWidth='lg'>
           <ul className={classes.portfoloTabsList}>
             {portfolioProjects && portfolioProjects.length
@@ -101,28 +112,30 @@ const PortfolioSingleScreen = ({
             isPortfolioScreen={true}
             portfolioTestColor={portfolioTestColor}
           />
+          <br />
           <RenderProjectDetails
             projectData={state.selectedProjectData}
             isPortfolioScreen={true}
             portfolioTestColor={portfolioTestColor}
           />
-          <AssetUploadDisplay
-            {...{
-              assetIds: state.selectedProjectData.videos,
-              accountId: account ? account.id : '',
-              isVideo: true,
-              isPortfolioScreen: true
-            }}
-          />
-          <AppDivider spacing={6} />
-          <FeatureAssetUpload
-            {...{
-              assetIds: state.selectedProjectData.images,
-              accountId: account ? account.id : '',
-              featuredAsset: state.selectedProjectData.featuredImage,
-              isPortfolioScreen: true
-            }}
-          />
+          <div className={classes.corosalWrapper}>
+            <AssetUploadDisplay
+              {...{
+                assetIds: state.selectedProjectData.videos,
+                accountId: account ? account.id : '',
+                isVideo: true,
+                isPortfolioScreen: true
+              }}
+            />
+            <FeatureAssetUpload
+              {...{
+                assetIds: state.selectedProjectData.images,
+                accountId: account ? account.id : '',
+                featuredAsset: state.selectedProjectData.featuredImage,
+                isPortfolioScreen: true
+              }}
+            />
+          </div>
         </div>
       </Container>
     </Fragment>
