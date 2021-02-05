@@ -5,13 +5,11 @@ import { ReduxState } from 'reducers/rootReducer'
 import { Portfolio, Project } from 'utils/Interface'
 import { Box, Container, Typography } from '@material-ui/core'
 import { useStyles } from './style'
-import EditProjectScreen from '../ProjectSingleScreen'
-import { useOnChange } from 'utils/hooks'
 import { RenderProjectDetails } from 'components/Common/Widget/ProjectDetailWidget'
 import { RenderCampaignDetails } from 'components/Common/Widget/CampaignDetailsWidget'
 import { AssetUploadDisplay } from 'components/Assets/UploadMedia'
-import { AppDivider } from 'components/Common/Core/AppDivider'
 import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
+import { getTextColor } from 'utils/helpers'
 
 type StateProps = {
   portfolio: Portfolio
@@ -33,6 +31,19 @@ const PortfolioSingleScreen = ({
   portfolioProjects
 }: Props) => {
   const classes = useStyles()
+
+  const portfolioForeGroundColor = account
+    ? account.branding.portfolio.foregroundColor
+    : ''
+  const portfolioTestColor = account ? account.branding.portfolio.text : ''
+  const portfolioHeaderGradient1 = account
+    ? account.branding.portfolio.headerGradient1
+    : ''
+  const portfolioHeaderGradient2 = account
+    ? account.branding.portfolio.headerGradient2
+    : ''
+
+  const color = getTextColor(portfolioHeaderGradient1)
 
   const [state, setState] = useState<initialState>({
     selectedProjectData:
@@ -56,17 +67,6 @@ const PortfolioSingleScreen = ({
     })
   }
 
-  const portfolioForeGroundColor = account
-    ? account.branding.portfolio.foregroundColor
-    : ''
-  const portfolioTestColor = account ? account.branding.portfolio.text : ''
-  const portfolioHeaderGradient1 = account
-    ? account.branding.portfolio.headerGradient1
-    : ''
-  const portfolioHeaderGradient2 = account
-    ? account.branding.portfolio.headerGradient2
-    : ''
-
   return (
     <Fragment>
       <Box
@@ -75,7 +75,10 @@ const PortfolioSingleScreen = ({
           backgroundImage: `linear-gradient(to right ,${portfolioHeaderGradient1}, ${portfolioHeaderGradient2})`
         }}>
         <Container maxWidth='lg'>
-          <ul className={classes.portfoloTabsList}>
+          <ul
+            className={`${classes.portfoloTabsList} ${
+              color === 'light' ? classes.portfoloDarkTabsList : ''
+            }`}>
             {portfolioProjects && portfolioProjects.length
               ? portfolioProjects.map(
                   (project: Project | any, index: number) => {

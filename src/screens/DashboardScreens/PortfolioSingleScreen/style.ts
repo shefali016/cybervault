@@ -40,6 +40,14 @@ export const useStyles = makeStyles((theme) => ({
       bottom: 0
     }
   },
+  portfoloDarkTabsList: {
+    '& li': {
+      color: '#000'
+    },
+    '& li.active::after': {
+      backgroundColor: '#000'
+    }
+  },
   portfolioWrapper: {
     backgroundColor: theme.palette.background.secondary,
     display: FLEX,
@@ -53,8 +61,8 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(5),
     marginTop: '20px'
   },
-  corosalWrapper:{
+  corosalWrapper: {
     maxWidth: 800,
-    margin: AUTO,
+    margin: AUTO
   }
 }))
