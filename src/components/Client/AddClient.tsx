@@ -185,7 +185,7 @@ export const AddClient = (props: AddClientProps) => {
         setHaveError(isError)
    }
    else{
-    let clientId=''
+    let clientId=generateUid()
     setClientData({...clientData,id:clientId})
     const payload={
       ...clientData,
