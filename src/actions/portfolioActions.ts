@@ -83,10 +83,9 @@ export function updatePortfolioRequest(
   }
 }
 
-export function updatePortfolioSuccess(portfolio: Types.Portfolio) {
+export function updatePortfolioSuccess() {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO_SUCCESS,
-    portfolio
   }
 }
 

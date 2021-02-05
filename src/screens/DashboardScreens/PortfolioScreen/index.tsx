@@ -20,7 +20,7 @@ type StateProps = {
   updatingFolder: boolean
   allProjectsData: Array<Project>
   portfolioLoading: boolean
-  portfolios: Array<Portfolio>
+  portfolios: Map<string, Portfolio> | any
 }
 
 type PortfolioStates = {
@@ -168,8 +168,8 @@ const PortfoliosScreen = ({
     }
   }
 
-  const handlePortfolioSubmit = () => {
-    const { folder, portfolio } = state
+  const handlePortfolioSubmit = (portfolio: Portfolio) => {
+    const { folder } = state
     updatePortfolio(portfolio, folder.id)
     // resetStateData()
   }
@@ -181,58 +181,9 @@ const PortfoliosScreen = ({
       return error
     }
   }
-
-  const handleImageChange = async (event: any) => {
-    if (event.target && event.target.files && event.target.files.length > 0) {
-      setState({
-        ...state,
-        portfolio: {
-          ...state.portfolio,
-          icon: URL.createObjectURL(event.target.files[0])
-        }
-      })
-    }
-  }
-
-  const handleProjectSection = () => {
-    const { portfolio } = state
-    if (portfolio && portfolio.name) {
-      setState({
-        ...state,
-        isChooseProject: true
-      })
-    } else {
-      setState({
-        ...state,
-        isError: true
-      })
-    }
-  }
-
-  const handleProjectSelect = (projectId: string) => {
-    const { portfolio } = state
-    let projectsData = portfolio && portfolio.projects ? portfolio.projects : []
-    const isProjectId = portfolio?.projects?.includes(projectId)
-    if (isProjectId) {
-      if (portfolio && portfolio.projects && portfolio.projects.length) {
-        projectsData = portfolio.projects.filter((item) => item !== projectId)
-      }
-    } else {
-      projectsData.push(projectId)
-    }
-    setState({
-      ...state,
-      portfolio: {
-        ...state.portfolio,
-        projects: projectsData
-      }
-    })
-  }
-
   const handlePortfolioView = (portfolioId: string) => {
     history.push(`/portfolio/${portfolioId}`)
   }
-
   const renderPortfolioFolderModal = () => {
     return (
       <PortfolioFolderModal
@@ -260,22 +211,11 @@ const PortfoliosScreen = ({
               handleEditFolderDetail(folder)
             }
             deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
-            portfolio={state.portfolio}
             isModalOpen={state.isPortfolioModalOpen}
             handleModalRequest={handleModalRequest}
             handleSubmit={handlePortfolioSubmit}
-            handleInputChange={(e: any, key: string) =>
-              handleInputChange(e, key, 'portfolio')
-            }
-            handleImageChange={handleImageChange}
-            handleProjectSection={handleProjectSection}
-            isError={state.isError}
-            isChooseProject={state.isChooseProject}
             portfolios={portfolios}
             projectList={allProjectsData}
-            handleProjectSelect={(projectId: string) =>
-              handleProjectSelect(projectId)
-            }
             portfolioLoading={portfolioLoading}
             handlePortfolioView={(portfolioId: string) =>
               handlePortfolioView(portfolioId)
@@ -303,7 +243,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
   allProjectsData: state.project.allProjectsData as Array<Project>,
-  portfolios: state.portfolio.portfolios as Array<Portfolio>
+  portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any
 })
 const mapDispatchToProps = (dispatch: any) => ({
   updatePortfolioFolder: (folder: PortfolioFolder) => {

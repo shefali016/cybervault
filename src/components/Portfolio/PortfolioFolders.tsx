@@ -16,19 +16,12 @@ type Props = {
   loading: boolean
   handleEditFolderDetail: (folder: PortfolioFolder) => void
   deletefolder: (folderId: string) => void
-  portfolio: Portfolio
   isModalOpen: boolean
   handleModalRequest: ({ type, folder }: any) => void
-  handleSubmit: () => void
-  handleInputChange: (e: any, key: string) => void
-  handleImageChange: (e: any) => void
-  handleProjectSection: () => void
-  isError: boolean
-  isChooseProject: boolean
+  handleSubmit: (portfolio: Portfolio) => void
   projectList: Array<Project>
-  handleProjectSelect: (projectId: string) => void
   portfolioLoading: boolean
-  portfolios: Array<Portfolio>
+  portfolios: Map<string, Portfolio> | any
   handlePortfolioView: (portfolioId: string) => void
 }
 const PortfolioFolders = ({
@@ -36,17 +29,10 @@ const PortfolioFolders = ({
   loading,
   handleEditFolderDetail,
   deletefolder,
-  portfolio,
   isModalOpen,
   handleModalRequest,
   handleSubmit,
-  handleInputChange,
-  handleImageChange,
-  handleProjectSection,
-  isError,
-  isChooseProject,
   projectList,
-  handleProjectSelect,
   portfolioLoading,
   portfolios,
   handlePortfolioView
@@ -60,15 +46,8 @@ const PortfolioFolders = ({
       <PortfolioModal
         open={isModalOpen}
         onRequestClose={() => handleModalRequest({ type: 'portfolio' })}
-        portfolio={portfolio}
-        onSubmit={() => handleSubmit()}
-        handleInputChange={(e: any, key: string) => handleInputChange(e, key)}
-        handleChange={(event: any) => handleImageChange(event)}
-        handleProjectSection={handleProjectSection}
-        isError={isError}
-        isChooseProject={isChooseProject}
+        onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
         projectList={projectList}
-        handleProjectSelect={handleProjectSelect}
         portfolioLoading={portfolioLoading}
       />
     )
@@ -79,9 +58,9 @@ const PortfolioFolders = ({
       {!loading ? (
         folderList && !!folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
-            const portFolioList: any = portfolios.filter(
+            const portFolio: any = portfolios.filter(
               (item: any) => item.folderId === folder.id
-            )[0]
+            )
             return (
               <div key={index} className={classes.portfolioFolder}>
                 <div className={classes.portfolioFolderTitle}>
@@ -105,33 +84,29 @@ const PortfolioFolders = ({
                   </Typography>
                 </div>
                 <Grid container spacing={2}>
-                  {portFolioList &&
-                  portFolioList.portfolios &&
-                  portFolioList.portfolios.length
-                    ? portFolioList.portfolios.map(
-                        (data: Portfolio | any, i: number) => {
-                          return (
-                            <Grid item lg={3} md={4} sm={6}>
-                              <Card
-                                onClick={() => handlePortfolioView(data.id)}
-                                className={classes.portfoliosCard}>
-                                <div className={classes.cardLogo}>
-                                  <img src={data.logo} alt='' />
-                                </div>
-                                <div className={classes.logoCOntent}>
-                                  <h5>{data.name}</h5>
-                                  <p>{data.description}</p>
-                                </div>
-                                <Box pl={2}>
-                                  <KeyboardArrowRightIcon
-                                    style={{ color: '#797979' }}
-                                  />
-                                </Box>
-                              </Card>
-                            </Grid>
-                          )
-                        }
-                      )
+                  {portFolio && portFolio.length
+                    ? portFolio.map((data: any, i: number) => {
+                        return (
+                          <Grid key={i} item lg={3} md={4} sm={6}>
+                            <Card
+                              onClick={() => handlePortfolioView(data.id)}
+                              className={classes.portfoliosCard}>
+                              <div className={classes.cardLogo}>
+                                <img src={data.logo} alt='' />
+                              </div>
+                              <div className={classes.logoCOntent}>
+                                <h5>{data.name}</h5>
+                                <p>{data.description}</p>
+                              </div>
+                              <Box pl={2}>
+                                <KeyboardArrowRightIcon
+                                  style={{ color: '#797979' }}
+                                />
+                              </Box>
+                            </Card>
+                          </Grid>
+                        )
+                      })
                     : null}
                   <Grid item lg={3} md={4} sm={6}>
                     <AppButton

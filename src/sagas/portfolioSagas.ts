@@ -36,9 +36,7 @@ function* getPortfolioFolders() {
     )
     const result: Object | any = yield call(getPortfolioFolderRequest, account)
 
-    yield put(
-      getPortfolioFolderSuccess(result.folderList, result.portfolioList)
-    )
+    yield put(getPortfolioFolderSuccess(result.folderList, result.portfolios))
   } catch (error: any) {
     yield put(updatePortfolioFolderFailure(error))
   }
@@ -53,7 +51,6 @@ function* updatePortfolioFolder({ folder }: UpdateParams) {
     const folderId: string = folder.id
     yield put(updatePortfolioFolderSuccess(folderId, folderData))
   } catch (error: any) {
-    console.log('>>>>>>>>>>>>>>Errror', error)
     yield put(updatePortfolioFolderFailure(error))
     throw (Error = error)
   }
@@ -68,7 +65,6 @@ function* deletePortfolioFolder({ folderId }: UpdateParams) {
 
     yield put(deletePortfolioFolderSuccess(folderId))
   } catch (error: any) {
-    console.log('>>>>>>>>>>>>>>Errror', error)
     yield put(deletePortfolioFolderFailure(error))
     throw (Error = error)
   }
@@ -90,25 +86,13 @@ function* updatePortfolio({ portfolio, folderId }: UpdateParams) {
     const folder: Types.PortfolioFolder | any = folderArray.filter(
       (item: any) => item.id === folderId
     )[0]
-    const folderPortfolios: Array<string> = []
-    if (folder.portfolios && folder.portfolios.length) {
-      for (let index = 0; index < folder.portfolios.length; index++) {
-        const portfolios = folder.portfolios[index]
-        folderPortfolios.push(portfolios, portfolioId)
-      }
-    } else {
-      folderPortfolios.push(portfolioId)
-    }
-    const folderData = {
-      ...folder,
-      portfolios: folderPortfolios
-    }
-    yield call(updatePortfolioFolderRequest, folderData, account)
+   
+    folder.portfolios.push(portfolioId)
+
+    yield call(updatePortfolioFolderRequest, folder, account)
     history.push(`/portfolio/${portfolioId}`)
-    // yield put(push(`/portfolio/${portfolioId}`))
-    yield put(updatePortfolioSuccess(portfolio))
+    yield put(updatePortfolioSuccess())
   } catch (error: any) {
-    console.log('>>>>>>>>>>>>>>Errror', error)
     yield put(updatePortfolioFailure(error))
     throw (Error = error)
   }
