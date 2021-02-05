@@ -20,7 +20,7 @@ type StateProps = {
   updatingFolder: boolean
   allProjectsData: Array<Project>
   portfolioLoading: boolean
-  portfolios: Map<string, Portfolio>
+  portfolios: Map<string, Portfolio> | any
 }
 
 type PortfolioStates = {
@@ -238,7 +238,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
   allProjectsData: state.project.allProjectsData as Array<Project>,
-  portfolios: state.portfolio.portfolios as Map<string, Portfolio>
+  portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any
 })
 const mapDispatchToProps = (dispatch: any) => ({
   updatePortfolioFolder: (folder: PortfolioFolder) => {
