@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from 'react'
+import React, { ChangeEvent, useState, useEffect,useContext} from 'react'
 import { useDispatch ,useSelector} from 'react-redux'
 import { makeStyles, Typography, Button, Grid } from '@material-ui/core'
 import {
@@ -25,6 +25,9 @@ import NewProjectFooter from '../Projects/NewProjectFooter';
 import { generateUid, getClientData} from '../../utils';
 import {addClientRequest} from '../../actions/clientActions';
 import {validateAddClient} from '../../utils/helpers'
+import { ToastContext,ToastTypes } from '../../context/Toast'
+import {useOnChange} from '../../utils/hooks';
+
 
 type AddClientProps = {
   isEdit?: Boolean
@@ -39,7 +42,16 @@ export const AddClient = (props: AddClientProps) => {
 
     const dispatch=useDispatch()
     const isLoading=useSelector((state:any)=>state.clients.newClientLoading)
+    const errorMsg=useSelector((state:any)=>state.clients.newClientErrorMsg)
+    const updateError=useSelector((state:any)=>state.clients.newClientError)
 
+    const toastContext = useContext(ToastContext)
+
+    useOnChange(updateError, (error: string | null) => {
+      if (error) {
+        toastContext.showToast({ title: errorMsg, type: ToastTypes.error })
+      }
+    })
 
   const { isEdit,onBack,onUpdate,account } = props
   const isTablet = useTabletLayout()
@@ -173,7 +185,7 @@ export const AddClient = (props: AddClientProps) => {
         setHaveError(isError)
    }
    else{
-    let clientId=generateUid()
+    let clientId=''
     setClientData({...clientData,id:clientId})
     const payload={
       ...clientData,

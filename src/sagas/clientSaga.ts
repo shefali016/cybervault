@@ -22,8 +22,13 @@ function* getClientRequest({ account }: GetParams) {
 function* addClientRequest({ account,client }: GetParams) {
     try {
       const response = yield call(addClient, account,client)
+     if(Object.keys(response).includes('id')){
       yield put(Actions.addClientSuccess(response))
       yield put(Actions.getClientsRequest(account))
+     }
+     else{
+      yield put(Actions.addClientError(response.message || 'default'))
+     }
     } catch (error: any) {
       yield put(Actions.addClientError(error?.message || 'default'))
     }

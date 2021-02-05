@@ -27,7 +27,8 @@ import {
     clientsData:[],
     newClientSuccess:false,
     newClientError:false,
-    newClientLoading:false
+    newClientLoading:false,
+    newClientErrorMsg:null
   }
   
   
@@ -58,7 +59,8 @@ import {
     ...state,
     newClientSuccess:false,
     newClientError:false,
-    newClientLoading:true
+    newClientLoading:true,
+    newClientErrorMsg:null
     
   })
   
@@ -76,7 +78,8 @@ import {
     ...state,
     newClientSuccess:false,
     newClientError:true,
-    newClientLoading:false
+    newClientLoading:false,
+    newClientErrorMsg:action.error
 
   })
 
@@ -111,7 +114,8 @@ import {
         clientsData:[],
         newClientSuccess:false,
         newClientError:false,
-        newClientLoading:false
+        newClientLoading:false,
+        newClientErrorMsg:null
       }
     },
     (outboundState: State) => outboundState,
