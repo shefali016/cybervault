@@ -22,15 +22,15 @@ import { RenderBudgetDetails } from '../../Common/Widget/BudgetDetailsWidget'
 
 const NewProjectStepFive = (props: any) => {
   const classes = useStyles()
-  const { projectData, onSubmit,currentStep } = props
+  const { projectData, onSubmit,currentStep,clientData } = props
 
   const renderClientLogoView = () => {
     return (
       <div className={'client-logo-container'}>
         <Button variant='contained' className={classes.clientLogo}>
-          {!!projectData.logo && (
+          {!!clientData.logo && (
             <img
-              src={projectData.logo}
+              src={clientData.logo}
               className={classes.clientLogoImg}
               alt={'client-logo'}
             />
@@ -43,7 +43,7 @@ const NewProjectStepFive = (props: any) => {
   const renderMiddleView = () => {
     return (
       <div className={classes.middleView}>
-        <RenderClientDetails projectData={projectData} />
+        <RenderClientDetails clientData={clientData}/>
         <RenderProjectDetails projectData={projectData} />
         {projectData?.tasks?.length > 0 &&
         projectData?.tasks[0]?.title.trim() !== '' ? (

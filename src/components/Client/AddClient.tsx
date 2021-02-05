@@ -121,6 +121,7 @@ export const AddClient = (props: AddClientProps) => {
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
+              error={haveError && clientData.address === '' ? true : false}
               type={''}
               label={'Address'}
               value={clientData.address}

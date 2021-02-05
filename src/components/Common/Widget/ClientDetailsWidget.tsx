@@ -27,11 +27,11 @@ export const RenderClientDetails = (props: any) => {
       </div>
       {renderDetails(
         'Client Name:',
-        props.projectData ? props.projectData.clientName : ''
+        props.clientData ? props.clientData.name : ''
       )}
       {renderDetails(
         'Client Contact: ',
-        props.projectData ? props.projectData.clientEmail : ''
+        props.clientData ? props.clientData.email : ''
       )}
       <AppDivider />
     </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useMemo} from 'react'
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
@@ -9,7 +9,7 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project } from '../../../utils/Interface'
+import { Project,Client } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 
@@ -18,14 +18,27 @@ type Props = {
   isPopover?: boolean
   style?: {}
   history?: any
+  clients?:Array<Client>
 }
 
-const ProjectCard = ({ project, isPopover, style, history }: Props) => {
+const ProjectCard = ({ project, isPopover, style, history,clients }: Props) => {
   const [anchorEl] = React.useState<null | HTMLElement>(null)
 
   const editProject = (projectId: string) => {
     history.push(`/project/${projectId}`)
   }
+  
+  const getClientLogo=()=>{
+  let item =clients?.find((client)=>{
+    return client.id===project.clientId
+  })
+  return item?.logo
+}
+
+const clientLogo=useMemo(()=>{
+  return getClientLogo()
+
+},[project])
 
   const ITEM_HEIGHT = 48
   const classes = useStyles()
@@ -35,7 +48,7 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
         <div
           className={classes.imageWrapper}
           style={{
-            background: `url(${project.logo}) no-repeat center`,
+            background: `url(${clientLogo}) no-repeat center`,
             backgroundSize: 'cover'
           }}></div>
         <div className={classes.footer}>

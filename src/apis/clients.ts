@@ -7,7 +7,7 @@ import 'firebase/firestore'
  * @getClients
  */
 export const getClients = async (
-  account: Account,
+  account: Types.Account,
 ) => {
   let clientsData: Array<{}> = []
   let data: any = await firebase
@@ -27,7 +27,7 @@ export const getClients = async (
  * @updateClientDetails
  */
 export const addClient = async (
-  account: Account,
+  account: Types.Account,
   client:Types.Client
 ) => {
     await firebase

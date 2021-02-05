@@ -48,6 +48,7 @@ export const validateAddClient=(clientData:any)=>{
     clientData.address.trim() === '' ||
     clientData.city.trim() === '' ||
     clientData.state.trim() === '' ||
+    clientData.address.trim() === ''||
     clientData.country.trim() === ''
   ) {
     return true
