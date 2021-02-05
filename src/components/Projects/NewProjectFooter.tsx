@@ -14,7 +14,7 @@ import { GradiantButton } from '../Common/Button/GradiantButton'
 type Props = {
   onBack?: () => void
   onNext?: () => void
-  title: string
+  title?: string
   description?: string
   onStartProject?: () => void
   haveError?: boolean
@@ -77,9 +77,9 @@ const NewProjectFooter = ({
           </div>
         )}
         {typeof onBack === 'function' && currentStep!==1 && renderBackButton()}
-        <Typography variant={'caption'} className={classes.stepLabel}>
+        {title && <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
-        </Typography>
+        </Typography>}
         {typeof onNext === 'function' && (
           <GradiantButton onClick={onNext} className={classes.continueButton} loading={isLoading} disabled={disabled}>
             <Typography variant={'button'}>{buttonText?buttonText:'Continue'}</Typography>

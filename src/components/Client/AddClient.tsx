@@ -34,6 +34,8 @@ type AddClientProps = {
   onBack:()=>void
   onUpdate?:()=>void
   account:Account
+  showStep?:boolean
+  stepText?:string
 }
 
 export const AddClient = (props: AddClientProps) => {
@@ -195,22 +197,42 @@ export const AddClient = (props: AddClientProps) => {
    }
   }
 
+  const renderFooterWithStep=()=>{
+    if(props.showStep) {
+      return <NewProjectFooter
+      title={isEdit?'':props.stepText}
+      buttonText={'Add Client'}
+      onNext={handleAddClient}
+      onBack={onBack}
+      onUpdate={onUpdate}
+      haveError={haveError ? haveError : false}
+      addClient={true}
+      isLoading={isLoading}
+    />
+    }
+  }
+  const renderFooterWithoutStep=()=>{
+    if(!props.showStep) {
+      return <NewProjectFooter
+      buttonText={'Add Client'}
+      onNext={handleAddClient}
+      onUpdate={onUpdate}
+      haveError={haveError ? haveError : false}
+      addClient={true}
+      isLoading={isLoading}
+    />
+    }
+  }
+
   return (
     <>
       <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
       {!isEdit ? renderClientLogoView() : null}
-
+      
       {renderMiddleView()}
-      <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 1 of 5'}
-        buttonText={'Add Client'}
-        onNext={handleAddClient}
-        onUpdate={onUpdate}
-        onBack={onBack}
-        haveError={haveError ? haveError : false}
-        addClient={true}
-        isLoading={isLoading}
-      />
+      {renderFooterWithStep()}
+      {renderFooterWithoutStep()}
+
     </>
   )
 }

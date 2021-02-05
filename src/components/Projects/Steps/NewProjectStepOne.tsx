@@ -106,6 +106,8 @@ const NewProjectStepOne = (props: any) => {
       <AddClient 
        onBack={props.onBack}
        account={account}
+       showStep={true}
+       stepText={'step 1 of 5'}
       />
     )
   }
