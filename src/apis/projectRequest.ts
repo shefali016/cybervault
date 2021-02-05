@@ -70,59 +70,6 @@ export const getProjectDetailsRequest = async (
       .collection('Projects')
       .doc(projectId)
       .get()
-    // const project = data.data()
-    // const imageIds: Array<string> = project.images
-    // const videoIds: Array<string> = project.videos
-    // let imageArray: Array<ProjectAsset> | any = []
-    // let videoArray: Array<ProjectAsset> | any = []
-    // if (imageIds && imageIds.length) {
-    //   for (let index = 0; index < imageIds.length; index++) {
-    //     const images = imageIds[index]
-    //     const imageAsset = await firebase
-    //       .firestore()
-    //       .collection('AccountData')
-    //       .doc(account.id)
-    //       .collection('Assets')
-    //       .doc(images)
-    //       .get()
-    //     imageArray.push(imageAsset.data())
-    //   }
-    // }
-    // if (videoIds && videoIds.length) {
-    //   for (let index = 0; index < videoIds.length; index++) {
-    //     const videos = videoIds[index]
-    //     const videoAssets = await firebase
-    //       .firestore()
-    //       .collection('AccountData')
-    //       .doc(account.id)
-    //       .collection('Assets')
-    //       .doc(videos)
-    //       .get()
-    //     videoArray.push(videoAssets.data())
-    //   }
-    // }
-
-    // const projectDetails: Project = {
-    //   ...project,
-    //   images:
-    //     imageArray && imageArray.length
-    //       ? imageArray
-    //       : [
-    //           {
-    //             files: [{ url: ImagePreview }],
-    //             isPlaceHolder: true
-    //           }
-    //         ],
-    //   videos:
-    //     videoArray && videoArray.length
-    //       ? videoArray
-    //       : [
-    //           {
-    //             files: [{ url: VideoPreview }],
-    //             isPlaceHolder: true
-    //           }
-    //         ]
-    // }
     return data.data()
   } catch (error) {
     console.log('Error in getProjectDetailsRequest', error)
