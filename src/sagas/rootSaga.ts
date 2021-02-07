@@ -7,8 +7,13 @@ import invoiceSagas from './invoice'
 import clientSaga from './clientSaga'
 import portfolioSagas from './portfolioSagas'
 export default function* rootSaga() {
-  yield all([authSagas(), projectSagas(), userSagas(), accountSagas(),invoiceSagas(), portfolioSagas(),
+  yield all([
+    authSagas(),
+    projectSagas(),
+    userSagas(),
+    accountSagas(),
+    invoiceSagas(),
+    portfolioSagas(),
     clientSaga()
   ])
 }
-Ï
