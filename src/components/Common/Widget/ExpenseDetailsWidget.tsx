@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconButton, Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
 import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
@@ -16,13 +16,13 @@ export const RenderExpenseDetails = (props: any) => {
           Expense Details
         </Typography>
         {props.editInfo ? (
-          <IconButton className={classes.button} onClick={props.onEdit}>
+          <Button className={classes.button} onClick={props.onEdit}>
             <img
               src={iconMaterialEdit}
               alt='icon'
               className={classes.editIcon}
             />
-          </IconButton>
+          </Button>
         ) : null}
       </div>
       {props.projectData.expenses.map((item: any, index: number) => {

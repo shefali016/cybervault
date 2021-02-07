@@ -1,40 +1,19 @@
 import { makeStyles } from '@material-ui/core/styles'
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  TextField,
-  FormControlLabel,
-  Checkbox
-} from '@material-ui/core'
-import logo from '../../../assets/logo.png'
-import { useEffect, useState, ChangeEvent } from 'react'
-import { useSelector } from 'react-redux'
-import {
-  BLOCK,
-  BOLD,
-  CENTER,
-  GRID,
-  FLEX,
-  AUTO
-} from 'utils/constants/stringConstants'
+import { Typography, Grid, Checkbox } from '@material-ui/core'
+import { ChangeEvent } from 'react'
+import { BOLD } from 'utils/constants/stringConstants'
 import {
   GREY_COLOR,
   BORDER_COLOR_GREY_LIGHT,
-  SECONDARY_COLOR,
-  WHITE_COLOR,
   PRIMARY_COLOR
 } from 'utils/constants/colorsConstants'
 import { Project, Milestone } from '../../../utils/Interface'
-import Invoice from '../../../assets/invoice.png'
-// import Milestone from '../../../assets/milestone.png'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import EditIcon from '@material-ui/icons/Edit'
 import AppTextField from '../../Common/Core/AppTextField'
-import CheckIcon from '@material-ui/icons/Check';
-import SaveIcon from '@material-ui/icons/Save';
-
+import CheckIcon from '@material-ui/icons/Check'
+import SaveIcon from '@material-ui/icons/Save'
+import { ClientLogo } from 'components/Clients/ClientLogo'
 
 type InvoiceStepProps = {
   project: Project
@@ -44,12 +23,11 @@ type InvoiceStepProps = {
   handleSendInvoice: () => void
   edit: editType
   handleEdit: (editType: string) => void
-  handleSave:(type:string)=>void
+  handleSave: (type: string) => void
   handleChange: (e: ChangeEvent) => (key: string) => void
   handleMilestone: (mile: MilestoneProps) => void
   handleMileChange: (id: string, key: string, e: any) => void
   milestones: Array<MilestoneProps>
-  //   allProjects: Array<Project>
 }
 type editType = {
   clientDetails: boolean
@@ -67,8 +45,6 @@ type MilestoneProps = {
 
 const InvoiceStepTwo = ({
   project,
-  headerTitle,
-  onNext,
   invoiceType,
   handleSendInvoice,
   handleEdit,
@@ -83,22 +59,14 @@ const InvoiceStepTwo = ({
   const handleClick = () => {
     handleSendInvoice()
   }
+
   return (
     <>
       <Grid container spacing={3} alignItems='center'>
-        <Grid item sm={2}>
-          <Card>
-            <CardContent className={classes.cardContent}>
-              <Grid>
-                <img
-                  src={project.logo ? project.logo : ''}
-                  className={classes.img}
-                />
-              </Grid>
-            </CardContent>
-          </Card>
+        <Grid item>
+          <ClientLogo logo={project.logo} />
         </Grid>
-        <Grid item sm={10}>
+        <Grid item>
           <Typography variant={'h5'} className={classes.headerTitle}>
             Invoice
           </Typography>
@@ -112,16 +80,20 @@ const InvoiceStepTwo = ({
           <Typography className={classes.subHeading}>
             Client Details:
           </Typography>
-          
-            <Typography>
-            {!edit.clientDetails ? <EditIcon
+
+          <Typography>
+            {!edit.clientDetails ? (
+              <EditIcon
                 className={classes.editicon}
                 onClick={() => handleEdit('clientDetails')}
-              />:<SaveIcon
-              className={classes.editicon}
-              onClick={() => handleSave('clientDetails')}/>}
-            </Typography>
-         
+              />
+            ) : (
+              <SaveIcon
+                className={classes.editicon}
+                onClick={() => handleSave('clientDetails')}
+              />
+            )}
+          </Typography>
         </Grid>
         <Grid className={classes.detailsWrapper}>
           <Grid container alignItems='center'>
@@ -176,13 +148,18 @@ const InvoiceStepTwo = ({
             Project Details:
           </Typography>
           <Typography>
-            {!edit.projectDetails ? <EditIcon
+            {!edit.projectDetails ? (
+              <EditIcon
                 className={classes.editicon}
                 onClick={() => handleEdit('projectDetails')}
-              />:<SaveIcon
-              className={classes.editicon}
-              onClick={() => handleSave('projectDetails')}/>}
-            </Typography>
+              />
+            ) : (
+              <SaveIcon
+                className={classes.editicon}
+                onClick={() => handleSave('projectDetails')}
+              />
+            )}
+          </Typography>
         </Grid>
         <Grid className={classes.detailsWrapper}>
           <Grid container alignItems='center'>
@@ -264,12 +241,17 @@ const InvoiceStepTwo = ({
               Invoice Details:
             </Typography>
             <Typography>
-            {!edit.invoiceDetails ? <EditIcon
-                className={classes.editicon}
-                onClick={() => handleEdit('invoiceDetails')}
-              />:<SaveIcon
-              className={classes.editicon}
-              onClick={() => handleSave('invoiceDetails')}/>}
+              {!edit.invoiceDetails ? (
+                <EditIcon
+                  className={classes.editicon}
+                  onClick={() => handleEdit('invoiceDetails')}
+                />
+              ) : (
+                <SaveIcon
+                  className={classes.editicon}
+                  onClick={() => handleSave('invoiceDetails')}
+                />
+              )}
             </Typography>
           </Grid>
           <Grid className={classes.detailsWrapper}>
@@ -353,12 +335,17 @@ const InvoiceStepTwo = ({
               Milestone Details:
             </Typography>
             <Typography>
-            {!edit.milestoneDetails ? <EditIcon
-                className={classes.editicon}
-                onClick={() => handleEdit('milestoneDetails')}
-              />:<SaveIcon
-              className={classes.editicon}
-              onClick={() => handleSave('milestoneDetails')}/>}
+              {!edit.milestoneDetails ? (
+                <EditIcon
+                  className={classes.editicon}
+                  onClick={() => handleEdit('milestoneDetails')}
+                />
+              ) : (
+                <SaveIcon
+                  className={classes.editicon}
+                  onClick={() => handleSave('milestoneDetails')}
+                />
+              )}
             </Typography>
           </Grid>
           <Grid className={classes.detailsWrapper}>
@@ -371,7 +358,11 @@ const InvoiceStepTwo = ({
                       checked={mile.check}
                       defaultChecked={true}
                       // onChange={(mile)=>handleMilestone()}
-                      checkedIcon={<div className={classes.checkBoxIcon}><CheckIcon className={classes.checkIcon}/></div>}
+                      checkedIcon={
+                        <div className={classes.checkBoxIcon}>
+                          <CheckIcon className={classes.checkIcon} />
+                        </div>
+                      }
                       icon={<div className={classes.checkBoxIcon}></div>}
                     />
                   </Grid>
@@ -476,14 +467,14 @@ const useStyles = makeStyles((theme) => ({
     width: '35px',
     height: '35px',
     backgroundColor: 'white',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     boxShadow:
       '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)'
   },
-  checkIcon:{
-    color:'black'
+  checkIcon: {
+    color: 'black'
   }
 }))
 

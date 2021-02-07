@@ -204,8 +204,7 @@ const EditProjectScreen = (props: any) => {
         />
         {state.projectData &&
         state.projectData.tasks &&
-        state.projectData.tasks.length > 0 &&
-        state.projectData.tasks[0].title.trim() !== '' ? (
+        state.projectData.tasks.length > 0 ? (
           <RenderTaskDetails
             projectData={state.projectData}
             editInfo
@@ -214,8 +213,7 @@ const EditProjectScreen = (props: any) => {
         ) : null}
         {state.projectData &&
         state.projectData.expenses &&
-        state.projectData.expenses.length > 0 &&
-        state.projectData.expenses[0].title.trim() !== '' ? (
+        state.projectData.expenses.length > 0 ? (
           <RenderExpenseDetails
             projectData={state.projectData}
             editInfo
@@ -224,8 +222,7 @@ const EditProjectScreen = (props: any) => {
         ) : null}
         {state.projectData &&
         state.projectData.milestones &&
-        state.projectData.milestones.length > 0 &&
-        state.projectData.milestones[0].title.trim() !== '' ? (
+        state.projectData.milestones.length > 0 ? (
           <RenderMilestonesDetails
             projectData={state.projectData}
             editInfo
