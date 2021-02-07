@@ -12,7 +12,6 @@ import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/Interface'
 import validate from '../../utils/helpers'
-import { setMedia } from '../../apis/assets'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
@@ -125,7 +124,6 @@ const NewProject = ({
       projectData,
       haveError,
       setHaveError,
-      newProject: !project,
       setProjectData,
       account,
       clients,
@@ -180,7 +178,7 @@ const NewProject = ({
       case 5:
         return <NewProjectStepFive {...props} />
       default:
-        return <NewProjectStepOne {...props} />
+        return null
     }
   }
 

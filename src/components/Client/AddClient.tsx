@@ -27,9 +27,10 @@ import { addClientRequest } from '../../actions/clientActions'
 import { validateAddClient } from '../../utils/helpers'
 import { ToastContext, ToastTypes } from '../../context/Toast'
 import { useOnChange } from '../../utils/hooks'
+import { setMedia } from 'apis/assets'
 
 type AddClientProps = {
-  isEdit?: Boolean
+  isEdit: boolean
   onBack: () => void
   onUpdate?: () => void
   account: Account
@@ -38,8 +39,9 @@ type AddClientProps = {
 }
 
 export const AddClient = (props: AddClientProps) => {
-  const [clientData, setClientData] = useState(getClientData())
+  const [clientData, setClientData] = useState<Client>(getClientData())
   const [haveError, setHaveError] = useState(false)
+  const [logoFile, setLogoFile] = useState(null)
 
   const dispatch = useDispatch()
   const isLoading = useSelector((state: any) => state.clients.newClientLoading)
@@ -75,12 +77,12 @@ export const AddClient = (props: AddClientProps) => {
             ref={(input) => {
               imageInputRef = input
             }}
-            onChange={handleChange}
+            onChange={handleLogoChange}
             style={{ display: 'none' }}
           />
-          {!!clientData.logo && (
+          {(!!clientData.logo || !!logoFile) && (
             <img
-              src={clientData.logo}
+              src={clientData.logo || URL.createObjectURL(logoFile)}
               className={classes.clientLogoImg}
               alt={'client-logo'}
             />
@@ -98,12 +100,9 @@ export const AddClient = (props: AddClientProps) => {
     setClientData({ ...clientData, [key]: value })
   }
 
-  const handleChange = async (event: any) => {
+  const handleLogoChange = async (event: any) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
-      setClientData({
-        ...clientData,
-        logo: URL.createObjectURL(event.target.files[0])
-      })
+      setLogoFile(event.target.files[0])
     }
   }
 
@@ -152,7 +151,7 @@ export const AddClient = (props: AddClientProps) => {
             </div>
           </div>
         ) : null}
-        {!isEdit ? (
+        {!isEdit && (
           <div className={'input-row'}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
@@ -173,22 +172,34 @@ export const AddClient = (props: AddClientProps) => {
               />
             </div>
           </div>
-        ) : null}
+        )}
       </>
     )
   }
-  const handleAddClient = () => {
+  const handleAddClient = async () => {
     const isError = validateAddClient(clientData)
     if (isError) {
       setHaveError(isError)
     } else {
       let clientId = generateUid()
-      setClientData({ ...clientData, id: clientId })
-      const payload = {
-        ...clientData,
-        id: clientId
-      }
-      dispatch(addClientRequest(account, payload))
+
+      let logo = null
+
+      try {
+        if (logoFile) {
+          logo = await setMedia(`ClientLogos/${clientId}`, logoFile)
+        }
+
+        const client: Client = {
+          ...clientData,
+          logo,
+          id: clientId
+        }
+
+        setClientData(client)
+
+        dispatch(addClientRequest(account, client))
+      } catch (error) {}
     }
   }
 
@@ -196,7 +207,7 @@ export const AddClient = (props: AddClientProps) => {
     if (props.showStep) {
       return (
         <NewProjectFooter
-          title={isEdit ? '' : props.stepText}
+          title={props.stepText}
           buttonText={'Add Client'}
           onNext={handleAddClient}
           onBack={onBack}
@@ -204,6 +215,7 @@ export const AddClient = (props: AddClientProps) => {
           haveError={haveError ? haveError : false}
           addClient={true}
           isLoading={isLoading}
+          isEdit={isEdit}
         />
       )
     }
@@ -218,6 +230,7 @@ export const AddClient = (props: AddClientProps) => {
           haveError={haveError ? haveError : false}
           addClient={true}
           isLoading={isLoading}
+          isEdit={isEdit}
         />
       )
     }
@@ -226,8 +239,7 @@ export const AddClient = (props: AddClientProps) => {
   return (
     <>
       <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
-      {!isEdit ? renderClientLogoView() : null}
-
+      {renderClientLogoView()}
       {renderMiddleView()}
       {renderFooterWithStep()}
       {renderFooterWithoutStep()}

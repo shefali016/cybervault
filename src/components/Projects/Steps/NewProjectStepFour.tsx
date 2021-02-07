@@ -128,7 +128,8 @@ const NewProjectStepFour = (props: any) => {
         onBack={props.onBack}
         onNext={props.onNext}
         onUpdate={props.onUpdate}
-        title={props.isEdit ? '' : 'Step 4 of 5'}
+        title={'Step 4 of 5'}
+        isEdit={props.isEdit}
         projectData={projectData}
         currentStep={currentStep}
       />

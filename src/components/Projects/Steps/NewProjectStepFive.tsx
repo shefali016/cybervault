@@ -44,19 +44,21 @@ const NewProjectStepFive = (props: any) => {
     return (
       <div className={classes.middleView}>
         <RenderClientDetails clientData={clientData} />
+
         <RenderProjectDetails projectData={projectData} />
-        {projectData?.tasks?.length > 0 &&
-        projectData?.tasks[0]?.title.trim() !== '' ? (
+
+        {projectData?.tasks?.length > 0 && (
           <RenderTaskDetails projectData={projectData} />
-        ) : null}
-        {projectData?.expenses?.length > 0 &&
-        projectData?.expenses[0]?.title.trim() !== '' ? (
+        )}
+
+        {projectData?.expenses?.length > 0 && (
           <RenderExpenseDetails projectData={projectData} />
-        ) : null}
-        {projectData?.milestones?.length > 0 &&
-        projectData?.milestones[0]?.title.trim() !== '' ? (
+        )}
+
+        {projectData?.milestones?.length > 0 && (
           <RenderMilestonesDetails projectData={projectData} />
-        ) : null}
+        )}
+
         <RenderBudgetDetails projectData={projectData} />
       </div>
     )
@@ -73,6 +75,7 @@ const NewProjectStepFive = (props: any) => {
         onBack={props.onBack}
         isLoading={props.isLoading}
         currentStep={currentStep}
+        isEdit={props.isEdit}
       />
     </div>
   )

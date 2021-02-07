@@ -25,6 +25,7 @@ type Props = {
   currentStep?: number
   buttonText?: string
   disabled?: boolean
+  isEdit: boolean
 }
 
 const NewProjectFooter = ({
@@ -39,11 +40,10 @@ const NewProjectFooter = ({
   isLoading,
   currentStep,
   buttonText,
-  disabled
+  disabled,
+  isEdit
 }: Props) => {
   const classes = useStyles()
-
-  const isUpdating = typeof onUpdate === 'function'
 
   const renderBackButton = () => {
     return (
@@ -61,13 +61,15 @@ const NewProjectFooter = ({
       {!!description && (
         <Typography variant={'caption'}>{description}</Typography>
       )}
-      {haveError ? (
+
+      {haveError && (
         <Typography className={classes.warningText}>
           Please fill all the required fields.
         </Typography>
-      ) : null}
+      )}
+
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
-        {!isUpdating && typeof onStartProject === 'function' && (
+        {!isEdit && typeof onStartProject === 'function' && (
           <div className={classes.startProjectButtonContainer}>
             <GradiantButton
               onClick={onStartProject}
@@ -77,16 +79,19 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {!isUpdating &&
+
+        {!isEdit &&
           typeof onBack === 'function' &&
           currentStep !== 1 &&
           renderBackButton()}
-        {title && (
+
+        {!isEdit && !!title && (
           <Typography variant={'caption'} className={classes.stepLabel}>
             {title}
           </Typography>
         )}
-        {!isUpdating && typeof onNext === 'function' && (
+
+        {!isEdit && typeof onNext === 'function' && (
           <GradiantButton
             onClick={onNext}
             className={classes.continueButton}
@@ -97,7 +102,8 @@ const NewProjectFooter = ({
             </Typography>
           </GradiantButton>
         )}
-        {typeof onUpdate === 'function' && (
+
+        {isEdit && typeof onUpdate === 'function' && (
           <GradiantButton
             onClick={() => onUpdate(projectData)}
             className={classes.continueButton}>

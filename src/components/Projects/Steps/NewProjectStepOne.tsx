@@ -110,6 +110,7 @@ const NewProjectStepOne = (props: any) => {
         account={account}
         showStep={true}
         stepText={'step 1 of 5'}
+        isEdit={props.isEdit}
       />
     )
   }
@@ -128,7 +129,7 @@ const NewProjectStepOne = (props: any) => {
       {renderMiddleView()}
       {!addClient ? (
         <NewProjectFooter
-          title={props.isEdit ? '' : 'Step 1 of 5'}
+          title={'Step 1 of 5'}
           onNext={props.onNext}
           onUpdate={props.onUpdate}
           onBack={props.onBack}
@@ -136,6 +137,7 @@ const NewProjectStepOne = (props: any) => {
           projectData={projectData}
           currentStep={currentStep}
           disabled={!clients.length}
+          isEdit={props.isEdit}
         />
       ) : null}
     </div>
