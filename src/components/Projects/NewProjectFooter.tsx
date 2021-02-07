@@ -14,13 +14,17 @@ import { GradiantButton } from '../Common/Button/GradiantButton'
 type Props = {
   onBack?: () => void
   onNext?: () => void
-  title: string
+  title?: string
   description?: string
   onStartProject?: () => void
   haveError?: boolean
   onUpdate?: (projectData: any) => void
   projectData?: any
   isLoading?: boolean
+  addClient?:boolean
+  currentStep?:number
+  buttonText?:string
+  disabled?:boolean
 }
 
 const NewProjectFooter = ({
@@ -32,7 +36,11 @@ const NewProjectFooter = ({
   haveError,
   onUpdate,
   projectData,
-  isLoading
+  isLoading,
+  addClient,
+  currentStep,
+  buttonText,
+  disabled
 }: Props) => {
   const classes = useStyles()
 
@@ -68,13 +76,13 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {typeof onBack === 'function' && renderBackButton()}
-        <Typography variant={'caption'} className={classes.stepLabel}>
+        {typeof onBack === 'function' && currentStep!==1 && renderBackButton()}
+        {title && <Typography variant={'caption'} className={classes.stepLabel}>
           {title}
-        </Typography>
+        </Typography>}
         {typeof onNext === 'function' && (
-          <GradiantButton onClick={onNext} className={classes.continueButton}>
-            <Typography variant={'button'}>Continue</Typography>
+          <GradiantButton onClick={onNext} className={classes.continueButton} loading={isLoading} disabled={disabled}>
+            <Typography variant={'button'}>{buttonText?buttonText:'Continue'}</Typography>
           </GradiantButton>
         )}
         {typeof onUpdate === 'function' && (
@@ -94,7 +102,10 @@ const useStyles = makeStyles((theme) => ({
   stepLabel: {
     color: theme.palette.grey[500]
   },
-  continueButton: { marginLeft: 25 },
+  continueButton: { marginLeft: 25,
+      minWidth:'125px',
+      borderRadius:'24px'
+    },
   button: {
     width: 110,
     height: 40,

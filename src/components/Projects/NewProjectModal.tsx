@@ -1,5 +1,5 @@
-import React, { useState, useRef, useContext } from 'react'
-import { connect } from 'react-redux'
+import React, { useState, useRef, useContext ,useEffect} from 'react'
+import { connect,useDispatch,useSelector } from 'react-redux'
 import './Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
@@ -7,7 +7,7 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import NewProjectStepFive from './Steps/NewProjectStepFive'
-import { getProductData, generateUid } from '../../utils'
+import { getProductData, generateUid, getClientData} from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/Interface'
@@ -22,19 +22,29 @@ type NewProjectProps = {
   onSubmitClicked: (projectData: any) => void
   success: boolean
   error: null | string
+  account:Types.Account,
+  clients:Array<Types.Client>,
+  addClientSuccess:Boolean,
+  newClientData:Types.Client
 }
 
 const NewProject = ({
   onRequestClose,
   onSubmitClicked,
   success,
-  error
+  error,
+  account,
+  clients,
+  addClientSuccess,
+  newClientData
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [projectData, setProjectData] = useState(getProductData())
+  const [clientData, setClientData] = useState(getClientData())
   const [logoFile, setLogoFile] = useState(null)
   const [haveError, setHaveError] = useState(false)
+  const [addClient,setAddClient]=useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
 
@@ -53,11 +63,18 @@ const NewProject = ({
     }
   })
 
+useEffect(()=>{
+  if(addClientSuccess && addClient && currentStep==1 && Object.keys(newClientData).length){
+      setClientData(newClientData)
+      setCurrentStep((step) => step + 1)
+  }
+},[addClientSuccess])
+
   const onSubmitData = async () => {
     try {
       // @ts-ignorets
       setIsLoading(true)
-      let project = { ...projectData, id: generateUid() }
+      let project = { ...projectData, clientId:clientData.id,id: generateUid() }
       if (logoFile) {
         const logoUrl = await setMedia(
           `images/clientLogos/${generateUid()}`,
@@ -75,6 +92,7 @@ const NewProject = ({
       })
     }
   }
+  
   const newProject = true
   const renderStepsView = () => {
     const props = {
@@ -85,13 +103,22 @@ const NewProject = ({
       newProject,
       setProjectData,
       setLogoFile,
+      account,
+      clients,
+      addClient,
+      setAddClient,
+      currentStep,
+      clientData,
+      setClientData,
       onNext: () => {
-        const isError = validate(currentStep, projectData)
+        const isError = validate(currentStep, projectData,clientData)
         if (isError) {
           setHaveError(true)
         } else {
           setHaveError(false)
-          setCurrentStep((step) => step + 1)
+          if(!addClient || (addClient && currentStep!==1)){
+            setCurrentStep((step) => step + 1)
+          }
           if (modalContentRef.current) {
             modalContentRef.current.scrollTop = 0
           }
@@ -99,14 +126,19 @@ const NewProject = ({
       },
       onBack: () => {
         setHaveError(false)
-        setCurrentStep((step) => step - 1)
+        if(currentStep!==1){
+          setCurrentStep((step) => step - 1)
+        }
+        else if(currentStep===1 && addClient){
+          setAddClient(!addClient)
+        }
         if (modalContentRef.current) {
           modalContentRef.current.scrollTop = 0
         }
       },
       onSubmit: () => onSubmitData()
     }
-    switch (currentStep) {
+    switch (currentStep) {    
       case 1:
         return <NewProjectStepOne {...props} />
       case 2:
@@ -141,6 +173,8 @@ type NewProjectModalProps = {
   open: boolean
   onRequestClose: () => void
   onSubmitClicked: (projectData: Types.Project) => void
+  account:Types.Account
+  clients:Array<Types.Client>
 }
 
 const NewProjectModal = ({
@@ -148,8 +182,14 @@ const NewProjectModal = ({
   onRequestClose,
   onSubmitClicked,
   success,
-  error
+  error,
+  account,
+  clients,
 }: NewProjectModalProps & StateProps) => {
+const newClientSuccess=useSelector((state:any)=>state.clients.newClientSuccess)
+const newClientData=useSelector((state:any)=>state.clients.newClientData)
+
+
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
@@ -157,6 +197,10 @@ const NewProjectModal = ({
         onSubmitClicked={onSubmitClicked}
         error={error}
         success={success}
+        account={account}
+        clients={clients}
+        addClientSuccess={newClientSuccess}
+        newClientData={newClientData}
       />
     </AppModal>
   )
@@ -164,12 +208,18 @@ const NewProjectModal = ({
 
 type StateProps = {
   success: boolean
-  error: string | null
+  error: string | null,
+  account:Types.Account,
+  clients:Array<Types.Client>
 }
 
 const mapState = (state: ReduxState): StateProps => ({
   success: state.project.updateSuccess,
-  error: state.project.updateError
+  error: state.project.updateError,
+  account: state.auth.account as Types.Account ,
+  clients:state.clients.clientsData as Array<Types.Client>
+
+  
 })
 
 export default connect(mapState)(NewProjectModal)
