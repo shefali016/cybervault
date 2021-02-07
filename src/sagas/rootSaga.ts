@@ -4,6 +4,7 @@ import projectSagas from './projectSagas'
 import userSagas from './user'
 import accountSagas from './account'
 import invoiceSagas from './invoice'
+import portfolioSagas from './portfolioSagas'
 export default function* rootSaga() {
-  yield all([authSagas(), projectSagas(), userSagas(), accountSagas(),invoiceSagas()])
+  yield all([authSagas(), projectSagas(), userSagas(), accountSagas(),invoiceSagas(), portfolioSagas()])
 }

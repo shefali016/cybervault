@@ -1,35 +1,43 @@
 import { CombinedState, combineReducers } from 'redux'
-// import { routerReducer } from 'react-router-redux'
 import authReducer from './authReducer'
-import projectReducer from './projectReducer'
 import { State as AuthState, Action as AuthAction } from './authReducer'
 import { State as Invoicestate, Action as InvoiceAction } from './invoiceReducer'
+import invoiceReducer from './invoiceReducer'
 import {
   State as ProjectState,
   Action as ProjectAction
-} from './projectReducer';
-import invoiceReducer from './invoiceReducer'
+} from './projectReducer'
+import projectReducer from './projectReducer'
+import {
+  State as PorfolioState,
+  Action as PortfolioAction
+} from './portfoliosReducer'
+import portfoliosReducer from './portfoliosReducer'
 
 const appReducer = combineReducers({
   auth: authReducer,
   project: projectReducer,
-  invoice:invoiceReducer
+  invoice:invoiceReducer,
+  portfolio: portfoliosReducer
+
 })
 
 export type ReduxState = {
   auth: AuthState
   project: ProjectState,
-  invoice:Invoicestate
+  invoice:Invoicestate,
+  portfolio: PorfolioState
 }
 
-export type Action = AuthAction & ProjectAction &InvoiceAction
+export type Action = AuthAction & ProjectAction &InvoiceAction & PortfolioAction
 
 const rootReducer = (state: CombinedState<ReduxState>, action: Action) => {
   if (action.type === 'RESET_ALL_DATA') {
     state = {
       auth: state.auth,
       project: state.project,
-      invoice:state.invoice
+      invoice:state.invoice,
+      portfolio: state.portfolio
     }
   }
   return appReducer(state as any, action)

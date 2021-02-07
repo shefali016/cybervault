@@ -28,10 +28,7 @@ export const useStyles = makeStyles((theme) => ({
     '&:hover': {
       border: `2px dashed ${theme.palette.grey[600]}`,
       color: theme.palette.common.white,
-      background: 'rgba(0,0,0,0.1)',
-      transition: theme.transitions.create(['border', 'background', 'color'], {
-        duration: 500
-      })
+      background: 'rgba(0,0,0,0.1)'
     }
   },
 
