@@ -30,7 +30,7 @@ const InvoiceStepOne = ({ project, headerTitle, onNext }: InvoiceStepProps) => {
         <Typography variant={'body2'}>{project.campaignName}</Typography>
       </Grid>
 
-      <Grid item sm={2} className={classes.imageWrapper}>
+      <Grid item className={classes.imageWrapper}>
         <ClientLogo logo={project.logo} />
       </Grid>
       <Grid container justify='center' className={classes.wrapper}>
@@ -105,8 +105,9 @@ const useStyles = makeStyles((theme) => ({
   },
   imageWrapper: {
     marginTop: -theme.spacing(2),
-    margin: 'auto',
-    paddingBottom: theme.spacing(2)
+    paddingBottom: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'center'
   },
   wrapperBorder: {
     [theme.breakpoints.up('sm')]: {

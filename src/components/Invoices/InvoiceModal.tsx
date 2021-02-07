@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useContext,
-  useEffect,
-  ChangeEvent
-} from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import InvoiceStepOne from './Steps/InvoiceStepOne'
@@ -18,6 +12,7 @@ import { Project, Account } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
+import { useOnChange } from 'utils/hooks'
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
@@ -71,6 +66,12 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
       setCurrentStep((step) => step + 1)
     }
   }, [invoiceData.success])
+
+  useOnChange(invoiceData.error, (error) => {
+    if (!!error) {
+      toastContext.showToast({ title: 'Failed to create invoice' })
+    }
+  })
 
   const handleMilestone = (selectedMile: MilestoneProps) => {
     setMilestones(

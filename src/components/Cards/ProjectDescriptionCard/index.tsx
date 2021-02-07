@@ -59,7 +59,6 @@ Props) => {
         onRequestClose={onRequestClose}
         project={project}
         account={account}
-        // allProjects={data}
       />
       <Card className={classes.card} elevation={5}>
         <div
