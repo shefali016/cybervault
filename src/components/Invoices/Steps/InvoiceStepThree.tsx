@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { Card, Typography, Grid } from '@material-ui/core'
 import { BOLD } from 'utils/constants/stringConstants'
-import { Project } from '../../../utils/Interface'
+import { Project, Client } from '../../../utils/Interface'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import CheckIcon from '@material-ui/icons/Check'
 import { ClientLogo } from 'components/Clients/ClientLogo'
@@ -12,21 +12,22 @@ type InvoiceStepThreeProps = {
   getAmountByMilestone: () => number
   invoiceType: string
   getFullAmount: () => number
+  client: Client
 }
 
 const InvoiceStepThree = ({
-  project,
   handleDoneClick,
   getAmountByMilestone,
   invoiceType,
-  getFullAmount
+  getFullAmount,
+  client
 }: InvoiceStepThreeProps) => {
   const classes = useStyles()
 
   return (
     <Grid container direction='column' alignItems='center'>
       <Grid item sm={2} className={classes.imageWrapper}>
-        {project.logo && <ClientLogo logo={project.logo} />}
+        {client.logo && <ClientLogo logo={client.logo} />}
         <Card className={classes.successIcon}>
           {' '}
           <CheckIcon className={classes.checkIcon} />
@@ -41,7 +42,7 @@ const InvoiceStepThree = ({
           }`}
         </Typography>
         <Typography variant={'body2'} paragraph>
-          To: {project.clientEmail}
+          To: {client.email}
         </Typography>
         <Typography variant={'body2'} paragraph>
           A confirmation has been sent to your email.

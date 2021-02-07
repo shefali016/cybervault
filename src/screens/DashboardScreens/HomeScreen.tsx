@@ -15,7 +15,7 @@ import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
 import * as Types from '../../utils/Interface'
 
-const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
+const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
 const HomeScreen = (props: any) => {
   const [allProjects, setAllProjects] = useState([])
@@ -50,21 +50,17 @@ const HomeScreen = (props: any) => {
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
         renderItem={(item) => (
-          <ul className={classes.projectCardsUl}>
-            <li className={classes.projectCardsli}>
-              <ProjectCard
-                clients={props.clients}
-                project={item}
-                isPopover={true}
-                key={`project-card-${item.projectId}`}
-                style={{
-                  paddingRight: theme.spacing(3)
-                }}
-                history={props.history}
-                account={props.userData.account}
-              />
-            </li>
-          </ul>
+          <ProjectCard
+            clients={props.clients}
+            project={item}
+            isPopover={true}
+            key={`project-card-${item.id}`}
+            style={{
+              paddingRight: theme.spacing(3)
+            }}
+            history={props.history}
+            account={props.userData.account}
+          />
         )}
       />
       <div className={classes.invoicingWrapper}>

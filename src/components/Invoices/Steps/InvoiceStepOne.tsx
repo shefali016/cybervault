@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Grid } from '@material-ui/core'
 import { BOLD } from 'utils/constants/stringConstants'
 import { GREY_COLOR } from 'utils/constants/colorsConstants'
-import { Project } from '../../../utils/Interface'
+import { Project, Client } from '../../../utils/Interface'
 import InvoiceLogo from '../../../assets/invoice.png'
 import Milestone from '../../../assets/milestone.png'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
@@ -12,9 +12,15 @@ type InvoiceStepProps = {
   project: Project
   headerTitle: String
   onNext: (invoiceType: any) => void
+  client: Client
 }
 
-const InvoiceStepOne = ({ project, headerTitle, onNext }: InvoiceStepProps) => {
+const InvoiceStepOne = ({
+  project,
+  headerTitle,
+  onNext,
+  client
+}: InvoiceStepProps) => {
   const classes = useStyles()
 
   const handleClick = (invoiceType: string) => {
@@ -31,7 +37,7 @@ const InvoiceStepOne = ({ project, headerTitle, onNext }: InvoiceStepProps) => {
       </Grid>
 
       <Grid item className={classes.imageWrapper}>
-        <ClientLogo logo={project.logo} />
+        <ClientLogo logo={client.logo} />
       </Grid>
       <Grid container justify='center' className={classes.wrapper}>
         <Grid item sm={5} className={classes.wrapperBorder}>

@@ -179,24 +179,21 @@ export type MediaObject = {
 }
 
 export type Project = {
-  logo: any
   campaignName: string
-  startDate: Date
+  campaignDate: string
   clientId: string
-  clientName:string
-  clientEmail:string
   campaignObjective: string
-  campaignDeadLine: Date
+  campaignDeadLine: string
   tasks: Array<Task>
   description: string
   campaignBudget: number
-  expensesEstimate: number
-  campaignExpenses: Array<Expense>
+  expensesEstimate?: number
+  campaignExpenses: number
+  expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
   id: string
-  campaignDate: string
   videos: Array<MediaObject>
   images: Array<MediaObject>
   canInvoice:Boolean
@@ -214,7 +211,7 @@ export type Invoice= {
   isPaid: Boolean,
   status:string,
   projectName:string
-  campaignDeadLine:Date,
+  campaignDeadLine:string,
   featuredImage?: string
 }
 

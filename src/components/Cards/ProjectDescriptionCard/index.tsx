@@ -10,12 +10,13 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project, Client, Invoice } from '../../../utils/Interface'
+import { Project, Client, Account } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 import InvoiceModal from '../../../components/Invoices/InvoiceModal'
-import { getInvoiceRequest } from '../../../actions/invoiceActions'
 import { ReduxState } from 'reducers/rootReducer'
+
+const ITEM_HEIGHT = 48
 
 type Props = {
   project: Project
@@ -52,18 +53,16 @@ Props) => {
     setOpen(false)
   }
 
-  const getClientLogo = () => {
-    let item = clients?.find((client) => {
-      return client.id === project.clientId
-    })
-    return item?.logo
-  }
+  const client = useMemo(
+    () =>
+      clients
+        ? clients.find((client) => client.id === project.clientId)
+        : undefined,
+    [clients]
+  )
 
-  const clientLogo = useMemo(() => {
-    return getClientLogo()
-  }, [project])
+  const clientLogo = client?.logo
 
-  const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (
     <div style={style}>
@@ -72,6 +71,7 @@ Props) => {
         onRequestClose={onRequestClose}
         project={project}
         account={account}
+        client={client}
       />
       <Card className={classes.card} elevation={5}>
         <div

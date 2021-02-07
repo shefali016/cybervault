@@ -8,7 +8,7 @@ import CloseButton from '../Common/Button/CloseButton'
 import { ReduxState } from 'reducers/rootReducer'
 import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
-import { Project, Account } from '../../utils/Interface'
+import { Project, Account, Client } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
@@ -20,6 +20,7 @@ type InvoiceProps = {
   onRequestClose: () => void
   project: Project
   account: Account
+  client: Client
 }
 type MilestoneProps = {
   id: string
@@ -29,7 +30,12 @@ type MilestoneProps = {
   check: boolean
 }
 
-const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
+const InvoiceData = ({
+  onRequestClose,
+  project,
+  account,
+  client
+}: InvoiceProps) => {
   const hasMilestones = project.milestones && project.milestones.length
 
   const [currentStep, setCurrentStep] = useState(hasMilestones ? 1 : 2)
@@ -39,6 +45,7 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
     !hasMilestones ? InvoiceTypes.full : ''
   )
   const [projectData, setProjectData] = useState(project)
+  const [clientData, setClientData] = useState(client)
   const [edit, setEdit] = useState({
     clientDetails: false,
     projectDetails: false,
@@ -138,7 +145,7 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
       milestones: milestones.filter((mile) => {
         return mile.check === true
       }), // will contain milestones being invoiced or null if invoicing total amount
-      clientEmail: projectData.clientEmail,
+      clientEmail: clientData.email,
       campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
       status: 'pending' // has client paid invoice or not
@@ -164,6 +171,11 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
     setProjectData({ ...projectData, [key]: value })
   }
 
+  const handleClientChange = (event: any) => (key: string) => {
+    const value = event.target.value
+    setClientData({ ...clientData, [key]: value })
+  }
+
   const renderStepsView = () => {
     const onNext = (invoiceType: any) => {
       if (currentStep === 1) {
@@ -179,6 +191,7 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
             headerTitle={'Send Invoice'}
             project={projectData}
             onNext={onNext}
+            client={clientData}
           />
         )
       case 2:
@@ -193,9 +206,11 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
             handleEdit={handleEdit}
             handleSave={handleSave}
             handleChange={handleChange}
+            handleClientChange={handleClientChange}
             milestones={milestones}
             handleMilestone={handleMilestone}
             handleMileChange={handleMileChange}
+            client={clientData}
           />
         )
       case 3:
@@ -206,16 +221,11 @@ const InvoiceData = ({ onRequestClose, project, account }: InvoiceProps) => {
             getAmountByMilestone={getAmountByMilestone}
             invoiceType={invoiceType}
             getFullAmount={getFullAmount}
+            client={clientData}
           />
         )
       default:
-        return (
-          <InvoiceStepOne
-            onNext={onNext}
-            headerTitle={'Send Invoice'}
-            project={projectData}
-          />
-        )
+        return null
     }
   }
 
@@ -239,20 +249,27 @@ type InvoiceModalProps = {
   project: Project
   onRequestClose: () => void
   account: Account
+  client: Client | undefined
 }
 
 const InvoiceModal = ({
   open,
   project,
   onRequestClose,
-  account
+  account,
+  client
 }: InvoiceModalProps) => {
+  if (!client) {
+    return null
+  }
+
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <InvoiceData
         onRequestClose={onRequestClose}
         project={project}
         account={account}
+        client={client}
       />
     </AppModal>
   )

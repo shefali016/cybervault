@@ -37,12 +37,13 @@ const NewProjectFooter = ({
   onUpdate,
   projectData,
   isLoading,
-  addClient,
   currentStep,
   buttonText,
   disabled
 }: Props) => {
   const classes = useStyles()
+
+  const isUpdating = typeof onUpdate === 'function'
 
   const renderBackButton = () => {
     return (
@@ -66,7 +67,7 @@ const NewProjectFooter = ({
         </Typography>
       ) : null}
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
-        {typeof onStartProject === 'function' && (
+        {!isUpdating && typeof onStartProject === 'function' && (
           <div className={classes.startProjectButtonContainer}>
             <GradiantButton
               onClick={onStartProject}
@@ -76,7 +77,8 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {typeof onBack === 'function' &&
+        {!isUpdating &&
+          typeof onBack === 'function' &&
           currentStep !== 1 &&
           renderBackButton()}
         {title && (
@@ -84,7 +86,7 @@ const NewProjectFooter = ({
             {title}
           </Typography>
         )}
-        {typeof onNext === 'function' && (
+        {!isUpdating && typeof onNext === 'function' && (
           <GradiantButton
             onClick={onNext}
             className={classes.continueButton}

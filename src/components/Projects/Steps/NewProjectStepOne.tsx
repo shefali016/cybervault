@@ -30,9 +30,7 @@ const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const {
     projectData,
-    setProjectData,
     haveError,
-    setLogoFile,
     clients,
     addClient,
     setAddClient,
@@ -49,7 +47,11 @@ const NewProjectStepOne = (props: any) => {
 
   useEffect(() => {
     if (clients.length) {
-      setClientData(clients[0])
+      setClientData(
+        projectData.clientId
+          ? clients.find((client: Client) => client.id === projectData.clientId)
+          : clients[0]
+      )
     }
   }, [clients])
 

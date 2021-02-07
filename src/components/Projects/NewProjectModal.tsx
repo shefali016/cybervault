@@ -19,13 +19,20 @@ import { ToastContext } from 'context/Toast'
 
 type NewProjectProps = {
   onRequestClose: () => void
-  onSubmitClicked: (projectData: any) => void
+  onSubmitClicked?: (projectData: Types.Project) => void
   success: boolean
   error: null | string
   account: Types.Account
   clients: Array<Types.Client>
   addClientSuccess: Boolean
   newClientData: Types.Client
+  project?: Types.Project
+  editTask?: boolean
+  editCampaign?: boolean
+  editExpenses?: boolean
+  editBudget?: boolean
+  initialStep?: number
+  onUpdate?: (project: Types.Project) => void
 }
 
 const NewProject = ({
@@ -36,13 +43,19 @@ const NewProject = ({
   account,
   clients,
   addClientSuccess,
-  newClientData
+  newClientData,
+  project,
+  editTask,
+  editCampaign,
+  editExpenses,
+  editBudget,
+  initialStep = 1,
+  onUpdate
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
-  const [projectData, setProjectData] = useState(getProductData())
+  const [currentStep, setCurrentStep] = useState(initialStep)
+  const [projectData, setProjectData] = useState(project || getProductData())
   const [clientData, setClientData] = useState(getClientData())
-  const [logoFile, setLogoFile] = useState(null)
   const [haveError, setHaveError] = useState(false)
   const [addClient, setAddClient] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
@@ -75,23 +88,27 @@ const NewProject = ({
     }
   }, [addClientSuccess])
 
+  const onUpdateData = () => {
+    if (typeof onUpdate !== 'function') {
+      return
+    }
+    onUpdate({
+      ...projectData,
+      clientId: clientData.id
+    })
+  }
+
   const onSubmitData = async () => {
     try {
+      if (typeof onSubmitClicked !== 'function') {
+        return
+      }
       // @ts-ignorets
       setIsLoading(true)
       let project = {
         ...projectData,
         clientId: clientData.id,
         id: generateUid()
-      }
-      if (logoFile) {
-        const logoUrl = await setMedia(
-          `images/clientLogos/${generateUid()}`,
-          logoFile
-        )
-        if (typeof logoUrl === 'string') {
-          project = { ...project, logo: logoUrl }
-        }
       }
       onSubmitClicked(project)
     } catch (error) {
@@ -102,16 +119,14 @@ const NewProject = ({
     }
   }
 
-  const newProject = true
   const renderStepsView = () => {
     const props = {
       isLoading,
       projectData,
       haveError,
       setHaveError,
-      newProject,
+      newProject: !project,
       setProjectData,
-      setLogoFile,
       account,
       clients,
       addClient,
@@ -119,6 +134,12 @@ const NewProject = ({
       currentStep,
       clientData,
       setClientData,
+      isEdit: !!project,
+      editTask,
+      editCampaign,
+      editExpenses,
+      editBudget,
+      onUpdate: () => onUpdateData(),
       onNext: () => {
         const isError = validate(currentStep, projectData, clientData)
         if (isError) {
@@ -146,6 +167,7 @@ const NewProject = ({
       },
       onSubmit: () => onSubmitData()
     }
+
     switch (currentStep) {
       case 1:
         return <NewProjectStepOne {...props} />
@@ -180,9 +202,16 @@ const NewProject = ({
 type NewProjectModalProps = {
   open: boolean
   onRequestClose: () => void
-  onSubmitClicked: (projectData: Types.Project) => void
+  onSubmitClicked?: (projectData: Types.Project) => void
   account: Types.Account
   clients: Array<Types.Client>
+  editTask?: boolean
+  editCampaign?: boolean
+  editExpenses?: boolean
+  editBudget?: boolean
+  project?: Types.Project
+  initialStep?: number
+  onUpdate?: (project: Types.Project) => void
 }
 
 const NewProjectModal = ({
@@ -192,7 +221,14 @@ const NewProjectModal = ({
   success,
   error,
   account,
-  clients
+  clients,
+  editTask,
+  editCampaign,
+  editExpenses,
+  editBudget,
+  project,
+  initialStep,
+  onUpdate
 }: NewProjectModalProps & StateProps) => {
   const newClientSuccess = useSelector(
     (state: any) => state.clients.newClientSuccess
@@ -202,6 +238,7 @@ const NewProjectModal = ({
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
+        initialStep={initialStep}
         onRequestClose={onRequestClose}
         onSubmitClicked={onSubmitClicked}
         error={error}
@@ -210,6 +247,12 @@ const NewProjectModal = ({
         clients={clients}
         addClientSuccess={newClientSuccess}
         newClientData={newClientData}
+        project={project}
+        editTask={editTask}
+        editCampaign={editCampaign}
+        editExpenses={editExpenses}
+        editBudget={editBudget}
+        onUpdate={onUpdate}
       />
     </AppModal>
   )

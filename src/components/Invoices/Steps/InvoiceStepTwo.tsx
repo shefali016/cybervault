@@ -7,7 +7,7 @@ import {
   BORDER_COLOR_GREY_LIGHT,
   PRIMARY_COLOR
 } from 'utils/constants/colorsConstants'
-import { Project, Milestone } from '../../../utils/Interface'
+import { Project, Milestone, Client } from '../../../utils/Interface'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import EditIcon from '@material-ui/icons/Edit'
 import AppTextField from '../../Common/Core/AppTextField'
@@ -25,9 +25,11 @@ type InvoiceStepProps = {
   handleEdit: (editType: string) => void
   handleSave: (type: string) => void
   handleChange: (e: ChangeEvent) => (key: string) => void
+  handleClientChange: (e: ChangeEvent) => (key: string) => void
   handleMilestone: (mile: MilestoneProps) => void
   handleMileChange: (id: string, key: string, e: any) => void
   milestones: Array<MilestoneProps>
+  client: Client
 }
 type editType = {
   clientDetails: boolean
@@ -50,10 +52,12 @@ const InvoiceStepTwo = ({
   handleEdit,
   edit,
   handleChange,
+  handleClientChange,
   handleMilestone,
   handleMileChange,
   handleSave,
-  milestones
+  milestones,
+  client
 }: InvoiceStepProps) => {
   const classes = useStyles()
   const handleClick = () => {
@@ -64,7 +68,7 @@ const InvoiceStepTwo = ({
     <>
       <Grid container spacing={3} alignItems='center'>
         <Grid item>
-          <ClientLogo logo={project.logo} />
+          <ClientLogo logo={client.logo} />
         </Grid>
         <Grid item>
           <Typography variant={'h5'} className={classes.headerTitle}>
@@ -104,15 +108,15 @@ const InvoiceStepTwo = ({
               {' '}
               {!edit.clientDetails ? (
                 <Typography className={classes.textField}>
-                  {project.clientName}
+                  {client.name}
                 </Typography>
               ) : (
                 <AppTextField
                   label={'Client Name'}
                   type={'text'}
                   name='clientName'
-                  onChange={(e: ChangeEvent) => handleChange(e)('clientName')}
-                  value={project.clientName}
+                  onChange={(e: ChangeEvent) => handleClientChange(e)('name')}
+                  value={client.name}
                 />
               )}
             </Grid>
@@ -127,15 +131,15 @@ const InvoiceStepTwo = ({
             <Grid item sm={9}>
               {!edit.clientDetails ? (
                 <Typography className={classes.textField}>
-                  {project.clientEmail}
+                  {client.email}
                 </Typography>
               ) : (
                 <AppTextField
                   label={'Client Email'}
                   type={'text'}
                   name='clientEmail'
-                  onChange={(e: ChangeEvent) => handleChange(e)('clientEmail')}
-                  value={project.clientEmail}
+                  onChange={(e: ChangeEvent) => handleClientChange(e)('email')}
+                  value={client.email}
                 />
               )}
             </Grid>
