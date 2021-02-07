@@ -1,5 +1,5 @@
-import React,{useEffect,useState} from 'react'
-import {useDispatch,useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
@@ -10,19 +10,19 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project,Account, Invoice } from '../../../utils/Interface'
+import { Project, Account, Invoice } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
-import { getWidgetCardHeight } from '../../../utils';
-import InvoiceModal from '../../../components/Invoices/InvoiceModal';
-import {getInvoiceRequest} from '../../../actions/invoiceActions';
+import { getWidgetCardHeight } from '../../../utils'
+import InvoiceModal from '../../../components/Invoices/InvoiceModal'
+import { getInvoiceRequest } from '../../../actions/invoiceActions'
 import { ReduxState } from 'reducers/rootReducer'
 
 type Props = {
   project: Project
   isPopover?: boolean
   style?: {}
-  history?: any,
-  account:Account
+  history?: any
+  account: Account
 }
 
 const ProjectCard = ({
@@ -31,11 +31,10 @@ const ProjectCard = ({
   style,
   history,
   account
-  // data
-}: Props) => {
-
-  const dispatch=useDispatch();
-  const invoiceData=useSelector((state:ReduxState)=>state.invoice)
+}: // data
+Props) => {
+  const dispatch = useDispatch()
+  const invoiceData = useSelector((state: ReduxState) => state.invoice)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const [open, setOpen] = React.useState(false)
@@ -43,23 +42,24 @@ const ProjectCard = ({
   const editProject = (projectId: string) => {
     history.push(`/project/${projectId}`)
   }
-  const sendInvoice=(projectId: string)=>{
+  const sendInvoice = (projectId: string) => {
     setOpen(true)
   }
 
-  const onRequestClose=()=>{
+  const onRequestClose = () => {
     setOpen(false)
   }
-  
 
   const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (
     <div style={style}>
-      <InvoiceModal open={open} onRequestClose={onRequestClose} 
+      <InvoiceModal
+        open={open}
+        onRequestClose={onRequestClose}
         project={project}
         account={account}
-      // allProjects={data}
+        // allProjects={data}
       />
       <Card className={classes.card} elevation={5}>
         <div
@@ -91,8 +91,7 @@ const ProjectCard = ({
                     aria-label='more'
                     aria-controls='long-menu'
                     aria-haspopup='true'
-                    {...bindTrigger(popupState)}
-                    >
+                    {...bindTrigger(popupState)}>
                     <MoreVertIcon />
                   </IconButton>
                   <Popover
@@ -131,9 +130,14 @@ const ProjectCard = ({
                         View Project
                       </div>
                     </MenuItem>
-                    
-                    <MenuItem style={{ fontSize: 12 }} 
-                    onClick={() => sendInvoice(project.id)} disabled={!project.canInvoice || !account.stripe.payoutsEnabled}>
+
+                    <MenuItem
+                      style={{ fontSize: 12 }}
+                      onClick={() => sendInvoice(project.id)}
+                      disabled={
+                        project.canInvoice === false ||
+                        !account.stripe.payoutsEnabled
+                      }>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}
