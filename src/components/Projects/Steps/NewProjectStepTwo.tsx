@@ -16,7 +16,7 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { InputChangeEvent, Task } from '../../../utils/Interface'
+import { Expense, InputChangeEvent, Task } from '../../../utils/Interface'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
@@ -28,7 +28,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepTwo = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, haveError } = props
+  const { projectData, setProjectData, haveError, currentStep } = props
 
   const handleInputChange = (event: InputChangeEvent) => (key: string) => {
     const value = event.target.value
@@ -127,6 +127,36 @@ const NewProjectStepTwo = (props: any) => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
+        {props.newProject || props.editCampaign ? (
+          <div className={'input-row'} style={{ marginBottom: 30 }}>
+            <div style={{ flex: 1, marginRight: leftInputMargin }}>
+              <AppTextField
+                error={
+                  haveError && projectData.campaignName === '' ? true : false
+                }
+                type={''}
+                label={'Campaign Name'}
+                value={projectData.campaignName}
+                onChange={(e: InputChangeEvent) =>
+                  handleInputChange(e)('campaignName')
+                }
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <AppTextField
+                error={
+                  haveError && projectData.campaignDate === '' ? true : false
+                }
+                type={'date'}
+                label={'Campaign Date'}
+                value={projectData.campaignDate}
+                onChange={(e: InputChangeEvent) =>
+                  handleInputChange(e)('campaignDate')
+                }
+              />
+            </div>
+          </div>
+        ) : null}
         <div>
           {props.newProject || props.editCampaign ? (
             <div className={'input-row'} style={{ marginBottom: 30 }}>
@@ -187,6 +217,7 @@ const NewProjectStepTwo = (props: any) => {
         onUpdate={props.onUpdate}
         projectData={projectData}
         haveError={haveError ? haveError : false}
+        currentStep={currentStep}
       />
     </div>
   )

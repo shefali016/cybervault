@@ -1,21 +1,17 @@
-export default function validate(step: number, projectData: any) {
+export default function validate(step: number, projectData: any,clientData:any) {
+
   switch (step) {
     case 1:
       if (
-        projectData.campaignName.trim() === '' ||
-        projectData.campaignDate.trim() === '' ||
-        projectData.clientName.trim() === '' ||
-        projectData.clientEmail.trim() === '' ||
-        projectData.address.trim() === '' ||
-        projectData.city.trim() === '' ||
-        projectData.state.trim() === '' ||
-        projectData.country.trim() === ''
+        clientData.id.trim() === '' 
       ) {
         return true
       }
       break
     case 2:
       if (
+        projectData.campaignName.trim() === '' ||
+        projectData.campaignDate.trim() === ''|| 
         projectData.campaignObjective.trim() === '' ||
         projectData.campaignDeadLine.trim() === ''
       ) {
@@ -42,5 +38,19 @@ export const getImageObject = (file: any, url: string, id: string) => {
     url: url,
     width: 50,
     height: 50
+  }
+}
+
+export const validateAddClient=(clientData:any)=>{
+  if (
+    clientData.name.trim() === '' ||
+    clientData.email.trim() === '' ||
+    clientData.address.trim() === '' ||
+    clientData.city.trim() === '' ||
+    clientData.state.trim() === '' ||
+    clientData.address.trim() === ''||
+    clientData.country.trim() === ''
+  ) {
+    return true
   }
 }

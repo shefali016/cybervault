@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { getAllProjectsRequest } from '../../actions/projectActions'
+import { getClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
@@ -32,13 +33,13 @@ const HomeScreen = (props: any) => {
   ])
 
   useEffect(() => {
+    props.getClientsRequest(props.userData.account)
     props.getAllProjectsData(props.userData.account)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const classes = useStyles()
   const theme = useTheme()
-
 
   return (
     <div>
@@ -52,6 +53,7 @@ const HomeScreen = (props: any) => {
           <ul className={classes.projectCardsUl}>
             <li className={classes.projectCardsli}>
               <ProjectCard
+                clients={props.clients}
                 project={item}
                 isPopover={true}
                 key={`project-card-${item.projectId}`}
@@ -99,12 +101,15 @@ const mapStateToProps = (state: any) => ({
   newProjectData: state.project.newProjectData,
   allProjectsData: state.project.allProjectsData,
   activeProjectsLoading: state.project.isLoading,
-  userData: state.auth
+  userData: state.auth,
+  clients: state.clients.clientsData
 })
-
 const mapDispatchToProps = (dispatch: any) => ({
   getAllProjectsData: (account: Types.Account) => {
     return dispatch(getAllProjectsRequest(account))
+  },
+  getClientsRequest: (account: Types.Account) => {
+    return dispatch(getClientsRequest(account))
   }
 })
 

@@ -34,12 +34,7 @@ export const getProductData = () => {
     logo: '',
     campaignName: '',
     campaignDate: currentDate,
-    clientName: '',
-    clientEmail: '',
-    address: '',
-    city: '',
-    state: '',
-    country: '',
+    clientId:'',
     campaignObjective: '',
     campaignDeadLine: currentDate,
     description: '',
@@ -61,12 +56,22 @@ export const getProductData = () => {
         cost: ''
       }
     ],
-    milestones: [
-      
-    ],
     id: '',
     images: [],
     videos: []
+  }
+}
+
+export const getClientData=()=>{
+  return {
+    address:'',
+    city:'',
+    state:'',
+    country:'',
+    email:'',
+    id:'',
+    name:'',
+    logo:''
   }
 }
 

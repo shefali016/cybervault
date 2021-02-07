@@ -29,7 +29,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepFour = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData } = props
+  const { projectData, setProjectData, currentStep } = props
 
   const addMilestone = () => {
     const milestones: Array<Milestone> = [
@@ -128,8 +128,9 @@ const NewProjectStepFour = (props: any) => {
         onBack={props.onBack}
         onNext={props.onNext}
         onUpdate={props.onUpdate}
-        title={props.isEdit ? '' : 'Step 1 of 5'}
+        title={props.isEdit ? '' : 'Step 4 of 5'}
         projectData={projectData}
+        currentStep={currentStep}
       />
     </div>
   )

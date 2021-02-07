@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -10,7 +10,7 @@ import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project, Account, Invoice } from '../../../utils/Interface'
+import { Project, Client, Invoice } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 import InvoiceModal from '../../../components/Invoices/InvoiceModal'
@@ -22,6 +22,7 @@ type Props = {
   isPopover?: boolean
   style?: {}
   history?: any
+  clients?: Array<Client>
   account: Account
 }
 
@@ -30,7 +31,8 @@ const ProjectCard = ({
   isPopover,
   style,
   history,
-  account
+  account,
+  clients
 }: // data
 Props) => {
   const dispatch = useDispatch()
@@ -50,6 +52,17 @@ Props) => {
     setOpen(false)
   }
 
+  const getClientLogo = () => {
+    let item = clients?.find((client) => {
+      return client.id === project.clientId
+    })
+    return item?.logo
+  }
+
+  const clientLogo = useMemo(() => {
+    return getClientLogo()
+  }, [project])
+
   const ITEM_HEIGHT = 48
   const classes = useStyles()
   return (
@@ -64,7 +77,7 @@ Props) => {
         <div
           className={classes.imageWrapper}
           style={{
-            background: `url(${project.logo}) no-repeat center`,
+            background: `url(${clientLogo}) no-repeat center`,
             backgroundSize: 'cover'
           }}></div>
         <div className={classes.footer}>

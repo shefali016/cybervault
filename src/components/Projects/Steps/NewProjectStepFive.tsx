@@ -22,15 +22,15 @@ import { RenderBudgetDetails } from '../../Common/Widget/BudgetDetailsWidget'
 
 const NewProjectStepFive = (props: any) => {
   const classes = useStyles()
-  const { projectData, onSubmit } = props
+  const { projectData, onSubmit, currentStep, clientData } = props
 
   const renderClientLogoView = () => {
     return (
       <div className={'client-logo-container'}>
         <Button variant='contained' className={classes.clientLogo}>
-          {!!projectData.logo && (
+          {!!clientData.logo && (
             <img
-              src={projectData.logo}
+              src={clientData.logo}
               className={classes.clientLogoImg}
               alt={'client-logo'}
             />
@@ -43,18 +43,18 @@ const NewProjectStepFive = (props: any) => {
   const renderMiddleView = () => {
     return (
       <div className={classes.middleView}>
-        <RenderClientDetails projectData={projectData} />
+        <RenderClientDetails clientData={clientData} />
         <RenderProjectDetails projectData={projectData} />
-        {projectData.tasks.length > 0 &&
-        projectData.tasks[0].title.trim() !== '' ? (
+        {projectData?.tasks?.length > 0 &&
+        projectData?.tasks[0]?.title.trim() !== '' ? (
           <RenderTaskDetails projectData={projectData} />
         ) : null}
-        {projectData.expenses.length > 0 &&
-        projectData.expenses[0].title.trim() !== '' ? (
+        {projectData?.expenses?.length > 0 &&
+        projectData?.expenses[0]?.title.trim() !== '' ? (
           <RenderExpenseDetails projectData={projectData} />
         ) : null}
-        {projectData.milestones.length > 0 &&
-        projectData.milestones[0].title.trim() !== '' ? (
+        {projectData?.milestones?.length > 0 &&
+        projectData?.milestones[0]?.title.trim() !== '' ? (
           <RenderMilestonesDetails projectData={projectData} />
         ) : null}
         <RenderBudgetDetails projectData={projectData} />
@@ -72,6 +72,7 @@ const NewProjectStepFive = (props: any) => {
         onStartProject={onSubmit}
         onBack={props.onBack}
         isLoading={props.isLoading}
+        currentStep={currentStep}
       />
     </div>
   )

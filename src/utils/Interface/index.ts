@@ -225,6 +225,17 @@ export interface ProjectAsset {
   type: string
 }
 
+export type Client ={
+  id: string, // Randomly generated
+  name: string
+  email: string
+  address: string
+  city: string
+  state: string
+  country: string,
+  logo: any
+}
+
 export type AllProjects = Array<Project>
 
 export interface PortfolioFolder {

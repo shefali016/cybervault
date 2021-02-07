@@ -16,11 +16,12 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Expense, InputChangeEvent } from '../../../utils/Interface'
+import { Milestone } from '../../../utils/Interface'
+import { useTabletLayout } from '../../../utils/hooks'
+import NewProjectTitle from '../NewProjectTitle'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import NewProjectTitle from '../NewProjectTitle'
-import { useTabletLayout } from '../../../utils/hooks'
+import { InputChangeEvent, Expense } from '../../../utils/Interface'
 import AddMoreButton from '../../Common/Button/MoreButton'
 import { generateUid } from '../../../utils'
 import CloseButton from '../../Common/Button/CloseButton'
@@ -28,7 +29,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepThree = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, haveError } = props
+  const { projectData, setProjectData, haveError, currentStep } = props
 
   const handleInputChange = (event: InputChangeEvent, key: string) => {
     const value = event.target.value
@@ -177,6 +178,7 @@ const NewProjectStepThree = (props: any) => {
         projectData={projectData}
         onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}
+        currentStep={currentStep}
       />
     </div>
   )
