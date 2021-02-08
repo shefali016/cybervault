@@ -9,6 +9,39 @@ import { updateAccount } from './account'
 
 const { server_url, domain } = require('../config.json')
 
+export const verifyStripeAccount = async (
+  account: Account
+): Promise<{
+  account: Account
+  stripeAccount: StripeAccount | undefined
+  isUpdated: boolean
+}> => {
+  if (typeof account.stripe.accountId !== 'string') {
+    return { account, stripeAccount: undefined, isUpdated: false }
+  }
+
+  const stripeAccount = await getStripeAccount(account.stripe.accountId)
+  const { details_submitted, payouts_enabled } = stripeAccount
+  const { detailsSubmitted, payoutsEnabled } = account.stripe
+
+  if (
+    details_submitted !== detailsSubmitted ||
+    payouts_enabled !== payoutsEnabled
+  ) {
+    const updatedAccount = {
+      ...account,
+      stripe: {
+        ...account.stripe,
+        detailsSubmitted: details_submitted,
+        payoutsEnabled: payouts_enabled
+      }
+    }
+    return { account: updatedAccount, stripeAccount, isUpdated: true }
+  } else {
+    return { account, stripeAccount, isUpdated: false }
+  }
+}
+
 export const createStripeAccount = async (
   account: Account
 ): Promise<StripeAccount> => {

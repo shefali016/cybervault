@@ -19,7 +19,7 @@ import { RenderProjectDetails } from '../../components/Common/Widget/ProjectDeta
 import { RenderExpenseDetails } from '../../components/Common/Widget/ExpenseDetailsWidget'
 import { RenderMilestonesDetails } from '../../components/Common/Widget/MilestonesDetailWidget'
 import { RenderBudgetDetails } from '../../components/Common/Widget/BudgetDetailsWidget'
-import EditProjectModal from 'components/EditProjectModel'
+import ProjectModal from 'components/Projects/NewProjectModal'
 import ProjectStatusIndicator from '../../components/Common/ProjectStatusIndicator'
 import { addProjectAssets, setMedia } from '../../apis/assets'
 import { generateUid } from '../../utils/index'
@@ -27,7 +27,7 @@ import { getImageObject } from 'utils/helpers'
 import { ToastContext } from 'context/Toast'
 import { AssetUploadDisplay } from '../../components/Assets/UploadMedia'
 import { Project, ProjectAsset } from 'utils/Interface'
-import { useOnChange } from 'utils/hooks'
+import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
 
@@ -47,6 +47,8 @@ type EditProjectStates = {
 const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
+
+  const client = useGetClient(props.clients, props.projectDetails)
 
   const [state, setState] = useState<EditProjectStates>({
     projectData: props.projectDetails,
@@ -80,7 +82,7 @@ const EditProjectScreen = (props: any) => {
   }
 
   const closeEditProjectModal = useCallback(
-    () => setState({ ...state, editProjectModalOpen: false }),
+    () => setState((state) => ({ ...state, editProjectModalOpen: false })),
     []
   )
 
@@ -122,8 +124,6 @@ const EditProjectScreen = (props: any) => {
         ...state,
         [type === 'image' ? 'isImageLoading' : 'isVideoLoading']: true
       })
-
-      console.log(file)
 
       const asset: ProjectAsset = {
         type,
@@ -193,7 +193,7 @@ const EditProjectScreen = (props: any) => {
     return (
       <div>
         <RenderClientDetails
-          projectData={state.projectData}
+          clientData={client}
           editInfo
           onEdit={() => openEditProjectModal(1)}
         />
@@ -204,8 +204,7 @@ const EditProjectScreen = (props: any) => {
         />
         {state.projectData &&
         state.projectData.tasks &&
-        state.projectData.tasks.length > 0 &&
-        state.projectData.tasks[0].title.trim() !== '' ? (
+        state.projectData.tasks.length > 0 ? (
           <RenderTaskDetails
             projectData={state.projectData}
             editInfo
@@ -214,8 +213,7 @@ const EditProjectScreen = (props: any) => {
         ) : null}
         {state.projectData &&
         state.projectData.expenses &&
-        state.projectData.expenses.length > 0 &&
-        state.projectData.expenses[0].title.trim() !== '' ? (
+        state.projectData.expenses.length > 0 ? (
           <RenderExpenseDetails
             projectData={state.projectData}
             editInfo
@@ -224,8 +222,7 @@ const EditProjectScreen = (props: any) => {
         ) : null}
         {state.projectData &&
         state.projectData.milestones &&
-        state.projectData.milestones.length > 0 &&
-        state.projectData.milestones[0].title.trim() !== '' ? (
+        state.projectData.milestones.length > 0 ? (
           <RenderMilestonesDetails
             projectData={state.projectData}
             editInfo
@@ -278,16 +275,16 @@ const EditProjectScreen = (props: any) => {
 
   const renderEditProjectModel = () => {
     return (
-      <EditProjectModal
+      <ProjectModal
         open={state.editProjectModalOpen}
-        currentStep={state.currentStep}
+        initialStep={state.currentStep}
         onRequestClose={closeEditProjectModal}
-        onSubmitClicked={handleUpdateProject}
-        isTaskEdit={state.isTaskEdit}
-        isCampaignEdit={state.isCampaignEdit}
-        isExpensesEdit={state.isExpensesEdit}
-        isBudgetEdit={state.isBudgetEdit}
-        projectData={state.projectData}
+        onUpdate={handleUpdateProject}
+        editTask={state.isTaskEdit}
+        editCampaign={state.isCampaignEdit}
+        editExpenses={state.isExpensesEdit}
+        editBudget={state.isBudgetEdit}
+        project={state.projectData}
       />
     )
   }
@@ -310,10 +307,10 @@ const mapStateToProps = (state: any) => ({
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
   isUpdatedSuccess: state.project.isUpdatedSuccess,
-  updateDetails: state.project.updateDetails,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
   projectUpdateError: state.project.projectUpdateError,
-  account: state.auth.account
+  account: state.auth.account,
+  clients: state.clients.clientsData
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

@@ -61,7 +61,13 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
       />
 
       <div className={classes.assetContainer}>
-        <div style={{ position: 'relative', display: 'flex', flex: 1 }}>
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flex: 1,
+            alignItems: 'center'
+          }}>
           {assets.length === 0 ? (
             <div className={classes.assetOuter} style={{ minHeight: 300 }}>
               <div className={classes.assetInner}>

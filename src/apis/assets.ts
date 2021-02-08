@@ -81,5 +81,5 @@ export const getAssets = async (
         return snapshot.data() as ProjectAsset
       })
   )
-  return await Promise.all(assetRequests)
+  return await (await Promise.all(assetRequests)).filter((asset) => !!asset)
 }

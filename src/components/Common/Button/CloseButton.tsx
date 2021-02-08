@@ -5,12 +5,13 @@ import React from 'react'
 type Props = {
   onClick: () => void
   style?: {}
+  isLarge?: boolean
 }
 
-const CloseButton = ({ onClick, style }: Props) => {
+const CloseButton = ({ onClick, style, isLarge }: Props) => {
   return (
     <IconButton aria-label='delete' onClick={onClick} style={style}>
-      <ClearIcon fontSize='small' />
+      <ClearIcon fontSize={isLarge ? 'large' : 'small'} />
     </IconButton>
   )
 }

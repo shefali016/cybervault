@@ -1,6 +1,6 @@
 import Section from 'components/Common/Section'
-import React, { useState, useEffect, useContext,useMemo } from 'react'
-import {useDispatch,useSelector} from 'react-redux';
+import React, { useState, useEffect, useContext, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Account, StripeAccount, StripeLoginLink } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
@@ -12,20 +12,20 @@ import { Typography } from '@material-ui/core'
 import {
   createStripeAccount,
   createStripeAccountLink,
-  getStripeAccount,
-  createStripeLogin
-} from '../../apis/stripe';
-import {getInvoiceRequest} from '../../actions/invoiceActions'
+  createStripeLogin,
+  verifyStripeAccount
+} from '../../apis/stripe'
+import { getInvoiceRequest } from '../../actions/invoiceActions'
 import { ToastContext } from 'context/Toast'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { updateAccount } from 'actions/account'
 import { AppTable } from 'components/Common/Core/AppTable'
-import InvoiceIcon from '@material-ui/icons/Receipt'
 import ErrorIcon from '@material-ui/icons/Error'
-import {Invoice} from '../../utils/Interface'
+import { Invoice } from '../../utils/Interface'
+import { InvoicesTable } from 'components/Invoices/InvoicesTable'
 
 type DispatchProps = { updateAccount: (account: Account) => void }
-type StateProps = { account: Account }
+type StateProps = { account: Account; invoices: Array<Invoice> }
 type Props = { history: any } & StateProps & DispatchProps
 type State = {
   monthBalance: number
@@ -33,15 +33,15 @@ type State = {
   availableBalance: number
   numberOfInvoicesThisMonth: number
   creatingAccount: boolean
-  stripeAccount: StripeAccount | null
+  stripeAccount: StripeAccount | null | undefined
   stripeLoginLink: StripeLoginLink | null
 }
 
-const InvoicesScreen = ({ account, updateAccount }: Props) => {
+const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
-  const dispatch=useDispatch()
+  const dispatch = useDispatch()
   const [state, setState] = useState<State>({
     monthBalance: 0,
     totalBalance: 0,
@@ -51,8 +51,6 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
     stripeAccount: null,
     stripeLoginLink: null
   })
-
-  const allInvoicesData=useSelector((state:ReduxState)=>state.invoice.allInvoicesData)
 
   const {
     monthBalance,
@@ -69,32 +67,24 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
       typeof account?.stripe?.accountId === 'string' &&
       account?.stripe?.accountId
     ) {
-      verifyStripeAccount(account.stripe.accountId)
+      _verifyStripeAccount()
     }
     dispatch(getInvoiceRequest(account))
-
   }, [])
 
-  const verifyStripeAccount = async (stripeAccountId: string) => {
+  const _verifyStripeAccount = async () => {
     try {
-      const stripeAccount = await getStripeAccount(stripeAccountId)
-      console.log('STRIPE_ACCOUNT', stripeAccount)
-      setState((state) => ({ ...state, stripeAccount }))
-      const { details_submitted, payouts_enabled } = stripeAccount
-      const { detailsSubmitted, payoutsEnabled } = account.stripe
-      if (
-        details_submitted !== detailsSubmitted ||
-        payouts_enabled !== payoutsEnabled
-      ) {
-        updateAccount({
-          ...account,
-          stripe: {
-            ...account.stripe,
-            detailsSubmitted: details_submitted,
-            payoutsEnabled: payouts_enabled
-          }
-        })
+      const {
+        isUpdated,
+        stripeAccount,
+        account: updatedAccount
+      } = await verifyStripeAccount(account)
+
+      if (isUpdated) {
+        updateAccount(updatedAccount)
       }
+
+      setState((state) => ({ ...state, stripeAccount }))
     } catch (error) {
       console.log('Failed to fetch stripe account')
     }
@@ -169,17 +159,15 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
         </Typography>
       </div>
       <div className={'row'}>
-        {!account?.stripe?.payoutsEnabled && !!account?.stripe?.detailsSubmitted && (
-          <div className={'row'}>
-            {/* <Typography style={{ marginRight: theme.spacing(1) }}>
-              Finish set up
-            </Typography> */}
-            <ErrorIcon
-              color={'error'}
-              style={{ marginRight: theme.spacing(1) }}
-            />
-          </div>
-        )}
+        {!account?.stripe?.payoutsEnabled &&
+          !!account?.stripe?.detailsSubmitted && (
+            <div className={'row'}>
+              <ErrorIcon
+                color={'error'}
+                style={{ marginRight: theme.spacing(1) }}
+              />
+            </div>
+          )}
         <div
           className={classes.stripeAccountContainer}
           style={{ opacity: account?.stripe?.detailsSubmitted ? 1 : 0.3 }}
@@ -194,49 +182,6 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
       </div>
     </div>
   )
-const headerCells=[
-  {title:"Project Name",key:"name"},
-  {title:'Amount',key:'amount'},
-  {title:'Date',key:'date'},
-  {title:'Status',key:'status'}
-]
-
-type Cell = {
-  cellProps?: any
-  renderer?: () => React.ReactElement
-  title?: string
-  key: string
-}
-
-type Row = Array<Cell>
-const getRowsData=()=>{
-    let rows:Array<Row>
-      rows=[]
-      allInvoicesData?.length && allInvoicesData?.forEach((inv:Invoice)=>{
-          rows.push([{title:inv.projectName,key:`${inv.id}projectName`}
-          ,{title:`${inv.price}`,key:`${inv.id}price`},
-          {title:`${inv.dateCreated}`,key:`${inv.id}date`},
-          {title:inv.status,key:`${inv.id}status`}])
-      })  
-    return rows
-}
-const getRowsVal=useMemo(()=>
-    getRowsData()
-,[allInvoicesData.length])
-
-
-  const renderInvoiceTable = () => {
-    return (
-      <div className={classes.tableContainer}>
-        <AppTable
-          rows={getRowsVal}
-          headerCells={headerCells}
-          tableContainerClassName={classes.table}
-          emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
-        />
-      </div>
-    )
-  }
 
   return (
     <div className={clsx('screenContainer', 'centerContent')}>
@@ -290,7 +235,14 @@ const getRowsVal=useMemo(()=>
         <div className={classes.sectionInner}>
           {renderHeader()}
 
-          {!!account?.stripe?.detailsSubmitted && renderInvoiceTable()}
+          {!!account?.stripe?.detailsSubmitted && (
+            <div className={classes.tableContainer}>
+              <InvoicesTable
+                invoices={invoices}
+                tableContainerClassName={classes.table}
+              />
+            </div>
+          )}
 
           {!account?.stripe?.detailsSubmitted && (
             <div className={classes.buttonContainer}>
@@ -331,7 +283,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 500
   },
   table: {
-    flex: 1,
     borderRadius: theme.shape.borderRadius
   },
   viewPayouts: {
@@ -439,7 +390,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const mapState = (state: ReduxState): StateProps => ({
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  invoices: state.invoice.allInvoicesData
 })
 
 const mapDispatch: DispatchProps = { updateAccount }

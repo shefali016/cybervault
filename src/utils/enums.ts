@@ -26,3 +26,15 @@ export enum SubscriptionDurations {
   yearly,
   monthly
 }
+
+export enum InvoiceStatuses {
+  PENDING = 'pending',
+  VIEWED = 'viewed',
+  PAID = 'paid'
+}
+
+export enum ProjectStatuses {
+  PENDING = 'pending',
+  PAID = 'paid',
+  ARCHIVED = 'archived'
+}

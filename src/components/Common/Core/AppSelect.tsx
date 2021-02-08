@@ -14,12 +14,13 @@ type Props = {
   items: Array<Item>
   value?: any
   onChange: (value: any) => void
+  className?: string
 }
 
-const AppSelect = ({ items, ...rest }: Props) => {
+const AppSelect = ({ items, className, ...rest }: Props) => {
   const classes = useStyles()
   return (
-    <Select {...rest} variant='outlined'>
+    <Select {...rest} variant='outlined' className={className && className}>
       {items.map(({ value, renderer, title }: Item) => (
         <MenuItem value={value}>
           {typeof renderer === 'function' ? (
@@ -36,7 +37,7 @@ const AppSelect = ({ items, ...rest }: Props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
-  item: { margin: '0 10px', fontSize: 11 }
+  item: { fontSize: 12 }
 }))
 
 export default AppSelect

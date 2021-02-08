@@ -12,6 +12,22 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: `#fff !important`,
       fontWeight: 'bold !important'
     },
+    '.MuiTableCell-body': {
+      borderColor: theme.palette.background.surfaceHighlight
+    },
+    '.MuiTableCell-head': {
+    borderColor: theme.palette.background.surfaceHighlight
+    },
+    '.MuiTableRow-root': {
+      '&:hover': {
+        background: theme.palette.background.surfaceHighlight
+      }
+    },
+    '.MuiTableRow-head': {
+      '&:hover': {
+        background: theme.palette.background.surface
+      }
+    },
     '.modalContent': {
       color: theme.palette.text.paper,
       backgroundColor: theme.palette.background.paper,
@@ -33,6 +49,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.container': {
       display: 'flex',
       flexDirection: 'column'
+    },
+    '.dashboardScreen': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5)
     },
     '.screenContainer': {
       display: 'flex',

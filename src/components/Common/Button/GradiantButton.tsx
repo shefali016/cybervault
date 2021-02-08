@@ -25,7 +25,7 @@ export const GradiantButton = (props: Props) => {
       {props.children}
       {props.loading && (
         <ReactLoading
-          type={'spinningBubbles'}
+          type={'bubbles'}
           color={'#fff'}
           height={20}
           width={20}

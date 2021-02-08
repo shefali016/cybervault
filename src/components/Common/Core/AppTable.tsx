@@ -13,19 +13,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { EmptyIcon } from 'components/EmptyIcon'
 import React from 'react'
-
-type Cell = {
-  cellProps?: any
-  renderer?: () => React.ReactElement
-  title?: string
-  key: string
-}
-type Row = Array<Cell>
+import { Cell, Row } from 'utils/Interface'
 
 interface Props {
   headerCells: Array<Cell>
   rows: Array<Row>
-  tableContainerClassName: string
+  tableContainerClassName: string | undefined
   rest?: any
   emptyProps: {
     Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>
@@ -51,16 +44,20 @@ export const AppTable = ({
   return (
     <TableContainer
       className={clsx(classes.tableContainer, tableContainerClassName)}>
-      <Table>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
             {headerCells.map((cell: Cell) => renderCell(cell))}
           </TableRow>
         </TableHead>
-        <TableBody>
+
+        {rows.length === 0 && !!Icon && (
           <div className={classes.emptyContainer}>
-            {rows.length === 0 && !!Icon && <EmptyIcon {...emptyProps} />}
+            <EmptyIcon {...emptyProps} />
           </div>
+        )}
+
+        <TableBody>
           {rows.map((row: Array<Cell>, index) => (
             <TableRow key={`table-row-${index}`}>
               {row.map((cell: Cell) => renderCell(cell))}
@@ -74,6 +71,13 @@ export const AppTable = ({
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: { background: theme.palette.background.surface },
-  emptyContainer: { display: 'flex', justifyContent: 'center' },
-  cellWrapper:{color:'#fff'}
+  table: { position: 'relative' },
+  emptyContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 0,
+    left: 0
+  },
+  cellWrapper: { color: '#fff' }
 }))

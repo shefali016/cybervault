@@ -1,79 +1,75 @@
-import {useEffect,useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Card, CardContent, Typography, Grid } from '@material-ui/core'
-import logo from '../../../assets/logo.png'
-import {
-  BLOCK,
-  BOLD,
-  CENTER,
-  GRID,
-  FLEX,
-  AUTO
-} from 'utils/constants/stringConstants'
-import {
-  GREY_COLOR,
-  BORDER_COLOR_GREY_LIGHT,
-  SECONDARY_COLOR,
-  WHITE_COLOR,
-} from 'utils/constants/colorsConstants'
-import { Invoice, Project } from '../../../utils/Interface';
-import InvoiceLogo from '../../../assets/invoice.png';
-import Milestone from '../../../assets/milestone.png';
-import {GradiantButton }from '../../Common/Button/GradiantButton';
-
+import { Typography, Grid } from '@material-ui/core'
+import { BOLD } from 'utils/constants/stringConstants'
+import { GREY_COLOR } from 'utils/constants/colorsConstants'
+import { Project, Client } from '../../../utils/Interface'
+import InvoiceLogo from '../../../assets/invoice.png'
+import Milestone from '../../../assets/milestone.png'
+import { GradiantButton } from '../../Common/Button/GradiantButton'
+import { ClientLogo } from '../../Clients/ClientLogo'
 
 type InvoiceStepProps = {
   project: Project
-  headerTitle: String,
-  onNext:(invoiceType:any)=>void
- //   allProjects: Array<Project>
+  headerTitle: String
+  onNext: (invoiceType: any) => void
+  client: Client
 }
 
-
-
-const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
+const InvoiceStepOne = ({
+  project,
+  headerTitle,
+  onNext,
+  client
+}: InvoiceStepProps) => {
   const classes = useStyles()
 
-  const handleClick=(invoiceType:string)=>{
-        onNext(invoiceType)
-}
+  const handleClick = (invoiceType: string) => {
+    onNext(invoiceType)
+  }
 
   return (
     <Grid>
-      <div>
+      <Grid>
         <Typography variant={'h5'} className={classes.headerTitle}>
           {headerTitle}
         </Typography>
         <Typography variant={'body2'}>{project.campaignName}</Typography>
-      </div>
+      </Grid>
 
-      <Grid item sm={2} className={classes.imageWrapper}>
-        <Card>
-          <CardContent>
-            <Grid>
-              <img
-                src={project.logo ? project.logo : ""}
-                className={classes.img}
-              />
-            </Grid>
-          </CardContent>
-        </Card>
+      <Grid item className={classes.imageWrapper}>
+        <ClientLogo logo={client.logo} />
       </Grid>
-      <Grid container justify='center' className={classes.wrapper} >
-          <Grid item sm={5} className={`${classes.wrapperBorder}`}>
-              <img src={InvoiceLogo}/>
-              <Typography className={`${classes.heading}`}>Invoice full amount</Typography>
-              <Typography className={classes.subHeading}>Clients will receive Invoice and downloadable project fle</Typography>
-              <GradiantButton className={classes.btn} onClick={()=>handleClick('fullAmount')}>Continue</GradiantButton>
-          </Grid>
-          <Grid item sm={5} >
-              <img src={Milestone}/>
-          <Typography className={classes.heading}>Invoice full milestone</Typography>
-          <Typography className={classes.subHeading}>Clients will receive a partial invoice for steps Completed</Typography>
-          <GradiantButton className={classes.btn} onClick={()=>handleClick('mileStone')}>Continue</GradiantButton>
-          </Grid>
+      <Grid container justify='center' className={classes.wrapper}>
+        <Grid item sm={5} className={classes.wrapperBorder}>
+          <img src={InvoiceLogo} className={classes.icon} />
+          <Typography className={`${classes.heading}`}>
+            Invoice full amount
+          </Typography>
+          <Typography className={classes.subHeading}>
+            Clients will receive Invoice and downloadable project fle
+          </Typography>
+          <GradiantButton
+            className={classes.btn}
+            onClick={() => handleClick('fullAmount')}>
+            Continue
+          </GradiantButton>
+        </Grid>
+        <Grid item sm={5} className={classes.milestoneSection}>
+          <img src={Milestone} className={classes.icon} />
+          <Typography className={classes.heading}>
+            Invoice full milestone
+          </Typography>
+          <Typography className={classes.subHeading}>
+            Clients will receive a partial invoice for steps Completed
+          </Typography>
+          <GradiantButton
+            className={classes.btn}
+            onClick={() => handleClick('mileStone')}>
+            Continue
+          </GradiantButton>
+        </Grid>
       </Grid>
-    
+
       {/* {allProjects.map((pro) => {
         return (
           <Grid item sm={3}>
@@ -107,34 +103,40 @@ const InvoiceStepOne = ({ project, headerTitle ,onNext}: InvoiceStepProps) => {
   )
 }
 const useStyles = makeStyles((theme) => ({
+  milestoneSection: {
+    [theme.breakpoints.down('sm')]: { marginTop: theme.spacing(2) }
+  },
   headerTitle: {
     fontWeight: BOLD
   },
-  img: {
-    width: '100%'
-  },
   imageWrapper: {
-    margin: 'auto'
+    marginTop: -theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'center'
   },
-wrapperBorder:{
-borderRight:`1px solid ${GREY_COLOR}`
-},
-  wrapper:{
-      textAlign:'center',
-      padding:'32px 0'
+  wrapperBorder: {
+    [theme.breakpoints.up('sm')]: {
+      borderRight: `1px solid ${theme.palette.grey[500]}`
+    }
   },
-  heading:{
-      fontWeight:BOLD,
-      fontSize:18
+  wrapper: {
+    textAlign: 'center',
+    padding: '32px 0'
   },
-  subHeading:{
-      fontSize:10
+  heading: {
+    fontWeight: BOLD,
+    fontSize: 18
   },
-  btn:{
-      minWidth:136,
-      borderRadius:22,
-      margin:'20px 0'
-  }
+  subHeading: {
+    fontSize: 10
+  },
+  btn: {
+    minWidth: 136,
+    borderRadius: 22,
+    margin: '20px 0'
+  },
+  icon: { paddingBottom: theme.spacing(1) }
 }))
 
 export default InvoiceStepOne

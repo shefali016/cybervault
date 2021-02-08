@@ -1,5 +1,7 @@
 import { ChangeEvent } from 'react'
 import {
+  InvoiceStatuses,
+  ProjectStatuses,
   SharingPrivacies,
   SubscriptionDurations,
   SubscriptionTypes,
@@ -167,7 +169,7 @@ export type Milestone = {
   id: string
   title: string
   cost: number
-  payment:number //added as in fireabase when creating milestone payment key is used for cost 
+  payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 
 export type MediaObject = {
@@ -179,44 +181,51 @@ export type MediaObject = {
 }
 
 export type Project = {
-  logo: any
   campaignName: string
-  startDate: Date
+  campaignDate: string
   clientId: string
-  clientName:string
-  clientEmail:string
   campaignObjective: string
-  campaignDeadLine: Date
+  campaignDeadLine: string
   tasks: Array<Task>
   description: string
   campaignBudget: number
-  expensesEstimate: number
-  campaignExpenses: Array<Expense>
+  expensesEstimate?: number
+  campaignExpenses: number
+  expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
   id: string
-  campaignDate: string
   videos: Array<MediaObject>
   images: Array<MediaObject>
-  canInvoice:Boolean
+  canInvoice: Boolean
+  status: ProjectStatus
 }
 
-
-export type Invoice= {
-  id: String, // Using generateId function
-  dateCreated: Date|string,
-  datePaid: Date | null,
-  projectId: string, // Id of the project being invoiced
-  price: number, // Amount that the client must pay
-  milestones: Array<Milestone> | null, // will contain milestones being invoiced or null if invoicing total amount
-  clientEmail: String,
-  isPaid: Boolean,
-  status:string,
-  projectName:string
-  campaignDeadLine:Date,
+export type Invoice = {
+  id: String // Using generateId function
+  dateCreated: Date | string
+  datePaid: Date | null
+  projectId: string // Id of the project being invoiced
+  price: number // Amount that the client must pay
+  milestones: Array<Milestone> | null // will contain milestones being invoiced or null if invoicing total amount
+  clientEmail: String
+  isPaid: Boolean
+  status: InvoiceStatus
+  projectName: string
+  campaignDeadLine: string
   featuredImage?: string
 }
+
+export type ProjectStatus =
+  | ProjectStatuses.PENDING
+  | ProjectStatuses.PAID
+  | ProjectStatuses.ARCHIVED
+
+export type InvoiceStatus =
+  | InvoiceStatuses.PENDING
+  | InvoiceStatuses.VIEWED
+  | InvoiceStatuses.PAID
 
 export interface ProjectAsset {
   id: string
@@ -225,4 +234,39 @@ export interface ProjectAsset {
   type: string
 }
 
+export type Client = {
+  id: string // Randomly generated
+  name: string
+  email: string
+  address: string
+  city: string
+  state: string
+  country: string
+  logo: any
+}
+
 export type AllProjects = Array<Project>
+
+export interface PortfolioFolder {
+  id: string
+  name: string
+  description?: string
+  portfolios: Array<string>
+}
+
+export interface Portfolio {
+  id: string
+  name: string
+  description: string
+  icon: string | null
+  projects: Array<string> // project ids
+}
+
+export type Cell = {
+  cellProps?: any
+  renderer?: () => React.ReactElement
+  title?: string
+  key: string
+}
+
+export type Row = Array<Cell>
