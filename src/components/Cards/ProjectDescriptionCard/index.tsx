@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -6,7 +6,6 @@ import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
 import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
-import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
@@ -40,12 +39,7 @@ const ProjectCard = ({
   clients,
   onDelete,
   deletingId
-}: // data
-Props) => {
-  const dispatch = useDispatch()
-  const invoiceData = useSelector((state: ReduxState) => state.invoice)
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
+}: Props) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const startConfirmingDelete = () => setConfirmingDelete(true)
@@ -123,7 +117,7 @@ Props) => {
               />
             )}
 
-            <PopupState variant='popover' popupId='demo-popup-popover'>
+            <PopupState variant='popover'>
               {(popupState) => (
                 <div>
                   <IconButton {...bindTrigger(popupState)}>
@@ -131,7 +125,6 @@ Props) => {
                   </IconButton>
                   <Popover
                     id={'long-menu'}
-                    // anchorEl={anchorEl}
                     anchorOrigin={{
                       vertical: 'bottom',
                       horizontal: 'right'
