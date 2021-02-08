@@ -48,6 +48,12 @@ export function generateNewInvoiceRequest(
       error
     }
   }
+  export function sendEmailRequest(mail:any) {
+    return {
+      type: ActionTypes.SEND_EMAIL_REQUEST,
+      mail
+    }
+  }
   
   
   
