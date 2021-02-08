@@ -1,4 +1,5 @@
 import { Theme } from '@material-ui/core/styles'
+import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
 
 export function getWidgetCardHeight(theme: Theme) {
@@ -46,7 +47,8 @@ export const getProductData = (): Project => {
     milestones: [],
     id: '',
     images: [],
-    videos: []
+    videos: [],
+    status: ProjectStatuses.PENDING
   }
 }
 

@@ -12,7 +12,6 @@ import { Typography } from '@material-ui/core'
 import {
   createStripeAccount,
   createStripeAccountLink,
-  getStripeAccount,
   createStripeLogin,
   verifyStripeAccount
 } from '../../apis/stripe'
@@ -21,12 +20,12 @@ import { ToastContext } from 'context/Toast'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { updateAccount } from 'actions/account'
 import { AppTable } from 'components/Common/Core/AppTable'
-import InvoiceIcon from '@material-ui/icons/Receipt'
 import ErrorIcon from '@material-ui/icons/Error'
 import { Invoice } from '../../utils/Interface'
+import { InvoicesTable } from 'components/Invoices/InvoicesTable'
 
 type DispatchProps = { updateAccount: (account: Account) => void }
-type StateProps = { account: Account }
+type StateProps = { account: Account; invoices: Array<Invoice> }
 type Props = { history: any } & StateProps & DispatchProps
 type State = {
   monthBalance: number
@@ -38,7 +37,7 @@ type State = {
   stripeLoginLink: StripeLoginLink | null
 }
 
-const InvoicesScreen = ({ account, updateAccount }: Props) => {
+const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
@@ -52,10 +51,6 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
     stripeAccount: null,
     stripeLoginLink: null
   })
-
-  const allInvoicesData = useSelector(
-    (state: ReduxState) => state.invoice.allInvoicesData
-  )
 
   const {
     monthBalance,
@@ -167,9 +162,6 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
         {!account?.stripe?.payoutsEnabled &&
           !!account?.stripe?.detailsSubmitted && (
             <div className={'row'}>
-              {/* <Typography style={{ marginRight: theme.spacing(1) }}>
-              Finish set up
-            </Typography> */}
               <ErrorIcon
                 color={'error'}
                 style={{ marginRight: theme.spacing(1) }}
@@ -190,49 +182,6 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
       </div>
     </div>
   )
-  const headerCells = [
-    { title: 'Project Name', key: 'name' },
-    { title: 'Amount', key: 'amount' },
-    { title: 'Date', key: 'date' },
-    { title: 'Status', key: 'status' }
-  ]
-
-  type Cell = {
-    cellProps?: any
-    renderer?: () => React.ReactElement
-    title?: string
-    key: string
-  }
-
-  type Row = Array<Cell>
-  const getRowsData = () => {
-    let rows: Array<Row>
-    rows = []
-    allInvoicesData?.length &&
-      allInvoicesData?.forEach((inv: Invoice) => {
-        rows.push([
-          { title: inv.projectName, key: `${inv.id}projectName` },
-          { title: `${inv.price}`, key: `${inv.id}price` },
-          { title: `${inv.dateCreated}`, key: `${inv.id}date` },
-          { title: inv.status, key: `${inv.id}status` }
-        ])
-      })
-    return rows
-  }
-  const getRowsVal = useMemo(() => getRowsData(), [allInvoicesData.length])
-
-  const renderInvoiceTable = () => {
-    return (
-      <div className={classes.tableContainer}>
-        <AppTable
-          rows={getRowsVal}
-          headerCells={headerCells}
-          tableContainerClassName={classes.table}
-          emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
-        />
-      </div>
-    )
-  }
 
   return (
     <div className={clsx('screenContainer', 'centerContent')}>
@@ -286,7 +235,14 @@ const InvoicesScreen = ({ account, updateAccount }: Props) => {
         <div className={classes.sectionInner}>
           {renderHeader()}
 
-          {!!account?.stripe?.detailsSubmitted && renderInvoiceTable()}
+          {!!account?.stripe?.detailsSubmitted && (
+            <div className={classes.tableContainer}>
+              <InvoicesTable
+                invoices={invoices}
+                tableContainerClassName={classes.table}
+              />
+            </div>
+          )}
 
           {!account?.stripe?.detailsSubmitted && (
             <div className={classes.buttonContainer}>
@@ -327,7 +283,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 500
   },
   table: {
-    flex: 1,
     borderRadius: theme.shape.borderRadius
   },
   viewPayouts: {
@@ -435,7 +390,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const mapState = (state: ReduxState): StateProps => ({
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  invoices: state.invoice.allInvoicesData
 })
 
 const mapDispatch: DispatchProps = { updateAccount }

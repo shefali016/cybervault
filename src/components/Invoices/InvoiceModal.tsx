@@ -13,6 +13,7 @@ import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
+import { InvoiceStatuses } from 'utils/enums'
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
@@ -148,7 +149,7 @@ const InvoiceData = ({
       clientEmail: clientData.email,
       campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
-      status: 'pending' // has client paid invoice or not
+      status: InvoiceStatuses.PENDING // has client paid invoice or not
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
   }
