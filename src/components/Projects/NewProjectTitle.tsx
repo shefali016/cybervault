@@ -10,9 +10,8 @@ type Props = {
 
 const NewProjectTitle = ({ title, subtitle }: Props) => {
   const classes = useStyles()
-  const isTablet = useTabletLayout()
   return (
-    <div style={{ marginBottom: 40, maxWidth: isTablet ? 260 : '100%' }}>
+    <div>
       <Typography variant={'h5'} className={classes.headerTitle}>
         {title}
       </Typography>

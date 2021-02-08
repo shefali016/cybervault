@@ -18,7 +18,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
       maxHeight: '80vh',
       outline: 'none',
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'scroll',
