@@ -32,7 +32,7 @@ export const PortfolioFolderModal = ({
   const renderDetails = () => {
     return (
       <Fragment>
-        <div style={{ marginTop: '50px' }}>
+        <div>
           <AppTextField
             error={folder && !folder.name && isError ? true : false}
             type={''}

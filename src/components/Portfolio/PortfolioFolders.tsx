@@ -10,6 +10,8 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { useStyles } from './style'
 import { AppButton } from 'components/Common/Core/AppButton'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import { setCommentRange } from 'typescript'
 
 type Props = {
   folderList: Array<PortfolioFolder>
@@ -35,9 +37,15 @@ const PortfolioFolders = ({
   portfolioLoading,
   portfolios
 }: Props) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [folderId, setFolderId] = useState<string>('')
+  const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
   const classes = useStyles()
+
+  const startConfirmingDelete = (id: string) => setDeleteFolderId(id)
+  const stopConfirmingDelete = () => setDeleteFolderId(null)
+  const handleDelete = () => {
+    deleteFolderId && deletefolder(deleteFolderId)
+    stopConfirmingDelete()
+  }
 
   const renderPortfolioModal = () => {
     return (
@@ -69,17 +77,14 @@ const PortfolioFolders = ({
                       className={classes.folderDescription}>
                       {folder.description}
                     </Typography>
-                    <span onClick={() => handleEditFolderDetail(folder)}>
-                      <EditIcon />
-                    </span>
-                    <span
-                      onClick={() => {
-                        setOpen(true)
-                        setFolderId(folder.id)
-                      }}>
-                      <DeleteIcon />
-                    </span>
                   </Typography>
+
+                  <span onClick={() => handleEditFolderDetail(folder)}>
+                    <EditIcon />
+                  </span>
+                  <span onClick={() => startConfirmingDelete(folder.id)}>
+                    <DeleteIcon />
+                  </span>
                 </div>
                 <Grid container spacing={2}>
                   {portFolio && portFolio.length
@@ -135,18 +140,15 @@ const PortfolioFolders = ({
         </div>
       )}
       {renderPortfolioModal()}
-      <ConfirmBox
-        open={open}
-        handleClose={() => setOpen(!open)}
-        cancleBtnText={'Cancel'}
-        allowBtnText={'Delete'}
-        confBoxTitle={'Are you sure?'}
-        confBoxText={'You want to delete this folder'}
-        setConfirmed={(value: boolean) => {
-          if (value) {
-            deletefolder(folderId)
-          }
-        }}
+      <ConfirmationDialog
+        isOpen={!!deleteFolderId}
+        onClose={stopConfirmingDelete}
+        title={'Delete Portfolio Folder'}
+        message={
+          'Are you sure you want to delete this folder? This cannot be undone.'
+        }
+        onYes={handleDelete}
+        onNo={stopConfirmingDelete}
       />
     </Fragment>
   )
