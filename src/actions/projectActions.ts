@@ -22,7 +22,7 @@ export function createNewProjectFailure(error: string) {
   }
 }
 
-export function getAllProjectsRequest(account: Account) {
+export function getAllProjectsRequest(account: Types.Account) {
   return {
     type: ActionTypes.GET_ALL_PROJECT_REQUEST,
     account
@@ -45,16 +45,7 @@ export function getAllProjectsRequestFailure(error: string) {
   }
 }
 
-export function isOnEditProjectScreen(isEditProject: boolean) {
-  return {
-    type: ActionTypes.USER_IS_ON_UPDATE_SCREEN,
-    payload: isEditProject
-  }
-}
-
-export function requestGetProjectDetails(
-  projectId: string | undefined
-) {
+export function requestGetProjectDetails(projectId: string | undefined) {
   return {
     type: ActionTypes.GET_PROJECT_DETAILS_REQUEST,
     projectId
@@ -95,3 +86,19 @@ export function updateProjectDetailsFailure(error: string) {
     error
   }
 }
+
+export const deleteProjectRequest = (projectId: string) => ({
+  type: ActionTypes.DELETE_PROJECT_REQUEST,
+  projectId
+})
+
+export const deleteProjectSuccess = (projectId: string) => ({
+  type: ActionTypes.DELETE_PROJECT_SUCCESS,
+  projectId
+})
+
+export const deleteProjectFailure = (error: string, projectId: string) => ({
+  type: ActionTypes.DELETE_PROJECT_FAILURE,
+  error,
+  projectId
+})

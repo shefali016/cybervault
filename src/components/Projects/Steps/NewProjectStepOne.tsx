@@ -1,14 +1,12 @@
 import '../Projects.css'
-import React, { ChangeEvent, useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { makeStyles, Typography, Button, Grid } from '@material-ui/core'
+import { makeStyles, Typography, Grid, IconButton } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
   PRIMARY_DARK_COLOR,
-  GREY_COLOR,
-  SECONDARY_COLOR,
-  LIGHT_GREY_BG
+  GREY_COLOR
 } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -25,14 +23,14 @@ import AppSelect from '../../Common/Core/AppSelect'
 import { Client } from '../../../utils/Interface'
 import { getClientsRequest } from '../../../actions/clientActions'
 import AddClient from '../../Client/AddClient'
+import clsx from 'clsx'
+import { Edit } from '@material-ui/icons'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
   const {
     projectData,
-    setProjectData,
     haveError,
-    setLogoFile,
     clients,
     addClient,
     setAddClient,
@@ -48,11 +46,16 @@ const NewProjectStepOne = (props: any) => {
   }, [])
 
   useEffect(() => {
-    if (clients.length) {
-      setClientData(clients[0])
+    console.log(clients, clientData)
+    if (clients && !clientData) {
+      setClientData(
+        projectData.clientId
+          ? clients.find((client: Client) => client.id === projectData.clientId)
+          : clients[0]
+      )
     }
   }, [clients])
-  
+
   const handleChooseClient = (event: any) => {
     const val = event.target.value
     let item = clients.find((cl: Client, i: number) => {
@@ -61,40 +64,56 @@ const NewProjectStepOne = (props: any) => {
     setClientData(item)
   }
 
+  const [editClient, setEditClient] = useState(false)
+
+  const handleEditClient = () => {
+    setEditClient(true)
+    setAddClient(true)
+  }
+
   const renderClientSelect = () => {
     if (addClient) return null
 
     return (
       <>
-      <NewProjectTitle title={'New Project'} subtitle={'Choose a client'} />
-      <Grid item sm={8} className={classes.chooseClientWrapper}>
-        <Typography>
-          Add a new Client or get started with existing client
-        </Typography>
-        <Typography className={classes.textSecondary}>
-          Choose an existing client
-        </Typography>
-        <AppSelect
-          className={classes.select}
-          items={clients.map((cl: Client) => {
-            return { value: cl.id, title: cl.name }
-          })}
-          value={clientData.id}
-          onChange={(event: any) => {
-            handleChooseClient(event)
-          }}
-        />
-        <Typography className={`${classes.bar} ${classes.textCenter}`}>
-          Or
-        </Typography>
-        <Typography className={classes.gradientBtnWrapper}>
-          <GradiantButton
-            onClick={() => setAddClient(!addClient)}
-            className={classes.gradientBtn}>
-            Add Client
-          </GradiantButton>
-        </Typography>
-      </Grid>
+        <NewProjectTitle title={'New Project'} subtitle={'Choose a client'} />
+        <Grid item sm={8} className={classes.chooseClientWrapper}>
+          <Typography>
+            Add a new Client or get started with existing client
+          </Typography>
+          <Typography className={classes.textSecondary}>
+            Choose an existing client
+          </Typography>
+
+          <div className={clsx(classes.selectContainer)}>
+            <AppSelect
+              className={classes.select}
+              items={clients.map((cl: Client) => {
+                return { value: cl.id, title: cl.name }
+              })}
+              value={clientData ? clientData.id : null}
+              onChange={(event: any) => {
+                handleChooseClient(event)
+              }}
+            />
+            <IconButton
+              className={classes.editIconButton}
+              onClick={handleEditClient}>
+              <Edit />
+            </IconButton>
+          </div>
+
+          <Typography className={`${classes.bar} ${classes.textCenter}`}>
+            Or
+          </Typography>
+          <Typography className={classes.gradientBtnWrapper}>
+            <GradiantButton
+              onClick={() => setAddClient(!addClient)}
+              className={classes.gradientBtn}>
+              Add Client
+            </GradiantButton>
+          </Typography>
+        </Grid>
       </>
     )
   }
@@ -103,11 +122,14 @@ const NewProjectStepOne = (props: any) => {
     if (!addClient) return null
 
     return (
-      <AddClient 
-       onBack={props.onBack}
-       account={account}
-       showStep={true}
-       stepText={'step 1 of 5'}
+      <AddClient
+        onBack={() => {
+          setAddClient(false)
+          setEditClient(false)
+        }}
+        account={account}
+        isEdit={editClient}
+        client={clientData}
       />
     )
   }
@@ -124,18 +146,19 @@ const NewProjectStepOne = (props: any) => {
   return (
     <div className={classes.container}>
       {renderMiddleView()}
-      {!addClient?
-      <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 1 of 5'}
-        onNext={props.onNext}
-        onUpdate={props.onUpdate}
-        onBack={props.onBack}
-        haveError={haveError ? haveError : false}
-        projectData={projectData}
-        currentStep={currentStep}
-        disabled={!clients.length}
-      />  
-      :null}
+      {!addClient ? (
+        <NewProjectFooter
+          title={'Step 1 of 5'}
+          onNext={props.onNext}
+          onUpdate={props.onUpdate}
+          onBack={props.onBack}
+          haveError={haveError ? haveError : false}
+          projectData={projectData}
+          currentStep={currentStep}
+          disabled={!clients.length}
+          isEdit={props.isEdit}
+        />
+      ) : null}
     </div>
   )
 }
@@ -237,12 +260,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(0.5),
     marginBottom: theme.spacing(3)
   },
-  select: {
+  selectContainer: {
+    paddingTop: theme.spacing(2),
     width: '100%',
-    '& div': {
-      padding: '12px'
-    }
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative'
   },
+  select: {
+    width: '100%'
+  },
+  editIconButton: { position: 'absolute', right: -70 },
   chooseClientWrapper: {
     alignSelf: 'center',
     display: 'flex',
@@ -253,9 +281,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: CENTER
   },
   bar: {
+    padding: theme.spacing(3),
     color: GREY_COLOR,
     position: 'relative',
-    padding: '15px',
     '&:before': {
       content: 'close-quote',
       position: 'absolute',

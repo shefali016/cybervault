@@ -1,4 +1,6 @@
 import { Theme } from '@material-ui/core/styles'
+import { ProjectStatuses } from './enums'
+import { Project } from './Interface'
 
 export function getWidgetCardHeight(theme: Theme) {
   return Math.min(window.outerWidth - theme.spacing(8) - 100, 200)
@@ -28,49 +30,38 @@ export function generateUid() {
   )
 }
 
-export const getProductData = () => {
+export const getProductData = (): Project => {
   const currentDate = new Date().toISOString().slice(0, 10)
   return {
-    logo: '',
     campaignName: '',
     campaignDate: currentDate,
-    clientId:'',
+    clientId: '',
     campaignObjective: '',
     campaignDeadLine: currentDate,
     description: '',
-    tasks: [
-      {
-        id: '0',
-        title: '',
-        startDate: '',
-        endDate: ''
-      }
-    ],
-    campaignBudget: '',
-    campaignExpenses: '',
-    expenses: [
-      {
-        id: '0',
-        title: '',
-        cost: ''
-      }
-    ],
+    canInvoice: true,
+    tasks: [],
+    campaignBudget: 0,
+    campaignExpenses: 0,
+    expenses: [],
+    milestones: [],
     id: '',
     images: [],
-    videos: []
+    videos: [],
+    status: ProjectStatuses.PENDING
   }
 }
 
-export const getClientData=()=>{
+export const getClientData = () => {
   return {
-    address:'',
-    city:'',
-    state:'',
-    country:'',
-    email:'',
-    id:'',
-    name:'',
-    logo:''
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    email: '',
+    id: '',
+    name: '',
+    logo: ''
   }
 }
 

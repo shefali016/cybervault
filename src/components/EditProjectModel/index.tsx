@@ -10,6 +10,7 @@ import { generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/Interface'
+import { Client } from '../../utils/Interface'
 
 type EditProjectProps = {
   onRequestClose: () => void
@@ -20,6 +21,7 @@ type EditProjectProps = {
   editExpenses?: boolean
   editBudget?: boolean
   currentProjectData?: Types.Project
+  clients: Array<Client>
 }
 
 const EditProject = ({
@@ -30,7 +32,8 @@ const EditProject = ({
   editCampaign,
   editExpenses,
   editBudget,
-  currentProjectData
+  currentProjectData,
+  clients
 }: EditProjectProps) => {
   const [projectData, setProjectData] = useState(currentProjectData)
   const [haveError, setHaveError] = useState(false)
@@ -58,7 +61,8 @@ const EditProject = ({
       editTask,
       editCampaign,
       editExpenses,
-      editBudget
+      editBudget,
+      clients
     }
     switch (currentStep) {
       case 1:
@@ -72,7 +76,7 @@ const EditProject = ({
       case 5:
         return <NewProjectStepFive {...props} />
       default:
-        return <NewProjectStepOne {...props} />
+        return null
     }
   }
 
@@ -101,6 +105,7 @@ type NewProjectModalProps = {
   isExpensesEdit?: boolean
   isBudgetEdit?: boolean
   projectData?: any
+  clients: Array<Client>
 }
 
 const EditProjectModal = ({
@@ -112,11 +117,13 @@ const EditProjectModal = ({
   isCampaignEdit,
   isExpensesEdit,
   isBudgetEdit,
-  projectData
+  projectData,
+  clients
 }: NewProjectModalProps) => {
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <EditProject
+        clients={clients}
         onRequestClose={onRequestClose}
         onSubmitClicked={onSubmitClicked}
         currentStep={currentStep}

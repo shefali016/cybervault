@@ -1,5 +1,5 @@
-import React, { useState, useRef, useContext ,useEffect} from 'react'
-import { connect,useDispatch,useSelector } from 'react-redux'
+import React, { useState, useRef, useContext, useEffect } from 'react'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import './Projects.css'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import NewProjectStepOne from './Steps/NewProjectStepOne'
@@ -7,25 +7,33 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import NewProjectStepFive from './Steps/NewProjectStepFive'
-import { getProductData, generateUid, getClientData} from '../../utils'
+import { getProductData, generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/Interface'
 import validate from '../../utils/helpers'
-import { setMedia } from '../../apis/assets'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
+import { isEnumDeclaration } from 'typescript'
+import { Client } from '../../utils/Interface'
 
 type NewProjectProps = {
   onRequestClose: () => void
-  onSubmitClicked: (projectData: any) => void
+  onSubmitClicked?: (projectData: Types.Project) => void
   success: boolean
   error: null | string
-  account:Types.Account,
-  clients:Array<Types.Client>,
-  addClientSuccess:Boolean,
-  newClientData:Types.Client
+  account: Types.Account
+  clients: Array<Types.Client>
+  addClientSuccess: Boolean
+  newClientData: Types.Client
+  project?: Types.Project
+  editTask?: boolean
+  editCampaign?: boolean
+  editExpenses?: boolean
+  editBudget?: boolean
+  initialStep?: number
+  onUpdate?: (project: Types.Project) => void
 }
 
 const NewProject = ({
@@ -36,15 +44,21 @@ const NewProject = ({
   account,
   clients,
   addClientSuccess,
-  newClientData
+  newClientData,
+  project,
+  editTask,
+  editCampaign,
+  editExpenses,
+  editBudget,
+  initialStep = 1,
+  onUpdate
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
-  const [projectData, setProjectData] = useState(getProductData())
-  const [clientData, setClientData] = useState(getClientData())
-  const [logoFile, setLogoFile] = useState(null)
+  const [currentStep, setCurrentStep] = useState(initialStep)
+  const [projectData, setProjectData] = useState(project || getProductData())
+  const [clientData, setClientData] = useState<Client | null>(null)
   const [haveError, setHaveError] = useState(false)
-  const [addClient,setAddClient]=useState(false)
+  const [addClient, setAddClient] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
 
@@ -63,26 +77,39 @@ const NewProject = ({
     }
   })
 
-useEffect(()=>{
-  if(addClientSuccess && addClient && currentStep==1 && Object.keys(newClientData).length){
-      setClientData(newClientData)
-      setCurrentStep((step) => step + 1)
+  useEffect(() => {
+    // if (addClientSuccess && addClient && currentStep == 1 && newClientData) {
+    //   if (project) {
+    //     setAddClient(false)
+    //   } else {
+    //     setClientData(newClientData)
+    //     setCurrentStep((step) => step + 1)
+    //     setAddClient(false)
+    //   }
+    // }
+  }, [addClientSuccess])
+
+  const onUpdateData = () => {
+    if (typeof onUpdate !== 'function' || !clientData) {
+      return
+    }
+    onUpdate({
+      ...projectData,
+      clientId: clientData.id
+    })
   }
-},[addClientSuccess])
 
   const onSubmitData = async () => {
     try {
+      if (typeof onSubmitClicked !== 'function' || !clientData) {
+        return
+      }
       // @ts-ignorets
       setIsLoading(true)
-      let project = { ...projectData, clientId:clientData.id,id: generateUid() }
-      if (logoFile) {
-        const logoUrl = await setMedia(
-          `images/clientLogos/${generateUid()}`,
-          logoFile
-        )
-        if (typeof logoUrl === 'string') {
-          project = { ...project, logo: logoUrl }
-        }
+      let project = {
+        ...projectData,
+        clientId: clientData.id,
+        id: generateUid()
       }
       onSubmitClicked(project)
     } catch (error) {
@@ -92,17 +119,14 @@ useEffect(()=>{
       })
     }
   }
-  
-  const newProject = true
+
   const renderStepsView = () => {
     const props = {
       isLoading,
       projectData,
       haveError,
       setHaveError,
-      newProject,
       setProjectData,
-      setLogoFile,
       account,
       clients,
       addClient,
@@ -110,13 +134,19 @@ useEffect(()=>{
       currentStep,
       clientData,
       setClientData,
+      isEdit: !!project,
+      editTask,
+      editCampaign,
+      editExpenses,
+      editBudget,
+      onUpdate: () => onUpdateData(),
       onNext: () => {
-        const isError = validate(currentStep, projectData,clientData)
+        const isError = validate(currentStep, projectData, clientData)
         if (isError) {
           setHaveError(true)
         } else {
           setHaveError(false)
-          if(!addClient || (addClient && currentStep!==1)){
+          if (!addClient || (addClient && currentStep !== 1)) {
             setCurrentStep((step) => step + 1)
           }
           if (modalContentRef.current) {
@@ -126,10 +156,9 @@ useEffect(()=>{
       },
       onBack: () => {
         setHaveError(false)
-        if(currentStep!==1){
+        if (currentStep !== 1) {
           setCurrentStep((step) => step - 1)
-        }
-        else if(currentStep===1 && addClient){
+        } else if (currentStep === 1 && addClient) {
           setAddClient(!addClient)
         }
         if (modalContentRef.current) {
@@ -138,7 +167,8 @@ useEffect(()=>{
       },
       onSubmit: () => onSubmitData()
     }
-    switch (currentStep) {    
+
+    switch (currentStep) {
       case 1:
         return <NewProjectStepOne {...props} />
       case 2:
@@ -150,7 +180,7 @@ useEffect(()=>{
       case 5:
         return <NewProjectStepFive {...props} />
       default:
-        return <NewProjectStepOne {...props} />
+        return null
     }
   }
 
@@ -172,9 +202,16 @@ useEffect(()=>{
 type NewProjectModalProps = {
   open: boolean
   onRequestClose: () => void
-  onSubmitClicked: (projectData: Types.Project) => void
-  account:Types.Account
-  clients:Array<Types.Client>
+  onSubmitClicked?: (projectData: Types.Project) => void
+  account: Types.Account
+  clients: Array<Types.Client>
+  editTask?: boolean
+  editCampaign?: boolean
+  editExpenses?: boolean
+  editBudget?: boolean
+  project?: Types.Project
+  initialStep?: number
+  onUpdate?: (project: Types.Project) => void
 }
 
 const NewProjectModal = ({
@@ -185,14 +222,23 @@ const NewProjectModal = ({
   error,
   account,
   clients,
+  editTask,
+  editCampaign,
+  editExpenses,
+  editBudget,
+  project,
+  initialStep,
+  onUpdate
 }: NewProjectModalProps & StateProps) => {
-const newClientSuccess=useSelector((state:any)=>state.clients.newClientSuccess)
-const newClientData=useSelector((state:any)=>state.clients.newClientData)
-
+  const newClientSuccess = useSelector(
+    (state: any) => state.clients.newClientSuccess
+  )
+  const newClientData = useSelector((state: any) => state.clients.newClientData)
 
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
+        initialStep={initialStep}
         onRequestClose={onRequestClose}
         onSubmitClicked={onSubmitClicked}
         error={error}
@@ -201,6 +247,12 @@ const newClientData=useSelector((state:any)=>state.clients.newClientData)
         clients={clients}
         addClientSuccess={newClientSuccess}
         newClientData={newClientData}
+        project={project}
+        editTask={editTask}
+        editCampaign={editCampaign}
+        editExpenses={editExpenses}
+        editBudget={editBudget}
+        onUpdate={onUpdate}
       />
     </AppModal>
   )
@@ -208,18 +260,16 @@ const newClientData=useSelector((state:any)=>state.clients.newClientData)
 
 type StateProps = {
   success: boolean
-  error: string | null,
-  account:Types.Account,
-  clients:Array<Types.Client>
+  error: string | null
+  account: Types.Account
+  clients: Array<Types.Client>
 }
 
 const mapState = (state: ReduxState): StateProps => ({
   success: state.project.updateSuccess,
   error: state.project.updateError,
-  account: state.auth.account as Types.Account ,
-  clients:state.clients.clientsData as Array<Types.Client>
-
-  
+  account: state.auth.account as Types.Account,
+  clients: state.clients.clientsData as Array<Types.Client>
 })
 
 export default connect(mapState)(NewProjectModal)

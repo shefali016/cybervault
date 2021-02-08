@@ -71,63 +71,70 @@ const NewProjectStepTwo = (props: any) => {
         <CloseButton onClick={() => deleteTask(data.id)} />
       </div>
     )
-    return props.newProject || props.editTask ? (
-      <div className={'task-row'} key={`task-${data.id}`}>
-        {isTablet && closeButton}
-        <div style={{ flex: 2, marginRight: leftInputMargin }}>
-          <AppTextField
-            type={''}
-            label={`Task ${index + 1}`}
-            value={data.title}
-            onChange={(e: InputChangeEvent) =>
-              handleTaskChange(e, 'title', index)
-            }
-          />
+
+    return (
+      (!props.isEdit || props.editTask) && (
+        <div className={'task-row'} key={`task-${data.id}`}>
+          {isTablet && closeButton}
+
+          <div style={{ flex: 2, marginRight: leftInputMargin }}>
+            <AppTextField
+              type={''}
+              label={`Task ${index + 1}`}
+              value={data.title}
+              onChange={(e: InputChangeEvent) =>
+                handleTaskChange(e, 'title', index)
+              }
+            />
+          </div>
+          <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
+            <AppTextField
+              type={'date'}
+              label={'Start Date'}
+              value={data.startDate}
+              onChange={(e: InputChangeEvent) =>
+                handleTaskChange(e, 'startDate', index)
+              }
+            />
+          </div>
+          <div style={{ flex: 0.2 }}>
+            <AppTextField
+              type={'date'}
+              label={'End Date'}
+              value={data.endDate}
+              onChange={(e: InputChangeEvent) =>
+                handleTaskChange(e, 'endDate', index)
+              }
+            />
+          </div>
+
+          {!isTablet && closeButton}
         </div>
-        <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
-          <AppTextField
-            type={'date'}
-            label={'Start Date'}
-            value={data.startDate}
-            onChange={(e: InputChangeEvent) =>
-              handleTaskChange(e, 'startDate', index)
-            }
-          />
-        </div>
-        <div style={{ flex: 0.2 }}>
-          <AppTextField
-            type={'date'}
-            label={'End Date'}
-            value={data.endDate}
-            onChange={(e: InputChangeEvent) =>
-              handleTaskChange(e, 'endDate', index)
-            }
-          />
-        </div>
-        {!isTablet && closeButton}
-      </div>
-    ) : null
+      )
+    )
   }
 
   const renderProjectDescriptionView = () => {
-    return props.newProject || props.editCampaign ? (
-      <div style={{ marginTop: 30 }}>
-        <AppTextField
-          label={'Project Description'}
-          type={'text'}
-          onChange={(e) => handleInputChange(e)('description')}
-          value={projectData.description}
-          multiline={true}
-        />
-      </div>
-    ) : null
+    return (
+      (!props.isEdit || props.editCampaign) && (
+        <div style={{ marginTop: 30 }}>
+          <AppTextField
+            label={'Project Description'}
+            type={'text'}
+            onChange={(e) => handleInputChange(e)('description')}
+            value={projectData.description}
+            multiline={true}
+          />
+        </div>
+      )
+    )
   }
 
   const renderMiddleView = () => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        {props.newProject || props.editCampaign ? (
+        {(!props.isEdit || props.editCampaign) && (
           <div className={'input-row'} style={{ marginBottom: 30 }}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
@@ -156,9 +163,9 @@ const NewProjectStepTwo = (props: any) => {
               />
             </div>
           </div>
-        ) : null}
+        )}
         <div>
-          {props.newProject || props.editCampaign ? (
+          {(!props.isEdit || props.editCampaign) && (
             <div className={'input-row'} style={{ marginBottom: 30 }}>
               <div style={{ flex: 4, marginRight: leftInputMargin }}>
                 <AppTextField
@@ -191,16 +198,19 @@ const NewProjectStepTwo = (props: any) => {
                 />
               </div>
             </div>
-          ) : null}
+          )}
         </div>
-        {projectData.tasks && projectData.tasks.length > 0
-          ? projectData.tasks.map((data: Task, index: number) => {
-              return renderTasksView(data, index)
-            })
-          : null}
-        {props.newProject || props.editTask ? (
+
+        {projectData.tasks &&
+          projectData.tasks.length > 0 &&
+          projectData.tasks.map((data: Task, index: number) => {
+            return renderTasksView(data, index)
+          })}
+
+        {(!props.isEdit || props.editTask) && (
           <AddMoreButton onClick={addTask} title={'Add Task'} />
-        ) : null}
+        )}
+
         {renderProjectDescriptionView()}
       </div>
     )
@@ -211,13 +221,14 @@ const NewProjectStepTwo = (props: any) => {
       <NewProjectTitle title={'Plan The Strategy.'} subtitle={'Work scope.'} />
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 2 of 5'}
+        title={'Step 2 of 5'}
         onBack={props.onBack}
         onNext={props.onNext}
         onUpdate={props.onUpdate}
         projectData={projectData}
         haveError={haveError ? haveError : false}
         currentStep={currentStep}
+        isEdit={props.isEdit}
       />
     </div>
   )

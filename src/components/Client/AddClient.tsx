@@ -1,65 +1,99 @@
-import React, { ChangeEvent, useState, useEffect,useContext} from 'react'
-import { useDispatch ,useSelector} from 'react-redux'
-import { makeStyles, Typography, Button, Grid } from '@material-ui/core'
+import React, { ChangeEvent, useState, useContext } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles, Typography, Button } from '@material-ui/core'
+import { TRANSPARENT, GREY_COLOR } from 'utils/constants/colorsConstants'
 import {
-  PRIMARY_COLOR,
-  TRANSPARENT,
-  PRIMARY_DARK_COLOR,
-  GREY_COLOR,
-  SECONDARY_COLOR,
-  LIGHT_GREY_BG
-} from 'utils/constants/colorsConstants'
-import {
-  BOLD,
   CENTER,
   COLUMN,
-  FLEX,
   POSITION_ABSOLUTE,
-  ROW
+  FLEX
 } from 'utils/constants/stringConstants'
 import AppTextField from '../Common/Core/AppTextField'
 import { useTabletLayout } from '../../utils/hooks'
-import { Client,Account } from '../../utils/Interface'
-import NewProjectTitle from '../Projects/NewProjectTitle';
-import NewProjectFooter from '../Projects/NewProjectFooter';
-import { generateUid, getClientData} from '../../utils';
-import {addClientRequest} from '../../actions/clientActions';
-import {validateAddClient} from '../../utils/helpers'
-import { ToastContext,ToastTypes } from '../../context/Toast'
-import {useOnChange} from '../../utils/hooks';
-
+import { Client, Account } from '../../utils/Interface'
+import NewProjectTitle from '../Projects/NewProjectTitle'
+import NewProjectFooter from '../Projects/NewProjectFooter'
+import { generateUid, getClientData } from '../../utils'
+import { addClientRequest } from '../../actions/clientActions'
+import { validateAddClient } from '../../utils/helpers'
+import { ToastContext, ToastTypes } from '../../context/Toast'
+import { useOnChange } from '../../utils/hooks'
+import { setMedia } from 'apis/assets'
 
 type AddClientProps = {
-  isEdit?: Boolean
-  onBack:()=>void
-  onUpdate?:()=>void
-  account:Account
-  showStep?:boolean
-  stepText?:string
+  isEdit: boolean
+  onBack: () => void
+  onUpdate?: () => void
+  account: Account
+  showStep?: boolean
+  stepText?: string
+  client?: Client | undefined
 }
 
 export const AddClient = (props: AddClientProps) => {
-    const [clientData, setClientData] = useState(getClientData())
-    const [haveError, setHaveError] = useState(false)
+  const { isEdit, onBack, account, client } = props
 
-    const dispatch=useDispatch()
-    const isLoading=useSelector((state:any)=>state.clients.newClientLoading)
-    const errorMsg=useSelector((state:any)=>state.clients.newClientErrorMsg)
-    const updateError=useSelector((state:any)=>state.clients.newClientError)
+  const [clientData, setClientData] = useState<Client>(
+    !!client && isEdit ? client : getClientData()
+  )
+  const [haveError, setHaveError] = useState(false)
+  const [logoFile, setLogoFile] = useState(null)
 
-    const toastContext = useContext(ToastContext)
+  const dispatch = useDispatch()
+  const isLoading = useSelector((state: any) => state.clients.newClientLoading)
+  const errorMsg = useSelector((state: any) => state.clients.newClientErrorMsg)
+  const updateError = useSelector((state: any) => state.clients.newClientError)
 
-    useOnChange(updateError, (error: string | null) => {
-      if (error) {
-        toastContext.showToast({ title: errorMsg, type: ToastTypes.error })
-      }
-    })
+  const toastContext = useContext(ToastContext)
 
-  const { isEdit,onBack,onUpdate,account } = props
+  useOnChange(updateError, (error: string | null) => {
+    if (error) {
+      toastContext.showToast({ title: errorMsg, type: ToastTypes.error })
+    }
+  })
+
   const isTablet = useTabletLayout()
   let imageInputRef: any = React.useRef()
   const classes = useStyles()
   const leftInputMargin = !isTablet ? 15 : 0
+
+  const handleInputChange = (event: any) => (key: string) => {
+    const value = event.target.value
+    setClientData({ ...clientData, [key]: value })
+  }
+
+  const handleLogoChange = async (event: any) => {
+    if (event.target && event.target.files && event.target.files.length > 0) {
+      setLogoFile(event.target.files[0])
+    }
+  }
+
+  const handleAddClient = async () => {
+    const isError = validateAddClient(clientData)
+    if (isError) {
+      setHaveError(isError)
+    } else {
+      let clientId = clientData.id || generateUid()
+
+      let logo = clientData.logo || null
+
+      try {
+        if (logoFile) {
+          logo = await setMedia(`ClientLogos/${clientId}`, logoFile)
+        }
+
+        const client: Client = {
+          ...clientData,
+          logo,
+          id: clientId
+        }
+
+        setClientData(client)
+
+        dispatch(addClientRequest(account, client))
+      } catch (error) {}
+    }
+  }
 
   const renderClientLogoView = () => {
     return (
@@ -76,12 +110,12 @@ export const AddClient = (props: AddClientProps) => {
             ref={(input) => {
               imageInputRef = input
             }}
-            onChange={handleChange}
+            onChange={handleLogoChange}
             style={{ display: 'none' }}
           />
-          {!!clientData.logo && (
+          {(!!clientData.logo || !!logoFile) && (
             <img
-              src={clientData.logo}
+              src={logoFile ? URL.createObjectURL(logoFile) : clientData.logo}
               className={classes.clientLogoImg}
               alt={'client-logo'}
             />
@@ -94,44 +128,30 @@ export const AddClient = (props: AddClientProps) => {
     )
   }
 
-  const handleInputChange = (event: any) => (key: string) => {
-    const value = event.target.value
-    setClientData({ ...clientData, [key]: value })
-  }
-
-  const handleChange = async (event: any) => {
-    if (event.target && event.target.files && event.target.files.length > 0) {
-      setClientData({
-        ...clientData,
-        logo: URL.createObjectURL(event.target.files[0])
-      })
-    }
-  }
-
   const renderMiddleView = () => {
-    return <>
-    <div className={'input-row'}>
-      <div style={{ flex: 1, marginRight: leftInputMargin }}>
-        <AppTextField
-            error={haveError && clientData.name === '' ? true : false}
-          type={''}
-          label={'Client Name'}
-          value={clientData.name}
-          onChange={(e: ChangeEvent) => handleInputChange(e)('name')}
-        />
-      </div>
-      <div style={{ flex: 1 }}>
-        <AppTextField
-            error={haveError && clientData.email === '' ? true : false}
-          type={''}
-          label={'Client Email'}
-          value={clientData.email}
-          onChange={(e: ChangeEvent) => handleInputChange(e)('email')}
-        />
-      </div>
-    </div>
-    {
-      !isEdit ? (
+    return (
+      <>
+        <div className={'input-row'}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
+            <AppTextField
+              error={haveError && clientData.name === '' ? true : false}
+              type={''}
+              label={'Client Name'}
+              value={clientData.name}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('name')}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <AppTextField
+              error={haveError && clientData.email === '' ? true : false}
+              type={''}
+              label={'Client Email'}
+              value={clientData.email}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('email')}
+            />
+          </div>
+        </div>
+
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
@@ -152,10 +172,7 @@ export const AddClient = (props: AddClientProps) => {
             />
           </div>
         </div>
-      ) : null
-    }
-    {
-      !isEdit ? (
+
         <div className={'input-row'}>
           <div style={{ flex: 1, marginRight: leftInputMargin }}>
             <AppTextField
@@ -176,63 +193,26 @@ export const AddClient = (props: AddClientProps) => {
             />
           </div>
         </div>
-      ) : null
-    }
-    </>
-  }
-  const handleAddClient=()=>{
-
-  const isError = validateAddClient(clientData)
-   if(isError){
-        setHaveError(isError)
-   }
-   else{
-    let clientId=generateUid()
-    setClientData({...clientData,id:clientId})
-    const payload={
-      ...clientData,
-      id:clientId,
-    }
-    dispatch(addClientRequest(account,payload))
-   }
-  }
-
-  const renderFooterWithStep=()=>{
-    if(props.showStep) {
-      return <NewProjectFooter
-      title={isEdit?'':props.stepText}
-      buttonText={'Add Client'}
-      onNext={handleAddClient}
-      onBack={onBack}
-      onUpdate={onUpdate}
-      haveError={haveError ? haveError : false}
-      addClient={true}
-      isLoading={isLoading}
-    />
-    }
-  }
-  const renderFooterWithoutStep=()=>{
-    if(!props.showStep) {
-      return <NewProjectFooter
-      buttonText={'Add Client'}
-      onNext={handleAddClient}
-      onUpdate={onUpdate}
-      haveError={haveError ? haveError : false}
-      addClient={true}
-      isLoading={isLoading}
-    />
-    }
+      </>
+    )
   }
 
   return (
     <>
       <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
-      {!isEdit ? renderClientLogoView() : null}
-      
+      {renderClientLogoView()}
       {renderMiddleView()}
-      {renderFooterWithStep()}
-      {renderFooterWithoutStep()}
-
+      <NewProjectFooter
+        buttonText={'Add Client'}
+        onNext={handleAddClient}
+        onBack={onBack}
+        onUpdate={isEdit ? handleAddClient : undefined}
+        haveError={haveError ? haveError : false}
+        addClient={true}
+        isLoading={isLoading}
+        isEdit={isEdit}
+        persistBackButton={true}
+      />
     </>
   )
 }

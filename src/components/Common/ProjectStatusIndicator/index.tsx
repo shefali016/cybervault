@@ -1,7 +1,8 @@
 import React from 'react'
 import { useTheme } from '@material-ui/core/styles'
 import { CENTER, FLEX } from 'utils/constants/stringConstants'
-const ProjectStatusIndicator = (props: { status: string }) => {
+
+const StatusIndicator = (props: { status: string }) => {
   const theme = useTheme()
   return (
     <div
@@ -22,4 +23,4 @@ const ProjectStatusIndicator = (props: { status: string }) => {
     />
   )
 }
-export default ProjectStatusIndicator
+export default StatusIndicator
