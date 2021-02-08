@@ -74,8 +74,7 @@ export const useStyles = makeStyles((theme) => ({
       fontSize: '10px',
       color: '#000',
       fontWeight: 300,
-      margin: 0,
-      textAlign: 'right'
+      margin: 0
     }
   },
   cardLogo: {

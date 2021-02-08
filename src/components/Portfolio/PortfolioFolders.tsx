@@ -89,29 +89,30 @@ const PortfolioFolders = ({
                     <DeleteIcon />
                   </span>
                 </div>
+
                 <Grid container spacing={2}>
-                  {portFolio && portFolio.length
-                    ? portFolio.map((data: any, i: number) => {
-                        return (
-                          <Grid key={i} item lg={3} md={4} sm={6}>
-                            <Card className={classes.portfoliosCard}>
-                              <div className={classes.cardLogo}>
-                                <img src={data.logo} alt='' />
-                              </div>
-                              <div className={classes.logoCOntent}>
-                                <h5>{data.name}</h5>
-                                <p>{data.description}</p>
-                              </div>
-                              <Box pl={2}>
-                                <KeyboardArrowRightIcon
-                                  style={{ color: '#797979' }}
-                                />
-                              </Box>
-                            </Card>
-                          </Grid>
-                        )
-                      })
-                    : null}
+                  {portFolio &&
+                    !!portFolio.length &&
+                    portFolio.map((data: any, i: number) => {
+                      return (
+                        <Grid key={i} item lg={3} md={4} sm={6}>
+                          <Card className={classes.portfoliosCard}>
+                            <div className={classes.cardLogo}>
+                              <img src={data.logo} alt='' />
+                            </div>
+                            <div className={classes.logoCOntent}>
+                              <h5>{data.name}</h5>
+                              <p>{data.description}</p>
+                            </div>
+                            <Box pl={2}>
+                              <KeyboardArrowRightIcon
+                                style={{ color: '#797979' }}
+                              />
+                            </Box>
+                          </Card>
+                        </Grid>
+                      )
+                    })}
                   <Grid item lg={3} md={4} sm={6}>
                     <AppButton
                       variant='contained'
