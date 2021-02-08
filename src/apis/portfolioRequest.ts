@@ -42,7 +42,7 @@ export const updatePortfolioFolderRequest = async (
 export const getPortfolioFolderRequest = async (account: Account) => {
   try {
     let folderList: Array<PortfolioFolder> = []
-    let portfolioList: Map<string, Portfolio> | any = []
+    let portfolioData: Map<string, Portfolio> | any
     const data: Document | any = await firebase
       .firestore()
       .collection('AccountData')
@@ -50,9 +50,9 @@ export const getPortfolioFolderRequest = async (account: Account) => {
       .collection('PortfolioFolders')
       .get()
 
+    const portfolios: Map<string, Portfolio> | any = []
     for (const doc of data.docs) {
       let folderData: PortfolioFolder = doc.data()
-      const portfolios: Array<Portfolio> | any = []
       for (let index = 0; index < doc.data().portfolios.length; index++) {
         const portfolioId = doc.data().portfolios[index]
         const portfolioData = await firebase
@@ -62,18 +62,14 @@ export const getPortfolioFolderRequest = async (account: Account) => {
           .collection('Portfolio')
           .doc(portfolioId)
           .get()
-        portfolios.push(portfolioData.data())
-      }
-      const data = {
-        folderId: folderData.id,
-        portfolios
+        const portfolio = portfolioData.data()
+        portfolios.push({ ...portfolio, folderId: folderData.id })
       }
       folderList.push(folderData)
-      portfolioList.push(data)
     }
     const result = {
-      folderList,
-      portfolioList
+      folderList: folderList,
+      portfolios: portfolios
     }
     return result
   } catch (error) {

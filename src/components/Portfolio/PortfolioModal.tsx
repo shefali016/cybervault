@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Fragment, useRef } from 'react'
+import React, { ChangeEvent, Fragment, useRef, useState } from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { Portfolio, Project } from 'utils/Interface'
 import AppTextField from 'components/Common/Core/AppTextField'
@@ -18,41 +18,118 @@ import {
 } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 import { useStyles } from './style'
+import { useOnChange } from 'utils/hooks'
+
+type State = {
+  portfolio: Portfolio
+  isChooseProject: boolean
+  isError: boolean
+}
 
 type Props = {
   open: boolean
   onRequestClose: () => void
-  portfolio: Portfolio | null
-  onSubmit: () => void
-  handleInputChange: (event: any, key: string) => void
+  onSubmit: (portfolio: Portfolio) => void
   updatingFolder?: boolean
-  isError?: boolean
-  handleChange: (event: any) => void
-  handleProjectSection: () => void
-  isChooseProject: boolean
   projectList: Array<Project>
-  handleProjectSelect: (projectId: string) => void
   portfolioLoading: boolean
 }
 
 export const PortfolioModal = ({
   open,
   onRequestClose,
-  portfolio,
-  handleInputChange,
   onSubmit,
-  updatingFolder,
-  isError,
-  handleChange,
-  handleProjectSection,
   projectList,
-  isChooseProject,
-  handleProjectSelect,
   portfolioLoading
 }: Props) => {
   let imageInputRef: any = useRef()
-
   const classes = useStyles()
+
+  const [state, setState] = useState<State>({
+    portfolio: {
+      id: '',
+      name: '',
+      description: '',
+      icon: '',
+      projects: []
+    },
+    isChooseProject: false,
+    isError: false
+  })
+
+  useOnChange(open, (open: boolean | null) => {
+    if (open) {
+      setState({
+        portfolio: {
+          id: '',
+          name: '',
+          description: '',
+          icon: '',
+          projects: []
+        },
+        isChooseProject: false,
+        isError: false
+      })
+    }
+  })
+
+  const handleImageChange = async (event: any) => {
+    if (event.target && event.target.files && event.target.files.length > 0) {
+      setState({
+        ...state,
+        portfolio: {
+          ...state.portfolio,
+          icon: URL.createObjectURL(event.target.files[0])
+        }
+      })
+    }
+  }
+
+  const handleInputChange = (e: any, key: string) => {
+    const { value } = e.target
+    setState({
+      ...state,
+      portfolio: {
+        ...state.portfolio,
+        [key]: value
+      }
+    })
+  }
+
+  const handleProjectSection = () => {
+    const { portfolio } = state
+    if (portfolio && portfolio.name) {
+      setState({
+        ...state,
+        isChooseProject: true
+      })
+    } else {
+      setState({
+        ...state,
+        isError: true
+      })
+    }
+  }
+
+  const handleProjectSelect = (projectId: string) => {
+    const { portfolio } = state
+    let projectsData = portfolio && portfolio.projects ? portfolio.projects : []
+    const isProjectId = portfolio?.projects?.includes(projectId)
+    if (isProjectId) {
+      if (portfolio && portfolio.projects && portfolio.projects.length) {
+        projectsData = portfolio.projects.filter((item) => item !== projectId)
+      }
+    } else {
+      projectsData.push(projectId)
+    }
+    setState({
+      ...state,
+      portfolio: {
+        ...state.portfolio,
+        projects: projectsData
+      }
+    })
+  }
 
   const renderPortfolioLogoView = () => {
     return (
@@ -69,12 +146,12 @@ export const PortfolioModal = ({
             ref={(input) => {
               imageInputRef = input
             }}
-            onChange={handleChange}
+            onChange={handleImageChange}
             style={{ display: 'none' }}
           />
-          {portfolio && !!portfolio.icon && (
+          {state.portfolio && !!state.portfolio.icon && (
             <img
-              src={portfolio.icon}
+              src={state.portfolio.icon}
               className={classes.portfolioLogoImg}
               alt={'portfolio-logo'}
             />
@@ -89,10 +166,18 @@ export const PortfolioModal = ({
       <Fragment>
         <div style={{ marginTop: '10px' }}>
           <AppTextField
-            error={portfolio && !portfolio.name && isError ? true : false}
+            error={
+              state.portfolio && !state.portfolio.name && state.isError
+                ? true
+                : false
+            }
             type={''}
             label={'Enter Portfolio Name'}
-            value={portfolio && portfolio.name ? portfolio.name : ''}
+            value={
+              state.portfolio && state.portfolio.name
+                ? state.portfolio.name
+                : ''
+            }
             onChange={(e: ChangeEvent) => handleInputChange(e, 'name')}
           />
           <AppTextField
@@ -101,7 +186,9 @@ export const PortfolioModal = ({
             multiline={true}
             label={'Enter Portfolio Description (Optional)'}
             value={
-              portfolio && portfolio.description ? portfolio.description : ''
+              state.portfolio && state.portfolio.description
+                ? state.portfolio.description
+                : ''
             }
             onChange={(e: ChangeEvent) => handleInputChange(e, 'description')}
           />
@@ -117,7 +204,7 @@ export const PortfolioModal = ({
           <List>
             {projectList && projectList.length
               ? projectList.map((value: any, index: number) => {
-                  const isProjectSelected = portfolio?.projects?.includes(
+                  const isProjectSelected = state.portfolio?.projects?.includes(
                     value.id
                   )
                   return (
@@ -154,9 +241,11 @@ export const PortfolioModal = ({
       <div className={classes.portfolioModal}>
         <div>
           <h2 className={classes.portfolioModalHead}>
-            {!isChooseProject ? 'New Portfolio' : 'Choose Projects'}
+            {!state.isChooseProject ? 'New Portfolio' : 'Choose Projects'}
           </h2>
-          <span>{!isChooseProject ? 'Get Started' : 'Display your work'}</span>
+          <span>
+            {!state.isChooseProject ? 'Get Started' : 'Display your work'}
+          </span>
 
           <CloseButton
             onClick={onRequestClose}
@@ -164,16 +253,18 @@ export const PortfolioModal = ({
             isLarge={true}
           />
         </div>
-        {!isChooseProject ? renderPortfolioLogoView() : null}
-        {!isChooseProject ? renderDetails() : renderProjectList()}
+        {!state.isChooseProject ? renderPortfolioLogoView() : null}
+        {!state.isChooseProject ? renderDetails() : renderProjectList()}
         <GradiantButton
           onClick={() => {
-            !isChooseProject ? handleProjectSection() : onSubmit()
+            !state.isChooseProject
+              ? handleProjectSection()
+              : onSubmit(state.portfolio)
           }}
           className={classes.portfolioModalBtn}
           loading={portfolioLoading}>
           <Typography variant={'button'}>
-            {!isChooseProject ? 'Continue' : 'Create portfolio'}
+            {!state.isChooseProject ? 'Continue' : 'Create portfolio'}
           </Typography>
         </GradiantButton>
       </div>
