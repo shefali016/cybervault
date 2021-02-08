@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { getAllProjectsRequest } from '../../actions/projectActions'
+import {
+  deleteProjectRequest,
+  getAllProjectsRequest
+} from '../../actions/projectActions'
+import { getClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
@@ -12,8 +16,9 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
+import * as Types from '../../utils/Interface'
 
-const UNPAID_INVOICES_DATA = [1, 2, 3, 4]
+const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
 const HomeScreen = (props: any) => {
   const [allProjects, setAllProjects] = useState([])
@@ -31,6 +36,7 @@ const HomeScreen = (props: any) => {
   ])
 
   useEffect(() => {
+    props.getClientsRequest(props.userData.account)
     props.getAllProjectsData(props.userData.account)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -47,19 +53,19 @@ const HomeScreen = (props: any) => {
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
         renderItem={(item) => (
-          <ul className={classes.projectCardsUl}>
-            <li className={classes.projectCardsli}>
-              <ProjectCard
-                project={item}
-                isPopover={true}
-                key={`project-card-${item.projectId}`}
-                style={{
-                  paddingRight: theme.spacing(3)
-                }}
-                history={props.history}
-              />
-            </li>
-          </ul>
+          <ProjectCard
+            clients={props.clients}
+            project={item}
+            isPopover={true}
+            key={`project-card-${item.id}`}
+            style={{
+              paddingRight: theme.spacing(3)
+            }}
+            history={props.history}
+            account={props.userData.account}
+            onDelete={props.deleteProject}
+            deletingId={props.deletingProjectId}
+          />
         )}
       />
       <div className={classes.invoicingWrapper}>
@@ -96,12 +102,19 @@ const mapStateToProps = (state: any) => ({
   newProjectData: state.project.newProjectData,
   allProjectsData: state.project.allProjectsData,
   activeProjectsLoading: state.project.isLoading,
-  userData: state.auth
+  userData: state.auth,
+  clients: state.clients.clientsData,
+  deletingProjectId: state.project.deletingId
 })
-
 const mapDispatchToProps = (dispatch: any) => ({
-  getAllProjectsData: (account: Account) => {
+  getAllProjectsData: (account: Types.Account) => {
     return dispatch(getAllProjectsRequest(account))
+  },
+  getClientsRequest: (account: Types.Account) => {
+    return dispatch(getClientsRequest(account))
+  },
+  deleteProject: (projectId: string) => {
+    return dispatch(deleteProjectRequest(projectId))
   }
 })
 

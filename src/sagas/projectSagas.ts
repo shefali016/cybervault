@@ -1,4 +1,4 @@
-import { all, call, put, select, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, take, takeLatest } from 'redux-saga/effects'
 import {
   createNewProjectSuccess,
   createNewProjectFailure,
@@ -8,12 +8,14 @@ import {
   getProjectDetailsFailure,
   updateProjectDetailsSuccess,
   updateProjectDetailsFailure,
-  requestGetProjectDetails
+  deleteProjectFailure,
+  deleteProjectSuccess
 } from '../actions/projectActions'
 import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import {
   createNewProjectRequest,
+  deleteProject,
   getAllProjectsRequest,
   getProjectDetailsRequest,
   updateProjectDetailsRequest
@@ -23,7 +25,7 @@ import { ReduxState } from 'reducers/rootReducer'
 type Params = { newProjectData: Types.Project; type: string; account: Account }
 type GetParams = {
   type: string
-  projectId: string | undefined
+  projectId: string
   projectdata: Types.Project
 }
 
@@ -71,6 +73,17 @@ function* updateProjectDetails({ projectdata }: GetParams) {
     yield put(updateProjectDetailsFailure(error?.message || 'default'))
   }
 }
+
+function* deletingProjectSaga({ projectId }: GetParams) {
+  try {
+    const account = yield select((state) => state.auth.account)
+    yield call(deleteProject, projectId, account)
+    yield put(deleteProjectSuccess(projectId))
+  } catch (error: any) {
+    yield put(deleteProjectFailure(error, projectId))
+  }
+}
+
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.NEW_PROJECT_REQUEST, createNewProject)
   yield takeLatest(ActionTypes.GET_ALL_PROJECT_REQUEST, getAllProjects)
@@ -79,6 +92,7 @@ function* watchGetRequest() {
     ActionTypes.UPDATE_PROJECT_DETAILS_REQUEST,
     updateProjectDetails
   )
+  yield takeLatest(ActionTypes.DELETE_PROJECT_REQUEST, deletingProjectSaga)
 }
 
 export default function* sagas() {

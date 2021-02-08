@@ -55,10 +55,11 @@ export const FeatureAssetList = ({
 
   const loadAssets = async (ids: Array<string>) => {
     const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
-    const current = assets.findIndex((asset) => asset.id === featuredAsset)
+    const featureIndex = assets.findIndex((asset) => asset.id === featuredAsset)
+    const currentIndex = featureIndex >= 0 ? featureIndex : 0
 
     let assetState = {}
-    const asset = assets[current]
+    const asset = assets[currentIndex]
 
     if (renderTopAsset) {
       assetState = { topAsset: asset }
@@ -70,7 +71,7 @@ export const FeatureAssetList = ({
       ...state,
       ...assetState,
       assets,
-      currentIndex: current >= 0 ? current : 0
+      currentIndex: currentIndex >= 0 ? currentIndex : 0
     })
   }
 
@@ -289,8 +290,8 @@ const pickerTransitionDuration = 640
 const useStyles = makeStyles((theme) => ({
   featureButton: {
     position: 'absolute',
-    right: 0,
-    top: 0,
+    right: 70,
+    top: 20,
     background: 'rgba(0,0,0,0.2)'
   },
   featureIcon: { color: 'gold' },
@@ -329,7 +330,8 @@ const useStyles = makeStyles((theme) => ({
     top: '50%',
     left: '50%',
     minHeight: '100%',
-    width: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
     transform: 'translate(-50%, -50%)',
     borderRadius: 10
   },

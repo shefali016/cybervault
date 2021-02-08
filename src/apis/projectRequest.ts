@@ -7,7 +7,7 @@ import { ProjectAsset, Project } from '../utils/Interface'
  * @deleteProject
  */
 export const deleteProject = async (
-  newProjectData: Project,
+  projectId: string,
   account: Account
 ) => {
   return firebase
@@ -15,7 +15,7 @@ export const deleteProject = async (
     .collection('AccountData')
     .doc(account.id)
     .collection('Projects')
-    .doc(newProjectData.id)
+    .doc(projectId)
     .delete()
 }
 

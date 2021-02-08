@@ -1,6 +1,7 @@
 import '../Projects.css'
-import React, { ChangeEvent } from 'react'
-import { makeStyles, Typography, Button } from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { makeStyles, Typography, Grid, IconButton } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
@@ -15,183 +16,149 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import NewProjectTitle from '../NewProjectTitle'
-import { useTabletLayout } from '../../../utils/hooks/'
+import { GradiantButton } from '../../Common/Button/GradiantButton'
+import AppSelect from '../../Common/Core/AppSelect'
+import { Client } from '../../../utils/Interface'
+import { getClientsRequest } from '../../../actions/clientActions'
+import AddClient from '../../Client/AddClient'
+import clsx from 'clsx'
+import { Edit } from '@material-ui/icons'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
-  const isTablet = useTabletLayout()
-  const { projectData, setProjectData, haveError, setLogoFile } = props
-  let imageInputRef: any = React.useRef()
+  const {
+    projectData,
+    haveError,
+    clients,
+    addClient,
+    setAddClient,
+    currentStep,
+    account,
+    setClientData,
+    clientData
+  } = props
 
-  const handleChange = async (event: any) => {
-    if (event.target && event.target.files && event.target.files.length > 0) {
-      setLogoFile(event.target.files[0])
-      setProjectData({
-        ...projectData,
-        logo: URL.createObjectURL(event.target.files[0])
-      })
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getClientsRequest(account))
+  }, [])
+
+  useEffect(() => {
+    console.log(clients, clientData)
+    if (clients && !clientData) {
+      setClientData(
+        projectData.clientId
+          ? clients.find((client: Client) => client.id === projectData.clientId)
+          : clients[0]
+      )
     }
+  }, [clients])
+
+  const handleChooseClient = (event: any) => {
+    const val = event.target.value
+    let item = clients.find((cl: Client, i: number) => {
+      return cl.id === val
+    })
+    setClientData(item)
   }
 
-  const handleInputChange = (event: any) => (key: string) => {
-    const value = event.target.value
-    setProjectData({ ...projectData, [key]: value })
+  const [editClient, setEditClient] = useState(false)
+
+  const handleEditClient = () => {
+    setEditClient(true)
+    setAddClient(true)
   }
 
-  const renderClientLogoView = () => {
+  const renderClientSelect = () => {
+    if (addClient) return null
+
     return (
-      <div className={'client-logo-container'}>
-        <Button
-          variant='contained'
-          onClick={() => imageInputRef.click()}
-          className={classes.clientLogo}>
-          <input
-            type='file'
-            accept='image/*'
-            capture='camera'
-            name='avatar'
-            ref={(input) => {
-              imageInputRef = input
-            }}
-            onChange={handleChange}
-            style={{ display: 'none' }}
-          />
-          {!!projectData.logo && (
-            <img
-              src={projectData.logo}
-              className={classes.clientLogoImg}
-              alt={'client-logo'}
+      <>
+        <NewProjectTitle title={'New Project'} subtitle={'Choose a client'} />
+        <Grid item sm={8} className={classes.chooseClientWrapper}>
+          <Typography>
+            Add a new Client or get started with existing client
+          </Typography>
+          <Typography className={classes.textSecondary}>
+            Choose an existing client
+          </Typography>
+
+          <div className={clsx(classes.selectContainer)}>
+            <AppSelect
+              className={classes.select}
+              items={clients.map((cl: Client) => {
+                return { value: cl.id, title: cl.name }
+              })}
+              value={clientData ? clientData.id : null}
+              onChange={(event: any) => {
+                handleChooseClient(event)
+              }}
             />
-          )}
-        </Button>
-        <Typography variant={'caption'} className={classes.addLogoText}>
-          Add Client Logo
-        </Typography>
-      </div>
+            <IconButton
+              className={classes.editIconButton}
+              onClick={handleEditClient}>
+              <Edit />
+            </IconButton>
+          </div>
+
+          <Typography className={`${classes.bar} ${classes.textCenter}`}>
+            Or
+          </Typography>
+          <Typography className={classes.gradientBtnWrapper}>
+            <GradiantButton
+              onClick={() => setAddClient(!addClient)}
+              className={classes.gradientBtn}>
+              Add Client
+            </GradiantButton>
+          </Typography>
+        </Grid>
+      </>
+    )
+  }
+
+  const renderAddClient = () => {
+    if (!addClient) return null
+
+    return (
+      <AddClient
+        onBack={() => {
+          setAddClient(false)
+          setEditClient(false)
+        }}
+        account={account}
+        isEdit={editClient}
+        client={clientData}
+      />
     )
   }
 
   const renderMiddleView = () => {
-    const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        {!props.isEdit ? (
-          <div className={'input-row'} style={{ marginBottom: 30 }}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={
-                  haveError && projectData.campaignName === '' ? true : false
-                }
-                type={''}
-                label={'Campaign Name'}
-                value={projectData.campaignName}
-                onChange={(e: ChangeEvent) =>
-                  handleInputChange(e)('campaignName')
-                }
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={
-                  haveError && projectData.campaignDate === '' ? true : false
-                }
-                type={'date'}
-                label={'Campaign Date'}
-                value={projectData.campaignDate}
-                onChange={(e: ChangeEvent) =>
-                  handleInputChange(e)('campaignDate')
-                }
-              />
-            </div>
-          </div>
-        ) : null}
-        <div className={'input-row'}>
-          <div style={{ flex: 1, marginRight: leftInputMargin }}>
-            <AppTextField
-              error={haveError && projectData.clientName === '' ? true : false}
-              type={''}
-              label={'Client Name'}
-              value={projectData.clientName}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('clientName')}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <AppTextField
-              error={haveError && projectData.clientEmail === '' ? true : false}
-              type={''}
-              label={'Client Email'}
-              value={projectData.clientEmail}
-              onChange={(e: ChangeEvent) => handleInputChange(e)('clientEmail')}
-            />
-          </div>
-        </div>
-        {!props.isEdit ? (
-          <div className={'input-row'}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={haveError && projectData.address === '' ? true : false}
-                type={''}
-                label={'Address'}
-                value={projectData.address}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={haveError && projectData.city === '' ? true : false}
-                type={''}
-                label={'City'}
-                value={projectData.city}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
-              />
-            </div>
-          </div>
-        ) : null}
-        {!props.isEdit ? (
-          <div className={'input-row'}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={haveError && projectData.state === '' ? true : false}
-                type={''}
-                label={'State/Province'}
-                value={projectData.state}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={haveError && projectData.country === '' ? true : false}
-                type={''}
-                label={'Country'}
-                value={projectData.country}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
-              />
-            </div>
-          </div>
-        ) : null}
+        {renderClientSelect()}
+        {renderAddClient()}
       </div>
     )
   }
 
   return (
     <div className={classes.container}>
-      {!props.isEdit ? (
-        <NewProjectTitle title={'New Project'} subtitle={'Get Started'} />
-      ) : (
-        <NewProjectTitle title={'Edit Client Details'} subtitle={''} />
-      )}
-      {!props.isEdit ? renderClientLogoView() : null}
       {renderMiddleView()}
-      <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 4 of 5'}
-        onNext={props.onNext}
-        onUpdate={props.onUpdate}
-        haveError={haveError ? haveError : false}
-        projectData={projectData}
-      />
+      {!addClient ? (
+        <NewProjectFooter
+          title={'Step 1 of 5'}
+          onNext={props.onNext}
+          onUpdate={props.onUpdate}
+          onBack={props.onBack}
+          haveError={haveError ? haveError : false}
+          projectData={projectData}
+          currentStep={currentStep}
+          disabled={!clients.length}
+          isEdit={props.isEdit}
+        />
+      ) : null}
     </div>
   )
 }
@@ -287,6 +254,69 @@ const useStyles = makeStyles((theme) => ({
     position: POSITION_ABSOLUTE,
     top: 10,
     right: 10
+  },
+  textSecondary: {
+    color: theme.palette.text.meta,
+    marginTop: theme.spacing(0.5),
+    marginBottom: theme.spacing(3)
+  },
+  selectContainer: {
+    paddingTop: theme.spacing(2),
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative'
+  },
+  select: {
+    width: '100%'
+  },
+  editIconButton: { position: 'absolute', right: -70 },
+  chooseClientWrapper: {
+    alignSelf: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  textCenter: {
+    textAlign: CENTER
+  },
+  bar: {
+    padding: theme.spacing(3),
+    color: GREY_COLOR,
+    position: 'relative',
+    '&:before': {
+      content: 'close-quote',
+      position: 'absolute',
+      width: '50%',
+      height: '1px',
+      backgroundColor: GREY_COLOR,
+      top: '50%',
+      left: '-40px',
+      [theme.breakpoints.down('sm')]: {
+        left: '0',
+        width: '45%'
+      }
+    },
+    '&:after': {
+      content: 'close-quote',
+      position: 'absolute',
+      width: '50%',
+      height: '1px',
+      backgroundColor: GREY_COLOR,
+      top: '50%',
+      right: '-40px',
+      [theme.breakpoints.down('sm')]: {
+        right: '0',
+        width: '45%'
+      }
+    }
+  },
+  gradientBtn: {
+    minWidth: '125px',
+    borderRadius: '24px'
+  },
+  gradientBtnWrapper: {
+    textAlign: CENTER
   }
 }))
 

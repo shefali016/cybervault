@@ -64,6 +64,7 @@ export const ProjectsScreen = (props: any) => {
         data={PROJECT_DATA}
         renderItem={(item) => (
           <ProjectCard
+            account={props.userData.account} //added as Project card is expecting account data
             project={item}
             style={{ paddingRight: theme.spacing(3) }}
           />
@@ -90,7 +91,8 @@ export const ProjectsScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
-  projects: state.project
+  projects: state.project,
+  userData: state.auth
 })
 
 export default connect(mapStateToProps)(ProjectsScreen)

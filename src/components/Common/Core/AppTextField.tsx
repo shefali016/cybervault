@@ -5,12 +5,14 @@ import { InputChangeEvent } from '../../../utils/Interface'
 type Props = {
   type?: string
   label?: string
+  name?: string
   value: any
   onChange: (e: InputChangeEvent) => void
   multiline?: boolean
   style?: {}
   error?: boolean
   darkStyle?: boolean
+  disabled?: boolean
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
   onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
 }
@@ -26,7 +28,9 @@ const AppTextField = (
     error,
     darkStyle,
     onKeyDown,
-    onKeyUp
+    onKeyUp,
+    name,
+    disabled
   }: Props,
   ref: any
 ) => {
@@ -59,6 +63,8 @@ const AppTextField = (
       onChange={onChange}
       multiline={multiline}
       value={value}
+      name={name}
+      disabled={disabled ? disabled : false}
       InputProps={{
         classes: {
           root: dynamicInputStyle

@@ -14,13 +14,19 @@ import { GradiantButton } from '../Common/Button/GradiantButton'
 type Props = {
   onBack?: () => void
   onNext?: () => void
-  title: string
+  title?: string
   description?: string
   onStartProject?: () => void
   haveError?: boolean
   onUpdate?: (projectData: any) => void
   projectData?: any
   isLoading?: boolean
+  addClient?: boolean
+  currentStep?: number
+  buttonText?: string
+  disabled?: boolean
+  isEdit: boolean
+  persistBackButton?: boolean
 }
 
 const NewProjectFooter = ({
@@ -32,7 +38,12 @@ const NewProjectFooter = ({
   haveError,
   onUpdate,
   projectData,
-  isLoading
+  isLoading,
+  currentStep,
+  buttonText,
+  disabled,
+  isEdit,
+  persistBackButton
 }: Props) => {
   const classes = useStyles()
 
@@ -52,13 +63,15 @@ const NewProjectFooter = ({
       {!!description && (
         <Typography variant={'caption'}>{description}</Typography>
       )}
-      {haveError ? (
+
+      {haveError && (
         <Typography className={classes.warningText}>
           Please fill all the required fields.
         </Typography>
-      ) : null}
+      )}
+
       <div className={classes.bottomView} style={{ marginTop: 10 }}>
-        {typeof onStartProject === 'function' && (
+        {!isEdit && typeof onStartProject === 'function' && (
           <div className={classes.startProjectButtonContainer}>
             <GradiantButton
               onClick={onStartProject}
@@ -68,18 +81,33 @@ const NewProjectFooter = ({
             </GradiantButton>
           </div>
         )}
-        {typeof onBack === 'function' && renderBackButton()}
-        <Typography variant={'caption'} className={classes.stepLabel}>
-          {title}
-        </Typography>
-        {typeof onNext === 'function' && (
-          <GradiantButton onClick={onNext} className={classes.continueButton}>
-            <Typography variant={'button'}>Continue</Typography>
+
+        {((!isEdit && typeof onBack === 'function' && currentStep !== 1) ||
+          persistBackButton) &&
+          renderBackButton()}
+
+        {!isEdit && !!title && (
+          <Typography variant={'caption'} className={classes.stepLabel}>
+            {title}
+          </Typography>
+        )}
+
+        {!isEdit && typeof onNext === 'function' && (
+          <GradiantButton
+            onClick={onNext}
+            className={classes.continueButton}
+            loading={isLoading}
+            disabled={disabled}>
+            <Typography variant={'button'}>
+              {buttonText ? buttonText : 'Continue'}
+            </Typography>
           </GradiantButton>
         )}
-        {typeof onUpdate === 'function' && (
+
+        {isEdit && typeof onUpdate === 'function' && (
           <GradiantButton
             onClick={() => onUpdate(projectData)}
+            loading={isLoading}
             className={classes.continueButton}>
             <Typography variant={'button'}>Update</Typography>
           </GradiantButton>
@@ -92,16 +120,17 @@ const NewProjectFooter = ({
 const useStyles = makeStyles((theme) => ({
   root: { marginTop: 40, display: FLEX, flexDirection: COLUMN },
   stepLabel: {
-    color: theme.palette.grey[500]
+    color: theme.palette.grey[500],
+    marginLeft: 15
   },
-  continueButton: { marginLeft: 25 },
+  continueButton: { marginLeft: 25, minWidth: '125px', borderRadius: '24px' },
   button: {
     width: 110,
     height: 40,
     fontSize: 8,
     textTransform: NONE
   },
-  backButton: { height: 40, width: 40, marginRight: 15 },
+  backButton: { height: 40, width: 40 },
   backButtonIcon: {
     width: 15,
     height: 15,
