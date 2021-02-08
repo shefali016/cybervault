@@ -7,7 +7,7 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import NewProjectStepFive from './Steps/NewProjectStepFive'
-import { getProductData, generateUid, getClientData } from '../../utils'
+import { getProductData, generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/Interface'
@@ -15,6 +15,8 @@ import validate from '../../utils/helpers'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
+import { isEnumDeclaration } from 'typescript'
+import { Client } from '../../utils/Interface'
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -54,7 +56,7 @@ const NewProject = ({
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [projectData, setProjectData] = useState(project || getProductData())
-  const [clientData, setClientData] = useState(getClientData())
+  const [clientData, setClientData] = useState<Client | null>(null)
   const [haveError, setHaveError] = useState(false)
   const [addClient, setAddClient] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
@@ -76,19 +78,19 @@ const NewProject = ({
   })
 
   useEffect(() => {
-    if (
-      addClientSuccess &&
-      addClient &&
-      currentStep == 1 &&
-      Object.keys(newClientData).length
-    ) {
-      setClientData(newClientData)
-      setCurrentStep((step) => step + 1)
-    }
+    // if (addClientSuccess && addClient && currentStep == 1 && newClientData) {
+    //   if (project) {
+    //     setAddClient(false)
+    //   } else {
+    //     setClientData(newClientData)
+    //     setCurrentStep((step) => step + 1)
+    //     setAddClient(false)
+    //   }
+    // }
   }, [addClientSuccess])
 
   const onUpdateData = () => {
-    if (typeof onUpdate !== 'function') {
+    if (typeof onUpdate !== 'function' || !clientData) {
       return
     }
     onUpdate({
@@ -99,7 +101,7 @@ const NewProject = ({
 
   const onSubmitData = async () => {
     try {
-      if (typeof onSubmitClicked !== 'function') {
+      if (typeof onSubmitClicked !== 'function' || !clientData) {
         return
       }
       // @ts-ignorets

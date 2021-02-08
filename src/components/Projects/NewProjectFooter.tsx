@@ -26,6 +26,7 @@ type Props = {
   buttonText?: string
   disabled?: boolean
   isEdit: boolean
+  persistBackButton?: boolean
 }
 
 const NewProjectFooter = ({
@@ -41,7 +42,8 @@ const NewProjectFooter = ({
   currentStep,
   buttonText,
   disabled,
-  isEdit
+  isEdit,
+  persistBackButton
 }: Props) => {
   const classes = useStyles()
 
@@ -80,9 +82,8 @@ const NewProjectFooter = ({
           </div>
         )}
 
-        {!isEdit &&
-          typeof onBack === 'function' &&
-          currentStep !== 1 &&
+        {((!isEdit && typeof onBack === 'function' && currentStep !== 1) ||
+          persistBackButton) &&
           renderBackButton()}
 
         {!isEdit && !!title && (
@@ -106,6 +107,7 @@ const NewProjectFooter = ({
         {isEdit && typeof onUpdate === 'function' && (
           <GradiantButton
             onClick={() => onUpdate(projectData)}
+            loading={isLoading}
             className={classes.continueButton}>
             <Typography variant={'button'}>Update</Typography>
           </GradiantButton>
@@ -118,7 +120,8 @@ const NewProjectFooter = ({
 const useStyles = makeStyles((theme) => ({
   root: { marginTop: 40, display: FLEX, flexDirection: COLUMN },
   stepLabel: {
-    color: theme.palette.grey[500]
+    color: theme.palette.grey[500],
+    marginLeft: 15
   },
   continueButton: { marginLeft: 25, minWidth: '125px', borderRadius: '24px' },
   button: {
@@ -127,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 8,
     textTransform: NONE
   },
-  backButton: { height: 40, width: 40, marginRight: 15 },
+  backButton: { height: 40, width: 40 },
   backButtonIcon: {
     width: 15,
     height: 15,

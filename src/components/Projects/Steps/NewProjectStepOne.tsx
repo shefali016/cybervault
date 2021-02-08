@@ -1,14 +1,12 @@
 import '../Projects.css'
-import React, { ChangeEvent, useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { makeStyles, Typography, Button, Grid } from '@material-ui/core'
+import { makeStyles, Typography, Grid, IconButton } from '@material-ui/core'
 import {
   PRIMARY_COLOR,
   TRANSPARENT,
   PRIMARY_DARK_COLOR,
-  GREY_COLOR,
-  SECONDARY_COLOR,
-  LIGHT_GREY_BG
+  GREY_COLOR
 } from 'utils/constants/colorsConstants'
 import {
   BOLD,
@@ -25,6 +23,8 @@ import AppSelect from '../../Common/Core/AppSelect'
 import { Client } from '../../../utils/Interface'
 import { getClientsRequest } from '../../../actions/clientActions'
 import AddClient from '../../Client/AddClient'
+import clsx from 'clsx'
+import { Edit } from '@material-ui/icons'
 
 const NewProjectStepOne = (props: any) => {
   const classes = useStyles()
@@ -46,7 +46,8 @@ const NewProjectStepOne = (props: any) => {
   }, [])
 
   useEffect(() => {
-    if (clients.length) {
+    console.log(clients, clientData)
+    if (clients && !clientData) {
       setClientData(
         projectData.clientId
           ? clients.find((client: Client) => client.id === projectData.clientId)
@@ -63,6 +64,13 @@ const NewProjectStepOne = (props: any) => {
     setClientData(item)
   }
 
+  const [editClient, setEditClient] = useState(false)
+
+  const handleEditClient = () => {
+    setEditClient(true)
+    setAddClient(true)
+  }
+
   const renderClientSelect = () => {
     if (addClient) return null
 
@@ -76,16 +84,25 @@ const NewProjectStepOne = (props: any) => {
           <Typography className={classes.textSecondary}>
             Choose an existing client
           </Typography>
-          <AppSelect
-            className={classes.select}
-            items={clients.map((cl: Client) => {
-              return { value: cl.id, title: cl.name }
-            })}
-            value={clientData.id}
-            onChange={(event: any) => {
-              handleChooseClient(event)
-            }}
-          />
+
+          <div className={clsx(classes.selectContainer)}>
+            <AppSelect
+              className={classes.select}
+              items={clients.map((cl: Client) => {
+                return { value: cl.id, title: cl.name }
+              })}
+              value={clientData ? clientData.id : null}
+              onChange={(event: any) => {
+                handleChooseClient(event)
+              }}
+            />
+            <IconButton
+              className={classes.editIconButton}
+              onClick={handleEditClient}>
+              <Edit />
+            </IconButton>
+          </div>
+
           <Typography className={`${classes.bar} ${classes.textCenter}`}>
             Or
           </Typography>
@@ -106,11 +123,13 @@ const NewProjectStepOne = (props: any) => {
 
     return (
       <AddClient
-        onBack={props.onBack}
+        onBack={() => {
+          setAddClient(false)
+          setEditClient(false)
+        }}
         account={account}
-        showStep={true}
-        stepText={'step 1 of 5'}
-        isEdit={props.isEdit}
+        isEdit={editClient}
+        client={clientData}
       />
     )
   }
@@ -241,12 +260,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(0.5),
     marginBottom: theme.spacing(3)
   },
-  select: {
+  selectContainer: {
+    paddingTop: theme.spacing(2),
     width: '100%',
-    '& div': {
-      padding: '12px'
-    }
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative'
   },
+  select: {
+    width: '100%'
+  },
+  editIconButton: { position: 'absolute', right: -70 },
   chooseClientWrapper: {
     alignSelf: 'center',
     display: 'flex',
@@ -257,9 +281,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: CENTER
   },
   bar: {
+    padding: theme.spacing(3),
     color: GREY_COLOR,
     position: 'relative',
-    padding: '15px',
     '&:before': {
       content: 'close-quote',
       position: 'absolute',

@@ -1,21 +1,12 @@
-import React, { ChangeEvent, useState, useEffect, useContext } from 'react'
+import React, { ChangeEvent, useState, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { makeStyles, Typography, Button, Grid } from '@material-ui/core'
+import { makeStyles, Typography, Button } from '@material-ui/core'
+import { TRANSPARENT, GREY_COLOR } from 'utils/constants/colorsConstants'
 import {
-  PRIMARY_COLOR,
-  TRANSPARENT,
-  PRIMARY_DARK_COLOR,
-  GREY_COLOR,
-  SECONDARY_COLOR,
-  LIGHT_GREY_BG
-} from 'utils/constants/colorsConstants'
-import {
-  BOLD,
   CENTER,
   COLUMN,
-  FLEX,
   POSITION_ABSOLUTE,
-  ROW
+  FLEX
 } from 'utils/constants/stringConstants'
 import AppTextField from '../Common/Core/AppTextField'
 import { useTabletLayout } from '../../utils/hooks'
@@ -36,10 +27,15 @@ type AddClientProps = {
   account: Account
   showStep?: boolean
   stepText?: string
+  client?: Client | undefined
 }
 
 export const AddClient = (props: AddClientProps) => {
-  const [clientData, setClientData] = useState<Client>(getClientData())
+  const { isEdit, onBack, account, client } = props
+
+  const [clientData, setClientData] = useState<Client>(
+    !!client && isEdit ? client : getClientData()
+  )
   const [haveError, setHaveError] = useState(false)
   const [logoFile, setLogoFile] = useState(null)
 
@@ -56,11 +52,48 @@ export const AddClient = (props: AddClientProps) => {
     }
   })
 
-  const { isEdit, onBack, onUpdate, account } = props
   const isTablet = useTabletLayout()
   let imageInputRef: any = React.useRef()
   const classes = useStyles()
   const leftInputMargin = !isTablet ? 15 : 0
+
+  const handleInputChange = (event: any) => (key: string) => {
+    const value = event.target.value
+    setClientData({ ...clientData, [key]: value })
+  }
+
+  const handleLogoChange = async (event: any) => {
+    if (event.target && event.target.files && event.target.files.length > 0) {
+      setLogoFile(event.target.files[0])
+    }
+  }
+
+  const handleAddClient = async () => {
+    const isError = validateAddClient(clientData)
+    if (isError) {
+      setHaveError(isError)
+    } else {
+      let clientId = clientData.id || generateUid()
+
+      let logo = clientData.logo || null
+
+      try {
+        if (logoFile) {
+          logo = await setMedia(`ClientLogos/${clientId}`, logoFile)
+        }
+
+        const client: Client = {
+          ...clientData,
+          logo,
+          id: clientId
+        }
+
+        setClientData(client)
+
+        dispatch(addClientRequest(account, client))
+      } catch (error) {}
+    }
+  }
 
   const renderClientLogoView = () => {
     return (
@@ -82,7 +115,7 @@ export const AddClient = (props: AddClientProps) => {
           />
           {(!!clientData.logo || !!logoFile) && (
             <img
-              src={clientData.logo || URL.createObjectURL(logoFile)}
+              src={logoFile ? URL.createObjectURL(logoFile) : clientData.logo}
               className={classes.clientLogoImg}
               alt={'client-logo'}
             />
@@ -93,17 +126,6 @@ export const AddClient = (props: AddClientProps) => {
         </Typography>
       </div>
     )
-  }
-
-  const handleInputChange = (event: any) => (key: string) => {
-    const value = event.target.value
-    setClientData({ ...clientData, [key]: value })
-  }
-
-  const handleLogoChange = async (event: any) => {
-    if (event.target && event.target.files && event.target.files.length > 0) {
-      setLogoFile(event.target.files[0])
-    }
   }
 
   const renderMiddleView = () => {
@@ -129,111 +151,50 @@ export const AddClient = (props: AddClientProps) => {
             />
           </div>
         </div>
-        {!isEdit ? (
-          <div className={'input-row'}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={haveError && clientData.address === '' ? true : false}
-                type={''}
-                label={'Address'}
-                value={clientData.address}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={haveError && clientData.city === '' ? true : false}
-                type={''}
-                label={'City'}
-                value={clientData.city}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
-              />
-            </div>
+
+        <div className={'input-row'}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
+            <AppTextField
+              error={haveError && clientData.address === '' ? true : false}
+              type={''}
+              label={'Address'}
+              value={clientData.address}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('address')}
+            />
           </div>
-        ) : null}
-        {!isEdit && (
-          <div className={'input-row'}>
-            <div style={{ flex: 1, marginRight: leftInputMargin }}>
-              <AppTextField
-                error={haveError && clientData.state === '' ? true : false}
-                type={''}
-                label={'State/Province'}
-                value={clientData.state}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AppTextField
-                error={haveError && clientData.country === '' ? true : false}
-                type={''}
-                label={'Country'}
-                value={clientData.country}
-                onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
-              />
-            </div>
+          <div style={{ flex: 1 }}>
+            <AppTextField
+              error={haveError && clientData.city === '' ? true : false}
+              type={''}
+              label={'City'}
+              value={clientData.city}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('city')}
+            />
           </div>
-        )}
+        </div>
+
+        <div className={'input-row'}>
+          <div style={{ flex: 1, marginRight: leftInputMargin }}>
+            <AppTextField
+              error={haveError && clientData.state === '' ? true : false}
+              type={''}
+              label={'State/Province'}
+              value={clientData.state}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('state')}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <AppTextField
+              error={haveError && clientData.country === '' ? true : false}
+              type={''}
+              label={'Country'}
+              value={clientData.country}
+              onChange={(e: ChangeEvent) => handleInputChange(e)('country')}
+            />
+          </div>
+        </div>
       </>
     )
-  }
-  const handleAddClient = async () => {
-    const isError = validateAddClient(clientData)
-    if (isError) {
-      setHaveError(isError)
-    } else {
-      let clientId = generateUid()
-
-      let logo = null
-
-      try {
-        if (logoFile) {
-          logo = await setMedia(`ClientLogos/${clientId}`, logoFile)
-        }
-
-        const client: Client = {
-          ...clientData,
-          logo,
-          id: clientId
-        }
-
-        setClientData(client)
-
-        dispatch(addClientRequest(account, client))
-      } catch (error) {}
-    }
-  }
-
-  const renderFooterWithStep = () => {
-    if (props.showStep) {
-      return (
-        <NewProjectFooter
-          title={props.stepText}
-          buttonText={'Add Client'}
-          onNext={handleAddClient}
-          onBack={onBack}
-          onUpdate={onUpdate}
-          haveError={haveError ? haveError : false}
-          addClient={true}
-          isLoading={isLoading}
-          isEdit={isEdit}
-        />
-      )
-    }
-  }
-  const renderFooterWithoutStep = () => {
-    if (!props.showStep) {
-      return (
-        <NewProjectFooter
-          buttonText={'Add Client'}
-          onNext={handleAddClient}
-          onUpdate={onUpdate}
-          haveError={haveError ? haveError : false}
-          addClient={true}
-          isLoading={isLoading}
-          isEdit={isEdit}
-        />
-      )
-    }
   }
 
   return (
@@ -241,8 +202,17 @@ export const AddClient = (props: AddClientProps) => {
       <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
       {renderClientLogoView()}
       {renderMiddleView()}
-      {renderFooterWithStep()}
-      {renderFooterWithoutStep()}
+      <NewProjectFooter
+        buttonText={'Add Client'}
+        onNext={handleAddClient}
+        onBack={onBack}
+        onUpdate={isEdit ? handleAddClient : undefined}
+        haveError={haveError ? haveError : false}
+        addClient={true}
+        isLoading={isLoading}
+        isEdit={isEdit}
+        persistBackButton={true}
+      />
     </>
   )
 }

@@ -361,7 +361,6 @@ const InvoiceStepTwo = ({
                       onChange={() => handleMilestone(mile)}
                       checked={mile.check}
                       defaultChecked={true}
-                      // onChange={(mile)=>handleMilestone()}
                       checkedIcon={
                         <div className={classes.checkBoxIcon}>
                           <CheckIcon className={classes.checkIcon} />
