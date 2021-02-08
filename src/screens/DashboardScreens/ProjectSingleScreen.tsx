@@ -307,7 +307,6 @@ const mapStateToProps = (state: any) => ({
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
   isUpdatedSuccess: state.project.isUpdatedSuccess,
-  updateDetails: state.project.updateDetails,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
   projectUpdateError: state.project.projectUpdateError,
   account: state.auth.account,

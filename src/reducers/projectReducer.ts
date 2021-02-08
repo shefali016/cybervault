@@ -32,14 +32,13 @@ export type State = {
   projectDetails: Object
   isProjectDetailsLoading: boolean
   isUpdatedSuccess: boolean
-  updateDetails: boolean
 }
 
 export type Action = {
   type: string
-  payload: {}
+  payload: Types.Project
   error: string
-  projectData?: {}
+  projectData: Types.Project
   newProjectData?: {}
   allProjectsData?: {}
   projectId?: string
@@ -58,7 +57,6 @@ const initialState = {
   projectDetails: getProductData(),
   isProjectDetailsLoading: false,
   isUpdatedSuccess: false,
-  updateDetails: false,
   projectUpdateError: null
 }
 
@@ -118,9 +116,9 @@ const getProjectDetailsSuccess = (state: State, action: Action) => {
     ...state,
     isProjectDetailsLoading: false,
     projectDetails: action.payload,
+    allProjectsData: replaceProject(action.payload, state),
     isUpdatedSuccess: false,
-    projectUpdateError: null,
-    updateDetails: false
+    projectUpdateError: null
   }
 }
 
@@ -133,14 +131,13 @@ const getProjectDetailsFailure = (state: State, action: Action) => ({
 const updateProjectDetailsRequest = (state: State, action: Action) => ({
   ...state,
   isUpdatedSuccess: true,
-  updateDetails: true,
   isProjectDetailsLoading: true
 })
 
 const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
-  updateDetails: false,
   projectDetails: action.projectData,
+  allProjectsData: replaceProject(action.projectData, state),
   isUpdatedSuccess: false,
   projectUpdateError: null,
   isProjectDetailsLoading: false
@@ -149,7 +146,6 @@ const updateProjectDetailsFailure = (state: State, action: Action) => ({
   ...state,
   isUpdatedSuccess: false,
   projectUpdateError: 'Error in updating project details',
-  updateDetails: false,
   isProjectDetailsLoading: false
 })
 
@@ -227,12 +223,14 @@ export const projectTransform = createTransform(
       isLoading: false,
       updateLoading: false,
       newProjectData: null,
-      isUpdatedSuccess: false,
-      updateDetails: false
+      isUpdatedSuccess: false
     }
   },
   (outboundState: State) => outboundState,
   { whitelist: ['project'] }
 )
+
+const replaceProject = (project: Types.Project, state: State) =>
+  state.allProjectsData.map((p) => (p.id === project.id ? project : p))
 
 export default projectReducer
