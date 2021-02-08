@@ -5,13 +5,15 @@ import {
   GET_ALL_PROJECT_REQUEST,
   GET_ALL_PROJECT_SUCCESS,
   GET_ALL_PROJECT_FAILURE,
-  USER_IS_ON_UPDATE_SCREEN,
   GET_PROJECT_DETAILS_REQUEST,
   GET_PROJECT_DETAILS_SUCCESS,
   GET_PROJECT_DETAILS_FAILURE,
   UPDATE_PROJECT_DETAILS_SUCCESS,
   UPDATE_PROJECT_DETAILS_FAILURE,
-  UPDATE_PROJECT_DETAILS_REQUEST
+  UPDATE_PROJECT_DETAILS_REQUEST,
+  DELETE_PROJECT_REQUEST,
+  DELETE_PROJECT_SUCCESS,
+  DELETE_PROJECT_FAILURE
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'
@@ -27,7 +29,6 @@ export type State = {
   updateLoading: boolean
   updateError: null | string
   updateSuccess: boolean
-  onEditProjectScreen: boolean
   projectDetails: Object
   isProjectDetailsLoading: boolean
   isUpdatedSuccess: boolean
@@ -41,6 +42,7 @@ export type Action = {
   projectData?: {}
   newProjectData?: {}
   allProjectsData?: {}
+  projectId?: string
 }
 
 const initialState = {
@@ -53,7 +55,6 @@ const initialState = {
   updateLoading: false,
   updateSuccess: false,
   updateError: null,
-  onEditProjectScreen: false,
   projectDetails: getProductData(),
   isProjectDetailsLoading: false,
   isUpdatedSuccess: false,
@@ -102,12 +103,7 @@ const getAllProjectsSuccess = (state: State, action: Action) => {
 
 const getAllProjectsFailure = (state: State, action: Action) => ({
   ...state,
-  isLoading: false,
-})
-
-const onEditProject = (state: State, action: Action) => ({
-  ...state,
-  onEditProjectScreen: action.payload
+  isLoading: false
 })
 
 //Get Single project details
@@ -156,6 +152,35 @@ const updateProjectDetailsFailure = (state: State, action: Action) => ({
   updateDetails: false,
   isProjectDetailsLoading: false
 })
+
+// Delete Project
+
+const deleteProjectRequest = (state: State, action: Action) => {
+  return {
+    ...state,
+    deletingId: action.projectId,
+    deleteError: null
+  }
+}
+
+const deleteProjectSuccess = (state: State, action: Action) => {
+  return {
+    ...state,
+    deletingId: null,
+    allProjectsData: state.allProjectsData.filter(
+      (project) => project.id !== action.projectId
+    )
+  }
+}
+
+const deleteProjectFailure = (state: State, action: Action) => {
+  return {
+    ...state,
+    deletingId: null,
+    deleteError: action.error
+  }
+}
+
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_PROJECT_REQUEST:
@@ -170,8 +195,6 @@ const projectReducer = (state = initialState, action: Action) => {
       return getAllProjectsSuccess(state, action)
     case GET_ALL_PROJECT_FAILURE:
       return getAllProjectsFailure(state, action)
-    case USER_IS_ON_UPDATE_SCREEN:
-      return onEditProject(state, action)
     case GET_PROJECT_DETAILS_REQUEST:
       return getProjectDetails(state, action)
     case GET_PROJECT_DETAILS_SUCCESS:
@@ -184,6 +207,12 @@ const projectReducer = (state = initialState, action: Action) => {
       return updateProjectDetailsFailure(state, action)
     case UPDATE_PROJECT_DETAILS_REQUEST:
       return updateProjectDetailsRequest(state, action)
+    case DELETE_PROJECT_REQUEST:
+      return deleteProjectRequest(state, action)
+    case DELETE_PROJECT_SUCCESS:
+      return deleteProjectSuccess(state, action)
+    case DELETE_PROJECT_FAILURE:
+      return deleteProjectFailure(state, action)
     default:
       return state
   }
@@ -199,7 +228,7 @@ export const projectTransform = createTransform(
       updateLoading: false,
       newProjectData: null,
       isUpdatedSuccess: false,
-      updateDetails: false,
+      updateDetails: false
     }
   },
   (outboundState: State) => outboundState,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
@@ -15,6 +15,8 @@ import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 import InvoiceModal from '../../../components/Invoices/InvoiceModal'
 import { ReduxState } from 'reducers/rootReducer'
+import { AppLoader } from 'components/Common/Core/AppLoader'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 
 const ITEM_HEIGHT = 48
 
@@ -25,6 +27,8 @@ type Props = {
   history?: any
   clients?: Array<Client>
   account: Account
+  onDelete?: (projectId: string) => void
+  deletingId?: string
 }
 
 const ProjectCard = ({
@@ -33,12 +37,23 @@ const ProjectCard = ({
   style,
   history,
   account,
-  clients
+  clients,
+  onDelete,
+  deletingId
 }: // data
 Props) => {
   const dispatch = useDispatch()
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+
+  const startConfirmingDelete = () => setConfirmingDelete(true)
+  const stopConfirmingDelete = () => setConfirmingDelete(false)
+  const handleDelete = () =>
+    typeof onDelete === 'function' && onDelete(project.id)
+
+  const theme = useTheme()
 
   const [open, setOpen] = React.useState(false)
 
@@ -80,6 +95,7 @@ Props) => {
             background: `url(${clientLogo}) no-repeat center`,
             backgroundSize: 'cover'
           }}></div>
+
         <div className={classes.footer}>
           <Typography variant={'body1'} className={classes.title} noWrap={true}>
             {project.campaignName}
@@ -94,17 +110,24 @@ Props) => {
             </Typography>
           </div>
         </div>
+
         {isPopover ? (
-          <Grid style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Grid
+            style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
+            {deletingId === project.id && (
+              <AppLoader
+                color={theme.palette.grey[800]}
+                className={classes.loader}
+                height={48}
+                width={48}
+              />
+            )}
+
             <PopupState variant='popover' popupId='demo-popup-popover'>
               {(popupState) => (
                 <div>
-                  <IconButton
-                    aria-label='more'
-                    aria-controls='long-menu'
-                    aria-haspopup='true'
-                    {...bindTrigger(popupState)}>
-                    <MoreVertIcon />
+                  <IconButton {...bindTrigger(popupState)}>
+                    <MoreVertIcon style={{ color: theme.palette.grey[800] }} />
                   </IconButton>
                   <Popover
                     id={'long-menu'}
@@ -158,13 +181,21 @@ Props) => {
                         Send Invoice
                       </div>
                     </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }}>
-                      <div style={{ display: FLEX, color: 'red' }}>
-                        <DeleteSharpIcon
-                          style={{ marginRight: 5 }}
-                          fontSize='small'
-                        />
-                        Delete Project
+                    <MenuItem
+                      style={{ fontSize: 12 }}
+                      onClick={startConfirmingDelete}>
+                      <div>
+                        <div
+                          style={{
+                            display: FLEX,
+                            color: theme.palette.error.main
+                          }}>
+                          <DeleteSharpIcon
+                            style={{ marginRight: 5 }}
+                            fontSize='small'
+                          />
+                          Delete Project
+                        </div>
                       </div>
                     </MenuItem>
                   </Popover>
@@ -174,11 +205,20 @@ Props) => {
           </Grid>
         ) : null}
       </Card>
+      <ConfirmationDialog
+        title='Delete Project'
+        message='Are you sure you want to delete this project. This can not be undone.'
+        isOpen={confirmingDelete}
+        onClose={stopConfirmingDelete}
+        onYes={handleDelete}
+        onNo={stopConfirmingDelete}
+      />
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  loader: {},
   root: {
     display: 'flex',
     position: 'relative'
@@ -217,13 +257,13 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden'
   },
   title: {
-    fontSize: '12px',
-    color: BLACK_COLOR,
+    fontSize: 13,
+    color: theme.palette.text.paper,
     fontWeight: 600
   },
   bodyText: {
-    fontSize: '8px',
-    color: BLACK_COLOR
+    fontSize: 10,
+    color: theme.palette.text.paper
   }
 }))
 export default ProjectCard

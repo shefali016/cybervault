@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { getAllProjectsRequest } from '../../actions/projectActions'
+import {
+  deleteProjectRequest,
+  getAllProjectsRequest
+} from '../../actions/projectActions'
 import { getClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
@@ -60,6 +63,8 @@ const HomeScreen = (props: any) => {
             }}
             history={props.history}
             account={props.userData.account}
+            onDelete={props.deleteProject}
+            deletingId={props.deletingProjectId}
           />
         )}
       />
@@ -98,7 +103,8 @@ const mapStateToProps = (state: any) => ({
   allProjectsData: state.project.allProjectsData,
   activeProjectsLoading: state.project.isLoading,
   userData: state.auth,
-  clients: state.clients.clientsData
+  clients: state.clients.clientsData,
+  deletingProjectId: state.project.deletingId
 })
 const mapDispatchToProps = (dispatch: any) => ({
   getAllProjectsData: (account: Types.Account) => {
@@ -106,6 +112,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   getClientsRequest: (account: Types.Account) => {
     return dispatch(getClientsRequest(account))
+  },
+  deleteProject: (projectId: string) => {
+    return dispatch(deleteProjectRequest(projectId))
   }
 })
 
