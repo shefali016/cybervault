@@ -1,4 +1,9 @@
-import { Portfolio, PortfolioFolder, Project } from '../../../utils/Interface'
+import {
+  Client,
+  Portfolio,
+  PortfolioFolder,
+  Project
+} from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import PortfolioFolders from '../../../components/Portfolio/PortfolioFolders'
@@ -21,6 +26,7 @@ type StateProps = {
   allProjectsData: Array<Project>
   portfolioLoading: boolean
   portfolios: Map<string, Portfolio> | any
+  clients: Array<Client>
 }
 
 type PortfolioStates = {
@@ -50,7 +56,8 @@ const PortfoliosScreen = ({
   history,
   updatePortfolio,
   portfolioLoading,
-  portfolios
+  portfolios,
+  clients
 }: Props) => {
   const classes = useStyles()
 
@@ -171,7 +178,6 @@ const PortfoliosScreen = ({
   const handlePortfolioSubmit = (portfolio: Portfolio) => {
     const { folder } = state
     updatePortfolio(portfolio, folder.id)
-    // resetStateData()
   }
 
   const handleDeleteFolder = (folderId: string) => {
@@ -215,6 +221,7 @@ const PortfoliosScreen = ({
             portfolios={portfolios}
             projectList={allProjectsData}
             portfolioLoading={portfolioLoading}
+            clients={clients}
           />
         </div>
         <div
@@ -238,7 +245,8 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
   allProjectsData: state.project.allProjectsData as Array<Project>,
-  portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any
+  portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any,
+  clients: state.clients.clientsData
 })
 const mapDispatchToProps = (dispatch: any) => ({
   updatePortfolioFolder: (folder: PortfolioFolder) => {

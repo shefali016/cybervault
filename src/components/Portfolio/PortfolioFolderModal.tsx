@@ -6,7 +6,7 @@ import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
-import NewProjectTitle from 'components/Projects/NewProjectTitle'
+import ModalTitle from 'components/Projects/NewProjectTitle'
 
 type Props = {
   open: boolean
@@ -65,7 +65,7 @@ export const PortfolioFolderModal = ({
       onRequestClose={() => onRequestClose('folder')}
       clickToClose={true}>
       <div className={'modalContent'}>
-        <NewProjectTitle
+        <ModalTitle
           title={folder && folder.id ? 'Edit Folder' : 'New Folder'}
           subtitle={'Add Content & information'}
         />

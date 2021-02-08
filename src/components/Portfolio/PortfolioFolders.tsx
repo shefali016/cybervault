@@ -1,6 +1,6 @@
 import { Box, Card, Grid, Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
-import { Portfolio, PortfolioFolder, Project } from 'utils/Interface'
+import { Client, Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
 import ConfirmBox from 'components/Common/ConfirmBox'
 import AddIcon from '@material-ui/icons/Add'
@@ -24,6 +24,7 @@ type Props = {
   projectList: Array<Project>
   portfolioLoading: boolean
   portfolios: Map<string, Portfolio> | any
+  clients: Array<Client>
 }
 const PortfolioFolders = ({
   folderList,
@@ -35,7 +36,8 @@ const PortfolioFolders = ({
   handleSubmit,
   projectList,
   portfolioLoading,
-  portfolios
+  portfolios,
+  clients
 }: Props) => {
   const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
   const classes = useStyles()
@@ -55,6 +57,7 @@ const PortfolioFolders = ({
         onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
         projectList={projectList}
         portfolioLoading={portfolioLoading}
+        clients={clients}
       />
     )
   }

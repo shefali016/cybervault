@@ -115,7 +115,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   portfolioLogoContainer: {
     display: FLEX,
-    marginTop: 3,
     alignItems: CENTER,
     justifyContent: CENTER
   },
@@ -170,5 +169,15 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: CENTER,
     margin: '0 auto'
   },
-  image: {}
+  image: {},
+  listProject: {
+    transition: theme.transitions.create(['background']),
+    borderRadius: theme.shape.borderRadius,
+    marginBottom: 3
+  },
+  selectedProject: {
+    background: `${theme.palette.primary.light}60`,
+    '&:hover': { background: `${theme.palette.primary.light}80` }
+  },
+  selectedProjectText: { fontWeight: 'bold' }
 }))

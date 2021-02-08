@@ -1,17 +1,15 @@
 import React, { ChangeEvent, Fragment, useRef, useState } from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
-import { Portfolio, Project } from 'utils/Interface'
+import { Client, Portfolio, Project } from 'utils/Interface'
 import AppTextField from 'components/Common/Core/AppTextField'
 import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import {
   Button,
-  Box,
   Typography,
   List,
   ListItemIcon,
   ListItem,
-  Checkbox,
   ListItemText,
   ListItemAvatar,
   Avatar
@@ -19,6 +17,8 @@ import {
 import CheckIcon from '@material-ui/icons/Check'
 import { useStyles } from './style'
 import { useOnChange } from 'utils/hooks'
+import ModalTitle from 'components/Projects/NewProjectTitle'
+import clsx from 'clsx'
 
 type State = {
   portfolio: Portfolio
@@ -33,6 +33,7 @@ type Props = {
   updatingFolder?: boolean
   projectList: Array<Project>
   portfolioLoading: boolean
+  clients: Array<Client>
 }
 
 export const PortfolioModal = ({
@@ -40,7 +41,8 @@ export const PortfolioModal = ({
   onRequestClose,
   onSubmit,
   projectList,
-  portfolioLoading
+  portfolioLoading,
+  clients
 }: Props) => {
   let imageInputRef: any = useRef()
   const classes = useStyles()
@@ -203,28 +205,39 @@ export const PortfolioModal = ({
         <div style={{ marginTop: '10px' }}>
           <List>
             {projectList && projectList.length
-              ? projectList.map((value: any, index: number) => {
+              ? projectList.map((project: Project, index: number) => {
                   const isProjectSelected = state.portfolio?.projects?.includes(
-                    value.id
+                    project.id
                   )
+                  const client = clients
+                    ? clients.find(
+                        (client: Client) => client.id === project.clientId
+                      )
+                    : null
                   return (
                     <ListItem
                       key={index}
                       role={undefined}
-                      dense
                       button
-                      onClick={() => handleProjectSelect(value.id)}>
-                      <ListItemIcon>
-                        {isProjectSelected ? (
-                          <CheckIcon color={'primary'} fontSize={'large'} />
-                        ) : null}
-                      </ListItemIcon>
+                      onClick={() => handleProjectSelect(project.id)}
+                      className={clsx(
+                        classes.listProject,
+                        isProjectSelected ? classes.selectedProject : ''
+                      )}>
                       <ListItemAvatar>
-                        <Avatar alt='' src={value.logo} />
+                        <Avatar
+                          alt={`${project.campaignName}-icon`}
+                          src={client ? client.logo : null}
+                        />
                       </ListItemAvatar>
                       <ListItemText
-                        classes={{ root: classes.listItemText }}
-                        primary={value.campaignName}
+                        classes={{
+                          root: clsx(
+                            classes.listItemText,
+                            isProjectSelected ? classes.selectedProjectText : ''
+                          )
+                        }}
+                        primary={project.campaignName}
                       />
                     </ListItem>
                   )
@@ -238,19 +251,18 @@ export const PortfolioModal = ({
 
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-      <div className={classes.portfolioModal}>
+      <div className={'modalContent'}>
         <div>
-          <h2 className={classes.portfolioModalHead}>
-            {!state.isChooseProject ? 'New Portfolio' : 'Choose Projects'}
-          </h2>
-          <span>
-            {!state.isChooseProject ? 'Get Started' : 'Display your work'}
-          </span>
+          <ModalTitle
+            title={!state.isChooseProject ? 'New Portfolio' : 'Choose Projects'}
+            subtitle={
+              !state.isChooseProject ? 'Get Started' : 'Display your work'
+            }
+          />
 
           <CloseButton
             onClick={onRequestClose}
-            style={{ position: 'absolute', top: 10, right: 10, fontSize: 50 }}
-            isLarge={true}
+            style={{ position: 'absolute', top: 10, right: 10 }}
           />
         </div>
         {!state.isChooseProject ? renderPortfolioLogoView() : null}

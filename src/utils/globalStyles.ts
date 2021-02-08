@@ -16,7 +16,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderColor: theme.palette.background.surfaceHighlight
     },
     '.MuiTableCell-head': {
-    borderColor: theme.palette.background.surfaceHighlight
+      borderColor: theme.palette.background.surfaceHighlight
     },
     '.MuiTableRow-root': {
       '&:hover': {
@@ -33,6 +33,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
       maxHeight: '80vh',
+      minWidth: 400,
       outline: 'none',
       borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
