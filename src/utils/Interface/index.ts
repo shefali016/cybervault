@@ -269,6 +269,13 @@ export type Cell = {
   key: string
 }
 
+export type Mail={
+  to:string
+  from:string
+  data:Object
+  templateId:string
+}
+
 export type MailTemplate={
   id:string,
   type:string

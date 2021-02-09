@@ -2,10 +2,10 @@ import { all, call, put, takeLatest, select } from 'redux-saga/effects'
 import * as ActionTypes from '../actions/actionTypes'
 import * as MailApi from '../apis/mails';
 import * as Actions from '../actions/mails'
+import {Mail} from '../utils/Interface';
 
 
-function* sendEmailRequest({mail}: any) {
-    console.log(mail,"mailllllllprrrrr")
+function* sendEmailRequest({mail}:any) {
   try {
     yield call(MailApi.sendMail, mail)
     yield put(Actions.sendEmailSuccess())
@@ -16,7 +16,6 @@ function* sendEmailRequest({mail}: any) {
 function* getAllMailTemplatesRequest() {
 try {
   let response=yield call(MailApi.allMailTemplates)
-  console.log(response,"responseee")
   yield put(Actions.getAllMailTemplatesSuccess(response))
 } catch (error: any) {
   yield put(Actions.getAllMailTemplatesError(error?.message || 'default'))

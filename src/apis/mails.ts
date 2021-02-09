@@ -22,7 +22,6 @@ export const allMailTemplates=async()=>{
   for (const doc of data.docs) {
     mailTemplates.push(doc.data())
   }
-  console.log(mailTemplates,"bbbbbbbbbbbbbbbbbbbggggggggggggggggggg")
   return mailTemplates
 }
  

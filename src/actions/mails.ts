@@ -2,7 +2,7 @@ import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface' 
 
 export function sendEmailRequest(
-  mail:any
+  mail:Types.Mail
   ) {
     return {
       type: ActionTypes.SEND_EMAIL_REQUEST,
@@ -28,9 +28,8 @@ export function sendEmailRequest(
       }
     }
     export function getAllMailTemplatesSuccess(
-      mailTemplatesData:any
+      mailTemplatesData:Array<Types.MailTemplate>
     ) {
-      // console.log(mail)
       return {
         type: ActionTypes.GET_ALL_MAIL_TEMPLATES_SUCCESS,
         payload:mailTemplatesData

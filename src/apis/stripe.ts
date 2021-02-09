@@ -109,24 +109,4 @@ export const createStripeLogin = async (stripeAccountId: string) => {
     throw Error('Failed to create stripe account')
   }
 }
-export const sendMsg = async (
-  email:string,message:string
-): Promise<any> => {
-  
-  const res = await axios.post<any>(
-    `${server_url}/api/v1/sendEmail`,
-    { email, message }
-  )
-  console.log(res,"responseeeeeeee")
 
-  if (res.status === 200) {
-    // const stripeAccount = res.data
-    // await updateAccount({
-    //   ...account,
-    //   stripe: { ...account.stripe, accountId: stripeAccount.id }
-    // })
-    // return stripeAccount
-  } else {
-    throw Error('Failed to send Message')
-  }
-}

@@ -88,16 +88,16 @@ const templateId=useMemo(()=>{
         !Object.keys(invoiceData.invoiceData).length)
     ) {
       const mailPayload={
-        to:invoiceData.invoiceData.clientEmail,
-        from:account.email,
-        templateId:templateId,
+        to:invoiceData.invoiceData.clientEmail||"",
+        from:account.email||'',
+        templateId:templateId||'',
         data:{
-          clientEmail:invoiceData.invoiceData.clientEmail,
-          projectName:invoiceData.invoiceData.projectName,
-          invoiceId:invoiceData.invoiceData.id,
-          userEmail:account.email,
-          amount:invoiceData.invoiceData.price,
-          subject:`Invoice for ${invoiceData.invoiceData.projectName}`
+          clientEmail:invoiceData.invoiceData.clientEmail||'',
+          projectName:invoiceData.invoiceData.projectName||'',
+          invoiceId:invoiceData.invoiceData.id||'',
+          userEmail:account.email||'',
+          amount:invoiceData.invoiceData.price||'',
+          subject:`Invoice for ${invoiceData.invoiceData.projectName}||""`
         }
       }
       dispatch( sendEmailRequest(mailPayload))
