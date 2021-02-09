@@ -68,7 +68,7 @@ export const sendEmail = functions.firestore
       if(mailId && !oldData && newData && Object.keys(newData).length ){
         const msg = {
           to: newData.to,
-          from: "morgan@employeelinkapp.com",
+          from:newData.from,
           templateId:newData.templateId,
           dynamic_template_data:newData.data
         }
