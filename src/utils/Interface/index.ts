@@ -269,4 +269,9 @@ export type Cell = {
   key: string
 }
 
+export type MailTemplate={
+  id:string,
+  type:string
+}
+
 export type Row = Array<Cell>

@@ -1,0 +1,49 @@
+import * as ActionTypes from './actionTypes'
+import * as Types from '../utils/Interface' 
+
+export function sendEmailRequest(
+  mail:any
+  ) {
+    return {
+      type: ActionTypes.SEND_EMAIL_REQUEST,
+      mail
+    }
+  }
+  export function sendEmailSuccess(
+  ) {
+    return {
+      type: ActionTypes.SEND_EMAIL_SUCCESS,
+    }
+  }
+  export function sendEmailError(error: string) {
+    return {
+      type: ActionTypes.SEND_EMAIL_ERROR,
+      error
+    }
+  }
+
+  export function getAllMailTemplatesRequest(){
+      return {
+        type: ActionTypes.GET_ALL_MAIL_TEMPLATES_REQUEST,
+      }
+    }
+    export function getAllMailTemplatesSuccess(
+      mailTemplatesData:any
+    ) {
+      // console.log(mail)
+      return {
+        type: ActionTypes.GET_ALL_MAIL_TEMPLATES_SUCCESS,
+        payload:mailTemplatesData
+      }
+    }
+    export function getAllMailTemplatesError(error: string) {
+      return {
+        type: ActionTypes.GET_ALL_MAIL_TEMPLATES_ERROR,
+        error
+      }
+    }
+   
+  
+  
+  
+  

@@ -15,6 +15,7 @@ import CheckIcon from '@material-ui/icons/Check'
 import SaveIcon from '@material-ui/icons/Save'
 import { ClientLogo } from 'components/Clients/ClientLogo'
 
+
 type InvoiceStepProps = {
   project: Project
   headerTitle: String

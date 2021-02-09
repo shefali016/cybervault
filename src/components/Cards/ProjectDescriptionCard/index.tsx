@@ -165,7 +165,8 @@ const ProjectCard = ({
                       disabled={
                         project.canInvoice === false ||
                         !account.stripe.payoutsEnabled
-                      }>
+                      }
+                      >
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}

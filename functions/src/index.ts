@@ -7,7 +7,6 @@ const sgMail = require("@sendgrid/mail");
 // import firebaseAccountCredentials from "./cybervault-8cfe9-firebase-adminsdk-kpppk-d07b59a821.json";
 
 // const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
-
 const app = express()
 
 export const corsHandler = cors({ origin: true })
@@ -23,42 +22,7 @@ admin.initializeApp({
   databaseURL: 'https://cybervault-8cfe9.firebaseio.com'
 });
 
-export const emailMessage=(req:any,res:any)=>{
-  const { email,message } = req.body;
-  return corsHandler(req, res, () => {
-    var text = `<div>
-      <h4>Information</h4>
-      <ul>
-        <li>
-          Name - ${ "cybervault"}
-        </li>
-        <li>
-          Email - ${email || ""}
-        </li>
-        <li>
-          Phone - ${"cybervault"}
-        </li>
-      </ul>
-      <h4>Message</h4>
-      <p>${message || ""}</p>
-    </div>`;
-    const msg = {
-      to: "cybervault@mailinator.com",
-      from: "cybervault@mailinator.com",
-      subject: `${"cybervault"} sent you a new message`,
-      text: text,
-      html: text
-    };
-    sgMail.setApiKey(
-      "SENDGRID API KEY"
-    );
-    sgMail.send(msg);
-    res.status(200).send("success");
-  })
-}
-
 export const httpsRequests = functions.https.onRequest(app)
-app.use('/api/v1/sendEmail',emailMessage)
 
 
 
@@ -93,3 +57,34 @@ export const myFunction = functions.firestore
         
       }
    });
+
+export const sendEmail = functions.firestore
+.document(`Mails/{mailId}`)
+.onWrite((change, context) => {
+    try {
+      let mailId=context.params.mailId;
+      let newData = change.after.data()
+      let oldData = change.before.data()
+      if(mailId && !oldData && newData && Object.keys(newData).length ){
+        const msg = {
+          to: newData.to,
+          from: "morgan@employeelinkapp.com",
+          templateId:newData.templateId,
+          dynamic_template_data:newData.data
+        }
+        sgMail.setApiKey(
+                  `${functions.config().sendgrid.key}`
+                );
+                sgMail.send(msg).then((res:any)=>{
+                    console.log('success')
+                }).catch((error:any)=>{
+                  console.log(error,"error Occurs")
+                })      
+      }
+      
+    } catch (error) {
+      console.log(error, "error occurs");
+      
+    }
+ });
+

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
+import React, { useState, useRef, useContext, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import InvoiceStepOne from './Steps/InvoiceStepOne'
@@ -8,13 +8,13 @@ import CloseButton from '../Common/Button/CloseButton'
 import { ReduxState } from 'reducers/rootReducer'
 import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
-import { Project, Account, Client } from '../../utils/Interface'
+import { Project, Account, Client,MailTemplate } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
 import { InvoiceStatuses } from 'utils/enums'
-import { sendMsg } from 'apis/stripe'
+import {sendEmailRequest,getAllMailTemplatesRequest} from '../../actions/mails'
 
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
@@ -66,6 +66,20 @@ const InvoiceData = ({
   const dispatch = useDispatch()
 
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
+  const mailTemplatesData = useSelector((state: ReduxState) => state.mail.mailTemplatesData)
+
+  const getTemplateId=()=>{
+    if(mailTemplatesData){
+      let data:any
+      data=mailTemplatesData.find((tmp:MailTemplate)=>{
+        return tmp.type==='invoice'
+      })
+      return data?.templateId
+    }
+  }
+const templateId=useMemo(()=>{
+  return getTemplateId()
+},[mailTemplatesData])
 
   useEffect(() => {
     if (
@@ -73,6 +87,20 @@ const InvoiceData = ({
       (invoiceData?.invoiceData?.projectId === projectData.id ||
         !Object.keys(invoiceData.invoiceData).length)
     ) {
+      const mailPayload={
+        to:invoiceData.invoiceData.clientEmail,
+        from:account.email,
+        templateId:templateId,
+        data:{
+          clientEmail:invoiceData.invoiceData.clientEmail,
+          projectName:invoiceData.invoiceData.projectName,
+          invoiceId:invoiceData.invoiceData.id,
+          userEmail:account.email,
+          amount:invoiceData.invoiceData.price,
+          subject:`Invoice for ${invoiceData.invoiceData.projectName}`
+        }
+      }
+      dispatch( sendEmailRequest(mailPayload))
       setCurrentStep((step) => step + 1)
     }
   }, [invoiceData.success])
@@ -121,6 +149,10 @@ const InvoiceData = ({
       )
     }
   }, [project])
+
+  useEffect(()=>{
+    dispatch(getAllMailTemplatesRequest())
+  },[])
 
   const getFullAmount = () => {
     return (
