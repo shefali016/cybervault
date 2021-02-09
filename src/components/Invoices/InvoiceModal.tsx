@@ -97,7 +97,8 @@ const templateId=useMemo(()=>{
           invoiceId:invoiceData.invoiceData.id||'',
           userEmail:account.email||'',
           amount:invoiceData.invoiceData.price||'',
-          subject:`Invoice for ${invoiceData.invoiceData.projectName}||""`
+          subject:`Invoice for ${invoiceData.invoiceData.projectName}||""`,
+          link:`${window.location.origin}/clientInvoices/${invoiceData.invoiceData.id}`
         }
       }
       dispatch( sendEmailRequest(mailPayload))
