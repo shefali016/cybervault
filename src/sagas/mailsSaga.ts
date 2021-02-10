@@ -7,8 +7,8 @@ import {Mail} from '../utils/Interface';
 
 function* sendEmailRequest({mail}:any) {
   try {
-    yield call(MailApi.sendMail, mail)
-    yield put(Actions.sendEmailSuccess())
+    let response=yield call(MailApi.sendMail, mail)
+    yield put(Actions.sendEmailSuccess(response))
   } catch (error: any) {
     yield put(Actions.sendEmailError(error?.message || 'default'))
   }

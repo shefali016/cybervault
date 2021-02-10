@@ -10,9 +10,11 @@ export function sendEmailRequest(
     }
   }
   export function sendEmailSuccess(
+    mail:any
   ) {
     return {
       type: ActionTypes.SEND_EMAIL_SUCCESS,
+      payload:mail
     }
   }
   export function sendEmailError(error: string) {

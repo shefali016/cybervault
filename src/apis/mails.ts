@@ -7,10 +7,16 @@ import 'firebase/firestore'
 export const sendMail = async (
     mail:any
   ) => {
-    await firebase
+    try{
+      await firebase
       .firestore()
       .collection('Mails')
       .doc(mail.id).set(mail)
+      return mail
+    }
+    catch(err){
+      console.log(err)
+    }
   }
 
 export const allMailTemplates=async()=>{

@@ -66,12 +66,12 @@ const InvoiceData = ({
   const dispatch = useDispatch()
 
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
-  const mailTemplatesData = useSelector((state: ReduxState) => state.mail.mailTemplatesData)
+  const mailData = useSelector((state: ReduxState) => state.mail)
 
   const getTemplateId=()=>{
-    if(mailTemplatesData){
+    if(mailData.mailTemplatesData){
       let data:any
-      data=mailTemplatesData.find((tmp:MailTemplate)=>{
+      data=mailData.mailTemplatesData.find((tmp:MailTemplate)=>{
         return tmp.type==='invoice'
       })
       return data?.templateId
@@ -79,32 +79,7 @@ const InvoiceData = ({
   }
 const templateId=useMemo(()=>{
   return getTemplateId()
-},[mailTemplatesData])
-
-  useEffect(() => {
-    if (
-      invoiceData.success &&
-      (invoiceData?.invoiceData?.projectId === projectData.id ||
-        !Object.keys(invoiceData.invoiceData).length)
-    ) {
-      const mailPayload={
-        to:invoiceData.invoiceData.clientEmail||"",
-        from:account.email||'',
-        templateId:templateId||'',
-        data:{
-          clientEmail:invoiceData.invoiceData.clientEmail||'',
-          projectName:invoiceData.invoiceData.projectName||'',
-          invoiceId:invoiceData.invoiceData.id||'',
-          userEmail:account.email||'',
-          amount:invoiceData.invoiceData.price||'',
-          subject:`Invoice for ${invoiceData.invoiceData.projectName}||""`,
-          link:`${window.location.origin}/clientInvoices/${invoiceData.invoiceData.id}`
-        }
-      }
-      dispatch( sendEmailRequest(mailPayload))
-      setCurrentStep((step) => step + 1)
-    }
-  }, [invoiceData.success])
+},[mailData.mailTemplatesData])
 
   useOnChange(invoiceData.error, (error) => {
     if (!!error) {
@@ -169,9 +144,9 @@ const templateId=useMemo(()=>{
     })
     return cost
   }
-  const handleSendInvoice = () => {
+  const handleSendInvoice = (invoiceId:string) => {
     const invoice = {
-      id: generateUid(), // Using generateId function
+      id: invoiceId, // Using generateId function
       dateCreated: new Date().toLocaleString(),
       datePaid: null,
       projectId: projectData.id, // Id of the project being invoiced
@@ -188,6 +163,37 @@ const templateId=useMemo(()=>{
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
   }
+
+  const handleSendMail=()=>{
+    const invoiceId=generateUid();
+    const mailPayload={
+      to:clientData.email.trim()||"",
+      from:"morgan@employeelinkapp.com"||'',
+      templateId:templateId.trim()||'',
+      data:{
+        clientEmail:clientData.email.trim() ||'',
+        projectName:projectData.campaignName||'',
+        invoiceId:invoiceId.trim()||'',
+        userEmail:account.email||'',
+        amount:invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()||'',
+        subject:`Invoice for ${projectData.campaignName}`||"",
+        link:`${window.location.origin}/clientInvoices/${invoiceId}`
+      }
+    }
+    dispatch( sendEmailRequest(mailPayload))
+  }
+
+  useOnChange(mailData.success, (success) => {
+    if (success) {
+      handleSendInvoice(mailData.mailData.data.invoiceId)
+    }
+  })
+  useOnChange((invoiceData.success && invoiceData?.invoiceData?.projectId === projectData.id),(success) => {
+    if (success) {
+      setCurrentStep((step) => step + 1)
+    }
+  })
+ 
 
   const handleEdit = (editType: string) => {
     setEdit({
@@ -237,7 +243,7 @@ const templateId=useMemo(()=>{
             project={projectData}
             headerTitle={'Invoice'}
             invoiceType={invoiceType}
-            handleSendInvoice={handleSendInvoice}
+            handleSendInvoice={handleSendMail}
             edit={edit}
             handleEdit={handleEdit}
             handleSave={handleSave}

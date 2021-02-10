@@ -13,6 +13,7 @@ import {
     loading:Boolean,
     success:Boolean,
     error:Boolean,
+    mailData:any,
     mailTemplateLoading:Boolean,
     mailTemplateSuccess:Boolean,
     mailTemplateError:Boolean,
@@ -29,6 +30,7 @@ import {
     loading:false,
     success:false,
     error:false,
+    mailData:{},
     mailTemplateLoading:false,
     mailTemplateSuccess:false,
     mailTemplateError:false,
@@ -48,7 +50,8 @@ import {
       ...state,
       loading:false,
       success:true,
-      error:false
+      error:false,
+      mailData:action.payload
     }
   }
   
