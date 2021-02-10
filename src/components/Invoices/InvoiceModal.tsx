@@ -170,6 +170,7 @@ const templateId=useMemo(()=>{
       to:clientData.email.trim()||"",
       from:account.email||'',
       templateId:templateId.trim()||'',
+      id:invoiceId.trim(),
       data:{
         clientEmail:clientData.email.trim() ||'',
         projectName:projectData.campaignName||'',
