@@ -168,7 +168,7 @@ const templateId=useMemo(()=>{
     const invoiceId=generateUid();
     const mailPayload={
       to:clientData.email.trim()||"",
-      from:"morgan@employeelinkapp.com"||'',
+      from:account.email||'',
       templateId:templateId.trim()||'',
       data:{
         clientEmail:clientData.email.trim() ||'',
@@ -186,6 +186,11 @@ const templateId=useMemo(()=>{
   useOnChange(mailData.success, (success) => {
     if (success) {
       handleSendInvoice(mailData.mailData.data.invoiceId)
+    }
+  })
+  useOnChange(mailData.error, (error) => {
+    if (!!error) {
+      toastContext.showToast({ title: 'Failed to send invoice' })
     }
   })
   useOnChange((invoiceData.success && invoiceData?.invoiceData?.projectId === projectData.id),(success) => {
