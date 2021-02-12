@@ -13,7 +13,6 @@ import {
 
 const InvoicesClientScreen = (props: any) => {
   const classes = useStyles()
-  console.log(props, 'propssssss')
   const dispatch = useDispatch()
   const accountData = useSelector((state: any) => state.auth.account)
   const invoiceData = useSelector((state: any) => state.invoice)
@@ -23,9 +22,6 @@ const InvoicesClientScreen = (props: any) => {
   const clientDetails = useSelector(
     (state: any) => state.clients.clientDetailData
   )
-
-  console.log(invoiceData, projectDetails, clientDetails, 'iiiiinnnnnnnnn')
-
   useEffect(() => {
     dispatch(getInvoiceRequest(accountData, props.match.params.id))
   }, [])

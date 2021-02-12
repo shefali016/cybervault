@@ -51,7 +51,6 @@ export function generateNewInvoiceRequest(
 
 
   export function getInvoiceRequest(account: Types.Account,invoiceId:string) {
-    console.log(account,"acccccount")
     return {
       type: ActionTypes.GET_INVOICE_REQUEST,
       account,
