@@ -178,7 +178,7 @@ const templateId=useMemo(()=>{
         invoiceId:invoiceId.trim()||'',
         userEmail:account.email||'',
         amount:invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()||'',
-        subject:`Invoice for ${projectData.campaignName}`||"",
+        subject:'Creator Cloud Invoice',
         link:`${window.location.origin}/clientInvoices/${invoiceId}`
       }
     }
