@@ -32,3 +32,15 @@ export const newInvoice = async (
   }
   return allInvoices
   }
+
+  export const getInvoice = async (
+    account: Types.Account,
+    invoiceId:string
+  ) => {
+    let data: any = await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(account.id)
+      .collection('Invoices').doc(`${invoiceId}`).get()
+  return data.data()
+  }

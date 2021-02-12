@@ -6,7 +6,7 @@ import {getAllProjectsRequest} from '../actions/projectActions'
 import { Account ,Project,Invoice} from '../utils/Interface'
 
 
-type Params = { account: Account; project:Project,invoice:Invoice; type: string }
+type Params = { account: Account; project:Project,invoice:Invoice; type: string,invoiceId:string }
 
 function* invoiceRequest({ account,project,invoice}: Params) {
   try {
@@ -20,7 +20,16 @@ function* invoiceRequest({ account,project,invoice}: Params) {
 function* getAllInvoice({ account}: Params) {
   try {
     const invoiceData = yield call(InvoiceApis.getAllInvoices, account)
-    yield put(InvoiceActions.getInvoiceSuccess(invoiceData))
+    yield put(InvoiceActions.getAllInvoiceSuccess(invoiceData))
+  } catch (error: any) {
+    yield put(InvoiceActions.getAllInvoiceError(error?.message || 'default'))
+  }
+}
+
+function* getInvoice({ account,invoiceId}: Params) {
+  try {
+    const response = yield call(InvoiceApis.getInvoice, account,invoiceId)
+    yield put(InvoiceActions.getInvoiceSuccess(response))
   } catch (error: any) {
     yield put(InvoiceActions.getInvoiceError(error?.message || 'default'))
   }
@@ -28,7 +37,9 @@ function* getAllInvoice({ account}: Params) {
 
 function* watchRequests() {
   yield takeLatest(ActionTypes.NEW_INVOICE_REQUEST, invoiceRequest)
-  yield takeLatest(ActionTypes.GET_INVOICE_REQUEST, getAllInvoice)
+  yield takeLatest(ActionTypes.GET_ALL_INVOICE_REQUEST, getAllInvoice)
+  yield takeLatest(ActionTypes.GET_INVOICE_REQUEST, getInvoice)
+
 
 }
 

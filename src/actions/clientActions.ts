@@ -1,23 +1,23 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
 
-export function getClientsRequest(account: Types.Account) {
+export function getAllClientsRequest(account: Types.Account) {
     return {
-      type: ActionTypes.GET_CLIENTS_REQUEST,
+      type: ActionTypes.GET_ALL_CLIENTS_REQUEST,
       account
     }
   }
 
-  export function getClientsSuccess(clientsData:Array<Types.Client>) {
+  export function getAllClientsSuccess(clientsData:Array<Types.Client>) {
     return {
-        type: ActionTypes.GET_CLIENTS_SUCCESS,
+        type: ActionTypes.GET_ALL_CLIENTS_SUCCESS,
         payload:clientsData
       }
   }
 
-  export function getClientsError(error: string) {
+  export function getAllClientsError(error: string) {
     return {
-      type: ActionTypes.GET_CLIENTS_ERROR,
+      type: ActionTypes.GET_ALL_CLIENTS_ERROR,
       error
     }
   }
@@ -41,5 +41,26 @@ export function addClientError(error:string){
     error
   }
 }
+
+export function getClientRequest(account: Types.Account,clientId:string){
+  return {
+    type: ActionTypes.GET_CLIENT_REQUEST,
+    account,
+    clientId
+  }
+}
+export function getClientSuccess(client:Types.Client){
+  return {
+    type: ActionTypes.GET_CLIENT_SUCCESS,
+    payload:client
+  }
+}
+export function getClientError(error:string){
+  return {
+    type: ActionTypes.GET_CLIENT_ERROR,
+    error
+  }
+}
+  
   
   

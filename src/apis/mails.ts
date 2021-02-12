@@ -11,7 +11,7 @@ export const sendMail = async (
       await firebase
       .firestore()
       .collection('Mails')
-      .doc(mail.id).set(mail)
+      .doc().set(mail)
       return mail
     }
     catch(err){

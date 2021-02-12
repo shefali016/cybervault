@@ -4,7 +4,7 @@ import {
   deleteProjectRequest,
   getAllProjectsRequest
 } from '../../actions/projectActions'
-import { getClientsRequest } from '../../actions/clientActions'
+import {getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
@@ -111,7 +111,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     return dispatch(getAllProjectsRequest(account))
   },
   getClientsRequest: (account: Types.Account) => {
-    return dispatch(getClientsRequest(account))
+    return dispatch(getAllClientsRequest(account))
   },
   deleteProject: (projectId: string) => {
     return dispatch(deleteProjectRequest(projectId))

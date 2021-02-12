@@ -157,6 +157,7 @@ const templateId=useMemo(()=>{
         return mile.check === true
       }), // will contain milestones being invoiced or null if invoicing total amount
       clientEmail: clientData.email,
+      clientId:clientData.id,
       campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
       status: InvoiceStatuses.PENDING // has client paid invoice or not
@@ -168,9 +169,9 @@ const templateId=useMemo(()=>{
     const invoiceId=generateUid();
     const mailPayload={
       to:clientData.email.trim()||"",
-      from:account.email||'',
+      from:'no-reply@employeelinkapp.com',
       templateId:templateId.trim()||'',
-      id:invoiceId.trim(),
+      type:'invoice',
       data:{
         clientEmail:clientData.email.trim() ||'',
         projectName:projectData.campaignName||'',
@@ -194,7 +195,7 @@ const templateId=useMemo(()=>{
       toastContext.showToast({ title: 'Failed to send invoice' })
     }
   })
-  useOnChange((invoiceData.success && invoiceData?.invoiceData?.projectId === projectData.id),(success) => {
+  useOnChange((invoiceData.success && invoiceData?.newinvoiceData?.projectId === projectData.id),(success) => {
     if (success) {
       setCurrentStep((step) => step + 1)
     }

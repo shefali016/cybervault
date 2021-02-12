@@ -273,7 +273,8 @@ export type Mail={
   to:string
   from:string
   data:Object
-  templateId:string
+  templateId:string,
+  type:string
 }
 
 export type MailTemplate={

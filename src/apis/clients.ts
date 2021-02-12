@@ -42,3 +42,17 @@ export const addClient = async (
     return {message:'Failed to add Client'}
   }
 }
+
+export const getClient = async (
+  account: Types.Account,
+  clientId:string
+) => {
+  let data: any = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Clients').doc(`${clientId}`)
+    .get()
+
+  return data.data()
+}

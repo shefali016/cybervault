@@ -15,7 +15,7 @@ import {
   createStripeLogin,
   verifyStripeAccount
 } from '../../apis/stripe'
-import { getInvoiceRequest } from '../../actions/invoiceActions'
+import { getAllInvoiceRequest } from '../../actions/invoiceActions'
 import { ToastContext } from 'context/Toast'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { updateAccount } from 'actions/account'
@@ -69,7 +69,7 @@ const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
     ) {
       _verifyStripeAccount()
     }
-    dispatch(getInvoiceRequest(account))
+    dispatch(getAllInvoiceRequest(account))
   }, [])
 
   const _verifyStripeAccount = async () => {

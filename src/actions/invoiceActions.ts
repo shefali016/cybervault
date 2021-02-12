@@ -28,10 +28,34 @@ export function generateNewInvoiceRequest(
     }
   }
  
-  export function getInvoiceRequest(account: Types.Account) {
+  export function getAllInvoiceRequest(account: Types.Account) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_REQUEST,
+      account,
+    }
+  }
+  export function getAllInvoiceSuccess(
+    invoicesData:Array<Types.Invoice>
+  ) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_SUCCESS,
+      payload:invoicesData
+    }
+  }
+  export function getAllInvoiceError(error: string) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_ERROR,
+      error
+    }
+  }
+
+
+  export function getInvoiceRequest(account: Types.Account,invoiceId:string) {
+    console.log(account,"acccccount")
     return {
       type: ActionTypes.GET_INVOICE_REQUEST,
       account,
+      invoiceId
     }
   }
   export function getInvoiceSuccess(
