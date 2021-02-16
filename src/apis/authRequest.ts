@@ -59,6 +59,18 @@ export const signUpRequest = (
 
 export const logoutRequest = () => firebase.auth().signOut()
 
+export const resetPassword=(password:string)=>{
+  var user = firebase.auth().currentUser;
+  if(user){
+    user.updatePassword(password).then(function() {
+      // Update successful.
+    }).catch(function(error) {
+      // An error happened.
+    });
+  }
+}
+
+
 export const googleLoginRequest = async () => {
   const googleProvider = await new firebase.auth.GoogleAuthProvider()
   const { user: authUser } = await firebase
