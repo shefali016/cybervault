@@ -23,7 +23,7 @@ type StateProps = {
   user: User
 }
 type initialState = {
-  selectedProjectId: string
+  selectedProjectId: string | null
 }
 type Props = {
   match: any
@@ -55,8 +55,23 @@ const PortfolioSingleScreen = ({
   const foregroundStyle = getTextColor(foregroundColor)
 
   const [state, setState] = useState<initialState>({
-    selectedProjectId: portfolio.projects[0]
+    selectedProjectId:
+      portfolio?.id === match.params.id ? portfolio.projects[0] : null
   })
+
+  useEffect(() => {
+    const id = match.params.id
+    handlePortfolioAction(id)
+  }, [match])
+
+  useEffect(() => {
+    if (!state.selectedProjectId && portfolio?.id === match.params.id) {
+      setState((state) => ({
+        ...state,
+        selectedProjectId: portfolio.projects[0]
+      }))
+    }
+  }, [portfolio])
 
   const selectedProjectData = useMemo(
     () => portfolioProjects.find((p) => p.id === state.selectedProjectId),
@@ -73,11 +88,6 @@ const PortfolioSingleScreen = ({
   const handlePortfolioAction = (portfolioId: string) => {
     getPortfolio(portfolioId)
   }
-
-  useEffect(() => {
-    const id = match.params.id
-    handlePortfolioAction(id)
-  }, [match])
 
   const setProjectId = (project: Project) => {
     setState({
