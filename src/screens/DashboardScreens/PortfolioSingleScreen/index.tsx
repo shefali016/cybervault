@@ -93,7 +93,7 @@ const PortfolioSingleScreen = ({
         }}>
         <ul
           className={`${classes.portfoloTabsList} ${
-            color === 'light' ? classes.portfoloDarkTabsList : ''
+            color === 'dark' ? classes.portfoloDarkTabsList : ''
           }`}>
           {portfolioProjects && portfolioProjects.length
             ? portfolioProjects.map((project: Project | any, index: number) => {
@@ -106,7 +106,9 @@ const PortfolioSingleScreen = ({
                         ? 'active'
                         : ''
                     }>
-                    {project.campaignName}
+                    <Typography variant={'subtitle2'}>
+                      {project.campaignName}
+                    </Typography>
                   </li>
                 )
               })

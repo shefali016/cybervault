@@ -29,11 +29,8 @@ export const useStyles = makeStyles((theme) => ({
   },
   portfoloDarkTabsList: {
     '& li': {
-      color: '#000'
+      color: '#fff'
     },
-    '& li.active::after': {
-      backgroundColor: '#000'
-    }
   },
   portfolioWrapper: {
     display: FLEX,
