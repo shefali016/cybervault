@@ -80,7 +80,7 @@ const PortfolioSingleScreen = ({
   const handleBack = () => history.pop()
 
   return (
-    <div className={'col'} style={{ backgroundColor }}>
+    <div className={'col'} style={{ backgroundColor, color: textColor }}>
       <Header
         user={user}
         onProfileClick={handleProfileNavigation}
@@ -126,23 +126,25 @@ const PortfolioSingleScreen = ({
           <RenderCampaignDetails projectData={state.selectedProjectData} />
           <br />
           <RenderProjectDetails projectData={state.selectedProjectData} />
-          <div className={classes.corosalWrapper}>
-            <AssetUploadDisplay
-              {...{
-                assetIds: state.selectedProjectData.videos,
-                accountId: account ? account.id : '',
-                isVideo: true,
-                disableUpload: true
-              }}
-            />
-            <FeatureAssetUpload
-              {...{
-                assetIds: state.selectedProjectData.images,
-                accountId: account ? account.id : '',
-                featuredAsset: state.selectedProjectData.featuredImage,
-                disableUpload: true
-              }}
-            />
+          <div className={classes.assetsOuter}>
+            <div className={classes.assetsInner}>
+              <AssetUploadDisplay
+                {...{
+                  assetIds: state.selectedProjectData.videos,
+                  accountId: account ? account.id : '',
+                  isVideo: true,
+                  disableUpload: true
+                }}
+              />
+              <FeatureAssetUpload
+                {...{
+                  assetIds: state.selectedProjectData.images,
+                  accountId: account ? account.id : '',
+                  featuredAsset: state.selectedProjectData.featuredImage,
+                  disableUpload: true
+                }}
+              />
+            </div>
           </div>
         </div>
       </Container>

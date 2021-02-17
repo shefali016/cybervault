@@ -57,8 +57,13 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
 
   },
-  corosalWrapper: {
+  assetsOuter: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  assetsInner: {
+    alignSelf: "center",
+    width: "100%",
     maxWidth: 800,
-    margin: AUTO
   }
 }))
