@@ -12,6 +12,8 @@ import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
 import { getTextColor } from 'utils/helpers'
 import Header from '../../../components/Common/Header/header'
 import { AccountTabIds } from 'screens/MainScreen'
+import { useTheme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 
 type StateProps = {
   portfolio: Portfolio
@@ -23,20 +25,21 @@ type initialState = {
   selectedProjectData: Object | any
 }
 type Props = {
-  location: any
+  match: any
   history: any
   getPortfolioFolders: (portfolioId: string) => void
 } & StateProps
 
 const PortfolioSingleScreen = ({
-  location,
   getPortfolioFolders,
   account,
   portfolioProjects,
   user,
-  history
+  history,
+  match
 }: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
 
   const {
     text: textColor,
@@ -46,11 +49,7 @@ const PortfolioSingleScreen = ({
     headerGradient2
   } = account.branding.portfolio
 
-  const portfolioHeaderGradient1 = account
-    ? account.branding.portfolio.headerGradient1
-    : ''
-
-  const color = getTextColor(portfolioHeaderGradient1)
+  const color = getTextColor(headerGradient1)
 
   const [state, setState] = useState<initialState>({
     selectedProjectData:
@@ -62,10 +61,9 @@ const PortfolioSingleScreen = ({
   }
 
   useEffect(() => {
-    const paths = location.pathname.split('/')
-    handlePortfolioAction(paths[2])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+    const id = match.params.id
+    handlePortfolioAction(id)
+  }, [match])
 
   const setProjectData = (project: Project) => {
     setState({
@@ -80,7 +78,9 @@ const PortfolioSingleScreen = ({
   const handleBack = () => history.pop()
 
   return (
-    <div className={'col'} style={{ backgroundColor, color: textColor }}>
+    <div
+      className={classes.screen}
+      style={{ backgroundColor, color: textColor }}>
       <Header
         user={user}
         onProfileClick={handleProfileNavigation}
@@ -114,40 +114,42 @@ const PortfolioSingleScreen = ({
         </ul>
       </div>
 
-      <Container maxWidth='lg'>
-        <div
-          className={classes.portfolioWrapper}
-          style={{ backgroundColor: foregroundColor }}>
-          <div style={{ color: textColor, marginBottom: '50px' }}>
-            <Typography variant={'h4'}>
-              {state.selectedProjectData.clientName}
-            </Typography>
-          </div>
-          <RenderCampaignDetails projectData={state.selectedProjectData} />
-          <br />
-          <RenderProjectDetails projectData={state.selectedProjectData} />
-          <div className={classes.assetsOuter}>
-            <div className={classes.assetsInner}>
-              <AssetUploadDisplay
-                {...{
-                  assetIds: state.selectedProjectData.videos,
-                  accountId: account ? account.id : '',
-                  isVideo: true,
-                  disableUpload: true
-                }}
-              />
-              <FeatureAssetUpload
-                {...{
-                  assetIds: state.selectedProjectData.images,
-                  accountId: account ? account.id : '',
-                  featuredAsset: state.selectedProjectData.featuredImage,
-                  disableUpload: true
-                }}
-              />
-            </div>
-          </div>
+      <div
+        className={classes.portfolioWrapper}
+        style={{ backgroundColor: foregroundColor }}>
+        <div style={{ marginBottom: theme.spacing(4) }}>
+          <Typography variant={'h4'}>
+            {state.selectedProjectData.campaignName}
+          </Typography>
         </div>
-      </Container>
+        <RenderCampaignDetails projectData={state.selectedProjectData} />
+        <RenderProjectDetails projectData={state.selectedProjectData} />
+        {!!state.selectedProjectData.videos.length ||
+          (!!state.selectedProjectData.images.length && (
+            <div className={classes.assetsOuter}>
+              <div className={classes.assetsInner}>
+                {!!state.selectedProjectData.videos.length && (
+                  <AssetUploadDisplay
+                    {...{
+                      assetIds: state.selectedProjectData.videos,
+                      accountId: account ? account.id : '',
+                      isVideo: true,
+                      disableUpload: true
+                    }}
+                  />
+                )}
+                <FeatureAssetUpload
+                  {...{
+                    assetIds: state.selectedProjectData.images,
+                    accountId: account ? account.id : '',
+                    featuredAsset: state.selectedProjectData.featuredImage,
+                    disableUpload: true
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   )
 }

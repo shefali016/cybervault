@@ -10,6 +10,7 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  screen: {minHeight: "100vh", display: "flex", flexDirection: "column"},
   portfoloTabsList: {
     display: 'flex',
     listStyle: 'none',
@@ -44,14 +45,13 @@ export const useStyles = makeStyles((theme) => ({
     }
   },
   portfolioWrapper: {
-    backgroundColor: theme.palette.background.secondary,
     display: FLEX,
     flex: 1,
     flexGrow: 1,
     flexDirection: COLUMN,
     borderRadius: 20,
-    marginLeft: theme.spacing(5),
-    marginRight: theme.spacing(5),
+    marginLeft: theme.spacing(8),
+    marginRight: theme.spacing(8),
     padding: theme.spacing(6),
     marginBottom: theme.spacing(5),
     marginTop: theme.spacing(5),
