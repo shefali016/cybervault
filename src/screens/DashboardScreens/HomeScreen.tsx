@@ -40,7 +40,7 @@ const HomeScreen = (props: any) => {
     props.getAllProjectsData(props.userData.account)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
+console.log(props.isLoggedIn,"loggedddd")
   const classes = useStyles()
   const theme = useTheme()
 
@@ -63,6 +63,7 @@ const HomeScreen = (props: any) => {
             }}
             history={props.history}
             account={props.userData.account}
+            userInfo={props.userData.user}
             onDelete={props.deleteProject}
             deletingId={props.deletingProjectId}
           />

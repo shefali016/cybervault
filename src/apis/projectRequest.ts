@@ -58,14 +58,14 @@ export const getAllProjectsRequest = async (account: Account) => {
  * @getSingleProjectDetails
  */
 export const getProjectDetailsRequest = async (
-  account: Account,
+  accountId: string,
   projectId: string | undefined
 ) => {
   try {
     let data: any = await firebase
       .firestore()
       .collection('AccountData')
-      .doc(account.id)
+      .doc(accountId)
       .collection('Projects')
       .doc(projectId)
       .get()

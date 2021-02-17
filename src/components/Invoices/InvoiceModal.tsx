@@ -23,7 +23,8 @@ type InvoiceProps = {
   onRequestClose: () => void
   project: Project
   account: Account
-  client: Client
+  client: Client,
+  userInfo:any
 }
 type MilestoneProps = {
   id: string
@@ -37,7 +38,8 @@ const InvoiceData = ({
   onRequestClose,
   project,
   account,
-  client
+  client,
+  userInfo
 }: InvoiceProps) => {
   const hasMilestones = project.milestones && project.milestones.length
 
@@ -160,6 +162,11 @@ const templateId=useMemo(()=>{
       clientId:clientData.id,
       campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
+      userDetails:{
+        id:userInfo.id,
+        name:userInfo.name,
+        email:userInfo.email
+      },
       status: InvoiceStatuses.PENDING // has client paid invoice or not
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
@@ -179,7 +186,7 @@ const templateId=useMemo(()=>{
         userEmail:account.email||'',
         amount:invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()||'',
         subject:'Creator Cloud Invoice',
-        link:`${window.location.origin}/clientInvoices/${invoiceId}`
+        link:`${window.location.origin}/clientInvoices/${account.id}/${invoiceId}`
       }
     }
     dispatch( sendEmailRequest(mailPayload))
@@ -299,6 +306,9 @@ type InvoiceModalProps = {
   onRequestClose: () => void
   account: Account
   client: Client | undefined
+  userInfo:any
+
+
 }
 
 const InvoiceModal = ({
@@ -306,7 +316,8 @@ const InvoiceModal = ({
   project,
   onRequestClose,
   account,
-  client
+  client,
+  userInfo
 }: InvoiceModalProps) => {
   if (!client) {
     return null
@@ -319,6 +330,7 @@ const InvoiceModal = ({
         project={project}
         account={account}
         client={client}
+        userInfo={userInfo}
       />
     </AppModal>
   )

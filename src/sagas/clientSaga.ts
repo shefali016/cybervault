@@ -9,7 +9,8 @@ type GetParams = {
   type: string
   account: Types.Account,
   client:Types.Client,
-  clientId:string
+  clientId:string,
+  accountId:string
 }
 
 function* getAllClientRequest({ account }: GetParams) {
@@ -34,9 +35,9 @@ function* addClientRequest({ account,client }: GetParams) {
       yield put(Actions.addClientError(error?.message || 'default'))
     }
 }
-function* getClientRequest({ account,clientId }: GetParams) {
+function* getClientRequest({ accountId,clientId }: GetParams) {
   try {
-    const response = yield call(getClient, account,clientId)
+    const response = yield call(getClient, accountId,clientId)
     yield put(Actions.getClientSuccess(response))
   } catch (error: any) {
     yield put(Actions.getClientError(error?.message || 'default'))

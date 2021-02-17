@@ -6,7 +6,7 @@ import {getAllProjectsRequest} from '../actions/projectActions'
 import { Account ,Project,Invoice,userConversation} from '../utils/Interface'
 
 
-type Params = { account: Account; project:Project,invoice:Invoice; type: string,invoiceId:string,conversation:userConversation }
+type Params = { account: Account; project:Project,invoice:Invoice; type: string,invoiceId:string,accountId:string,conversation:userConversation }
 
 function* invoiceRequest({ account,project,invoice}: Params) {
   try {
@@ -26,25 +26,25 @@ function* getAllInvoice({ account}: Params) {
   }
 }
 
-function* getInvoice({ account,invoiceId}: Params) {
+function* getInvoice({ accountId,invoiceId}: Params) {
   try {
-    const response = yield call(InvoiceApis.getInvoice, account,invoiceId)
+    const response = yield call(InvoiceApis.getInvoice, accountId,invoiceId)
     yield put(InvoiceActions.getInvoiceSuccess(response))
   } catch (error: any) {
     yield put(InvoiceActions.getInvoiceError(error?.message || 'default'))
   }
 }
-function* sendRevison({ account,invoiceId,conversation}: Params) {
+function* sendRevison({ accountId,invoiceId,conversation}: Params) {
   try {
-    const response = yield call(InvoiceApis.sendRevisionRequest, account,invoiceId,conversation)
+    const response = yield call(InvoiceApis.sendRevisionRequest, accountId,invoiceId,conversation)
     yield put(InvoiceActions.sendRevisionSuccess())
   } catch (error: any) {
     yield put(InvoiceActions.sendRevisionError(error?.message || 'default'))
   }
 }
-function* allnvoiceConversation({ account,invoiceId}: Params) {
+function* allnvoiceConversation({ accountId,invoiceId}: Params) {
   try {
-    const response = yield call(InvoiceApis.allInvoiceConversation, account,invoiceId)
+    const response = yield call(InvoiceApis.allInvoiceConversation, accountId,invoiceId)
     yield put(InvoiceActions.getAllInvoiceConversationSuccess(response))
   } catch (error: any) {
     yield put(InvoiceActions.getAllInvoiceConversationError(error?.message || 'default'))

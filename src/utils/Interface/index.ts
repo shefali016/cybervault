@@ -204,11 +204,17 @@ export type Project = {
 
 export type userConversation={
   name:string
-  email:string
+  sendersEmail:string
   message:string
   date:Date|string
   id:string,
-  senderEmail:string
+  receiversEmail:string
+}
+
+export type InvoiceUserInfo={
+  name:string,
+  id:string,
+  email:string
 }
 
 export type Invoice = {
@@ -225,6 +231,7 @@ export type Invoice = {
   campaignDeadLine: string
   featuredImage?: string
   conversation?:Array<userConversation>
+  userDetails:InvoiceUserInfo
 }
 
 export type ProjectStatus =

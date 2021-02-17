@@ -14,18 +14,13 @@ const Editor = ({ handleTextChange,placeholder ,resetValue}: editorProps) => {
   const classes = useStyles()
   const [value, setValue] = useState(RichTextEditor.createEmptyValue())
   const onChange = (value: any) => {
-    console.log(value, 'valll')
     setValue(value)
     if (handleTextChange) {
-      // Send the changes up to the parent component as an HTML string.
-      // This is here to demonstrate using `.toString()` but in a real app it
-      // would be better to avoid generating a string on each change.
       handleTextChange(value.toString('html'))
     }
   }
   useOnChange(resetValue, (success: string | null) => {
     if (success) {
-      console.log('gtgrgrgrfgrgrgrgrgrgrrrgtt')
      setValue(RichTextEditor.createEmptyValue())
     }
   })

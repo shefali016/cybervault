@@ -27,6 +27,7 @@ type GetParams = {
   type: string
   projectId: string
   projectdata: Types.Project
+  accountId:string
 }
 
 function* createNewProject({ newProjectData }: Params) {
@@ -53,10 +54,10 @@ function* getAllProjects() {
   }
 }
 
-function* getProjectDetails({ projectId }: GetParams) {
+function* getProjectDetails({ projectId,accountId }: GetParams) {
   try {
-    const account = yield select((state) => state.auth.account)
-    const response = yield call(getProjectDetailsRequest, account, projectId)
+    // const account = yield select((state) => state.auth.account)
+    const response = yield call(getProjectDetailsRequest, accountId, projectId)
 
     yield put(getProjectDetailsSuccess(response ? response : {}))
   } catch (error: any) {

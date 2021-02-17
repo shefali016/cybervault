@@ -42,10 +42,10 @@ export function addClientError(error:string){
   }
 }
 
-export function getClientRequest(account: Types.Account,clientId:string){
+export function getClientRequest(accountId:string,clientId:string){
   return {
     type: ActionTypes.GET_CLIENT_REQUEST,
-    account,
+    accountId,
     clientId
   }
 }

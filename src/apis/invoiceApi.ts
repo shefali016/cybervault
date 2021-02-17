@@ -34,39 +34,39 @@ export const newInvoice = async (
   }
 
   export const getInvoice = async (
-    account: Types.Account,
+    accountId:string,
     invoiceId:string
   ) => {
     let data: any = await firebase
       .firestore()
       .collection('AccountData')
-      .doc(account.id)
+      .doc(accountId)
       .collection('Invoices').doc(`${invoiceId}`).get()
   return data.data()
   }
 
   export const sendRevisionRequest = async (
-    account: Types.Account,
+    accountId: string,
     invoiceId:string,
     conversation:Types.userConversation
   ) => {
  await firebase
       .firestore()
       .collection('AccountData')
-      .doc(account.id)
+      .doc(accountId)
       .collection('Invoices').doc(`${invoiceId}`)
       .collection('Conversations').doc(`${conversation.id}`).set(conversation)
   }
 
   export const allInvoiceConversation = async (
-    account: Types.Account,
+    accountId:string,
     invoiceId:string,
   ) => {
     let invoiceConversation: Array<{}> = [];
     let data: any =await firebase
       .firestore()
       .collection('AccountData')
-      .doc(account.id)
+      .doc(accountId)
       .collection('Invoices').doc(`${invoiceId}`)
       .collection('Conversations').get()
 

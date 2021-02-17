@@ -44,13 +44,13 @@ export const addClient = async (
 }
 
 export const getClient = async (
-  account: Types.Account,
+  accountId: string,
   clientId:string
 ) => {
   let data: any = await firebase
     .firestore()
     .collection('AccountData')
-    .doc(account.id)
+    .doc(accountId)
     .collection('Clients').doc(`${clientId}`)
     .get()
 

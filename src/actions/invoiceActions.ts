@@ -50,10 +50,10 @@ export function generateNewInvoiceRequest(
   }
 
 
-  export function getInvoiceRequest(account: Types.Account,invoiceId:string) {
+  export function getInvoiceRequest(accountId: string,invoiceId:string) {
     return {
       type: ActionTypes.GET_INVOICE_REQUEST,
-      account,
+      accountId,
       invoiceId
     }
   }
@@ -71,13 +71,13 @@ export function generateNewInvoiceRequest(
       error
     }
   }
-  export function sendRevisionRequest(account: Types.Account,
+  export function sendRevisionRequest(accountId: string,
     invoiceId:string,
     conversation:Types.userConversation
   ) {
     return {
       type: ActionTypes.SEND_REVISION_REQUEST,
-      account,
+      accountId,
       invoiceId,
       conversation
     }
@@ -95,12 +95,12 @@ export function generateNewInvoiceRequest(
     }
   }
 
-  export function getAllInvoiceConversationRequest(account: Types.Account,
+  export function getAllInvoiceConversationRequest(accountId: string,
     invoiceId:string,
   ) {
     return {
       type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_REQUEST,
-      account,
+      accountId,
       invoiceId,
     }
   }

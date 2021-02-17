@@ -45,10 +45,12 @@ export function getAllProjectsRequestFailure(error: string) {
   }
 }
 
-export function requestGetProjectDetails(projectId: string | undefined) {
+export function requestGetProjectDetails(accountId:string,projectId: string | undefined) {
   return {
     type: ActionTypes.GET_PROJECT_DETAILS_REQUEST,
-    projectId
+    accountId,
+    projectId,
+    
   }
 }
 

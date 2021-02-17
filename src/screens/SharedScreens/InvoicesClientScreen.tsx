@@ -1,4 +1,4 @@
-import { HtmlHTMLAttributes, useEffect, useState,useMemo } from 'react'
+import { HtmlHTMLAttributes, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getInvoiceRequest,
@@ -16,9 +16,11 @@ import Editor from '../../components/Common/textEditor'
 import { GradiantButton } from '../../components/Common/Button/GradiantButton'
 import { generateUid } from '../../utils'
 import * as Types from '../../utils/Interface'
-import {sendEmailRequest,getAllMailTemplatesRequest} from '../../actions/mails'
+import {
+  sendEmailRequest,
+  getAllMailTemplatesRequest
+} from '../../actions/mails'
 import { ReduxState } from 'reducers/rootReducer'
-
 
 import {
   PRIMARY_DARK_COLOR,
@@ -31,6 +33,7 @@ import clsx from 'clsx'
 const InvoicesClientScreen = (props: any) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const accId = props.match.params.accId
   const accountData = useSelector((state: any) => state.auth)
   const invoiceData = useSelector((state: any) => state.invoice)
   const projectDetails = useSelector(
@@ -39,22 +42,16 @@ const InvoicesClientScreen = (props: any) => {
   const clientDetails = useSelector(
     (state: any) => state.clients.clientDetailData
   )
-  console.log(invoiceData, 'innnn')
   useEffect(() => {
-    dispatch(getInvoiceRequest(accountData.account, props.match.params.id))
-    dispatch(
-      getAllInvoiceConversationRequest(
-        accountData.account,
-        props.match.params.id
-      )
-    )
+    dispatch(getInvoiceRequest(accId, props.match.params.id))
+    dispatch(getAllInvoiceConversationRequest(accId, props.match.params.id))
   }, [])
   useOnChange(invoiceData.getInvoiceSuccess, (success: string | null) => {
     if (success) {
+      dispatch(getClientRequest(accId, invoiceData.invoiceData.clientId))
       dispatch(
-        getClientRequest(accountData.account, invoiceData.invoiceData.clientId)
+        requestGetProjectDetails(accId, invoiceData.invoiceData.projectId)
       )
-      dispatch(requestGetProjectDetails(invoiceData.invoiceData.projectId))
       dispatch(getAllMailTemplatesRequest())
     }
   })
@@ -69,51 +66,51 @@ const InvoicesClientScreen = (props: any) => {
     const payload = {
       message: message,
       date: new Date().toLocaleString(),
-      email: accountData.user.email,
-      senderEmail:clientDetails.email,
-      name: accountData.user.name,
+      sendersEmail: accountData.isLoggedIn
+        ? invoiceData.invoiceData.userDetails.email
+        : clientDetails.email,
+      receiversEmail: accountData.isLoggedIn
+        ? clientDetails.email
+        : invoiceData.invoiceData.userDetails.email,
+      name: accountData.isLoggedIn
+        ? invoiceData.invoiceData.userDetails.name
+        : clientDetails.name,
       id: generateUid()
     }
 
-    dispatch(
-      sendRevisionRequest(
-        accountData.account,
-        invoiceData.invoiceData.id,
-        payload
-      )
-    )
+    dispatch(sendRevisionRequest(accId, invoiceData.invoiceData.id, payload))
   }
   const mailData = useSelector((state: ReduxState) => state.mail)
 
-  const getTemplateId=()=>{
-    if(mailData.mailTemplatesData){
-      let data:any
-      data=mailData.mailTemplatesData.find((tmp:Types.MailTemplate)=>{
-        return tmp.type==='revision'
+  const getTemplateId = () => {
+    if (mailData.mailTemplatesData) {
+      let data: any
+      data = mailData.mailTemplatesData.find((tmp: Types.MailTemplate) => {
+        return tmp.type === 'revision'
       })
       return data?.templateId
     }
   }
-const templateId=useMemo(()=>{
-  return getTemplateId()
-},[mailData.mailTemplatesData])
+  const templateId = useMemo(() => {
+    return getTemplateId()
+  }, [mailData.mailTemplatesData])
 
   useOnChange(invoiceData.revisionSuccess, (success: string | null) => {
-    if (success && templateId ) {
-    const mailPayload={
-      to:clientDetails.email.trim()||"",
-      from:'no-reply@employeelinkapp.com',
-      templateId:templateId.trim()||'',
-      type:'revision',
-      data:{
-       message:'Message Received'
+    if (success && templateId) {
+      const mailPayload = {
+        to: accountData.isLoggedIn
+          ? clientDetails.email
+          : invoiceData.invoiceData.userDetails.email,
+        from: 'no-reply@employeelinkapp.com',
+        templateId: templateId.trim() || '',
+        type: 'revision',
+        data: {
+          message: 'Message Received'
+        }
       }
-    }
-    dispatch( sendEmailRequest(mailPayload))
+      dispatch(sendEmailRequest(mailPayload))
     }
   })
-  
-  console.log(clientDetails,"fctfgcfgcfrtfrtftf")
 
   return (
     <Grid container justify='center'>
@@ -132,7 +129,7 @@ const templateId=useMemo(()=>{
                 <div className={clsx(classes.carousel)}>
                   <AssetCarousel
                     assetIds={projectDetails.videos}
-                    accountId={accountData.account.id}
+                    accountId={accId}
                     isVideo={true}
                   />
                 </div>
@@ -154,7 +151,7 @@ const templateId=useMemo(()=>{
               <div className={clsx(classes.carousel)}>
                 <FeatureAssetList
                   assetIds={projectDetails.images}
-                  accountId={accountData.account.id}
+                  accountId={accId}
                   isVideo={false}
                   innerImageClassName={classes.image}
                   assetContainerMinHeight={160}
@@ -183,7 +180,7 @@ const templateId=useMemo(()=>{
               </Grid>
             </Grid>
           </Grid>
-          {!invoiceData.invoiceData.milestones.length ? (
+          {!invoiceData?.invoiceData?.milestones?.length ? (
             <Grid container justify='flex-end' spacing={2}>
               <Grid item sm={5}>
                 <Typography paragraph variant={'h5'}>
@@ -228,7 +225,7 @@ const templateId=useMemo(()=>{
               </Grid>
             </Grid>
           ) : null}
-          {invoiceData.invoiceData.milestones.length ? (
+          {invoiceData?.invoiceData?.milestones?.length ? (
             <Grid container justify='flex-end' spacing={2}>
               <Grid item sm={5}>
                 <Typography paragraph variant={'h5'}>
@@ -278,38 +275,45 @@ const templateId=useMemo(()=>{
                 Conversations
               </Typography>
               <Grid container className={classes.conversationWrapper}>
-                {invoiceData?.invoiceConversationData?.length &&
-                  invoiceData.invoiceConversationData.map(
-                    (chat: Types.userConversation, i: number) => {
-                      console.log(chat,"chatttt")
-                      return (
-                        <Grid
-                          item
-                          sm={12}
-                          container
-                          justify={
-                            accountData.user.email === chat.email
-                              ? 'flex-start'
-                              : 'flex-start'
-                          }>
-                          <Grid item sm={5} className={classes.messageDateWrapper}>
-                            <div className={classes.messageWrapper}>
-                              <Typography
-                                className={`${classes.textBold} ${classes.name}`}>
-                                {chat.name}
+                {invoiceData?.invoiceConversationData?.length
+                  ? invoiceData.invoiceConversationData.map(
+                      (chat: Types.userConversation, i: number) => {
+                        return (
+                          <Grid
+                            item
+                            sm={12}
+                            container
+                            justify={
+                              invoiceData.invoiceData.userDetails.email ===
+                              chat.sendersEmail
+                                ? 'flex-end'
+                                : 'flex-start'
+                            }>
+                            <Grid
+                              item
+                              sm={5}
+                              className={classes.messageDateWrapper}>
+                              <div className={classes.messageWrapper}>
+                                <Typography
+                                  className={`${classes.textBold} ${classes.name}`}>
+                                  {invoiceData.invoiceData.userDetails.email ===
+                              chat.sendersEmail?"":chat.name}
+                                </Typography>
+                                <Typography
+                                  className={classes.message}
+                                  dangerouslySetInnerHTML={{
+                                    __html: chat.message
+                                  }}></Typography>
+                              </div>
+                              <Typography className={classes.date}>
+                                {chat.date}
                               </Typography>
-                              <Typography
-                                className={classes.message}
-                                dangerouslySetInnerHTML={{
-                                  __html: chat.message
-                                }}></Typography>
-                            </div>
-                              <Typography className={classes.date}>{chat.date}</Typography>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      )
-                    }
-                  )}
+                        )
+                      }
+                    )
+                  : null}
               </Grid>
               <Editor
                 handleTextChange={handleTextChange}
@@ -408,15 +412,15 @@ const useStyles = makeStyles((theme) => ({
     // color:'black',
     // backgroundColor:'#e6e6e6',
   },
-  date:{
-    fontSize:'0.8rem'
+  date: {
+    fontSize: '0.8rem'
   },
   name: {
     textTransform: 'capitalize',
     fontSize: '0.8rem'
   },
-  messageDateWrapper:{
-    marginBottom:'12px'
+  messageDateWrapper: {
+    marginBottom: '12px'
   },
 
   carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' }
