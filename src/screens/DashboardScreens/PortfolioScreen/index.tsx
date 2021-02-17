@@ -187,7 +187,9 @@ const PortfoliosScreen = ({
       return error
     }
   }
-
+  const handlePortfolioView = (portfolioId: string) => {
+    history.push(`/portfolio/${portfolioId}`)
+  }
   const renderPortfolioFolderModal = () => {
     return (
       <PortfolioFolderModal
@@ -221,6 +223,9 @@ const PortfoliosScreen = ({
             portfolios={portfolios}
             projectList={allProjectsData}
             portfolioLoading={portfolioLoading}
+            handlePortfolioView={(portfolioId: string) =>
+              handlePortfolioView(portfolioId)
+            }
             clients={clients}
           />
         </div>

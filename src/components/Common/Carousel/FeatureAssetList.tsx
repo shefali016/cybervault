@@ -333,7 +333,8 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '100%',
     minWidth: '100%',
     transform: 'translate(-50%, -50%)',
-    borderRadius: 10
+    borderRadius: 10,
+    objectFit: 'cover'
   },
   img: {
     display: 'block',
@@ -371,7 +372,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     position: 'relative',
     minHeight: 300,
-    padding: `20px 20px`
+    padding: `20px 30px`
   },
   currentAssetOuter: {
     display: 'flex',

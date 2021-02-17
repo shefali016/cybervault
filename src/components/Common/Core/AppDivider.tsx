@@ -8,7 +8,7 @@ type Props = {
   spacing?: number
 }
 
-export const AppDivider = ({ className, spacing = 3 }: Props) => {
+export const AppDivider = ({ className, spacing = 5 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
   return (

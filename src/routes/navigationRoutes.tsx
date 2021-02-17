@@ -5,6 +5,7 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen'
 import SignUpScreen from '../screens/AuthScreens/SignUpScreen'
 import MainScreen from 'screens/MainScreen'
 import { useGlobalStyles } from '../utils/globalStyles'
+import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 
 type Props = { isLoggedIn?: boolean }
 
@@ -15,6 +16,7 @@ const Routes = (props: Props): JSX.Element => {
 
 const MainRoutes = () => (
   <Switch>
+    <Route path='/portfolio/:id' component={PortfolioSingleScreen} />
     <Route path='/' component={MainScreen} />
   </Switch>
 )

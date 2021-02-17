@@ -51,6 +51,7 @@ const Layout = (props: LayoutProps & ReduxProps) => {
           activeTab
         }}
       />
+
       <div className={classes.main}>
         <ToolBar {...{ headerTitle, onProfileClick, user }} />
         {props.children}

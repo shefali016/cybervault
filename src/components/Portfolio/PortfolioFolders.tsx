@@ -24,6 +24,7 @@ type Props = {
   projectList: Array<Project>
   portfolioLoading: boolean
   portfolios: Map<string, Portfolio> | any
+  handlePortfolioView: (portfolioId: string) => void
   clients: Array<Client>
 }
 const PortfolioFolders = ({
@@ -37,6 +38,7 @@ const PortfolioFolders = ({
   projectList,
   portfolioLoading,
   portfolios,
+  handlePortfolioView,
   clients
 }: Props) => {
   const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
@@ -91,12 +93,14 @@ const PortfolioFolders = ({
                 </div>
 
                 <Grid container spacing={2}>
-                  {portFolio &&
+                  {!!portFolio &&
                     !!portFolio.length &&
                     portFolio.map((data: any, i: number) => {
                       return (
                         <Grid key={i} item lg={3} md={4} sm={6}>
-                          <Card className={classes.portfoliosCard}>
+                          <Card
+                            onClick={() => handlePortfolioView(data.id)}
+                            className={classes.portfoliosCard}>
                             <div className={classes.cardLogo}>
                               <img src={data.logo} alt='' />
                             </div>

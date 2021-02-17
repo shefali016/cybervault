@@ -200,6 +200,7 @@ export type Project = {
   images: Array<MediaObject>
   canInvoice: Boolean
   status: ProjectStatus
+  featuredImage?: string
 }
 
 export type Invoice = {
@@ -259,7 +260,7 @@ export interface Portfolio {
   name: string
   description?: string
   icon?: string | null
-  projects?: Array<string> // project ids
+  projects: Array<string> // project ids
 }
 
 export type Cell = {
