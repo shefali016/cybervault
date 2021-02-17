@@ -34,7 +34,7 @@ type Props = {
   user: User
   onEditProject?: boolean
   renderAppIcon?: boolean
-  onBack?: () => void
+  onLogoClick?: () => void
 }
 const ITEM_HEIGHT = 48
 
@@ -125,7 +125,12 @@ function Toolbar(props: Props) {
 
   return (
     <div className={classes.Toolbar}>
-      {props.renderAppIcon && <PolymerSharpIcon className={classes.appIcon} />}
+      {props.renderAppIcon && (
+        <PolymerSharpIcon
+          className={classes.appIcon}
+          onClick={props.onLogoClick}
+        />
+      )}
 
       <div style={{ marginLeft: 25, display: FLEX }} className='portfolioTitle'>
         <h3 className={classes.title}>{props.headerTitle}</h3>
@@ -175,7 +180,8 @@ const useStyles = makeStyles((theme) => ({
   appIcon: {
     color: theme.palette.primary.light,
     fontSize: 43,
-    marginLeft: theme.spacing(2)
+    marginLeft: theme.spacing(2),
+    cursor: 'pointer'
   },
   portfolioHeader: {
     display: 'flex',

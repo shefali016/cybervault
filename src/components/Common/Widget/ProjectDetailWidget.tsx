@@ -41,7 +41,7 @@ export const RenderProjectDetails = (props: any) => {
           props.projectData ? props.projectData.description : ''
         )}
 
-      <AppDivider />
+      {!props.hideBorder && <AppDivider />}
     </div>
   )
 }

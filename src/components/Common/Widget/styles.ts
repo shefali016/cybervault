@@ -4,7 +4,6 @@ import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 export const useStyles = makeStyles((theme) => ({
   clientDetailsContainer: {
     display: FLEX,
-    flex: 1,
     flexDirection: COLUMN
   },
   innerDiv: {
@@ -12,8 +11,7 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: 15,
     alignItems: 'center'
   },
-  title: {
-  },
+  title: {},
   button: {
     padding: 5,
     height: 15,
@@ -23,7 +21,7 @@ export const useStyles = makeStyles((theme) => ({
     height: 15,
     width: 15
   },
-  bgNone:{
-    backgroundColor: "unset !important"
+  bgNone: {
+    backgroundColor: 'unset !important'
   }
 }))

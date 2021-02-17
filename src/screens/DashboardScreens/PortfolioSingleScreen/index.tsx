@@ -13,7 +13,7 @@ import { getTextColor } from 'utils/helpers'
 import Header from '../../../components/Common/Header/header'
 import { AccountTabIds } from 'screens/MainScreen'
 import { useTheme } from '@material-ui/core/styles'
-import clsx from 'clsx'
+import { AppDivider } from 'components/Common/Core/AppDivider'
 
 type StateProps = {
   portfolio: Portfolio
@@ -56,6 +56,9 @@ const PortfolioSingleScreen = ({
       portfolioProjects && portfolioProjects.length ? portfolioProjects[0] : {}
   })
 
+  const { videos, images } = state.selectedProjectData
+  const hasAssets = !!videos.length || !!images.length
+
   const handlePortfolioAction = (portfolioId: string) => {
     getPortfolioFolders(portfolioId)
   }
@@ -75,7 +78,7 @@ const PortfolioSingleScreen = ({
   const handleProfileNavigation = () =>
     history.replace(`/${AccountTabIds.profile}`)
 
-  const handleBack = () => history.pop()
+  const handleBack = () => history.goBack()
 
   return (
     <div
@@ -84,8 +87,8 @@ const PortfolioSingleScreen = ({
       <Header
         user={user}
         onProfileClick={handleProfileNavigation}
-        onBack={handleBack}
         renderAppIcon={true}
+        onLogoClick={handleBack}
       />
       <div
         style={{
@@ -124,22 +127,31 @@ const PortfolioSingleScreen = ({
             {state.selectedProjectData.campaignName}
           </Typography>
         </div>
+
         <RenderCampaignDetails projectData={state.selectedProjectData} />
-        <RenderProjectDetails projectData={state.selectedProjectData} />
-        {!!state.selectedProjectData.videos.length ||
-          (!!state.selectedProjectData.images.length && (
-            <div className={classes.assetsOuter}>
-              <div className={classes.assetsInner}>
-                {!!state.selectedProjectData.videos.length && (
-                  <AssetUploadDisplay
-                    {...{
-                      assetIds: state.selectedProjectData.videos,
-                      accountId: account ? account.id : '',
-                      isVideo: true,
-                      disableUpload: true
-                    }}
-                  />
-                )}
+
+        <RenderProjectDetails
+          projectData={state.selectedProjectData}
+          hideBorder={!hasAssets}
+        />
+
+        {hasAssets && (
+          <div className={classes.assetsOuter}>
+            <div className={classes.assetsInner}>
+              {!!videos.length && (
+                <AssetUploadDisplay
+                  {...{
+                    assetIds: state.selectedProjectData.videos,
+                    accountId: account ? account.id : '',
+                    isVideo: true,
+                    disableUpload: true
+                  }}
+                />
+              )}
+
+              <AppDivider spacing={6} />
+
+              {!!images.length && (
                 <FeatureAssetUpload
                   {...{
                     assetIds: state.selectedProjectData.images,
@@ -148,9 +160,10 @@ const PortfolioSingleScreen = ({
                     disableUpload: true
                   }}
                 />
-              </div>
+              )}
             </div>
-          ))}
+          </div>
+        )}
       </div>
     </div>
   )

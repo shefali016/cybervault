@@ -40,7 +40,7 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: 20,
     marginLeft: theme.spacing(8),
     marginRight: theme.spacing(8),
-    padding: theme.spacing(6),
+    padding: `${theme.spacing(8)}px ${theme.spacing(6)}px`,
     marginBottom: theme.spacing(5),
     marginTop: theme.spacing(5),
 
