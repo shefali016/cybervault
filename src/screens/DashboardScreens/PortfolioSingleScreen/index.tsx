@@ -89,7 +89,7 @@ const PortfolioSingleScreen = ({
       />
       <div
         style={{
-          backgroundImage: `linear-gradient(to right ,${headerGradient1}, ${headerGradient2})`
+          background: `linear-gradient(to right ,${headerGradient1}, ${headerGradient2})`
         }}>
         <ul
           className={`${classes.portfoloTabsList} ${

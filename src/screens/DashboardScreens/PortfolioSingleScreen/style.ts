@@ -15,26 +15,17 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     listStyle: 'none',
     paddingLeft: 40,
+    paddingBottom: 0,
+    margin: 0,
     '& li': {
+      margin: 0,
+      marginTop: 0,
       minWidth: 130,
-      padding: '0 15px',
+      padding: '15px',
       position: POSITION_RELATIVE,
       textAlign: CENTER,
-      margin: 0,
-      paddingBottom: 12
+      "&:hover": {background: "rgba(0, 0, 0, 0.1)"}
     },
-    '& li.active::after': {
-      content: `""`,
-      display: BLOCK,
-      width: 6,
-      height: 6,
-      borderRadius: '50%',
-      margin: '5px auto 0 auto',
-      position: POSITION_ABSOLUTE,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      bottom: 0
-    }
   },
   portfoloDarkTabsList: {
     '& li': {
