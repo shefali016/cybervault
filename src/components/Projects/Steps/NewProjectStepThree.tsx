@@ -16,11 +16,12 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import { Expense, InputChangeEvent } from '../../../utils/Interface'
+import { Milestone } from '../../../utils/Interface'
+import { useTabletLayout } from '../../../utils/hooks'
+import NewProjectTitle from '../NewProjectTitle'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import NewProjectTitle from '../NewProjectTitle'
-import { useTabletLayout } from '../../../utils/hooks'
+import { InputChangeEvent, Expense } from '../../../utils/Interface'
 import AddMoreButton from '../../Common/Button/MoreButton'
 import { generateUid } from '../../../utils'
 import CloseButton from '../../Common/Button/CloseButton'
@@ -28,7 +29,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepThree = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, haveError } = props
+  const { projectData, setProjectData, haveError, currentStep } = props
 
   const handleInputChange = (event: InputChangeEvent, key: string) => {
     const value = event.target.value
@@ -73,7 +74,7 @@ const NewProjectStepThree = (props: any) => {
         <CloseButton onClick={() => deleteExpense(data.id)} />
       </div>
     )
-    return props.newProject || props.editExpenses ? (
+    return (
       <div className={'task-row'} key={`expense-${data.id}`}>
         {isTablet && closeButton}
         <div style={{ flex: 1, marginRight: leftInputMargin }}>
@@ -98,7 +99,7 @@ const NewProjectStepThree = (props: any) => {
         </div>
         {!isTablet && closeButton}
       </div>
-    ) : null
+    )
   }
 
   const renderMiddleView = () => {
@@ -106,56 +107,49 @@ const NewProjectStepThree = (props: any) => {
     return (
       <div className={classes.middleView}>
         <div>
-          {props.newProject || props.editBudget ? (
-            <div className={'input-row'} style={{ marginBottom: 30 }}>
-              <div style={{ flex: 1, marginRight: leftInputMargin }}>
-                <AppTextField
-                  error={
-                    haveError && projectData.campaignBudget === ''
-                      ? true
-                      : false
-                  }
-                  type={'number'}
-                  label={'Campaign Budget'}
-                  value={projectData.campaignBudget}
-                  onChange={(e: InputChangeEvent) =>
-                    handleInputChange(e, 'campaignBudget')
-                  }
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <AppTextField
-                  error={
-                    haveError && projectData.campaignExpenses === ''
-                      ? true
-                      : false
-                  }
-                  type={'number'}
-                  label={'Campaign Expenses'}
-                  value={projectData.campaignExpenses}
-                  onChange={(e: InputChangeEvent) =>
-                    handleInputChange(e, 'campaignExpenses')
-                  }
-                />
-              </div>
+          <div className={'input-row'} style={{ marginBottom: 30 }}>
+            <div style={{ flex: 1, marginRight: leftInputMargin }}>
+              <AppTextField
+                error={
+                  haveError && projectData.campaignBudget === '' ? true : false
+                }
+                type={'number'}
+                label={'Campaign Budget'}
+                value={projectData.campaignBudget}
+                onChange={(e: InputChangeEvent) =>
+                  handleInputChange(e, 'campaignBudget')
+                }
+              />
             </div>
-          ) : null}
+            <div style={{ flex: 1 }}>
+              <AppTextField
+                error={
+                  haveError && projectData.campaignExpenses === ''
+                    ? true
+                    : false
+                }
+                type={'number'}
+                label={'Campaign Expenses'}
+                value={projectData.campaignExpenses}
+                onChange={(e: InputChangeEvent) =>
+                  handleInputChange(e, 'campaignExpenses')
+                }
+              />
+            </div>
+          </div>
         </div>
-        {props.newProject || props.isBudgetEdit ? (
-          <Typography
-            variant={'caption'}
-            className={classes.estimatedCostLabel}>
-            Add your estimated cost of expenses:
-          </Typography>
-        ) : null}
+
+        <Typography variant={'caption'} className={classes.estimatedCostLabel}>
+          Add your estimated cost of expenses:
+        </Typography>
+
         {projectData.expenses && projectData.expenses.length > 0
           ? projectData.expenses.map((data: Expense, index: number) => {
               return renderTasksView(data, index)
             })
           : null}
-        {props.newProject || props.editExpenses ? (
-          <AddMoreButton onClick={addExpense} title={'Add Expense'} />
-        ) : null}
+
+        <AddMoreButton onClick={addExpense} title={'Add Expense'} />
       </div>
     )
   }
@@ -168,15 +162,17 @@ const NewProjectStepThree = (props: any) => {
       />
       {renderMiddleView()}
       <NewProjectFooter
-        title={props.isEdit ? '' : 'Step 3 of 5'}
+        title={'Step 3 of 5'}
         onNext={props.onNext}
         onBack={props.onBack}
         description={
           '*This will be added to the final invoice sent to client. The campaign budget will be the total amount due to the client. You can go back and edit this page again if needed.'
         }
+        isEdit={props.isEdit}
         projectData={projectData}
         onUpdate={props.onUpdate}
         haveError={haveError ? haveError : false}
+        currentStep={currentStep}
       />
     </div>
   )

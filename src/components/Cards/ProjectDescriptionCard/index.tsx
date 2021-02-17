@@ -1,43 +1,95 @@
-import React from 'react'
+import React, { useState, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import Popover from '@material-ui/core/Popover'
 import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
-import { BLACK_COLOR } from 'utils/constants/colorsConstants'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project } from '../../../utils/Interface'
+import { Project, Client, Account } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
+import InvoiceModal from '../../../components/Invoices/InvoiceModal'
+import { ReduxState } from 'reducers/rootReducer'
+import { AppLoader } from 'components/Common/Core/AppLoader'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+
+const ITEM_HEIGHT = 48
 
 type Props = {
   project: Project
   isPopover?: boolean
   style?: {}
   history?: any
+  clients?: Array<Client>
+  account: Account
+  onDelete?: (projectId: string) => void
+  deletingId?: string
 }
 
-const ProjectCard = ({ project, isPopover, style, history }: Props) => {
-  const [anchorEl] = React.useState<null | HTMLElement>(null)
+const ProjectCard = ({
+  project,
+  isPopover,
+  style,
+  history,
+  account,
+  clients,
+  onDelete,
+  deletingId
+}: Props) => {
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+
+  const startConfirmingDelete = () => setConfirmingDelete(true)
+  const stopConfirmingDelete = () => setConfirmingDelete(false)
+  const handleDelete = () =>
+    typeof onDelete === 'function' && onDelete(project.id)
+
+  const theme = useTheme()
+
+  const [open, setOpen] = React.useState(false)
 
   const editProject = (projectId: string) => {
     history.push(`/project/${projectId}`)
   }
+  const sendInvoice = (projectId: string) => {
+    setOpen(true)
+  }
 
-  const ITEM_HEIGHT = 48
+  const onRequestClose = () => {
+    setOpen(false)
+  }
+
+  const client = useMemo(
+    () =>
+      clients
+        ? clients.find((client) => client.id === project.clientId)
+        : undefined,
+    [clients]
+  )
+
+  const clientLogo = client?.logo
+
   const classes = useStyles()
   return (
     <div style={style}>
+      <InvoiceModal
+        open={open}
+        onRequestClose={onRequestClose}
+        project={project}
+        account={account}
+        client={client}
+      />
       <Card className={classes.card} elevation={5}>
         <div
           className={classes.imageWrapper}
           style={{
-            background: `url(${project.logo}) no-repeat center`,
+            background: `url(${clientLogo}) no-repeat center`,
             backgroundSize: 'cover'
           }}></div>
+
         <div className={classes.footer}>
           <Typography variant={'body1'} className={classes.title} noWrap={true}>
             {project.campaignName}
@@ -52,21 +104,27 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
             </Typography>
           </div>
         </div>
+
         {isPopover ? (
-          <Grid style={{ position: 'absolute', top: 0, right: 0 }}>
-            <PopupState variant='popover' popupId='demo-popup-popover'>
+          <Grid
+            style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
+            {deletingId === project.id && (
+              <AppLoader
+                color={theme.palette.grey[800]}
+                className={classes.loader}
+                height={48}
+                width={48}
+              />
+            )}
+
+            <PopupState variant='popover'>
               {(popupState) => (
                 <div>
-                  <IconButton
-                    aria-label='more'
-                    aria-controls='long-menu'
-                    aria-haspopup='true'
-                    {...bindTrigger(popupState)}>
-                    <MoreVertIcon />
+                  <IconButton {...bindTrigger(popupState)}>
+                    <MoreVertIcon style={{ color: theme.palette.grey[800] }} />
                   </IconButton>
                   <Popover
                     id={'long-menu'}
-                    anchorEl={anchorEl}
                     anchorOrigin={{
                       vertical: 'bottom',
                       horizontal: 'right'
@@ -100,7 +158,14 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
                         View Project
                       </div>
                     </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }}>
+
+                    <MenuItem
+                      style={{ fontSize: 12 }}
+                      onClick={() => sendInvoice(project.id)}
+                      disabled={
+                        project.canInvoice === false ||
+                        !account.stripe.payoutsEnabled
+                      }>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}
@@ -109,13 +174,21 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
                         Send Invoice
                       </div>
                     </MenuItem>
-                    <MenuItem style={{ fontSize: 12 }}>
-                      <div style={{ display: FLEX, color: 'red' }}>
-                        <DeleteSharpIcon
-                          style={{ marginRight: 5 }}
-                          fontSize='small'
-                        />
-                        Delete Project
+                    <MenuItem
+                      style={{ fontSize: 12 }}
+                      onClick={startConfirmingDelete}>
+                      <div>
+                        <div
+                          style={{
+                            display: FLEX,
+                            color: theme.palette.error.main
+                          }}>
+                          <DeleteSharpIcon
+                            style={{ marginRight: 5 }}
+                            fontSize='small'
+                          />
+                          Delete Project
+                        </div>
                       </div>
                     </MenuItem>
                   </Popover>
@@ -125,11 +198,20 @@ const ProjectCard = ({ project, isPopover, style, history }: Props) => {
           </Grid>
         ) : null}
       </Card>
+      <ConfirmationDialog
+        title='Delete Project'
+        message='Are you sure you want to delete this project. This can not be undone.'
+        isOpen={confirmingDelete}
+        onClose={stopConfirmingDelete}
+        onYes={handleDelete}
+        onNo={stopConfirmingDelete}
+      />
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  loader: {},
   root: {
     display: 'flex',
     position: 'relative'
@@ -168,13 +250,13 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden'
   },
   title: {
-    fontSize: '12px',
-    color: BLACK_COLOR,
+    fontSize: 13,
+    color: theme.palette.text.paper,
     fontWeight: 600
   },
   bodyText: {
-    fontSize: '8px',
-    color: BLACK_COLOR
+    fontSize: 10,
+    color: theme.palette.text.paper
   }
 }))
 export default ProjectCard

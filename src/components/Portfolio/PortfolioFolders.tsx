@@ -1,6 +1,6 @@
 import { Box, Card, Grid, Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
-import { Portfolio, PortfolioFolder, Project } from 'utils/Interface'
+import { Client, Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
 import ConfirmBox from 'components/Common/ConfirmBox'
 import AddIcon from '@material-ui/icons/Add'
@@ -10,6 +10,8 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { useStyles } from './style'
 import { AppButton } from 'components/Common/Core/AppButton'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import { setCommentRange } from 'typescript'
 
 type Props = {
   folderList: Array<PortfolioFolder>
@@ -23,6 +25,7 @@ type Props = {
   portfolioLoading: boolean
   portfolios: Map<string, Portfolio> | any
   handlePortfolioView: (portfolioId: string) => void
+  clients: Array<Client>
 }
 const PortfolioFolders = ({
   folderList,
@@ -35,11 +38,18 @@ const PortfolioFolders = ({
   projectList,
   portfolioLoading,
   portfolios,
-  handlePortfolioView
+  handlePortfolioView,
+  clients
 }: Props) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [folderId, setFolderId] = useState<string>('')
+  const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
   const classes = useStyles()
+
+  const startConfirmingDelete = (id: string) => setDeleteFolderId(id)
+  const stopConfirmingDelete = () => setDeleteFolderId(null)
+  const handleDelete = () => {
+    deleteFolderId && deletefolder(deleteFolderId)
+    stopConfirmingDelete()
+  }
 
   const renderPortfolioModal = () => {
     return (
@@ -49,6 +59,7 @@ const PortfolioFolders = ({
         onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
         projectList={projectList}
         portfolioLoading={portfolioLoading}
+        clients={clients}
       />
     )
   }
@@ -71,43 +82,41 @@ const PortfolioFolders = ({
                       className={classes.folderDescription}>
                       {folder.description}
                     </Typography>
-                    <span onClick={() => handleEditFolderDetail(folder)}>
-                      <EditIcon />
-                    </span>
-                    <span
-                      onClick={() => {
-                        setOpen(true)
-                        setFolderId(folder.id)
-                      }}>
-                      <DeleteIcon />
-                    </span>
                   </Typography>
+
+                  <span onClick={() => handleEditFolderDetail(folder)}>
+                    <EditIcon />
+                  </span>
+                  <span onClick={() => startConfirmingDelete(folder.id)}>
+                    <DeleteIcon />
+                  </span>
                 </div>
+
                 <Grid container spacing={2}>
-                  {portFolio && portFolio.length
-                    ? portFolio.map((data: any, i: number) => {
-                        return (
-                          <Grid key={i} item lg={3} md={4} sm={6}>
-                            <Card
-                              onClick={() => handlePortfolioView(data.id)}
-                              className={classes.portfoliosCard}>
-                              <div className={classes.cardLogo}>
-                                <img src={data.logo} alt='' />
-                              </div>
-                              <div className={classes.logoCOntent}>
-                                <h5>{data.name}</h5>
-                                <p>{data.description}</p>
-                              </div>
-                              <Box pl={2}>
-                                <KeyboardArrowRightIcon
-                                  style={{ color: '#797979' }}
-                                />
-                              </Box>
-                            </Card>
-                          </Grid>
-                        )
-                      })
-                    : null}
+                  {!!portFolio &&
+                    !!portFolio.length &&
+                    portFolio.map((data: any, i: number) => {
+                      return (
+                        <Grid key={i} item lg={3} md={4} sm={6}>
+                          <Card
+                            onClick={() => handlePortfolioView(data.id)}
+                            className={classes.portfoliosCard}>
+                            <div className={classes.cardLogo}>
+                              <img src={data.logo} alt='' />
+                            </div>
+                            <div className={classes.logoCOntent}>
+                              <h5>{data.name}</h5>
+                              <p>{data.description}</p>
+                            </div>
+                            <Box pl={2}>
+                              <KeyboardArrowRightIcon
+                                style={{ color: '#797979' }}
+                              />
+                            </Box>
+                          </Card>
+                        </Grid>
+                      )
+                    })}
                   <Grid item lg={3} md={4} sm={6}>
                     <AppButton
                       variant='contained'
@@ -139,18 +148,15 @@ const PortfolioFolders = ({
         </div>
       )}
       {renderPortfolioModal()}
-      <ConfirmBox
-        open={open}
-        handleClose={() => setOpen(!open)}
-        cancleBtnText={'Cancel'}
-        allowBtnText={'Delete'}
-        confBoxTitle={'Are you sure?'}
-        confBoxText={'You want to delete this folder'}
-        setConfirmed={(value: boolean) => {
-          if (value) {
-            deletefolder(folderId)
-          }
-        }}
+      <ConfirmationDialog
+        isOpen={!!deleteFolderId}
+        onClose={stopConfirmingDelete}
+        title={'Delete Portfolio Folder'}
+        message={
+          'Are you sure you want to delete this folder? This cannot be undone.'
+        }
+        onYes={handleDelete}
+        onNo={stopConfirmingDelete}
       />
     </Fragment>
   )

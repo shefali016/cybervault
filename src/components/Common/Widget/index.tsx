@@ -61,7 +61,7 @@ const Widget = ({
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(6)
   },
   wrapper: {
     display: 'flex',
