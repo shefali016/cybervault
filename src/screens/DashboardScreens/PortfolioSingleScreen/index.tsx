@@ -112,13 +112,11 @@ const PortfolioSingleScreen = ({
           </div>
           <RenderCampaignDetails
             projectData={state.selectedProjectData}
-            isPortfolioScreen={true}
             portfolioTestColor={portfolioTestColor}
           />
           <br />
           <RenderProjectDetails
             projectData={state.selectedProjectData}
-            isPortfolioScreen={true}
             portfolioTestColor={portfolioTestColor}
           />
           <div className={classes.corosalWrapper}>
@@ -127,7 +125,7 @@ const PortfolioSingleScreen = ({
                 assetIds: state.selectedProjectData.videos,
                 accountId: account ? account.id : '',
                 isVideo: true,
-                isPortfolioScreen: true
+                disableUpload: true
               }}
             />
             <FeatureAssetUpload
@@ -135,7 +133,7 @@ const PortfolioSingleScreen = ({
                 assetIds: state.selectedProjectData.images,
                 accountId: account ? account.id : '',
                 featuredAsset: state.selectedProjectData.featuredImage,
-                isPortfolioScreen: true
+                disableUpload: true
               }}
             />
           </div>
