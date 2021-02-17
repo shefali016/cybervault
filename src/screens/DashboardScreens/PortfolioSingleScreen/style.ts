@@ -10,15 +10,11 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
-  portfolioTabsWrap: {
-    backgroundColor: theme.palette.primary.light
-  },
   portfoloTabsList: {
     display: 'flex',
     listStyle: 'none',
     paddingLeft: 40,
     '& li': {
-      color: '#fff',
       minWidth: 130,
       padding: '0 15px',
       position: POSITION_RELATIVE,
@@ -31,7 +27,6 @@ export const useStyles = makeStyles((theme) => ({
       display: BLOCK,
       width: 6,
       height: 6,
-      backgroundColor: '#fff',
       borderRadius: '50%',
       margin: '5px auto 0 auto',
       position: POSITION_ABSOLUTE,
@@ -59,7 +54,8 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(5),
     padding: theme.spacing(6),
     marginBottom: theme.spacing(5),
-    marginTop: '20px'
+    marginTop: theme.spacing(5),
+
   },
   corosalWrapper: {
     maxWidth: 800,

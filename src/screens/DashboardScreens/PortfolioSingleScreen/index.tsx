@@ -2,7 +2,7 @@ import { getPortfolioRequest } from 'actions/portfolioActions'
 import { Fragment, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
-import { Portfolio, Project } from 'utils/Interface'
+import { Portfolio, Project, Account, User } from 'utils/Interface'
 import { Box, Container, Typography } from '@material-ui/core'
 import { useStyles } from './style'
 import { RenderProjectDetails } from 'components/Common/Widget/ProjectDetailWidget'
@@ -10,17 +10,21 @@ import { RenderCampaignDetails } from 'components/Common/Widget/CampaignDetailsW
 import { AssetUploadDisplay } from 'components/Assets/UploadMedia'
 import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
 import { getTextColor } from 'utils/helpers'
+import Header from '../../../components/Common/Header/header'
+import { AccountTabIds } from 'screens/MainScreen'
 
 type StateProps = {
   portfolio: Portfolio
   portfolioProjects: Array<Project>
-  account: Account | null | any
+  account: Account
+  user: User
 }
 type initialState = {
   selectedProjectData: Object | any
 }
 type Props = {
   location: any
+  history: any
   getPortfolioFolders: (portfolioId: string) => void
 } & StateProps
 
@@ -28,19 +32,22 @@ const PortfolioSingleScreen = ({
   location,
   getPortfolioFolders,
   account,
-  portfolioProjects
+  portfolioProjects,
+  user,
+  history
 }: Props) => {
   const classes = useStyles()
 
-  const portfolioForeGroundColor = account
-    ? account.branding.portfolio.foregroundColor
-    : ''
-  const portfolioTestColor = account ? account.branding.portfolio.text : ''
+  const {
+    text: textColor,
+    foregroundColor,
+    backgroundColor,
+    headerGradient1,
+    headerGradient2
+  } = account.branding.portfolio
+
   const portfolioHeaderGradient1 = account
     ? account.branding.portfolio.headerGradient1
-    : ''
-  const portfolioHeaderGradient2 = account
-    ? account.branding.portfolio.headerGradient2
     : ''
 
   const color = getTextColor(portfolioHeaderGradient1)
@@ -67,58 +74,58 @@ const PortfolioSingleScreen = ({
     })
   }
 
+  const handleProfileNavigation = () =>
+    history.replace(`/${AccountTabIds.profile}`)
+
+  const handleBack = () => history.pop()
+
   return (
-    <Fragment>
-      <Box
-        className={classes.portfolioTabsWrap}
+    <div className={'col'} style={{ backgroundColor }}>
+      <Header
+        user={user}
+        onProfileClick={handleProfileNavigation}
+        onBack={handleBack}
+        renderAppIcon={true}
+      />
+      <div
         style={{
-          backgroundImage: `linear-gradient(to right ,${portfolioHeaderGradient1}, ${portfolioHeaderGradient2})`
+          backgroundImage: `linear-gradient(to right ,${headerGradient1}, ${headerGradient2})`
         }}>
-        <Container maxWidth='lg'>
-          <ul
-            className={`${classes.portfoloTabsList} ${
-              color === 'light' ? classes.portfoloDarkTabsList : ''
-            }`}>
-            {portfolioProjects && portfolioProjects.length
-              ? portfolioProjects.map(
-                  (project: Project | any, index: number) => {
-                    return (
-                      <li
-                        onClick={() => setProjectData(project)}
-                        key={index}
-                        className={
-                          state.selectedProjectData.id === project.id
-                            ? 'active'
-                            : ''
-                        }>
-                        {project.campaignName}
-                      </li>
-                    )
-                  }
+        <ul
+          className={`${classes.portfoloTabsList} ${
+            color === 'light' ? classes.portfoloDarkTabsList : ''
+          }`}>
+          {portfolioProjects && portfolioProjects.length
+            ? portfolioProjects.map((project: Project | any, index: number) => {
+                return (
+                  <li
+                    onClick={() => setProjectData(project)}
+                    key={index}
+                    className={
+                      state.selectedProjectData.id === project.id
+                        ? 'active'
+                        : ''
+                    }>
+                    {project.campaignName}
+                  </li>
                 )
-              : null}
-          </ul>
-        </Container>
-      </Box>
+              })
+            : null}
+        </ul>
+      </div>
 
       <Container maxWidth='lg'>
         <div
           className={classes.portfolioWrapper}
-          style={{ backgroundColor: portfolioForeGroundColor }}>
-          <div style={{ color: portfolioTestColor, marginBottom: '50px' }}>
+          style={{ backgroundColor: foregroundColor }}>
+          <div style={{ color: textColor, marginBottom: '50px' }}>
             <Typography variant={'h4'}>
               {state.selectedProjectData.clientName}
             </Typography>
           </div>
-          <RenderCampaignDetails
-            projectData={state.selectedProjectData}
-            portfolioTestColor={portfolioTestColor}
-          />
+          <RenderCampaignDetails projectData={state.selectedProjectData} />
           <br />
-          <RenderProjectDetails
-            projectData={state.selectedProjectData}
-            portfolioTestColor={portfolioTestColor}
-          />
+          <RenderProjectDetails projectData={state.selectedProjectData} />
           <div className={classes.corosalWrapper}>
             <AssetUploadDisplay
               {...{
@@ -139,13 +146,14 @@ const PortfolioSingleScreen = ({
           </div>
         </div>
       </Container>
-    </Fragment>
+    </div>
   )
 }
 const mapStateToProps = (state: ReduxState): StateProps => ({
   portfolio: state.portfolio.portfolio as Portfolio,
   portfolioProjects: state.portfolio.portfolioProjects as Array<Project>,
-  account: state.auth.account as Account | null
+  account: state.auth.account as Account,
+  user: state.auth.user as User
 })
 const mapDispatchToProps = (dispatch: any) => ({
   getPortfolioFolders: (portfolioId: string) => {

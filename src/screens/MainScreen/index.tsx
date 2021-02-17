@@ -49,7 +49,7 @@ import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
 
-const DashboardTabIds = {
+export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
@@ -57,7 +57,7 @@ const DashboardTabIds = {
   storage: 'storage'
 }
 
-const AccountTabIds = {
+export const AccountTabIds = {
   profile: 'profile',
   manage: 'manage',
   branding: 'branding',
@@ -65,12 +65,12 @@ const AccountTabIds = {
   storage: 'storage'
 }
 
-const SharedTabIds = {
+export const SharedTabIds = {
   invoices: 'invoices',
   security: 'security'
 }
 
-const ScreenViews = {
+export const ScreenViews = {
   dashboard: 'dashboard',
   account: 'account'
 }
