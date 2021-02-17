@@ -71,6 +71,53 @@ export function generateNewInvoiceRequest(
       error
     }
   }
+  export function sendRevisionRequest(account: Types.Account,
+    invoiceId:string,
+    conversation:Types.userConversation
+  ) {
+    return {
+      type: ActionTypes.SEND_REVISION_REQUEST,
+      account,
+      invoiceId,
+      conversation
+    }
+  }
+  export function sendRevisionSuccess(
+  ) {
+    return {
+      type: ActionTypes.SEND_REVISION_SUCCESS,
+    }
+  }
+  export function sendRevisionError(error: string) {
+    return {
+      type: ActionTypes.SEND_REVISION_ERROR,
+      error
+    }
+  }
+
+  export function getAllInvoiceConversationRequest(account: Types.Account,
+    invoiceId:string,
+  ) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_REQUEST,
+      account,
+      invoiceId,
+    }
+  }
+  export function getAllInvoiceConversationSuccess(
+    conversations:Array<Types.userConversation>
+  ) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_SUCCESS,
+      payload:conversations
+    }
+  }
+  export function getAllInvoiceConversationError(error: string) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_ERROR,
+      error
+    }
+  }
   
   
   

@@ -311,7 +311,7 @@ const InvoiceModal = ({
   if (!client) {
     return null
   }
-
+  
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <InvoiceData

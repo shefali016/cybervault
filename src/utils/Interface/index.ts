@@ -202,6 +202,15 @@ export type Project = {
   status: ProjectStatus
 }
 
+export type userConversation={
+  name:string
+  email:string
+  message:string
+  date:Date|string
+  id:string,
+  senderEmail:string
+}
+
 export type Invoice = {
   id: String // Using generateId function
   dateCreated: Date | string
@@ -215,6 +224,7 @@ export type Invoice = {
   projectName: string
   campaignDeadLine: string
   featuredImage?: string
+  conversation?:Array<userConversation>
 }
 
 export type ProjectStatus =
