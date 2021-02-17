@@ -13,8 +13,8 @@ import {
 import * as Types from '../utils/Interface'
 
 export type State = {
-  folders: Array<Types.PortfolioFolder | never>
-  portfolios: { [id: string]: Types.Portfolio }
+  folders: Array<Types.PortfolioFolder>
+  portfolios: Array<Types.Portfolio>
   getFoldersLoading: boolean
   getPortfolioLoading: boolean
   updatingFolder: boolean
@@ -25,16 +25,16 @@ export type State = {
 
 export type Action = {
   type: string
-  payload: {}
-  getFoldersError: string
-  portfolios: Map<string, Types.Portfolio>
+  payload?: {}
+  getFoldersError?: string
+  portfolios?: Array<Types.Portfolio>
   folder: Types.PortfolioFolder
   projects?: Array<Types.Project>
 }
 
 const initialState = {
   folders: [],
-  portfolios: {},
+  portfolios: [],
   getFoldersLoading: false,
   error: '',
   updatingFolder: false,
@@ -63,6 +63,7 @@ const updatePrortfolioFolder = (state: State, action: Action) => ({
   updatingFolder: true,
   getFoldersLoading: true
 })
+
 const updatePrortfolioFoldersSuccess = (state: State, action: Action) => {
   let folders: Array<Types.PortfolioFolder> | any = state.folders
 

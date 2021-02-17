@@ -11,6 +11,7 @@ import {
 
 export const useStyles = makeStyles((theme) => ({
   screen: {minHeight: "100vh", display: "flex", flexDirection: "column"},
+  loader: {alignSelf: "center"},
   portfoloTabsList: {
     display: 'flex',
     listStyle: 'none',

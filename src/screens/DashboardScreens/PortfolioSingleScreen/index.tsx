@@ -1,5 +1,5 @@
 import { getPortfolioRequest } from 'actions/portfolioActions'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { Portfolio, Project, Account, User } from 'utils/Interface'
@@ -14,6 +14,7 @@ import Header from '../../../components/Common/Header/header'
 import { AccountTabIds } from 'screens/MainScreen'
 import { useTheme } from '@material-ui/core/styles'
 import { AppDivider } from 'components/Common/Core/AppDivider'
+import { AppLoader } from 'components/Common/Core/AppLoader'
 
 type StateProps = {
   portfolio: Portfolio
@@ -22,21 +23,22 @@ type StateProps = {
   user: User
 }
 type initialState = {
-  selectedProjectData: Object | any
+  selectedProjectId: string
 }
 type Props = {
   match: any
   history: any
-  getPortfolioFolders: (portfolioId: string) => void
+  getPortfolio: (portfolioId: string) => void
 } & StateProps
 
 const PortfolioSingleScreen = ({
-  getPortfolioFolders,
+  getPortfolio,
   account,
   portfolioProjects,
   user,
   history,
-  match
+  match,
+  portfolio
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -50,17 +52,26 @@ const PortfolioSingleScreen = ({
   } = account.branding.portfolio
 
   const color = getTextColor(headerGradient1)
+  const foregroundStyle = getTextColor(foregroundColor)
 
   const [state, setState] = useState<initialState>({
-    selectedProjectData:
-      portfolioProjects && portfolioProjects.length ? portfolioProjects[0] : {}
+    selectedProjectId: portfolio.projects[0]
   })
 
-  const { videos, images } = state.selectedProjectData
+  const selectedProjectData = useMemo(
+    () => portfolioProjects.find((p) => p.id === state.selectedProjectId),
+    [state.selectedProjectId, portfolioProjects]
+  )
+
+  const { videos, images } = selectedProjectData || {
+    videos: [] as any,
+    images: [] as any
+  }
+
   const hasAssets = !!videos.length || !!images.length
 
   const handlePortfolioAction = (portfolioId: string) => {
-    getPortfolioFolders(portfolioId)
+    getPortfolio(portfolioId)
   }
 
   useEffect(() => {
@@ -68,10 +79,10 @@ const PortfolioSingleScreen = ({
     handlePortfolioAction(id)
   }, [match])
 
-  const setProjectData = (project: Project) => {
+  const setProjectId = (project: Project) => {
     setState({
       ...state,
-      selectedProjectData: project
+      selectedProjectId: project.id
     })
   }
 
@@ -79,6 +90,70 @@ const PortfolioSingleScreen = ({
     history.replace(`/${AccountTabIds.profile}`)
 
   const handleBack = () => history.goBack()
+
+  const renderLoading = () => {
+    if (selectedProjectData) return null
+
+    return (
+      <AppLoader
+        className={classes.loader}
+        color={foregroundStyle === 'light' ? 'black' : 'white'}
+      />
+    )
+  }
+
+  const renderProjectDetails = () => {
+    if (!selectedProjectData) return null
+
+    return (
+      <Fragment>
+        <div style={{ marginBottom: theme.spacing(4) }}>
+          <Typography variant={'h4'}>
+            {selectedProjectData?.campaignName}
+          </Typography>
+        </div>
+
+        <RenderCampaignDetails projectData={selectedProjectData} />
+
+        <RenderProjectDetails
+          projectData={selectedProjectData}
+          hideBorder={!hasAssets}
+        />
+
+        {hasAssets && (
+          <div className={classes.assetsOuter}>
+            <div className={classes.assetsInner}>
+              {!!videos.length && (
+                <AssetUploadDisplay
+                  {...{
+                    assetIds: videos,
+                    accountId: account ? account.id : '',
+                    isVideo: true,
+                    disableUpload: true
+                  }}
+                />
+              )}
+
+              <AppDivider spacing={6} />
+
+              {!!images.length && (
+                <FeatureAssetUpload
+                  {...{
+                    assetIds: images,
+                    accountId: account ? account.id : '',
+                    featuredAsset: selectedProjectData.featuredImage,
+                    disableUpload: true
+                  }}
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </Fragment>
+    )
+
+    return
+  }
 
   return (
     <div
@@ -102,12 +177,10 @@ const PortfolioSingleScreen = ({
             ? portfolioProjects.map((project: Project | any, index: number) => {
                 return (
                   <li
-                    onClick={() => setProjectData(project)}
+                    onClick={() => setProjectId(project)}
                     key={index}
                     className={
-                      state.selectedProjectData.id === project.id
-                        ? 'active'
-                        : ''
+                      state.selectedProjectId === project.id ? 'active' : ''
                     }>
                     <Typography variant={'subtitle2'}>
                       {project.campaignName}
@@ -122,48 +195,9 @@ const PortfolioSingleScreen = ({
       <div
         className={classes.portfolioWrapper}
         style={{ backgroundColor: foregroundColor }}>
-        <div style={{ marginBottom: theme.spacing(4) }}>
-          <Typography variant={'h4'}>
-            {state.selectedProjectData.campaignName}
-          </Typography>
-        </div>
+        {renderLoading()}
 
-        <RenderCampaignDetails projectData={state.selectedProjectData} />
-
-        <RenderProjectDetails
-          projectData={state.selectedProjectData}
-          hideBorder={!hasAssets}
-        />
-
-        {hasAssets && (
-          <div className={classes.assetsOuter}>
-            <div className={classes.assetsInner}>
-              {!!videos.length && (
-                <AssetUploadDisplay
-                  {...{
-                    assetIds: state.selectedProjectData.videos,
-                    accountId: account ? account.id : '',
-                    isVideo: true,
-                    disableUpload: true
-                  }}
-                />
-              )}
-
-              <AppDivider spacing={6} />
-
-              {!!images.length && (
-                <FeatureAssetUpload
-                  {...{
-                    assetIds: state.selectedProjectData.images,
-                    accountId: account ? account.id : '',
-                    featuredAsset: state.selectedProjectData.featuredImage,
-                    disableUpload: true
-                  }}
-                />
-              )}
-            </div>
-          </div>
-        )}
+        {renderProjectDetails()}
       </div>
     </div>
   )
@@ -175,7 +209,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   user: state.auth.user as User
 })
 const mapDispatchToProps = (dispatch: any) => ({
-  getPortfolioFolders: (portfolioId: string) => {
+  getPortfolio: (portfolioId: string) => {
     return dispatch(getPortfolioRequest(portfolioId))
   }
 })
