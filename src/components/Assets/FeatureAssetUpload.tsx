@@ -17,7 +17,7 @@ type AssetUploadDisplayProps = {
   isVideo?: boolean
   onFeatureSelect?: (id: string) => void
   featuredAsset?: string
-  isPortfolioScreen?: boolean
+  disableUpload?: boolean
 }
 
 export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
@@ -34,7 +34,7 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
     isVideo,
     onFeatureSelect,
     featuredAsset,
-    isPortfolioScreen
+    disableUpload
   } = props
 
   const classes = useStyles()
@@ -58,7 +58,7 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
             featuredAsset={featuredAsset}
           />
         </div>
-        {!isPortfolioScreen ? (
+        {!disableUpload && (
           <div className={clsx(classes.uploader, uploaderClassName)}>
             <DragAndDropUploader
               onSubmit={onUpload}
@@ -66,7 +66,7 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
               isVideo={isVideo}
             />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   )

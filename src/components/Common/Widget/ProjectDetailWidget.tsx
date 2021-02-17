@@ -8,16 +8,7 @@ import { AppDivider } from '../Core/AppDivider'
 export const RenderProjectDetails = (props: any) => {
   const classes = useStyles()
   return (
-    <div
-      className={classes.clientDetailsContainer}
-      style={{
-        color:
-          props.editInfo || props.isPortfolioScreen
-            ? props.portfolioTestColor
-              ? props.portfolioTestColor
-              : 'white'
-            : 'black'
-      }}>
+    <div className={classes.clientDetailsContainer}>
       <div className={classes.innerDiv}>
         <Typography variant={'h6'} className={classes.title}>
           Project Details
@@ -32,23 +23,25 @@ export const RenderProjectDetails = (props: any) => {
           </Button>
         ) : null}
       </div>
+
       {renderDetails(
         'Campaign Objective:',
         props.projectData ? props.projectData.campaignObjective : ''
       )}
-      {!props.isPortfolioScreen
-        ? renderDetails(
-            'Deadline: ',
-            props.projectData ? props.projectData.campaignDeadLine : ''
-          )
-        : null}
+
+      {renderDetails(
+        'Deadline: ',
+        props.projectData ? props.projectData.campaignDeadLine : ''
+      )}
+
       {props.projectData &&
         props.projectData.description &&
         renderDetails(
           'Project Summary: ',
           props.projectData ? props.projectData.description : ''
         )}
-      <AppDivider className={!props.isPortfolioScreen ? '' : classes.bgNone} />
+
+      <AppDivider />
     </div>
   )
 }

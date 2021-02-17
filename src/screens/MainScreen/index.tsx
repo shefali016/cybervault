@@ -41,7 +41,6 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 // import BankingScreen from 'screens/SharedScreens/BankingScreen'
 import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
-import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 
 import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
@@ -86,7 +85,6 @@ type StateProps = {
   accountRestored: boolean
   user: User
   account: Account
-  portfolio: Portfolio
 }
 type Props = { history: any; location: any } & StateProps & DispatchProps
 
@@ -98,9 +96,7 @@ const MainScreen = ({
   getUser,
   getAccount,
   user,
-  account,
-  location,
-  portfolio
+  account
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -116,7 +112,6 @@ const MainScreen = ({
   const [screenView, setScreenView] = useState(getInitialScreenView())
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
-  const [isPortfolioSingleScreen, setIsPortfolioSingleScreen] = useState(false)
 
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
@@ -266,23 +261,13 @@ const MainScreen = ({
     const sidebarButtonConfig = getSidebarButtonConfig()
     return {
       actionButtonConfig: sidebarButtonConfig,
-      headerTitle: !isPortfolioSingleScreen ? activeTab.text : portfolio.name,
+      headerTitle: activeTab.text,
       tabs,
       onTabPress: handleActiveTabPress,
       activeTab,
-      onProfileClick: handleProfileNavigation,
-      isPortfolioSingleScreen: isPortfolioSingleScreen
+      onProfileClick: handleProfileNavigation
     }
   }
-
-  useEffect(() => {
-    const paths = location.pathname.split('/')
-    if (paths[1] === 'portfolio' && paths.length > 2) {
-      setIsPortfolioSingleScreen(true)
-    } else {
-      setIsPortfolioSingleScreen(false)
-    }
-  }, [location])
 
   const renderLoading = () => (
     <div className={classes.splashScreen}>
@@ -302,7 +287,7 @@ const MainScreen = ({
   if (!(userRestored && accountRestored)) {
     return renderLoading()
   }
-  const portfolioBackgroundColor = account.branding.portfolio.backgroundColor
+
   return (
     <Layout {...getLayoutProps()}>
       <NewProjectModal
@@ -310,15 +295,7 @@ const MainScreen = ({
         onRequestClose={closeNewProjectModal}
         onSubmitClicked={createNewProject}
       />
-      <div
-        className={
-          isPortfolioSingleScreen ? classes.portfolioScreen : classes.screen
-        }
-        style={{
-          backgroundColor: isPortfolioSingleScreen
-            ? portfolioBackgroundColor
-            : '#181818'
-        }}>
+      <div className={classes.screen}>
         <Switch>
           <Route path='/projects' component={ProjectsScreen} />
           <Route path='/profile' component={ProfileScreen} />
@@ -329,7 +306,6 @@ const MainScreen = ({
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
-          <Route path='/portfolio/:id' component={PortfolioSingleScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}
@@ -380,8 +356,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   accountRestored: state.auth.accountRestored,
   userRestored: state.auth.userRestored,
   user: state.auth.user as User,
-  account: state.auth.account as Account,
-  portfolio: state.portfolio.portfolio as Portfolio
+  account: state.auth.account as Account
 })
 
 const mapDispatchToProps: DispatchProps = {

@@ -33,7 +33,7 @@ type Props = {
   projectName?: string
   user: User
   onEditProject?: boolean
-  isPortfolioSingleScreen?: boolean
+  renderAppIcon?: boolean
 }
 const ITEM_HEIGHT = 48
 
@@ -123,42 +123,33 @@ function Toolbar(props: Props) {
   }
 
   return (
-    <div
-      className={
-        !props.isPortfolioSingleScreen
-          ? classes.Toolbar
-          : classes.portfolioHeader
-      }>
-      {props.isPortfolioSingleScreen ? (
+    <div className={classes.Toolbar}>
+      {props.renderAppIcon && (
         <div>
           <PolymerSharpIcon className={classes.appIcon} />
         </div>
-      ) : null}
+      )}
+
       <div style={{ marginLeft: 25, display: FLEX }} className='portfolioTitle'>
-        {props.isPortfolioSingleScreen ? (
-          <Avatar alt='Remy Sharp' src={Dummy} />
-        ) : null}
         <h3 className={classes.title}>{props.headerTitle}</h3>
       </div>
-      {!props.isPortfolioSingleScreen ? (
-        <div>
-          {!props.isNotificationIcon ? (
-            <IconButton
-              style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
-              <NotificationIcon className={classes.notificationIcon} />
-            </IconButton>
-          ) : null}
-          <IconButton
-            style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-            onClick={props.onProfileClick}>
-            <img
-              src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
-              style={{ borderRadius: 20, height: 33, width: 33 }}
-              alt={'img'}
-            />
+
+      <div>
+        {!props.isNotificationIcon ? (
+          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
+            <NotificationIcon className={classes.notificationIcon} />
           </IconButton>
-        </div>
-      ) : null}
+        ) : null}
+        <IconButton
+          style={{ borderRadius: 100, width: 45, marginRight: 22 }}
+          onClick={props.onProfileClick}>
+          <img
+            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
+            style={{ borderRadius: 20, height: 33, width: 33 }}
+            alt={'img'}
+          />
+        </IconButton>
+      </div>
     </div>
   )
 }
