@@ -40,7 +40,6 @@ const HomeScreen = (props: any) => {
     props.getAllProjectsData(props.userData.account)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-console.log(props.isLoggedIn,"loggedddd")
   const classes = useStyles()
   const theme = useTheme()
 

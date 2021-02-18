@@ -278,11 +278,6 @@ const InvoicesClientScreen = (props: any) => {
                 {invoiceData?.invoiceConversationData?.length
                   ? invoiceData.invoiceConversationData.map(
                       (chat: Types.userConversation, i: number) => {
-                        console.log(
-                          invoiceData.invoiceData.userDetails.email,
-                          chat.sendersEmail,
-                          'gdygeygey'
-                        )
                         return (
                           <Grid
                             item
