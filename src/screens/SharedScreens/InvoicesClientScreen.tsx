@@ -306,10 +306,14 @@ const InvoicesClientScreen = (props: any) => {
                               <div className={classes.messageWrapper}>
                                 <Typography
                                   className={`${classes.textBold} ${classes.name}`}>
-                                  {invoiceData.invoiceData.userDetails.email ===
+                                  {accountData.isLoggedIn
+                                ? invoiceData.invoiceData.userDetails.email !==
                                   chat.sendersEmail
-                                    ? ''
-                                    : chat.name}
+                                  ? chat.name:''
+                                : invoiceData.invoiceData.clientEmail !==
+                                  chat.sendersEmail?
+                                chat.name:''}
+                                
                                 </Typography>
                                 <Typography
                                   className={classes.message}
