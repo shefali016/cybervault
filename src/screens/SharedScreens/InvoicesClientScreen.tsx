@@ -278,14 +278,24 @@ const InvoicesClientScreen = (props: any) => {
                 {invoiceData?.invoiceConversationData?.length
                   ? invoiceData.invoiceConversationData.map(
                       (chat: Types.userConversation, i: number) => {
+                        console.log(
+                          invoiceData.invoiceData.userDetails.email,
+                          chat.sendersEmail,
+                          'gdygeygey'
+                        )
                         return (
                           <Grid
                             item
                             sm={12}
                             container
                             justify={
-                              invoiceData.invoiceData.userDetails.email ===
-                              chat.sendersEmail
+                              accountData.isLoggedIn
+                                ? invoiceData.invoiceData.userDetails.email ===
+                                  chat.sendersEmail
+                                  ? 'flex-end'
+                                  : 'flex-start'
+                                : invoiceData.invoiceData.clientEmail ===
+                                  chat.sendersEmail
                                 ? 'flex-end'
                                 : 'flex-start'
                             }>
@@ -297,7 +307,9 @@ const InvoicesClientScreen = (props: any) => {
                                 <Typography
                                   className={`${classes.textBold} ${classes.name}`}>
                                   {invoiceData.invoiceData.userDetails.email ===
-                              chat.sendersEmail?"":chat.name}
+                                  chat.sendersEmail
+                                    ? ''
+                                    : chat.name}
                                 </Typography>
                                 <Typography
                                   className={classes.message}
