@@ -181,6 +181,7 @@ const EditProjectScreen = (props: any) => {
 
   //submit project details update
   const handleUpdateProject = async (projectData: Project) => {
+    console.log('IU')
     setState({
       ...state,
       projectData,
@@ -262,7 +263,7 @@ const EditProjectScreen = (props: any) => {
               onUpload: onAssetUpload('image'),
               assetIds: state.projectData.images,
               accountId: props.account.id,
-              isLoading: state.isVideoLoading,
+              isLoading: state.isImageLoading,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
               featuredAsset: state.projectData.featuredImage
