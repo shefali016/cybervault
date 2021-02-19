@@ -59,13 +59,15 @@ export const signUpRequest = (
 
 export const logoutRequest = () => firebase.auth().signOut()
 
-export const resetPassword=(password:string)=>{
+export const resetPassword=async(password:string)=>{
   var user = firebase.auth().currentUser;
   if(user){
-    user.updatePassword(password).then(function() {
-      // Update successful.
+    return user.updatePassword(password).then(function(res) {
+      console.log("success")
+      return ('Password Changed Successfully')
     }).catch(function(error) {
-      // An error happened.
+      console.log(error,"error")
+      return error
     });
   }
 }

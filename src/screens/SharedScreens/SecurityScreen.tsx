@@ -8,6 +8,12 @@ import { Account } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
+import Modal from '../../components/Common/Modal'
+import {useState,ChangeEvent} from 'react';
+import CloseButton from '../../components/Common/Button/CloseButton'
+import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
+import ResetPassword from './ResetPassword'
+
 
 type StateProps = { account: Account }
 type Props = {} & StateProps
@@ -16,7 +22,12 @@ const SecurityScreen = ({ account }: Props) => {
   const theme = useTheme()
   const { security } = account
 
-  const handleChangePassword = () => {}
+  const[open,setOpen]=useState(false)
+ 
+  const onRequestClose=()=>{
+    setOpen(false)
+  }
+
 
   const handleToggleTwoFactor = () => {}
 
@@ -36,7 +47,7 @@ const SecurityScreen = ({ account }: Props) => {
                   Reset or change your existing password
                 </Typography>
               </div>,
-              <GradiantButton onClick={handleChangePassword}>
+              <GradiantButton onClick={()=>setOpen(true)}>
                 <div className={'row'}>
                   <Typography style={{ marginRight: 5 }}>
                     Change Password
@@ -46,7 +57,22 @@ const SecurityScreen = ({ account }: Props) => {
               </GradiantButton>
             ]}
           </ResponsiveRow>
+          <Modal open={open} onRequestClose={onRequestClose}>
+          <div className='new-project-modal-content' >
+            <CloseButton
+              onClick={onRequestClose}
+              style={{
+                position: POSITION_ABSOLUTE,
+                top: 10,
+                right: 10
+              }}
+            />
+            <ResetPassword/>
+          </div>
+          </Modal>
         </div>
+        
+      
       </Section>
 
       <Section
@@ -153,7 +179,7 @@ const SecurityScreen = ({ account }: Props) => {
                   Use a recovery email to reset forgotten passwords.
                 </Typography>
               </div>,
-              <GradiantButton onClick={handleChangePassword}>
+              <GradiantButton onClick={()=>setOpen(true)}>
                 <div className={'row'}>
                   <Typography style={{ marginRight: 5 }}>Set Up</Typography>
                   <RightArrow style={{ fontSize: 15 }} />
