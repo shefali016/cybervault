@@ -176,7 +176,6 @@ const templateId=useMemo(()=>{
     const invoiceId=generateUid();
     const mailPayload={
       to:clientData.email.trim()||"",
-      from:'no-reply@employeelinkapp.com',
       templateId:templateId.trim()||'',
       type:'invoice',
       data:{

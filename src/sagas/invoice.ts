@@ -3,10 +3,10 @@ import * as ActionTypes from '../actions/actionTypes'
 import * as InvoiceApis from '../apis/invoiceApi'
 import * as InvoiceActions from '../actions/invoiceActions'
 import {getAllProjectsRequest} from '../actions/projectActions'
-import { Account ,Project,Invoice,userConversation} from '../utils/Interface'
+import { Account ,Project,Invoice,InvoiceConversation} from '../utils/Interface'
 
 
-type Params = { account: Account; project:Project,invoice:Invoice; type: string,invoiceId:string,accountId:string,conversation:userConversation }
+type Params = { account: Account; project:Project,invoice:Invoice; type: string,invoiceId:string,accountId:string,conversation:InvoiceConversation }
 
 function* invoiceRequest({ account,project,invoice}: Params) {
   try {
@@ -38,6 +38,7 @@ function* sendRevison({ accountId,invoiceId,conversation}: Params) {
   try {
     const response = yield call(InvoiceApis.sendRevisionRequest, accountId,invoiceId,conversation)
     yield put(InvoiceActions.sendRevisionSuccess())
+    yield put(InvoiceActions.getAllInvoiceConversationRequest(accountId,invoiceId))
   } catch (error: any) {
     yield put(InvoiceActions.sendRevisionError(error?.message || 'default'))
   }
@@ -45,7 +46,7 @@ function* sendRevison({ accountId,invoiceId,conversation}: Params) {
 function* allnvoiceConversation({ accountId,invoiceId}: Params) {
   try {
     const response = yield call(InvoiceApis.allInvoiceConversation, accountId,invoiceId)
-    yield put(InvoiceActions.getAllInvoiceConversationSuccess(response))
+    yield put(InvoiceActions.getAllInvoiceConversationSuccess({[invoiceId]:response}))
   } catch (error: any) {
     yield put(InvoiceActions.getAllInvoiceConversationError(error?.message || 'default'))
   }

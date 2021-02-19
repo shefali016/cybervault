@@ -73,7 +73,7 @@ export function generateNewInvoiceRequest(
   }
   export function sendRevisionRequest(accountId: string,
     invoiceId:string,
-    conversation:Types.userConversation
+    conversation:Types.InvoiceConversation
   ) {
     return {
       type: ActionTypes.SEND_REVISION_REQUEST,
@@ -104,12 +104,14 @@ export function generateNewInvoiceRequest(
       invoiceId,
     }
   }
+  
   export function getAllInvoiceConversationSuccess(
-    conversations:Array<Types.userConversation>
+    data:any
   ) {
+    console.log(data,"datatatatat")
     return {
       type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_SUCCESS,
-      payload:conversations
+      payload:data
     }
   }
   export function getAllInvoiceConversationError(error: string) {

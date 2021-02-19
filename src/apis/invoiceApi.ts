@@ -48,7 +48,7 @@ export const newInvoice = async (
   export const sendRevisionRequest = async (
     accountId: string,
     invoiceId:string,
-    conversation:Types.userConversation
+    conversation:Types.InvoiceConversation
   ) => {
  await firebase
       .firestore()

@@ -62,13 +62,12 @@ export const sendEmail = functions.firestore
 .document(`Mails/{mailId}`)
 .onWrite((change, context) => {
     try {
-      let mailId=context.params.mailId;
       let newData = change.after.data()
       let oldData = change.before.data()
-      if(mailId && !oldData && newData?.to && newData?.from && newData?.templateId ){
+      if(!oldData && newData?.to && newData?.from && newData?.templateId ){
         const msg = {
           to: newData.to,
-          from:newData.from,
+          from:functions.config().from_email.key,
           templateId:newData.templateId,
           dynamic_template_data:newData.data
         }

@@ -56,7 +56,6 @@ function* getAllProjects() {
 
 function* getProjectDetails({ projectId,accountId }: GetParams) {
   try {
-    // const account = yield select((state) => state.auth.account)
     const response = yield call(getProjectDetailsRequest, accountId, projectId)
 
     yield put(getProjectDetailsSuccess(response ? response : {}))

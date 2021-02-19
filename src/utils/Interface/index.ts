@@ -203,7 +203,7 @@ export type Project = {
   featuredImage?: string
 }
 
-export type userConversation={
+export type InvoiceConversation={
   name:string
   sendersEmail:string
   message:string
@@ -231,7 +231,7 @@ export type Invoice = {
   projectName: string
   campaignDeadLine: string
   featuredImage?: string
-  conversation?:Array<userConversation>
+  conversation?:Array<InvoiceConversation>
   userDetails:InvoiceUserInfo
 }
 
@@ -289,7 +289,6 @@ export type Cell = {
 
 export type Mail={
   to:string
-  from:string
   data:Object
   templateId:string,
   type:string

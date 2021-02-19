@@ -33,6 +33,7 @@ export type State = {
   getInvoiceLoading: Boolean
   getInvoiceSuccess: Boolean
   getInvoiceError: Boolean
+  invoiceConversationData:any
 }
 
 export type Action = {
@@ -59,7 +60,7 @@ const initialState = {
   invoiceConversationLoading:false,
   invoiceConversationSuccess:false,
   invoiceConversationError:false,
-  invoiceConversationData:[]
+  invoiceConversationData:{}
 
 }
 
@@ -167,7 +168,7 @@ const getAllInvoiceConversationSuccess = (state: State, action: Action) => ({
   invoiceConversationLoading:false,
   invoiceConversationSuccess:true,
   invoiceConversationError:false,
-  invoiceConversationData:action.payload
+  invoiceConversationData:{...state.invoiceConversationData,...action.payload}
 })
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {

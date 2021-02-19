@@ -4,7 +4,7 @@ import {
   deleteProjectRequest,
   getAllProjectsRequest
 } from '../../actions/projectActions'
-import {getAllClientsRequest } from '../../actions/clientActions'
+import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
