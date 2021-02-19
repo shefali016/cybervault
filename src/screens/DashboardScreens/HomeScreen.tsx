@@ -4,7 +4,7 @@ import {
   deleteProjectRequest,
   getAllProjectsRequest
 } from '../../actions/projectActions'
-import {getAllClientsRequest } from '../../actions/clientActions'
+import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
@@ -120,7 +120,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const useStyles = makeStyles((theme) => ({
   invoicingWrapper: {
-    marginBottom: theme.spacing(4),
+    marginBottom: theme.spacing(6),
     paddingLeft: theme.spacing(4),
     flexWrap: 'nowrap',
     overflowX: 'auto',
