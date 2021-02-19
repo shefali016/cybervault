@@ -112,17 +112,42 @@ const InvoicesClientScreen = (props: any) => {
     }
   })
 
+  const renderInvoiceAmmount = () => (
+    <Grid container justify='flex-end' xs spacing={1}>
+      <Grid container item alignItems='center' justify='flex-end'>
+        <Typography variant='h6' className={classes.subHeading}>
+          Invoice ammount:{' '}
+        </Typography>
+        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+          ${invoiceData.invoiceData.price}
+        </Typography>
+      </Grid>
+      <Grid item>
+        <GradiantButton>
+          <Typography variant='button'>Pay Invoice</Typography>
+        </GradiantButton>
+      </Grid>
+    </Grid>
+  )
+
   return (
     <Grid container justify='center'>
-      <Grid item sm={11}>
+      <Grid item>
         <Card className={classes.clientInvoiceWrapper}>
-          <Typography variant={'h4'} paragraph className={classes.heading}>
-            {projectDetails.campaignName}
-          </Typography>
+          <Grid container className={classes.paddedContainer}>
+            <Grid item xs>
+              <Typography variant={'h4'} className={classes.heading}>
+                {projectDetails.campaignName}
+              </Typography>
+            </Grid>
+
+            {renderInvoiceAmmount()}
+          </Grid>
+
           <Grid
             container
             className={classes.campaignWrapper}
-            spacing={2}
+            spacing={5}
             alignItems='center'>
             <Grid item sm={7}>
               <div className={classes.wrapper}>
@@ -139,14 +164,16 @@ const InvoicesClientScreen = (props: any) => {
               <Typography paragraph variant={'h5'}>
                 Campaign Description
               </Typography>
-              <Typography>{projectDetails.description}</Typography>
+              <Typography variant='body1'>
+                {projectDetails.description}
+              </Typography>
             </Grid>
           </Grid>
           <Grid
             container
             className={classes.campaignWrapper}
             alignItems='center'
-            spacing={2}>
+            spacing={5}>
             <Grid item sm={7}>
               <div className={clsx(classes.carousel)}>
                 <FeatureAssetList
@@ -164,116 +191,41 @@ const InvoicesClientScreen = (props: any) => {
               <Typography paragraph variant={'h5'}>
                 Project Details
               </Typography>
-              <Grid container>
-                <Typography className={classes.subHeading}>
-                  Campaign Objective :{' '}
+              <Grid container alignItems='center'>
+                <Typography className={classes.subHeading} variant='subtitle1'>
+                  Campaign Objective:
                 </Typography>
-                <Typography className={classes.field} paragraph>
+                <Typography className={classes.field} variant='body1'>
                   {projectDetails.campaignObjective}
                 </Typography>
               </Grid>
               <Grid container alignItems='center'>
-                <Typography className={classes.subHeading}>
-                  Campaign Deadline :{' '}
+                <Typography className={classes.subHeading} variant='subtitle1'>
+                  Campaign Deadline:
                 </Typography>
-                <Typography>{projectDetails.campaignDeadLine}</Typography>
+                <Typography variant='body1'>
+                  {projectDetails.campaignDeadLine}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
-          {!invoiceData?.invoiceData?.milestones?.length ? (
-            <Grid container justify='flex-end' spacing={2}>
-              <Grid item sm={5}>
-                <Typography paragraph variant={'h5'}>
-                  Invoice Details
-                </Typography>
-                <Grid container>
-                  <Grid item sm={5}>
-                    <Typography className={classes.subHeading}>
-                      Campaign Budget
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={3}>
-                    <Typography className={classes.field}>
-                      ${projectDetails.campaignBudget}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container>
-                  <Grid item sm={5}>
-                    <Typography className={classes.subHeading}>
-                      Campaign Expenses
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={3}>
-                    <Typography className={classes.field} paragraph>
-                      ${projectDetails.campaignExpenses}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container>
-                  <Grid item sm={5} className={classes.totalAmount}>
-                    <Typography className={classes.subHeading}>
-                      Total Amount
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={3} className={classes.totalAmount}>
-                    <Typography className={classes.field}>
-                      ${invoiceData.invoiceData.price}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          ) : null}
-          {invoiceData?.invoiceData?.milestones?.length ? (
-            <Grid container justify='flex-end' spacing={2}>
-              <Grid item sm={5}>
-                <Typography paragraph variant={'h5'}>
-                  MilestoneDetails Details
-                </Typography>
-                {invoiceData.invoiceData.milestones.map((mile: any) => {
-                  return (
-                    <Grid container>
-                      <Grid item sm={5}>
-                        <Typography className={classes.subHeading}>
-                          {mile.title}
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={3}>
-                        <Typography className={classes.field}>
-                          ${mile.payment}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  )
-                })}
 
-                <Grid container className={classes.totalAmountWrapper}>
-                  <Grid item sm={5} className={classes.totalAmount}>
-                    <Typography className={classes.subHeading}>
-                      Total Amount
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={3} className={classes.totalAmount}>
-                    <Typography className={classes.field}>
-                      ${invoiceData.invoiceData.price}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          ) : null}
+          <Grid
+            container
+            justify='flex-end'
+            className={classes.paddedContainer}>
+            {renderInvoiceAmmount()}
+          </Grid>
+
           <Grid item sm={11} container justify='center'>
             <div className={classes.editorSection}>
               <Typography
                 paragraph
                 color='textSecondary'
                 className={classes.revisionHeading}>
-                Request Revisions
+                Revision Requests
               </Typography>
-              <Typography paragraph color='textSecondary'>
-                Conversations
-              </Typography>
+
               <Grid container className={classes.conversationWrapper}>
                 {invoiceData?.invoiceConversationData?.length
                   ? invoiceData.invoiceConversationData.map(
@@ -302,13 +254,14 @@ const InvoicesClientScreen = (props: any) => {
                                 <Typography
                                   className={`${classes.textBold} ${classes.name}`}>
                                   {accountData.isLoggedIn
-                                ? invoiceData.invoiceData.userDetails.email !==
-                                  chat.sendersEmail
-                                  ? chat.name:''
-                                : invoiceData.invoiceData.clientEmail !==
-                                  chat.sendersEmail?
-                                chat.name:''}
-                                
+                                    ? invoiceData.invoiceData.userDetails
+                                        .email !== chat.sendersEmail
+                                      ? chat.name
+                                      : ''
+                                    : invoiceData.invoiceData.clientEmail !==
+                                      chat.sendersEmail
+                                    ? chat.name
+                                    : ''}
                                 </Typography>
                                 <Typography
                                   className={classes.message}
@@ -349,26 +302,27 @@ const InvoicesClientScreen = (props: any) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  paddedContainer: { padding: theme.spacing(4) },
   clientInvoiceWrapper: {
     background: theme.palette.background.surface,
-    border: `2px solid ${PRIMARY_COLOR}`,
+    border: `1px solid ${theme.palette.primary.light}`,
     color: '#fff',
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    boxShadow: `0 0 10px ${theme.palette.primary.light}`,
+    marginBottom: theme.spacing(6),
+    marginLeft: theme.spacing(6),
+    marginRight: theme.spacing(6)
   },
   heading: {
-    fontWeight: 800,
-    marginBottom: '30px'
+    fontWeight: 800
   },
   campaignWrapper: {
     paddingBottom: theme.spacing(5)
   },
   subHeading: {
-    fontSize: '18px',
     marginRight: '10px'
   },
-  field: {
-    // padding: '0 10px'
-  },
+  field: {},
   gradiantBtn: {
     borderRadius: 24,
     marginTop: 20
@@ -403,7 +357,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '30px'
   },
   conversationWrapper: {
-    maxHeight: '200px',
+    maxHeight: 400,
     overflow: 'scroll',
     marginBottom: '20px'
   },
