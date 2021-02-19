@@ -8,9 +8,7 @@ import { AppDivider } from '../Core/AppDivider'
 export const RenderProjectDetails = (props: any) => {
   const classes = useStyles()
   return (
-    <div
-      className={classes.clientDetailsContainer}
-      style={{ color: props.editInfo ? 'white' : 'black' }}>
+    <div className={classes.clientDetailsContainer}>
       <div className={classes.innerDiv}>
         <Typography variant={'h6'} className={classes.title}>
           Project Details
@@ -25,21 +23,25 @@ export const RenderProjectDetails = (props: any) => {
           </Button>
         ) : null}
       </div>
+
       {renderDetails(
         'Campaign Objective:',
         props.projectData ? props.projectData.campaignObjective : ''
       )}
+
       {renderDetails(
         'Deadline: ',
         props.projectData ? props.projectData.campaignDeadLine : ''
       )}
+
       {props.projectData &&
         props.projectData.description &&
         renderDetails(
           'Project Summary: ',
           props.projectData ? props.projectData.description : ''
         )}
-      <AppDivider />
+
+      {!props.hideBorder && <AppDivider />}
     </div>
   )
 }

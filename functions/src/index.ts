@@ -65,7 +65,7 @@ export const sendEmail = functions.firestore
       let mailId=context.params.mailId;
       let newData = change.after.data()
       let oldData = change.before.data()
-      if(mailId && !oldData && newData && Object.keys(newData).length ){
+      if(mailId && !oldData && newData?.to && newData?.from && newData?.templateId ){
         const msg = {
           to: newData.to,
           from:newData.from,

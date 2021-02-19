@@ -200,6 +200,7 @@ export type Project = {
   images: Array<MediaObject>
   canInvoice: Boolean
   status: ProjectStatus
+  featuredImage?: string
 }
 
 export type userConversation={
@@ -274,8 +275,8 @@ export interface PortfolioFolder {
 export interface Portfolio {
   id: string
   name: string
-  description: string
-  icon: string | null
+  description?: string
+  icon?: string | null
   projects: Array<string> // project ids
 }
 

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
     '.row': { display: 'flex', alignItems: 'center' },
-    '.col': { display: 'flex', alignItems: 'center', flexDirection: 'column' },
+    '.col': { display: 'flex', flexDirection: 'column' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
     '.MuiButton-label': { textTransform: 'capitalize' },
     '.MuiToggleButton-label': { textTransform: 'capitalize' },
@@ -16,7 +16,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderColor: theme.palette.background.surfaceHighlight
     },
     '.MuiTableCell-head': {
-    borderColor: theme.palette.background.surfaceHighlight
+      borderColor: theme.palette.background.surfaceHighlight
     },
     '.MuiTableRow-root': {
       '&:hover': {
@@ -33,8 +33,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
       maxHeight: '80vh',
+      minWidth: 400,
       outline: 'none',
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'scroll',

@@ -21,7 +21,7 @@ export function updatePortfolioFolderSuccess(
 
 export function updatePortfolioFolderFailure(error: string) {
   return {
-    type: ActionTypes.UPDATE_PROJECT_DETAILS_FAILURE,
+    type: ActionTypes.UPDATE_PORTFOLIO_FOLDER_FAILURE,
     error
   }
 }
@@ -33,11 +33,13 @@ export function getPortfolioFolderRequest() {
 }
 
 export function getPortfolioFolderSuccess(
-  folderList: Array<Types.PortfolioFolder>
+  folderList: Array<Types.PortfolioFolder>,
+  portfolios: Map<string, Types.Portfolio>
 ) {
   return {
     type: ActionTypes.GET_PORTFOLIO_FOLDER_SUCCESS,
-    payload: folderList
+    payload: folderList,
+    portfolios
   }
 }
 
@@ -55,9 +57,7 @@ export function deletePortfolioFolderRequest(folderId: string) {
   }
 }
 
-export function deletePortfolioFolderSuccess(
-  folderId: string
-) {
+export function deletePortfolioFolderSuccess(folderId: string) {
   return {
     type: ActionTypes.DELETE_PORTFOLIO_FOLDER_SUCCESS,
     payload: folderId
@@ -67,6 +67,56 @@ export function deletePortfolioFolderSuccess(
 export function deletePortfolioFolderFailure(error: string) {
   return {
     type: ActionTypes.DELETE_PORTFOLIO_FOLDER_FAILURE,
+    error
+  }
+}
+
+/* Portfolio Requests Action */
+export function updatePortfolioRequest(
+  portfolio: Types.Portfolio,
+  folderId: string
+) {
+  return {
+    type: ActionTypes.UPDATE_PORTFOLIO,
+    portfolio,
+    folderId
+  }
+}
+
+export function updatePortfolioSuccess() {
+  return {
+    type: ActionTypes.UPDATE_PORTFOLIO_SUCCESS,
+  }
+}
+
+export function updatePortfolioFailure(error: string) {
+  return {
+    type: ActionTypes.UPDATE_PORTFOLIO_FAILURE,
+    error
+  }
+}
+/* GET PORTFOLIO REQUEST ACTIONS */
+export function getPortfolioRequest(portfolioId: string) {
+  return {
+    type: ActionTypes.GET_PORTFOLIO_REQUEST,
+    portfolioId
+  }
+}
+
+export function getPortfolioSuccess(
+  portfolio: Types.Portfolio,
+  projects: Array<Types.Project>
+) {
+  return {
+    type: ActionTypes.GET_PORTFOLIO_SUCCESS,
+    payload: portfolio,
+    projects
+  }
+}
+
+export function getPortfolioFailure(error: string) {
+  return {
+    type: ActionTypes.GET_PORTFOLIO_FAILURE,
     error
   }
 }

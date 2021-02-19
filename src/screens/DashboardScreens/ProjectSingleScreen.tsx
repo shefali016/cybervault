@@ -350,6 +350,7 @@ const useStyles = makeStyles((theme) => ({
     color: 'white'
   },
   detailsWrapper: {
+    color: theme.palette.text.background,
     marginTop: 30
   },
   uploadVideoContainer: {},

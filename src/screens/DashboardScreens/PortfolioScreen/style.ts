@@ -1,7 +1,9 @@
 import { makeStyles } from '@material-ui/core'
+import { GREY_COLOR, TRANSPARENT } from 'utils/constants/colorsConstants'
 import {
   CENTER,
   FLEX,
+  POSITION_ABSOLUTE,
   POSITION_RELATIVE
 } from 'utils/constants/stringConstants'
 
@@ -14,7 +16,10 @@ export const useStyles = makeStyles((theme) => ({
       duration: 500
     })
   },
-  portfolioBoxMainWrap: {},
+  portfolioBoxMainWrap: {
+    paddingLeft: '25px',
+    paddingRight: '25px'
+  },
   portfolioFolder: {
     color: '#fff',
     marginBottom: theme.spacing(6)
@@ -22,6 +27,70 @@ export const useStyles = makeStyles((theme) => ({
   buttonIcon: {
     fontSize: 30,
     marginRight: 10
+  },
+  portfoliosCard: {
+    display: 'flex',
+    borderRadius: '15px',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#5ea5fc',
+    fontWeight: 600,
+    cursor: 'pointer',
+    padding: '15px 4px 15px 15px',
+    height: '100%',
+    boxSizing: 'border-box'
+  },
+  portfolioFolderTitle: {
+    marginBottom: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    '& span': {
+      marginLeft: 10,
+      cursor: 'pointer',
+      '& svg': {
+        width: 18
+      }
+    }
+  },
+  portfolioLogo: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    backgroundColor: TRANSPARENT,
+    marginBottom: 5,
+    overflow: 'hidden'
+  },
+  logoCOntent: {
+    width: 'calc(100% - 108px)',
+    padding: '0 0px 0 15px',
+
+    '& h5': {
+      color: '#353535',
+      fontSize: '14px',
+      margin: '0 0 5px 0',
+      fontWeight: 500,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    '& p ': {
+      fontSize: '10px',
+      color: '#000',
+      fontWeight: 300,
+      margin: 0,
+      textAlign: 'right'
+    }
+  },
+  cardLogo: {
+    width: 60,
+    '& img': {
+      maxWidth: '100%'
+    }
+  },
+  listItemText: {
+    '& span': {
+      fontSize: '1.3rem'
+    }
   },
   createPortfolioButton: {
     padding: `13px 28px`,
@@ -36,14 +105,30 @@ export const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.white
     }
   },
-  portfolioFolderTitle: {
-    marginBottom: theme.spacing(2)
-  },
   folderDescription: { color: theme.palette.text.meta },
   portfolioBox: {},
+  portfolioLogoImg: {
+    height: 80,
+    borderRadius: 40,
+    position: POSITION_ABSOLUTE
+  },
+  addLogoText: {
+    fontSize: 10,
+    color: GREY_COLOR
+  },
+  portfolioLogoContainer: {
+    display: FLEX,
+    marginTop: 3,
+    alignItems: CENTER,
+    justifyContent: CENTER
+  },
   portfolioModalBtn: {
     width: '200px',
-    margin: '50px auto 0'
+    margin: '50px auto 0',
+    borderRadius: '30px',
+    '& span': {
+      textTransform: 'capitalize'
+    }
   },
   portfolioModal: {
     color: '#24262b',

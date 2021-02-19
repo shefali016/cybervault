@@ -1,67 +1,138 @@
-import {
-  Card,
-  Grid,
-  IconButton,
-  MenuItem,
-  Popover,
-  Typography
-} from '@material-ui/core'
+import { Box, Card, Grid, Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
-import { PortfolioFolder } from 'utils/Interface'
+import { Client, Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
-import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import { FLEX } from 'utils/constants/stringConstants'
-import AddBoxIcon from '@material-ui/icons/AddBox'
-import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
-import ConfirmBox from 'components/Common/confirmBox'
+import ConfirmBox from 'components/Common/ConfirmBox'
 import AddIcon from '@material-ui/icons/Add'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
+import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { useStyles } from './style'
 import { AppButton } from 'components/Common/Core/AppButton'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import { setCommentRange } from 'typescript'
 
 type Props = {
   folderList: Array<PortfolioFolder>
   loading: boolean
   handleEditFolderDetail: (folder: PortfolioFolder) => void
   deletefolder: (folderId: string) => void
-  handlePortfolioFolder: (folderId: string) => void
+  isModalOpen: boolean
+  handleModalRequest: ({ type, folder }: any) => void
+  handleSubmit: (portfolio: Portfolio) => void
+  projectList: Array<Project>
+  portfolioLoading: boolean
+  portfolios: Map<string, Portfolio> | any
+  handlePortfolioView: (portfolioId: string) => void
+  clients: Array<Client>
 }
 const PortfolioFolders = ({
   folderList,
   loading,
   handleEditFolderDetail,
   deletefolder,
-  handlePortfolioFolder
+  isModalOpen,
+  handleModalRequest,
+  handleSubmit,
+  projectList,
+  portfolioLoading,
+  portfolios,
+  handlePortfolioView,
+  clients
 }: Props) => {
-  const [anchorEl] = useState<null | HTMLElement>(null)
-  const [open, setOpen] = useState<boolean>(false)
-  const [folderId, setFolderId] = useState<string>('')
+  const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
   const classes = useStyles()
+
+  const startConfirmingDelete = (id: string) => setDeleteFolderId(id)
+  const stopConfirmingDelete = () => setDeleteFolderId(null)
+  const handleDelete = () => {
+    deleteFolderId && deletefolder(deleteFolderId)
+    stopConfirmingDelete()
+  }
+
+  const renderPortfolioModal = () => {
+    return (
+      <PortfolioModal
+        open={isModalOpen}
+        onRequestClose={() => handleModalRequest({ type: 'portfolio' })}
+        onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
+        projectList={projectList}
+        portfolioLoading={portfolioLoading}
+        clients={clients}
+      />
+    )
+  }
+
   return (
     <Fragment>
       {!loading ? (
         folderList && !!folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
+            const portFolio: any = portfolios.filter(
+              (item: any) => item.folderId === folder.id
+            )
             return (
               <div key={index} className={classes.portfolioFolder}>
                 <div className={classes.portfolioFolderTitle}>
-                  <Typography variant='h6'>{folder.name}</Typography>
-                  <Typography
-                    variant='caption'
-                    className={classes.folderDescription}>
-                    {folder.description}
-                  </Typography>
-                </div>
-                <AppButton
-                  variant='contained'
-                  className={classes.createPortfolioButton}>
-                  <div className='row'>
-                    <AddIcon className={classes.buttonIcon} />
-                    <Typography style={{ fontWeight: 'bold' }}>
-                      Add Portfolio
+                  <Typography variant='h6'>
+                    {folder.name}
+                    <Typography
+                      variant='caption'
+                      className={classes.folderDescription}>
+                      {folder.description}
                     </Typography>
-                  </div>
-                </AppButton>
+                  </Typography>
+
+                  <span onClick={() => handleEditFolderDetail(folder)}>
+                    <EditIcon />
+                  </span>
+                  <span onClick={() => startConfirmingDelete(folder.id)}>
+                    <DeleteIcon />
+                  </span>
+                </div>
+
+                <Grid container spacing={2}>
+                  {!!portFolio &&
+                    !!portFolio.length &&
+                    portFolio.map((data: any, i: number) => {
+                      return (
+                        <Grid key={i} item lg={3} md={4} sm={6}>
+                          <Card
+                            onClick={() => handlePortfolioView(data.id)}
+                            className={classes.portfoliosCard}>
+                            <div className={classes.cardLogo}>
+                              <img src={data.logo} alt='' />
+                            </div>
+                            <div className={classes.logoCOntent}>
+                              <h5>{data.name}</h5>
+                              <p>{data.description}</p>
+                            </div>
+                            <Box pl={2}>
+                              <KeyboardArrowRightIcon
+                                style={{ color: '#797979' }}
+                              />
+                            </Box>
+                          </Card>
+                        </Grid>
+                      )
+                    })}
+                  <Grid item lg={3} md={4} sm={6}>
+                    <AppButton
+                      variant='contained'
+                      className={classes.createPortfolioButton}
+                      onClick={() => {
+                        handleModalRequest({ type: 'portfolio', folder })
+                      }}>
+                      <div className='row'>
+                        <AddIcon className={classes.buttonIcon} />
+                        <Typography style={{ fontWeight: 'bold' }}>
+                          Add Portfolio
+                        </Typography>
+                      </div>
+                    </AppButton>
+                  </Grid>
+                </Grid>
               </div>
             )
           })
@@ -76,18 +147,16 @@ const PortfolioFolders = ({
           />
         </div>
       )}
-      <ConfirmBox
-        open={open}
-        handleClose={() => setOpen(!open)}
-        cancleBtnText={'Cancel'}
-        allowBtnText={'Delete'}
-        confBoxTitle={'Are you sure?'}
-        confBoxText={'You want to delete this folder'}
-        setConfirmed={(value: boolean) => {
-          if (value) {
-            deletefolder(folderId)
-          }
-        }}
+      {renderPortfolioModal()}
+      <ConfirmationDialog
+        isOpen={!!deleteFolderId}
+        onClose={stopConfirmingDelete}
+        title={'Delete Portfolio Folder'}
+        message={
+          'Are you sure you want to delete this folder? This cannot be undone.'
+        }
+        onYes={handleDelete}
+        onNo={stopConfirmingDelete}
       />
     </Fragment>
   )

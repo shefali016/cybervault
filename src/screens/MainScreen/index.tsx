@@ -14,7 +14,14 @@ import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
-import { ButtonConfig, Project, Tab, User, Account } from 'utils/Interface'
+import {
+  ButtonConfig,
+  Project,
+  Tab,
+  User,
+  Account,
+  Portfolio
+} from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
 import DashboardIcon from '@material-ui/icons/Home'
@@ -34,6 +41,7 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 // import BankingScreen from 'screens/SharedScreens/BankingScreen'
 import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
+
 import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
 import { getUser } from '../../actions/user'
@@ -41,7 +49,7 @@ import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
 
-const DashboardTabIds = {
+export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
@@ -49,7 +57,7 @@ const DashboardTabIds = {
   storage: 'storage'
 }
 
-const AccountTabIds = {
+export const AccountTabIds = {
   profile: 'profile',
   manage: 'manage',
   branding: 'branding',
@@ -57,12 +65,12 @@ const AccountTabIds = {
   storage: 'storage'
 }
 
-const SharedTabIds = {
+export const SharedTabIds = {
   invoices: 'invoices',
   security: 'security'
 }
 
-const ScreenViews = {
+export const ScreenViews = {
   dashboard: 'dashboard',
   account: 'account'
 }
@@ -78,7 +86,7 @@ type StateProps = {
   user: User
   account: Account
 }
-type Props = { history: any } & StateProps & DispatchProps
+type Props = { history: any; location: any } & StateProps & DispatchProps
 
 const MainScreen = ({
   createNewProject,
@@ -104,6 +112,7 @@ const MainScreen = ({
   const [screenView, setScreenView] = useState(getInitialScreenView())
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
     []
@@ -260,14 +269,6 @@ const MainScreen = ({
     }
   }
 
-  // useEffect(() => {
-  //   if (location.pathname === '/project') {
-  //     onEditProject(true)
-  //   } else {
-  //     onEditProject(false)
-  //   }
-  // }, [location])
-
   const renderLoading = () => (
     <div className={classes.splashScreen}>
       <AppLoader color={theme.palette.primary.main} />
@@ -336,6 +337,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     flex: 1,
     paddingTop: theme.spacing(5),
+    overflowX: 'hidden'
+  },
+  portfolioScreen: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
     overflowX: 'hidden'
   },
   buttonIcon: {

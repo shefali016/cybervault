@@ -1,14 +1,19 @@
-import { PortfolioFolder } from '../../../utils/Interface'
+import {
+  Client,
+  Portfolio,
+  PortfolioFolder,
+  Project
+} from '../../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
-import iconFolderUpload from '../../../assets/iconFolderUpload.png'
 import PortfolioFolders from '../../../components/Portfolio/PortfolioFolders'
 import { PortfolioFolderModal } from 'components/Portfolio/PortfolioFolderModal'
 import { useEffect, useState } from 'react'
 import {
   deletePortfolioFolderRequest,
   getPortfolioFolderRequest,
-  updatePortfolioFolderRequest
+  updatePortfolioFolderRequest,
+  updatePortfolioRequest
 } from 'actions/portfolioActions'
 import { useStyles } from './style'
 import FolderIcon from '@material-ui/icons/Folder'
@@ -18,28 +23,41 @@ type StateProps = {
   folderList: Array<PortfolioFolder>
   loading: boolean
   updatingFolder: boolean
+  allProjectsData: Array<Project>
+  portfolioLoading: boolean
+  portfolios: Map<string, Portfolio> | any
+  clients: Array<Client>
 }
 
 type PortfolioStates = {
   isModalOpen: boolean
   folder: PortfolioFolder
   isError: boolean
+  portfolio: Portfolio
+  isPortfolioModalOpen: boolean
+  isChooseProject: boolean
 }
 type Props = {
   updatePortfolioFolder: (folder: PortfolioFolder) => void
   getPortfolioFolders: () => void
   deletePortfolioFolder: (folderId: string) => void
   history: any
+  updatePortfolio: (portfolio: Portfolio, folderId: string) => void
 } & StateProps
 
 const PortfoliosScreen = ({
   updatePortfolioFolder,
   getPortfolioFolders,
   folderList,
+  allProjectsData,
   loading,
   updatingFolder,
   deletePortfolioFolder,
-  history
+  history,
+  updatePortfolio,
+  portfolioLoading,
+  portfolios,
+  clients
 }: Props) => {
   const classes = useStyles()
 
@@ -50,46 +68,90 @@ const PortfoliosScreen = ({
   /* Initial State Data */
   const [state, setState] = useState<PortfolioStates>({
     isModalOpen: false,
+    isChooseProject: false,
     folder: {
       id: '',
       name: '',
       description: '',
       portfolios: []
     },
-    isError: false
+    portfolio: {
+      id: '',
+      name: '',
+      description: '',
+      icon: '',
+      projects: []
+    },
+    isError: false,
+    isPortfolioModalOpen: false
   })
 
   const resetStateData = () => {
     setState({
-      ...state,
+      isModalOpen: false,
+      isChooseProject: false,
       folder: {
         id: '',
         name: '',
         description: '',
         portfolios: []
       },
-      isModalOpen: !state.isModalOpen,
-      isError: false
+      portfolio: {
+        id: '',
+        name: '',
+        description: '',
+        icon: '',
+        projects: []
+      },
+      isError: false,
+      isPortfolioModalOpen: false
     })
   }
 
-  const handleModalRequest = () => {
-    setState({
-      ...state,
-      isModalOpen: !state.isModalOpen,
-      isError: false
-    })
+  const handleModalRequest = ({ type, folder }: any) => {
+    if (type === 'folder') {
+      setState({
+        ...state,
+        isModalOpen: !state.isModalOpen,
+        isError: false
+      })
+    } else {
+      setState({
+        ...state,
+        folder: folder,
+        isPortfolioModalOpen: !state.isPortfolioModalOpen,
+        isChooseProject: false,
+        isError: false,
+        portfolio: {
+          id: '',
+          name: '',
+          description: '',
+          icon: '',
+          projects: []
+        }
+      })
+    }
   }
 
-  const handleInputChange = (e: any, key: string) => {
+  const handleInputChange = (e: any, key: string, type: string) => {
     const { value } = e.target
-    setState({
-      ...state,
-      folder: {
-        ...state.folder,
-        [key]: value
-      }
-    })
+    if (type === 'folder') {
+      setState({
+        ...state,
+        folder: {
+          ...state.folder,
+          [key]: value
+        }
+      })
+    } else {
+      setState({
+        ...state,
+        portfolio: {
+          ...state.portfolio,
+          [key]: value
+        }
+      })
+    }
   }
 
   const handleEditFolderDetail = (folder: PortfolioFolder) => {
@@ -113,6 +175,11 @@ const PortfoliosScreen = ({
     }
   }
 
+  const handlePortfolioSubmit = (portfolio: Portfolio) => {
+    const { folder } = state
+    updatePortfolio(portfolio, folder.id)
+  }
+
   const handleDeleteFolder = (folderId: string) => {
     try {
       deletePortfolioFolder(folderId)
@@ -120,19 +187,19 @@ const PortfoliosScreen = ({
       return error
     }
   }
-
-  const handlePortfolioFolder = (folderId: string) => {
-    history.push(`/portfolio/id=${folderId}`)
+  const handlePortfolioView = (portfolioId: string) => {
+    history.push(`/portfolio/${portfolioId}`)
   }
-
   const renderPortfolioFolderModal = () => {
     return (
       <PortfolioFolderModal
         open={state.isModalOpen}
-        onRequestClose={() => handleModalRequest()}
+        onRequestClose={(type: string) => handleModalRequest({ type })}
         folder={state.folder}
         onSubmit={() => handleSubmit()}
-        handleInputChange={(e: any, key: string) => handleInputChange(e, key)}
+        handleInputChange={(e: any, key: string) =>
+          handleInputChange(e, key, 'folder')
+        }
         updatingFolder={updatingFolder}
         isError={state.isError}
       />
@@ -140,24 +207,35 @@ const PortfoliosScreen = ({
   }
 
   return (
-    <div className={'dashboardScreen'}>
-      <PortfolioFolders
-        folderList={folderList}
-        loading={loading}
-        handleEditFolderDetail={(folder: PortfolioFolder) =>
-          handleEditFolderDetail(folder)
-        }
-        deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
-        handlePortfolioFolder={(folderId: string) =>
-          handlePortfolioFolder(folderId)
-        }
-      />
-      <div
-        onClick={() => handleModalRequest()}
-        className={classes.portfolioBoxWrap}>
-        <div className={classes.portfolioBox}>
-          <FolderIcon className={classes.uploadFolderIcon} />
-          <Typography variant='h6'>Create Folder</Typography>
+    <div>
+      <div className={classes.portfolioBoxMainWrap}>
+        <div>
+          <PortfolioFolders
+            folderList={folderList}
+            loading={loading}
+            handleEditFolderDetail={(folder: PortfolioFolder) =>
+              handleEditFolderDetail(folder)
+            }
+            deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
+            isModalOpen={state.isPortfolioModalOpen}
+            handleModalRequest={handleModalRequest}
+            handleSubmit={handlePortfolioSubmit}
+            portfolios={portfolios}
+            projectList={allProjectsData}
+            portfolioLoading={portfolioLoading}
+            handlePortfolioView={(portfolioId: string) =>
+              handlePortfolioView(portfolioId)
+            }
+            clients={clients}
+          />
+        </div>
+        <div
+          onClick={() => handleModalRequest({ type: 'folder' })}
+          className={classes.portfolioBoxWrap}>
+          <div className={classes.portfolioBox}>
+            <FolderIcon className={classes.uploadFolderIcon} />
+            <Typography variant='h6'>Create Folder</Typography>
+          </div>
         </div>
       </div>
 
@@ -169,7 +247,11 @@ const PortfoliosScreen = ({
 const mapStateToProps = (state: ReduxState): StateProps => ({
   folderList: state.portfolio.folders as Array<PortfolioFolder>,
   loading: state.portfolio.getFoldersLoading as boolean,
-  updatingFolder: state.portfolio.updatingFolder as boolean
+  portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
+  updatingFolder: state.portfolio.updatingFolder as boolean,
+  allProjectsData: state.project.allProjectsData as Array<Project>,
+  portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any,
+  clients: state.clients.clientsData
 })
 const mapDispatchToProps = (dispatch: any) => ({
   updatePortfolioFolder: (folder: PortfolioFolder) => {
@@ -180,6 +262,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   deletePortfolioFolder: (folderId: string) => {
     return dispatch(deletePortfolioFolderRequest(folderId))
+  },
+  updatePortfolio: (portfolio: Portfolio, folderId: string) => {
+    return dispatch(updatePortfolioRequest(portfolio, folderId))
   }
 })
 

@@ -337,7 +337,8 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '100%',
     minWidth: '100%',
     transform: 'translate(-50%, -50%)',
-    borderRadius: 10
+    borderRadius: 10,
+    objectFit: 'cover'
   },
   img: {
     display: 'block',

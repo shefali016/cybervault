@@ -1,8 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { ProjectAsset, Project } from '../utils/Interface'
-
+import { Project } from '../utils/Interface'
 /**
  * @deleteProject
  */
