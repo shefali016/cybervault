@@ -15,7 +15,6 @@ import validate from '../../utils/helpers'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
-import { isEnumDeclaration } from 'typescript'
 import { Client } from '../../utils/Interface'
 
 type NewProjectProps = {
