@@ -66,7 +66,7 @@ export const resetPassword=async(password:string)=>{
     return user.updatePassword(password).then(function(res:any) {
       return ('Password Changed Successfully')
     }).catch(function(error:any) {
-      throw Error(error.message)
+      throw Error(error?.message)
     });
   }
  }
