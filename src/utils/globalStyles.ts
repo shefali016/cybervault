@@ -41,6 +41,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       overflowY: 'scroll',
       position: 'relative'
     },
+    '.modalCloseButton': { position: 'absolute', top: 10, right: 10 },
     '.horizontalGradient': {
       background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`
     },

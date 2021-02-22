@@ -150,7 +150,8 @@ export const createAccount = (
     accounts: [account.id],
     mainAccount: account.id,
     email: authUser.email,
-    name: authUser.name
+    name: authUser.name,
+    customerId: ''
   }
 
   const firestore = firebase.firestore()

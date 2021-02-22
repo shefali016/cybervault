@@ -12,6 +12,24 @@ router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.raw({ type: 'application/json' }))
 
+router.post('/attach_payment_method', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId, paymentMethodId } = req.body
+
+      const paymentMethod = await stripe.paymentMethods.attach(
+        paymentMethodId,
+        { customer: customerId }
+      )
+
+      return res.json(paymentMethod)
+    } catch (error) {
+      console.log('attach_payment_method', error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/create_customer', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
@@ -134,7 +152,7 @@ router.post('/create_account_link', (req, res) => {
   })
 })
 
-router.post('/stripe-webhook', async (req, res) => {
+router.post('/stripe-webhook', (req, res) => {
   return corsHandler(req, res, async () => {
     // Retrieve the event by verifying the signature using the raw body and secret.
     let event
@@ -154,7 +172,7 @@ router.post('/stripe-webhook', async (req, res) => {
       return res.sendStatus(400)
     }
     // Extract the object from the event.
-    const dataObject = event.data.object
+    // const dataObject = event.data.object
 
     // Handle the event
     // Review important events for Billing webhooks
@@ -184,7 +202,7 @@ router.post('/stripe-webhook', async (req, res) => {
       default:
       // Unexpected event type
     }
-    res.sendStatus(200)
+    return res.sendStatus(200)
   })
 })
 

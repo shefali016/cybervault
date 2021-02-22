@@ -6,11 +6,16 @@ type Props = {
   onClick: () => void
   style?: {}
   isLarge?: boolean
+  className?: string
 }
 
-const CloseButton = ({ onClick, style, isLarge }: Props) => {
+const CloseButton = ({ onClick, style, isLarge, className }: Props) => {
   return (
-    <IconButton aria-label='delete' onClick={onClick} style={style}>
+    <IconButton
+      aria-label='delete'
+      onClick={onClick}
+      style={style}
+      className={className}>
       <ClearIcon fontSize={isLarge ? 'large' : 'small'} />
     </IconButton>
   )

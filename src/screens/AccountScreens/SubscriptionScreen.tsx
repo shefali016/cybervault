@@ -5,22 +5,24 @@ import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Account } from 'utils/Interface'
+import { Account, User } from 'utils/Interface'
 import { getSubscriptionDetails } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { SubscriptionModal } from 'components/Subscription/SubscriptionModal'
 import { StorageModal } from 'components/Storage/StorageModal'
+import { CardModal } from 'components/Stripe/CardModal'
 
 type StateProps = {
   account: Account
+  user: User
 }
 type DispatchProps = {}
 type ReduxProps = StateProps & DispatchProps
 type Props = {}
 
-const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
+const SubscriptionScreen = ({ account, user }: Props & ReduxProps) => {
   const classes = useStyles()
 
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
@@ -34,6 +36,10 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
   const openStorageModal = () => setStorageModalOpen(true)
   const closeStorageModal = () => setStorageModalOpen(false)
 
+  const [cardModalOpen, setCardModalOpen] = useState(false)
+
+  const toggleCardModal = (open: boolean) => () => setCardModalOpen(open)
+
   return (
     <div className={clsx('container', classes.container)}>
       <SubscriptionModal
@@ -46,6 +52,12 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
         open={storageModalOpen}
         onRequestClose={closeStorageModal}
         account={account}
+      />
+
+      <CardModal
+        open={cardModalOpen}
+        onRequestClose={toggleCardModal(false)}
+        customerId={user.customerId}
       />
 
       <Section title={'Your Plan'} className={classes.section}>
@@ -120,7 +132,7 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
                     </Typography>
                   )}
                 </div>,
-                <GradiantButton>
+                <GradiantButton onClick={toggleCardModal(true)}>
                   <div className={'row'}>
                     <Typography style={{ marginRight: 5 }}>
                       Add Method
@@ -199,7 +211,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const mapState = (state: ReduxState): StateProps => ({
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  user: state.auth.user as User
 })
 
 export default connect(mapState)(SubscriptionScreen)

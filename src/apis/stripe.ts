@@ -8,8 +8,25 @@ import {
   User
 } from '../utils/Interface'
 import { updateAccount } from './account'
+import { PaymentMethod } from '@stripe/stripe-js'
 
 const { server_url, domain, local_server_url } = require('../config.json')
+
+export const attachPaymentMethod = async (
+  paymentMethodId: string,
+  customerId: string
+) => {
+  const res = await axios.post<PaymentMethod>(
+    `${local_server_url}/api/v1/stripe/attach_payment_method`,
+    { customerId, paymentMethodId }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Failed to create stripe customer')
+  }
+}
 
 export const verifyStripeAccount = async (
   account: Account
@@ -44,8 +61,10 @@ export const verifyStripeAccount = async (
   }
 }
 
-export const createStripeCustomer = async (user: User): Promise<StripeCustomer> => {
-  const {email, name} = user
+export const createStripeCustomer = async (
+  user: User
+): Promise<StripeCustomer> => {
+  const { email, name } = user
 
   const res = await axios.post<StripeCustomer>(
     `${local_server_url}/api/v1/stripe/create_customer`,

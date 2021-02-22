@@ -68,30 +68,30 @@ export type StripeAccount = {
 
 export interface StripeCustomer {
   id: string
-  object: "customer"
-  address: string | null,
-  balance: number,
+  object: 'customer'
+  address: string | null
+  balance: number
   created: number
   currency: string
-  default_source: string | null,
-  delinquent: boolean,
+  default_source: string | null
+  delinquent: boolean
   description: string
-  discount: string | null,
-  email: string | null,
+  discount: string | null
+  email: string | null
   invoice_prefix: string
   invoice_settings: {
-    custom_fields: null,
-    default_payment_method: null,
+    custom_fields: null
+    default_payment_method: null
     footer: null
-  },
-  livemode: boolean,
-  metadata: {},
-  name: string | null,
-  next_invoice_sequence: number,
-  phone: string | null,
-  preferred_locales: [],
-  shipping: string |null,
-  tax_exempt?: "none"
+  }
+  livemode: boolean
+  metadata: {}
+  name: string | null
+  next_invoice_sequence: number
+  phone: string | null
+  preferred_locales: []
+  shipping: string | null
+  tax_exempt?: 'none'
 }
 
 export interface StripeLoginLink {
@@ -166,7 +166,7 @@ export type User = {
   facebook?: string | undefined
   twitter?: string | undefined
   linkedIn?: string | undefined
-  customerId?: string
+  customerId: string
 }
 
 export type AuthUser = {
