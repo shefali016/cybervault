@@ -15,10 +15,16 @@ const headerCells = [
 type Props = {
   invoices: Array<Invoice>
   tableContainerClassName?: string
+  history:any
+  accountId:string
 }
 
-export const InvoicesTable = ({ invoices, tableContainerClassName }: Props) => {
+export const InvoicesTable = ({ invoices, tableContainerClassName,history ,accountId}: Props) => {
   const classes = useStyles()
+
+  const handleRowClick=(data:string)=>{
+      history.push(`/clientInvoices/${accountId}/${data}`)
+  }
 
   const rows = useMemo(() => {
     let rows: Array<Row> = []
@@ -26,23 +32,25 @@ export const InvoicesTable = ({ invoices, tableContainerClassName }: Props) => {
     invoices &&
       invoices.length &&
       invoices.forEach((inv: Invoice) => {
-        rows.push([
-          { title: inv.projectName, key: `${inv.id}projectName` },
-          { title: `${inv.price}`, key: `${inv.id}price` },
-          { title: `${inv.dateCreated}`, key: `${inv.id}date` },
-          {
-            renderer: () => (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <InvoiceStatusIndicator
-                  status={inv.status}
-                  className={classes.status}
-                />
-                {inv.status}
-              </div>
-            ),
-            key: `${inv.id}status`
-          }
-        ])
+        rows.push({
+          row:[
+            { title: inv.projectName, key: `${inv.id}projectName` },
+            { title: `${inv.price}`, key: `${inv.id}price` },
+            { title: `${inv.dateCreated}`, key: `${inv.id}date` },
+            {
+              renderer: () => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <InvoiceStatusIndicator
+                    status={inv.status}
+                    className={classes.status}
+                  />
+                  {inv.status}
+                </div>
+              ),
+              key: `${inv.id}status`
+            }
+          ],key:`${inv.id}`
+        })
       })
 
     return rows
@@ -54,6 +62,7 @@ export const InvoicesTable = ({ invoices, tableContainerClassName }: Props) => {
       headerCells={headerCells}
       tableContainerClassName={tableContainerClassName}
       emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
+      handleRowClick={handleRowClick}
     />
   )
 }

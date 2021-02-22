@@ -37,7 +37,7 @@ type State = {
   stripeLoginLink: StripeLoginLink | null
 }
 
-const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
+const InvoicesScreen = ({ account, updateAccount, invoices,history }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
@@ -240,6 +240,8 @@ const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
               <InvoicesTable
                 invoices={invoices}
                 tableContainerClassName={classes.table}
+                history={history}
+                accountId={account.id}
               />
             </div>
           )}

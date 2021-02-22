@@ -20,6 +20,7 @@ interface Props {
   rows: Array<Row>
   tableContainerClassName: string | undefined
   rest?: any
+  handleRowClick:(row:any)=>void
   emptyProps: {
     Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>
     title: string
@@ -31,6 +32,7 @@ export const AppTable = ({
   rows,
   tableContainerClassName,
   emptyProps,
+  handleRowClick,
   ...rest
 }: Props) => {
   const classes = useStyles()
@@ -46,7 +48,7 @@ export const AppTable = ({
       className={clsx(classes.tableContainer, tableContainerClassName)}>
       <Table className={classes.table}>
         <TableHead>
-          <TableRow>
+          <TableRow >
             {headerCells.map((cell: Cell) => renderCell(cell))}
           </TableRow>
         </TableHead>
@@ -58,9 +60,9 @@ export const AppTable = ({
         )}
 
         <TableBody>
-          {rows.map((row: Array<Cell>, index) => (
-            <TableRow key={`table-row-${index}`}>
-              {row.map((cell: Cell) => renderCell(cell))}
+          {rows.map((row: Row, index) => (
+            <TableRow key={`table-row-${row.key}`} onClick={()=>handleRowClick(row.key)}>
+              {row.row.map((cell: Cell) => renderCell(cell))}
             </TableRow>
           ))}
         </TableBody>

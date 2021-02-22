@@ -299,4 +299,7 @@ export type MailTemplate={
   type:string
 }
 
-export type Row = Array<Cell>
+export type Row = {
+  key:string
+  row:Array<Cell>
+}

@@ -196,11 +196,14 @@ const StripeScreen = ({ account, updateAccount }: Props) => {
           headerCells={[]}
           tableContainerClassName={classes.table}
           emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
+          handleRowClick={handleRowClick}
         />
       </div>
     )
   }
-
+const handleRowClick=()=>{
+  
+}
   return (
     <div className={clsx('screenContainer', 'centerContent')}>
       <Section className={classes.balanceSection}>

@@ -38,9 +38,8 @@ export const FeatureAssetList = ({
   innerImageClassName,
   assetContainerMinHeight
 }: Props) => {
-  const classes = useStyles({assetContainerMinHeight})
   const theme = useTheme()
-
+  
   const [state, setState] = useState<State>({
     currentIndex: 0,
     renderTopAsset: true,
@@ -48,6 +47,7 @@ export const FeatureAssetList = ({
     bottomAsset: null,
     assets: []
   })
+  const classes = useStyles({assetContainerMinHeight,assets:state.assets})
 
   const { currentIndex, renderTopAsset, topAsset, bottomAsset, assets } = state
 
@@ -375,8 +375,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    minHeight: (props:any)=>props.assetContainerMinHeight?props.assetContainerMinHeight:300,
-    padding: `20px 20px`
+    minHeight: (props:any)=>props.assetContainerMinHeight && props.assets.length?props.assetContainerMinHeight:300,
+    padding: `20px 30px`
   },
   currentAssetOuter: {
     display: 'flex',
