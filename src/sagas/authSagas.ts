@@ -47,7 +47,7 @@ function* changePassword({password}:Params) {
   try {
     let response=yield call(resetPassword, password)
     console.log(response,"bfhvgrryg")
-    yield put(resetPasswordSuccess())
+    yield put(resetPasswordSuccess(response))
   } catch (error: any) {
     yield put(resetPasswordError(error?.message))
   }

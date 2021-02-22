@@ -18,7 +18,10 @@ import {
   GET_ACCOUNT_SUCCESS,
   GET_USER_FAILURE,
   GET_USER_SUCCESS,
-  GET_ACCOUNT_FAILURE
+  GET_ACCOUNT_FAILURE,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_ERROR
 } from 'actions/actionTypes'
 import { User, Account } from 'utils/Interface'
 import { createTransform } from 'redux-persist'
@@ -38,6 +41,10 @@ export type State = {
   accountUpdating: boolean
   accountUpdateSuccess: boolean
   accountUpdateError: string | null
+  changePasswordLoading:boolean,
+  changePasswordSuccess:boolean,
+  changePasswordError:boolean,
+  changePasswordData:string
 }
 
 export type Action = {
@@ -62,7 +69,11 @@ const initialState = {
   accountUpdateSuccess: false,
   accountUpdateError: null,
   getAccountError: null,
-  getUserError: null
+  getUserError: null,
+  changePasswordLoading:false,
+  changePasswordSuccess:false,
+  changePasswordError:false,
+  changePasswordData:''
 }
 
 const signUp = (state: State, action: Action) => ({ ...state, error: null })
@@ -102,6 +113,35 @@ const loginSuccess = (state: State, action: Action) => {
     accountRestored: true
   }
 }
+
+const resetPasswordRequest = (state: State, action: Action) => {
+  return {
+    ...state,
+    changePasswordLoading:true,
+    changePasswordSuccess:false,
+    changePasswordError:false
+  }
+}
+const resetPasswordSuccess = (state: State, action: Action) => {
+  return {
+    ...state,
+    changePasswordLoading:false,
+    changePasswordSuccess:true,
+    changePasswordError:false,
+    changePasswordData:action.payload
+  }
+}
+
+const resetPasswordError = (state: State, action: Action) => {
+  return {
+    ...state,
+    changePasswordLoading:false,
+    changePasswordSuccess:false,
+    changePasswordError:true,
+    changePasswordData:action.error
+  }
+}
+
 
 const logoutFailure = (state: State, action: Action) => ({
   ...state,
@@ -146,6 +186,12 @@ const authReducer = (state = initialState, action: Action) => {
     case LOGIN_FAILURE:
       console.log(action)
       return loginFailure(state, action)
+      case RESET_PASSWORD_REQUEST:
+        return resetPasswordRequest(state, action)
+      case RESET_PASSWORD_SUCCESS:
+        return resetPasswordSuccess(state, action)
+      case RESET_PASSWORD_ERROR:
+        return resetPasswordError(state, action)
     case LOGOUT_SUCCESS:
       return logoutSuccess(state, action)
     case LOGOUT_FAILURE:
@@ -199,6 +245,7 @@ const authReducer = (state = initialState, action: Action) => {
         accountUpdating: false,
         accountUpdateError: action.error
       }
+      
     default:
       return state
   }

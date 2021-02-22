@@ -59,9 +59,11 @@ export function resetPasswordRequest(
   }
 }
 export function resetPasswordSuccess(
+  message:string
 ){
   return {
     type:ActionTypes.RESET_PASSWORD_SUCCESS,
+    payload:message
   }
 }
 export function resetPasswordError(

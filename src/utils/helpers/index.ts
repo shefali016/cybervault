@@ -54,3 +54,31 @@ export const validateAddClient=(clientData:any)=>{
     return true
   }
 }
+
+type PasswordType={
+  newPassword:string
+  confirmPassword:string
+}
+
+
+export const validatePassword=(data:PasswordType)=>{
+  let errors:any;
+  errors={}
+  if(data.hasOwnProperty('newPassword')){
+     if(data.newPassword==''){
+          errors.newPassword='Enter Password'
+     }
+     else if(data.newPassword && data.newPassword.length<6){
+          errors.newPassword='Password should not be less than 6 characters'
+     }
+  }
+  if(data.hasOwnProperty('confirmPassword')){
+      if(data.confirmPassword==''){
+          errors.confirmPassword='Enter Confirm Password'
+     }
+     else if(data.confirmPassword!==data.newPassword){
+          errors.confirmPassword='Password does not match'
+     }
+  }
+  return errors
+}

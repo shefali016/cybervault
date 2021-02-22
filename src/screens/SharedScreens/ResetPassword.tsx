@@ -5,8 +5,13 @@ import {Typography,Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import {resetPasswordRequest} from '../../actions/authActions'
+import {validatePassword} from '../../utils/helpers'
 
-const ResetPassword = ({}) => {
+
+type Props={
+  loading:Boolean
+}
+const ResetPassword = ({loading}:Props) => {
     const [password,setPassword]=useState({newPassword:'',confirmPassword:''})
     const [errors,setErrors]=useState({newPassword:'',confirmPassword:''})
     const dispatch=useDispatch()
@@ -14,35 +19,10 @@ const ResetPassword = ({}) => {
       const value = event.target.value
       setPassword({...password,[key]:value})
     }
-    type PasswordType={
-        newPassword:string
-        confirmPassword:string
-    }
-    const validate=(data:PasswordType)=>{
-        let errors:any;
-        errors={}
-        if(data.hasOwnProperty('newPassword')){
-           if(data.newPassword==''){
-                errors.newPassword='Enter Password'
-           }
-           else if(data.newPassword && data.newPassword.length<6){
-                errors.newPassword='Password should not be less than 6 characters'
-           }
-        }
-        if(data.hasOwnProperty('confirmPassword')){
-            if(data.confirmPassword==''){
-                errors.confirmPassword='Enter Confirm Password'
-           }
-           else if(data.confirmPassword!==data.newPassword){
-                errors.confirmPassword='Password does not match'
-           }
-        }
-        return errors
-    }
+   
     const handleResetPassword=()=>{
-        const errors=validate(password);
+        const errors=validatePassword(password);
         setErrors(errors)
-        console.log(Object.values(errors),"errorsss")
         if(!Object.keys(errors).length){
             dispatch(resetPasswordRequest(password.confirmPassword))
         }
@@ -75,7 +55,7 @@ const ResetPassword = ({}) => {
       />
       {errors.confirmPassword && <Typography>{errors.confirmPassword}</Typography>}
       <Grid container justify='flex-end'>
-      <GradiantButton onClick={handleResetPassword}>Save Password</GradiantButton>
+      <GradiantButton onClick={handleResetPassword} loading={loading}>Save Password</GradiantButton>
       </Grid>
     </>
   )
