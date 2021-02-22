@@ -184,7 +184,6 @@ const authReducer = (state = initialState, action: Action) => {
     case LOGIN_SUCCESS:
       return loginSuccess(state, action)
     case LOGIN_FAILURE:
-      console.log(action)
       return loginFailure(state, action)
       case RESET_PASSWORD_REQUEST:
         return resetPasswordRequest(state, action)
