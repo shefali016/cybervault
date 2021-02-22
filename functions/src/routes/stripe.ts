@@ -11,6 +11,25 @@ const stripe = Stripe('sk_test_CSO5sCU4TsvQSFlOpspnShi5003S4QpoBN') // @todo imp
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
 
+
+router.post('/create_customer', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const {email, name} = req.body;
+
+      const customer = await stripe.customers.create({
+        email,
+        name
+      });
+
+      return res.json(customer)
+    } catch (error) {
+      console.log("create_customer", error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.get('/get_account', (req, res) => {
   return corsHandler(req, res, async () => {
     try {

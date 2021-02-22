@@ -15,7 +15,6 @@ import validate from '../../utils/helpers'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
-import { isEnumDeclaration } from 'typescript'
 import { Client } from '../../utils/Interface'
 
 type NewProjectProps = {
@@ -77,26 +76,29 @@ const NewProject = ({
     }
   })
 
-  useEffect(() => {
-    // if (addClientSuccess && addClient && currentStep == 1 && newClientData) {
-    //   if (project) {
-    //     setAddClient(false)
-    //   } else {
-    //     setClientData(newClientData)
-    //     setCurrentStep((step) => step + 1)
-    //     setAddClient(false)
-    //   }
-    // }
-  }, [addClientSuccess])
+  // useEffect(() => {
+  // if (addClientSuccess && addClient && currentStep == 1 && newClientData) {
+  //   if (project) {
+  //     setAddClient(false)
+  //   } else {
+  //     setClientData(newClientData)
+  //     setCurrentStep((step) => step + 1)
+  //     setAddClient(false)
+  //   }
+  // }
+  // }, [addClientSuccess])
 
   const onUpdateData = () => {
-    if (typeof onUpdate !== 'function' || !clientData) {
+    if (typeof onUpdate !== 'function') {
       return
     }
-    onUpdate({
-      ...projectData,
-      clientId: clientData.id
-    })
+    const projectUpdate = { ...projectData }
+
+    if (clientData) {
+      projectUpdate.clientId = clientData.id
+    }
+
+    onUpdate(projectUpdate)
   }
 
   const onSubmitData = async () => {

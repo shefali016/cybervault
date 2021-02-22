@@ -11,10 +11,11 @@ type AssetUploadDisplayProps = {
   titleClassName?: string
   assetIds: Array<string>
   accountId: string
-  onUpload: (data: any) => void
-  isLoading: boolean | undefined
-  title: string
+  onUpload?: (data: any) => void
+  isLoading?: boolean | undefined
+  title?: string
   isVideo?: boolean
+  disableUpload?: boolean
 }
 
 export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
@@ -28,7 +29,8 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
     isLoading,
     accountId,
     title,
-    isVideo
+    isVideo,
+    disableUpload
   } = props
 
   const classes = useStyles()
@@ -50,13 +52,15 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
             isVideo={isVideo}
           />
         </div>
-        <div className={clsx(classes.uploader, uploaderClassName)}>
-          <DragAndDropUploader
-            onSubmit={(file: File) => onUpload(file)}
-            isLoading={isLoading}
-            isVideo={isVideo}
-          />
-        </div>
+        {!disableUpload && (
+          <div className={clsx(classes.uploader, uploaderClassName)}>
+            <DragAndDropUploader
+              onSubmit={onUpload}
+              isLoading={isLoading}
+              isVideo={isVideo}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

@@ -6,10 +6,11 @@ import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
+import ModalTitle from 'components/Projects/NewProjectTitle'
 
 type Props = {
   open: boolean
-  onRequestClose: () => void
+  onRequestClose: (type: string) => void
   folder: PortfolioFolder | null
   onSubmit: (folder: PortfolioFolder) => void
   handleInputChange: (event: any, key: string) => void
@@ -31,7 +32,7 @@ export const PortfolioFolderModal = ({
   const renderDetails = () => {
     return (
       <Fragment>
-        <div style={{ marginTop: '50px' }}>
+        <div>
           <AppTextField
             error={folder && !folder.name && isError ? true : false}
             type={''}
@@ -59,16 +60,18 @@ export const PortfolioFolderModal = ({
   }
 
   return (
-    <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-      <div className={classes.portfolioModal}>
-        <h2 className={classes.portfolioModalHead}>
-          {folder && folder.id ? 'Edit Folder' : 'New Folder'}
-        </h2>
-        <span>Add Content & information</span>
+    <AppModal
+      open={open}
+      onRequestClose={() => onRequestClose('folder')}
+      clickToClose={true}>
+      <div className={'modalContent'}>
+        <ModalTitle
+          title={folder && folder.id ? 'Edit Folder' : 'New Folder'}
+          subtitle={'Add Content & information'}
+        />
         <CloseButton
-          onClick={onRequestClose}
-          style={{ position: 'absolute', top: 10, right: 10, fontSize: 50 }}
-          isLarge={true}
+          onClick={() => onRequestClose('folder')}
+          style={{ position: 'absolute', top: 10, right: 10 }}
         />
         {renderDetails()}
       </div>

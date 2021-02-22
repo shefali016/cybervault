@@ -1,8 +1,14 @@
-import { User, UserLoginInfo, AuthUser, Account } from '../utils/Interface'
+import {
+  User,
+  UserLoginInfo,
+  AuthUser,
+  Account,
+  StripeCustomer
+} from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { generateUid } from 'utils'
-import { getUser } from 'apis/user'
+import { getUser, updateUser } from 'apis/user'
 import { getAccount } from 'apis/account'
 import {
   SharingPrivacies,
@@ -10,14 +16,29 @@ import {
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
+import { createStripeCustomer } from './stripe'
+import { ErrorRounded } from '@material-ui/icons'
 
-export const getUserWithAccount = (
+export const getUserWithAccount = async (
   id: string
 ): Promise<{ user: User; account: Account }> => {
-  return getUser(id).then((user: User) => {
-    const { mainAccount } = user
-    return getAccount(mainAccount).then((account) => ({ account, user }))
-  })
+  let user = await getUser(id)
+
+  if (!user) {
+    throw Error('user_not_found')
+  }
+
+  const { mainAccount } = user
+
+  if (!user.customerId) {
+    const customer: StripeCustomer = await createStripeCustomer(user)
+    user = { ...user, customerId: customer.id }
+    await updateUser(user)
+  }
+
+  const account = await getAccount(mainAccount)
+
+  return { account, user }
 }
 
 export const authRequest = (
@@ -88,14 +109,16 @@ export const googleLoginRequest = async () => {
       uid: authUser.uid
     }
     try {
-      const user = await getUser(authUser.uid)
-      const account = await getAccount(user.mainAccount)
-      return { user, account }
+      const res = await getUserWithAccount(authUser.uid)
+      return res
     } catch (error) {
-      return createAccount(userData)
+      if (error?.message === 'user_not_found') {
+        return createAccount(userData)
+      }
+      throw error
     }
   } else {
-    throw Error('Failed to create user')
+    throw Error('Failed to authenticate google user')
   }
 }
 
@@ -154,7 +177,14 @@ export const createAccount = (
     .doc(account.id)
     .set(account)
     .then(() => {
-      return firestore.collection('Users').doc(user.id).set(user)
+      return createStripeCustomer(user)
     })
-    .then(() => ({ user, account }))
+    .then((customer: StripeCustomer) => {
+      const updatedUser = { ...user, customerId: customer.id }
+      return firestore
+        .collection('Users')
+        .doc(user.id)
+        .set(updatedUser)
+        .then(() => ({ user: updatedUser, account }))
+    })
 }

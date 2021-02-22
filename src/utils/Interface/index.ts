@@ -66,6 +66,34 @@ export type StripeAccount = {
   country: string
 }
 
+export interface StripeCustomer {
+  id: string
+  object: "customer"
+  address: string | null,
+  balance: number,
+  created: number
+  currency: string
+  default_source: string | null,
+  delinquent: boolean,
+  description: string
+  discount: string | null,
+  email: string | null,
+  invoice_prefix: string
+  invoice_settings: {
+    custom_fields: null,
+    default_payment_method: null,
+    footer: null
+  },
+  livemode: boolean,
+  metadata: {},
+  name: string | null,
+  next_invoice_sequence: number,
+  phone: string | null,
+  preferred_locales: [],
+  shipping: string |null,
+  tax_exempt?: "none"
+}
+
 export interface StripeLoginLink {
   object: string
   created: number
@@ -138,6 +166,7 @@ export type User = {
   facebook?: string | undefined
   twitter?: string | undefined
   linkedIn?: string | undefined
+  customerId?: string
 }
 
 export type AuthUser = {
@@ -200,6 +229,7 @@ export type Project = {
   images: Array<MediaObject>
   canInvoice: Boolean
   status: ProjectStatus
+  featuredImage?: string
 }
 
 export type Invoice = {
@@ -257,8 +287,8 @@ export interface PortfolioFolder {
 export interface Portfolio {
   id: string
   name: string
-  description: string
-  icon: string | null
+  description?: string
+  icon?: string | null
   projects: Array<string> // project ids
 }
 

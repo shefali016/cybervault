@@ -3,11 +3,13 @@ import {
   Account,
   StripeAccount,
   StripeAccountLink,
-  StripeLoginLink
+  StripeCustomer,
+  StripeLoginLink,
+  User
 } from '../utils/Interface'
 import { updateAccount } from './account'
 
-const { server_url, domain } = require('../config.json')
+const { server_url, domain, local_server_url } = require('../config.json')
 
 export const verifyStripeAccount = async (
   account: Account
@@ -39,6 +41,22 @@ export const verifyStripeAccount = async (
     return { account: updatedAccount, stripeAccount, isUpdated: true }
   } else {
     return { account, stripeAccount, isUpdated: false }
+  }
+}
+
+export const createStripeCustomer = async (user: User): Promise<StripeCustomer> => {
+  const {email, name} = user
+
+  const res = await axios.post<StripeCustomer>(
+    `${local_server_url}/api/v1/stripe/create_customer`,
+    { email, name }
+  )
+
+  if (res.status === 200) {
+    const stripeCustomer = res.data
+    return stripeCustomer
+  } else {
+    throw Error('Failed to create stripe customer')
   }
 }
 
