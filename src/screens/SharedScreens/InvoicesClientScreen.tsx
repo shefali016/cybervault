@@ -150,6 +150,7 @@ const InvoicesClientScreen = (props: any) => {
         </Grid>
         <Grid item sm={11} className={classes.subHeaderSection}>
           {projectDetails.campaignName}{' '}
+          <div className={classes.dot}></div>
         </Grid>
         <Grid
           item
@@ -446,10 +447,20 @@ const useStyles = makeStyles((theme) => ({
   },
   subHeaderSection: {
     backgroundColor: theme.palette.primary.light,
-    padding: theme.spacing(1),
+    padding: '10px',
     textAlign: 'center',
     color: '#fff',
-    fontSize:'12px'
+    fontSize:'12px',
+    position:'relative'
+  },
+  dot:{
+    position:'absolute',
+    backgroundColor:'#fff',
+    borderRadius:'50%',
+    bottom:'3px',
+    width:'4px',
+    height:'4px',
+    left:'50%'
   },
   carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' },
   root: {
