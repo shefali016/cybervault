@@ -183,8 +183,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 1200
   },
   listItem: {
-    flex: 0.5,
-    minWidth: '100%',
+    flex: 1,
     [theme.breakpoints.up(530)]: {
       minWidth: WIDTH,
       marginLeft: 20,
