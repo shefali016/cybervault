@@ -89,13 +89,29 @@ export const verifyStripeAccount = async (
   }
 }
 
+export const getStripeCustomer = async (
+  customerId: string
+): Promise<StripeCustomer> => {
+  const res = await axios.get<StripeCustomer>(
+    `${server_url}/api/v1/stripe/customer`,
+    { params: { customerId } }
+  )
+
+  if (res.status === 200) {
+    const stripeCustomer = res.data
+    return stripeCustomer
+  } else {
+    throw Error('Failed to get stripe customer')
+  }
+}
+
 export const createStripeCustomer = async (
   user: User
 ): Promise<StripeCustomer> => {
   const { email, name } = user
 
   const res = await axios.post<StripeCustomer>(
-    `${server_url}/api/v1/stripe/create_customer`,
+    `${server_url}/api/v1/stripe/customer`,
     { email, name }
   )
 

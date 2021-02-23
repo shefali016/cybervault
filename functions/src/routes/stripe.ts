@@ -61,7 +61,22 @@ router.post('/attach_payment_method', (req, res) => {
   })
 })
 
-router.post('/create_customer', (req, res) => {
+router.get('/customer', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId } = req.query
+
+      const customer = await stripe.customers.retrieve(customerId)
+
+      return res.json(customer)
+    } catch (error) {
+      console.log('get_customer', error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/customer', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       const { email, name } = req.body

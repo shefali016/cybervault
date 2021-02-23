@@ -49,10 +49,21 @@ function* getPaymentMethods({}: Params) {
   }
 }
 
+function* getCustomer({}: Params) {
+  try {
+    const user = yield select((state: ReduxState) => state.auth.user)
+    const customer = yield call(StripeApis.getStripeCustomer, user.customerId)
+    yield put(StripeActions.getCustomerSuccess(customer))
+  } catch (error: any) {
+    yield put(StripeActions.getCustomerFailure(error?.message || 'default'))
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.GET_PAYMENT_METHODS, getPaymentMethods)
   yield takeLatest(ActionTypes.ATTACH_PAYMENT_METHOD, attachPaymentMethod)
   yield takeLatest(ActionTypes.DETACH_PAYMENT_METHOD, detachPaymentMethod)
+  yield takeLatest(ActionTypes.GET_CUSTOMER, getCustomer)
 }
 
 export default function* sagas() {

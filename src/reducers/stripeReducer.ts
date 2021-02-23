@@ -5,6 +5,7 @@ import { PaymentMethod } from '@stripe/stripe-js'
 export type State = {
   paymentMethods: Array<PaymentMethod>
   customer: any
+  customerRestored: boolean
 
   detachError: null | string
   detachSuccess: boolean
@@ -18,10 +19,12 @@ export type Action = {
   paymentMethods: Array<PaymentMethod>
   paymentMethod: PaymentMethod
   error: string
+  customer: any
 }
 
 const initialState = {
   customer: null,
+  customerRestored: false,
   paymentMethods: [],
   detachError: null,
   detachSuccess: false,
@@ -32,6 +35,9 @@ const initialState = {
 
 const stripe = (state = initialState, action: Action) => {
   switch (action.type) {
+    case ActionTypes.GET_CUSTOMER_SUCCESS:
+      return { ...state, customer: action.customer, customerRestored: true }
+
     case ActionTypes.GET_PAYMENT_METHODS_SUCCESS:
       return { ...state, paymentMethods: action.paymentMethods }
 
@@ -70,6 +76,7 @@ export const stripeTransform = createTransform(
   },
   (outboundState: State) => ({
     ...initialState,
+    customer: outboundState.customer,
     paymentMethods: outboundState.paymentMethods.filter((p) => !!p)
   }),
   { whitelist: ['stripe'] }

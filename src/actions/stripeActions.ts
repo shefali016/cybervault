@@ -40,3 +40,13 @@ export const detachPaymentMethodFailure = (error: any) => ({
   type: ActionTypes.DETACH_PAYMENT_METHOD_FAILURE,
   error
 })
+
+export const getCustomer = () => ({ type: ActionTypes.GET_CUSTOMER })
+export const getCustomerSuccess = (customer: any) => ({
+  type: ActionTypes.GET_CUSTOMER_SUCCESS,
+  customer
+})
+export const getCustomerFailure = (error: any) => ({
+  type: ActionTypes.GET_CUSTOMER_FAILURE,
+  error
+})

@@ -49,6 +49,7 @@ import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
+import { getCustomer } from 'actions/stripeActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -83,10 +84,12 @@ type DispatchProps = {
   createNewProject: (project: Project) => void
   getUser: (id: string) => void
   getAccount: (id: string) => void
+  getCustomer: () => void
 }
 type StateProps = {
   userRestored: boolean
   accountRestored: boolean
+  customerRestored: boolean
   user: User
   account: Account
 }
@@ -97,8 +100,10 @@ const MainScreen = ({
   history,
   userRestored,
   accountRestored,
+  customerRestored,
   getUser,
   getAccount,
+  getCustomer,
   user,
   account
 }: Props) => {
@@ -292,6 +297,9 @@ const MainScreen = ({
     if (!accountRestored) {
       getAccount(account.id)
     }
+    if (!customerRestored) {
+      getCustomer()
+    }
   }, [])
 
   if (!(userRestored && accountRestored)) {
@@ -366,6 +374,7 @@ const useStyles = makeStyles((theme) => ({
 const mapStateToProps = (state: ReduxState): StateProps => ({
   accountRestored: state.auth.accountRestored,
   userRestored: state.auth.userRestored,
+  customerRestored: state.stripe.customerRestored,
   user: state.auth.user as User,
   account: state.auth.account as Account
 })
@@ -374,7 +383,8 @@ const mapDispatchToProps: DispatchProps = {
   createNewProject: (projectData: Project) =>
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
-  getAccount: (id: string) => getAccount(id)
+  getAccount: (id: string) => getAccount(id),
+  getCustomer: () => getCustomer()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)
