@@ -7,6 +7,7 @@ import rootSagas from 'sagas/rootSaga'
 import { authTransform } from './reducers/authReducer'
 import { projectTransform } from 'reducers/projectReducer'
 import logger from 'redux-logger'
+import { stripeTransform } from 'reducers/stripeReducer'
 
 // Create sagas middleware
 const sagaMiddleware = createSagaMiddleware()
@@ -24,7 +25,7 @@ const composeEnhancers =
 const persistConfig = {
   key: 'root',
   storage,
-  transforms: [authTransform]
+  transforms: [authTransform, projectTransform, stripeTransform]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any)

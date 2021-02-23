@@ -1,12 +1,13 @@
 import { Typography } from '@material-ui/core'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import AppModal from 'components/Common/Modal'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Elements, CardElement, injectStripe } from 'react-stripe-elements'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { attachPaymentMethod } from 'apis/stripe'
+import { attachPaymentMethod } from 'actions/stripeActions'
 import { ToastContext, ToastTypes } from 'context/Toast'
 import CloseButton from 'components/Common/Button/CloseButton'
+import { useDispatch } from 'react-redux'
 
 type CardInputElementProps = {
   customerId: string
@@ -24,7 +25,13 @@ export const CardInputElement = injectStripe(
   }: CardInputElementProps & any) => {
     const toastContext = useContext(ToastContext)
 
+    const dispatch = useDispatch()
+
+    const [loading, setLoading] = useState(false)
+
     const handleSubmit = (e: any) => {
+      setLoading(true)
+
       e.preventDefault()
 
       const cardElement = elements.getElement('card')
@@ -38,23 +45,29 @@ export const CardInputElement = injectStripe(
         .then(({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
           if (paymentMethod && paymentMethod.id) {
             if (saveOnCreate) {
-              return attachPaymentMethod(paymentMethod.id, customerId)
+              dispatch(attachPaymentMethod(paymentMethod))
             }
             return paymentMethod
+          } else {
+            setLoading(false)
           }
         })
         .then((paymentMethod: PaymentMethod) => {
-          if (typeof onPaymentMethodCreated === 'function') {
-            onPaymentMethodCreated(paymentMethod)
+          if (paymentMethod) {
+            if (typeof onPaymentMethodCreated === 'function') {
+              onPaymentMethodCreated(paymentMethod)
+            }
+            toastContext.showToast({
+              title: 'Card added!',
+              type: ToastTypes.success
+            })
+            setLoading(false)
           }
-          toastContext.showToast({
-            title: 'Card added!',
-            type: ToastTypes.success
-          })
         })
         .catch((error: any) => {
           console.log('Failed to create payment method', error)
           toastContext.showToast({ title: 'Failed to add card' })
+          setLoading(false)
         })
     }
 
@@ -72,7 +85,8 @@ export const CardInputElement = injectStripe(
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <GradiantButton
             type='submit'
-            style={{ marginTop: 30, alignSelf: 'center' }}>
+            style={{ marginTop: 30, alignSelf: 'center' }}
+            loading={loading}>
             Save
           </GradiantButton>
         </div>

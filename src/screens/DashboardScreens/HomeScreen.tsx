@@ -121,7 +121,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 const useStyles = makeStyles((theme) => ({
   invoicingWrapper: {
     marginBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(4),
+    paddingLeft: theme.spacing(5),
     flexWrap: 'nowrap',
     overflowX: 'auto',
     whiteSpace: 'nowrap'

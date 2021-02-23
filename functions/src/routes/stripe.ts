@@ -12,6 +12,37 @@ router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.raw({ type: 'application/json' }))
 
+router.post('/detach_payment_method', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { paymentMethodId } = req.body
+      const paymentMethod = await stripe.paymentMethods.detach(paymentMethodId)
+      return res.json(paymentMethod)
+    } catch (error) {
+      console.log('detach_payment_method', error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.get('/payment_methods', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId } = req.query
+
+      const paymentMethods = await stripe.paymentMethods.list({
+        customer: customerId,
+        type: 'card'
+      })
+
+      return res.json(paymentMethods.data)
+    } catch (error) {
+      console.log('get_payment_methods', error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/attach_payment_method', (req, res) => {
   return corsHandler(req, res, async () => {
     try {

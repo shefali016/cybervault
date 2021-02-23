@@ -45,7 +45,7 @@ export type ButtonConfig = {
   icon?: any
 }
 
-export type Tab = { id: string; icon: any; text: string }
+export type Tab = { id: string; icon?: any; text: string }
 
 export type Asset = {
   id: string
@@ -115,7 +115,6 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
-  customerId?: string // Stripe customer ID
   security: {
     twoFactorEnabled: boolean
     textMessageVerification: boolean

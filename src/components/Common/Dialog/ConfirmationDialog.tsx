@@ -28,11 +28,7 @@ export const ConfirmationDialog = ({
 }: Props) => {
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>
-        <Typography variant='h6' style={{ fontWeight: 'bold' }}>
-          {title}
-        </Typography>
-      </DialogTitle>
+      <DialogTitle style={{ fontWeight: 'bold' }}>{title}</DialogTitle>
       {!!message && (
         <DialogContent>
           <Typography variant='body1'>{message}</Typography>

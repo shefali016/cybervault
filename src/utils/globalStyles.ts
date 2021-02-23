@@ -54,7 +54,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.dashboardScreen': {
       paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5)
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down(530)]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3)
+      },
+      color: theme.palette.text.background
     },
     '.screenContainer': {
       display: 'flex',
@@ -78,6 +83,27 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.add-more-label': {
       color: '#626262',
       fontSize: '10px !important'
+    },
+    '.dashBox': {
+      borderRadius: '18px',
+      border: '2px dashed #9ea0a28c',
+      textAlign: 'center',
+      cursor: 'pointer',
+      color: theme.palette.text.meta,
+      transition: theme.transitions.create(
+        ['border', 'background', 'color', 'opacity'],
+        {
+          duration: 500
+        }
+      ),
+      '&:hover': {
+        border: `2px dashed ${theme.palette.grey[600]}`,
+        color: theme.palette.common.white,
+        background: 'rgba(0,0,0,0.1)',
+        '& $uploadFolderIcon': {
+          opacity: 1
+        }
+      }
     },
     // Section
     '.sectionInner': {

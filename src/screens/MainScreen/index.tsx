@@ -11,6 +11,7 @@ import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
+import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -61,8 +62,11 @@ export const AccountTabIds = {
   profile: 'profile',
   manage: 'manage',
   branding: 'branding',
-  subscription: 'subscription',
-  storage: 'storage'
+  subscription: 'subscription'
+}
+
+export const ChildTabs = {
+  paymentMethods: 'paymentmethods'
 }
 
 export const SharedTabIds = {
@@ -122,7 +126,7 @@ const MainScreen = ({
     []
   )
 
-  const getTab = (id: string) => {
+  const getTab = (id: string): Tab => {
     switch (id) {
       // Dashboard tabs
       case DashboardTabIds.dashboard:
@@ -193,11 +197,17 @@ const MainScreen = ({
           text: 'Subscription',
           icon: <SubscriptionIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.storage:
+      // case AccountTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      // Child tabs
+      case ChildTabs.paymentMethods:
         return {
           id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
+          text: 'Payment Methods'
         }
 
       default:
@@ -306,6 +316,7 @@ const MainScreen = ({
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
+          <Route path='/paymentmethods' component={PaymentMethodsScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}

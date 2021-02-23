@@ -1,6 +1,5 @@
 {
-  "local_server_url": "http://localhost:5001/cybervault-8cfe9/us-central1/httpsRequests",
-  "server_url": "https://us-central1-cybervault-8cfe9.cloudfunctions.net/httpsRequests",
+  "server_url": "http://localhost:5001/cybervault-8cfe9/us-central1/httpsRequests",
   "domain": "http://localhost:3000",
   "stripe_public_key": "pk_test_8Dr0oY4ib2bivUKJ7mSXTsmS00PjVywTtW"
 }
