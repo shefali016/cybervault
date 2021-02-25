@@ -19,6 +19,7 @@
     "@types/reactstrap": "^8.7.2",
     "@types/redux-localstorage": "^1.0.8",
     "@types/styled-components": "^5.1.5",
+    "aws-sdk": "^2.851.0",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "firebase": "^8.2.4",

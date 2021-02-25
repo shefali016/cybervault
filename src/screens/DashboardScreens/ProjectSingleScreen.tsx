@@ -124,12 +124,13 @@ const EditProjectScreen = (props: any) => {
         ...state,
         [type === 'image' ? 'isImageLoading' : 'isVideoLoading']: true
       })
-
+      const id=generateUid();
       const asset: ProjectAsset = {
         type,
         files: [],
         fileName: file.name,
-        id: generateUid()
+        id: id,
+        path:`${type==='image'?`${id}/${id}-original`:`${id}`}`
       }
       const downloadUrl = await setMedia(asset.id, file)
 

@@ -262,6 +262,7 @@ export interface ProjectAsset {
   files: Array<MediaObject>
   fileName: string
   type: string
+  path:string
 }
 
 export type Client = {

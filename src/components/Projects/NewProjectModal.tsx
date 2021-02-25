@@ -16,6 +16,7 @@ import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
 import { Client } from '../../utils/Interface'
+import AWS from 'aws-sdk';
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -236,7 +237,7 @@ const NewProjectModal = ({
     (state: any) => state.clients.newClientSuccess
   )
   const newClientData = useSelector((state: any) => state.clients.newClientData)
-
+    console.log(AWS,"awssssssss")
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
