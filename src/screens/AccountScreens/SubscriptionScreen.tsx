@@ -22,6 +22,7 @@ type StateProps = {
   account: Account
   user: User
   paymentMethods: Array<PaymentMethod>
+  customerId: string
 }
 type DispatchProps = { getPaymentMethods: (customerId: string) => void }
 type ReduxProps = StateProps & DispatchProps
@@ -32,7 +33,8 @@ const SubscriptionScreen = ({
   user,
   getPaymentMethods,
   paymentMethods,
-  history
+  history,
+  customerId
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
@@ -63,6 +65,7 @@ const SubscriptionScreen = ({
         open={subscriptionModalOpen}
         onRequestClose={closeSubscriptionModal}
         activeSubscriptionType={account.subscription?.type}
+        customerId={customerId}
       />
 
       <StorageModal
@@ -243,7 +246,8 @@ const useStyles = makeStyles((theme) => ({
 const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
   user: state.auth.user as User,
-  paymentMethods: state.stripe.paymentMethods
+  paymentMethods: state.stripe.paymentMethods,
+  customerId: state.stripe.customer.id as string
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({

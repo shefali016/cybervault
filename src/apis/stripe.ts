@@ -5,6 +5,7 @@ import {
   StripeAccountLink,
   StripeCustomer,
   StripeLoginLink,
+  StripePlans,
   User
 } from '../utils/Interface'
 import { updateAccount } from './account'
@@ -188,5 +189,36 @@ export const createStripeLogin = async (stripeAccountId: string) => {
     return res.data
   } else {
     throw Error('Failed to create stripe account')
+  }
+}
+
+export const getStripePlansList = async () => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/get_plans_list`
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Plans Not Found')
+  }
+}
+
+export const createStripePlanSubcription = async (
+  customerId: string,
+  planId: string
+) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/plan_subscription`,
+    {
+      customerId,
+      planId
+    }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Plans Not Found')
   }
 }

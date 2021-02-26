@@ -107,6 +107,27 @@ export type StripeAccountLink = {
   created: number
   expires_at: number
 }
+export interface StripePlans {
+  id: string
+  object: string
+  active: boolean
+  aggregate_usage: any | null
+  amount: number
+  amount_decimal: string
+  billing_scheme: string
+  created: number
+  currency: string
+  interval: string
+  interval_count: number
+  livemode: boolean
+  metadata: Object
+  nickname: any | null
+  product: string
+  tiers_mode: any | null
+  transform_usage: any | null
+  trial_period_days: any | null
+  usage_type: string
+}
 
 export type Account = {
   id: string

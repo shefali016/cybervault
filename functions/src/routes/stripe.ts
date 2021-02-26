@@ -198,6 +198,34 @@ router.post('/create_account_link', (req, res) => {
   })
 })
 
+router.post('/get_plans_list', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const plans = await stripe.plans.list({ limit: 2 })
+      return res.json(plans)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/plan_subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId, planId } = req.body
+      const subscription = await stripe.subscriptions.create({
+        customer: customerId,
+        items: [{ price: planId }]
+      })
+      return res.json(subscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/stripe-webhook', (req, res) => {
   return corsHandler(req, res, async () => {
     // Retrieve the event by verifying the signature using the raw body and secret.
