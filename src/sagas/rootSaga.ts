@@ -5,6 +5,7 @@ import userSagas from './user'
 import accountSagas from './account'
 import invoiceSagas from './invoice'
 import clientSaga from './clientSaga'
+import mailsSaga from './mailsSaga'
 import portfolioSagas from './portfolioSagas'
 import stripeSaga from './stripeSagas'
 
@@ -14,6 +15,7 @@ export default function* rootSaga() {
     projectSagas(),
     userSagas(),
     accountSagas(),
+    mailsSaga(),
     invoiceSagas(),
     portfolioSagas(),
     clientSaga(),

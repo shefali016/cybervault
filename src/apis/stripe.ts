@@ -190,3 +190,4 @@ export const createStripeLogin = async (stripeAccountId: string) => {
     throw Error('Failed to create stripe account')
   }
 }
+

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
+import React, { useState, useRef, useContext, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import InvoiceStepOne from './Steps/InvoiceStepOne'
@@ -8,12 +8,14 @@ import CloseButton from '../Common/Button/CloseButton'
 import { ReduxState } from 'reducers/rootReducer'
 import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
-import { Project, Account, Client } from '../../utils/Interface'
+import { Project, Account, Client,MailTemplate } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
 import { InvoiceStatuses } from 'utils/enums'
+import {sendEmailRequest,getAllMailTemplatesRequest} from '../../actions/mails'
+
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
@@ -21,7 +23,8 @@ type InvoiceProps = {
   onRequestClose: () => void
   project: Project
   account: Account
-  client: Client
+  client: Client,
+  userInfo:any
 }
 type MilestoneProps = {
   id: string
@@ -35,7 +38,8 @@ const InvoiceData = ({
   onRequestClose,
   project,
   account,
-  client
+  client,
+  userInfo
 }: InvoiceProps) => {
   const hasMilestones = project.milestones && project.milestones.length
 
@@ -64,16 +68,20 @@ const InvoiceData = ({
   const dispatch = useDispatch()
 
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
+  const mailData = useSelector((state: ReduxState) => state.mail)
 
-  useEffect(() => {
-    if (
-      invoiceData.success &&
-      (invoiceData?.invoiceData?.projectId === projectData.id ||
-        !Object.keys(invoiceData.invoiceData).length)
-    ) {
-      setCurrentStep((step) => step + 1)
+  const getTemplateId=()=>{
+    if(mailData.mailTemplatesData){
+      let data:any
+      data=mailData.mailTemplatesData.find((tmp:MailTemplate)=>{
+        return tmp.type==='invoice'
+      })
+      return data?.templateId
     }
-  }, [invoiceData.success])
+  }
+const templateId=useMemo(()=>{
+  return getTemplateId()
+},[mailData.mailTemplatesData])
 
   useOnChange(invoiceData.error, (error) => {
     if (!!error) {
@@ -120,6 +128,10 @@ const InvoiceData = ({
     }
   }, [project])
 
+  useEffect(()=>{
+    dispatch(getAllMailTemplatesRequest())
+  },[])
+
   const getFullAmount = () => {
     return (
       Number(projectData.campaignBudget) - Number(projectData.campaignExpenses)
@@ -134,9 +146,9 @@ const InvoiceData = ({
     })
     return cost
   }
-  const handleSendInvoice = () => {
+  const handleSendInvoice = (invoiceId:string) => {
     const invoice = {
-      id: generateUid(), // Using generateId function
+      id: invoiceId, // Using generateId function
       dateCreated: new Date().toLocaleString(),
       datePaid: null,
       projectId: projectData.id, // Id of the project being invoiced
@@ -147,12 +159,54 @@ const InvoiceData = ({
         return mile.check === true
       }), // will contain milestones being invoiced or null if invoicing total amount
       clientEmail: clientData.email,
+      clientId:clientData.id,
       campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
+      userDetails:{
+        id:userInfo.id,
+        name:userInfo.name,
+        email:userInfo.email
+      },
       status: InvoiceStatuses.PENDING // has client paid invoice or not
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
   }
+
+  const handleSendMail=()=>{
+    const invoiceId=generateUid();
+    const mailPayload={
+      to:clientData.email.trim()||"",
+      templateId:templateId.trim()||'',
+      type:'invoice',
+      data:{
+        clientEmail:clientData.email.trim() ||'',
+        projectName:projectData.campaignName||'',
+        invoiceId:invoiceId.trim()||'',
+        userEmail:account.email||'',
+        amount:invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()||'',
+        subject:'Creator Cloud Invoice',
+        link:`${window.location.origin}/clientInvoices/${account.id}/${invoiceId}`
+      }
+    }
+    dispatch( sendEmailRequest(mailPayload))
+  }
+
+  useOnChange(mailData.success, (success) => {
+    if (success) {
+      handleSendInvoice(mailData.mailData.data.invoiceId)
+    }
+  })
+  useOnChange(mailData.error, (error) => {
+    if (!!error) {
+      toastContext.showToast({ title: 'Failed to send invoice' })
+    }
+  })
+  useOnChange((invoiceData.success && invoiceData?.newinvoiceData?.projectId === projectData.id),(success) => {
+    if (success) {
+      setCurrentStep((step) => step + 1)
+    }
+  })
+ 
 
   const handleEdit = (editType: string) => {
     setEdit({
@@ -202,7 +256,7 @@ const InvoiceData = ({
             project={projectData}
             headerTitle={'Invoice'}
             invoiceType={invoiceType}
-            handleSendInvoice={handleSendInvoice}
+            handleSendInvoice={handleSendMail}
             edit={edit}
             handleEdit={handleEdit}
             handleSave={handleSave}
@@ -251,6 +305,9 @@ type InvoiceModalProps = {
   onRequestClose: () => void
   account: Account
   client: Client | undefined
+  userInfo:any
+
+
 }
 
 const InvoiceModal = ({
@@ -258,12 +315,13 @@ const InvoiceModal = ({
   project,
   onRequestClose,
   account,
-  client
+  client,
+  userInfo
 }: InvoiceModalProps) => {
   if (!client) {
     return null
   }
-
+  
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <InvoiceData
@@ -271,6 +329,7 @@ const InvoiceModal = ({
         project={project}
         account={account}
         client={client}
+        userInfo={userInfo}
       />
     </AppModal>
   )

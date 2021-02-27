@@ -5,7 +5,7 @@ import clients, {
   Action as ClientsActions
 } from './clientReducer'
 import invoice, {
-  State as Invoicestate,
+  State as InvoiceState,
   Action as InvoiceAction
 } from './invoiceReducer'
 import project, {
@@ -13,13 +13,17 @@ import project, {
   Action as ProjectAction
 } from './projectReducer'
 import portfolio, {
-  State as PorfolioState,
+  State as PortfolioState,
   Action as PortfolioAction
 } from './portfoliosReducer'
 import stripe, {
   State as StripeState,
   Action as StripeAction
 } from './stripeReducer'
+import mail, {
+  State as MailState,
+  Action as MailActions,
+} from './mailReducer';
 
 const appReducer = combineReducers({
   auth,
@@ -27,15 +31,17 @@ const appReducer = combineReducers({
   invoice,
   clients,
   portfolio,
-  stripe
+  stripe,
+  mail
 })
 
 export type ReduxState = {
   auth: AuthState
-  project: ProjectState
-  invoice: Invoicestate
-  portfolio: PorfolioState
-  clients: ClientsState
+  project: ProjectState,
+  invoice: InvoiceState,
+  portfolio: PortfolioState,
+  clients:ClientsState,
+  mail: MailState,
   stripe: StripeState
 }
 
@@ -44,7 +50,8 @@ export type Action = AuthAction &
   InvoiceAction &
   PortfolioAction &
   ClientsActions &
-  StripeAction
+  StripeAction &
+    MailActions
 
 const rootReducer = (state: CombinedState<ReduxState>, action: Action) => {
   if (action.type === 'RESET_ALL_DATA') {
@@ -54,7 +61,8 @@ const rootReducer = (state: CombinedState<ReduxState>, action: Action) => {
       invoice: state.invoice,
       clients: state.clients,
       portfolio: state.portfolio,
-      stripe: state.stripe
+      stripe: state.stripe,
+      mail:state.mail
     }
   }
   return appReducer(state as any, action)

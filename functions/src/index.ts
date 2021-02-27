@@ -2,10 +2,11 @@ import * as functions from 'firebase-functions'
 import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin';
+const sgMail = require("@sendgrid/mail");
+
 // import firebaseAccountCredentials from "./cybervault-8cfe9-firebase-adminsdk-kpppk-d07b59a821.json";
 
 // const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
-
 const app = express()
 
 export const corsHandler = cors({ origin: true })
@@ -22,6 +23,8 @@ admin.initializeApp({
 });
 
 export const httpsRequests = functions.https.onRequest(app)
+
+
 
 export const myFunction = functions.firestore
   .document(`AccountData/{accountId}/Invoices/{invoiceId}`)
@@ -54,3 +57,33 @@ export const myFunction = functions.firestore
         
       }
    });
+
+export const sendEmail = functions.firestore
+.document(`Mails/{mailId}`)
+.onWrite((change, context) => {
+    try {
+      let newData = change.after.data()
+      let oldData = change.before.data()
+      if(!oldData && newData?.to && newData?.templateId ){
+        const msg = {
+          to: newData.to,
+          from:functions.config().from_email.key,
+          templateId:newData.templateId,
+          dynamic_template_data:newData.data
+        }
+        sgMail.setApiKey(
+                  `${functions.config().sendgrid.key}`
+                );
+                sgMail.send(msg).then((res:any)=>{
+                    console.log('success')
+                }).catch((error:any)=>{
+                  console.log(error,"error Occurs")
+                })      
+      }
+      
+    } catch (error) {
+      console.log(error, "error occurs");
+      
+    }
+ });
+

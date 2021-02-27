@@ -21,7 +21,7 @@ import NewProjectTitle from '../NewProjectTitle'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import AppSelect from '../../Common/Core/AppSelect'
 import { Client } from '../../../utils/Interface'
-import { getClientsRequest } from '../../../actions/clientActions'
+import { getAllClientsRequest } from '../../../actions/clientActions'
 import AddClient from '../../Client/AddClient'
 import clsx from 'clsx'
 import { Edit } from '@material-ui/icons'
@@ -42,7 +42,7 @@ const NewProjectStepOne = (props: any) => {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getClientsRequest(account))
+    dispatch(getAllClientsRequest(account))
   }, [])
 
   useEffect(() => {

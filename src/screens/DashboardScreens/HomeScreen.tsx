@@ -4,7 +4,7 @@ import {
   deleteProjectRequest,
   getAllProjectsRequest
 } from '../../actions/projectActions'
-import { getClientsRequest } from '../../actions/clientActions'
+import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
@@ -40,7 +40,6 @@ const HomeScreen = (props: any) => {
     props.getAllProjectsData(props.userData.account)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
   const classes = useStyles()
   const theme = useTheme()
 
@@ -63,6 +62,7 @@ const HomeScreen = (props: any) => {
             }}
             history={props.history}
             account={props.userData.account}
+            userInfo={props.userData.user}
             onDelete={props.deleteProject}
             deletingId={props.deletingProjectId}
           />
@@ -111,7 +111,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     return dispatch(getAllProjectsRequest(account))
   },
   getClientsRequest: (account: Types.Account) => {
-    return dispatch(getClientsRequest(account))
+    return dispatch(getAllClientsRequest(account))
   },
   deleteProject: (projectId: string) => {
     return dispatch(deleteProjectRequest(projectId))
