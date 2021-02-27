@@ -1,27 +1,44 @@
 import clsx from 'clsx'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Account } from 'utils/Interface'
+import { Account, User } from 'utils/Interface'
 import { getSubscriptionDetails } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { SubscriptionModal } from 'components/Subscription/SubscriptionModal'
 import { StorageModal } from 'components/Storage/StorageModal'
+import { CardModal } from 'components/Stripe/CardModal'
+import { requestPaymentMethods } from 'actions/stripeActions'
+import { PaymentMethod } from '@stripe/stripe-js'
+import { PaymentMethodList } from 'components/Stripe/PaymentMethodList'
+import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
 
 type StateProps = {
   account: Account
+  user: User
+  paymentMethods: Array<PaymentMethod>
 }
-type DispatchProps = {}
+type DispatchProps = { getPaymentMethods: (customerId: string) => void }
 type ReduxProps = StateProps & DispatchProps
-type Props = {}
+type Props = { history: any }
 
-const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
+const SubscriptionScreen = ({
+  account,
+  user,
+  getPaymentMethods,
+  paymentMethods,
+  history
+}: Props & ReduxProps) => {
   const classes = useStyles()
+
+  useEffect(() => {
+    getPaymentMethods(user.customerId)
+  }, [])
 
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
     false
@@ -33,6 +50,12 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
 
   const openStorageModal = () => setStorageModalOpen(true)
   const closeStorageModal = () => setStorageModalOpen(false)
+
+  const [cardModalOpen, setCardModalOpen] = useState(false)
+
+  const toggleCardModal = (open: boolean) => () => setCardModalOpen(open)
+
+  const navigateToPaymentMethodsScreen = () => history.push('paymentmethods')
 
   return (
     <div className={clsx('container', classes.container)}>
@@ -46,6 +69,12 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
         open={storageModalOpen}
         onRequestClose={closeStorageModal}
         account={account}
+      />
+
+      <CardModal
+        open={cardModalOpen}
+        onRequestClose={toggleCardModal(false)}
+        customerId={user.customerId}
       />
 
       <Section title={'Your Plan'} className={classes.section}>
@@ -72,7 +101,6 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
                     <Typography style={{ marginRight: 5 }}>
                       Manage Plan
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -97,7 +125,6 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
                     <Typography style={{ marginRight: 5 }}>
                       Manage Storage
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -112,22 +139,37 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
             <ResponsiveRow>
               {[
                 <div style={{ flex: 1 }}>
-                  {!!account.customerId ? (
-                    <div></div> // @todo fetch active payment method from stripe
+                  {paymentMethods && !!paymentMethods.length ? (
+                    <div className={'row'}>
+                      <PaymentMethodInline paymentMethod={paymentMethods[0]} />
+                    </div>
                   ) : (
                     <Typography variant='subtitle1'>
                       You haven't added a payment method
                     </Typography>
                   )}
                 </div>,
-                <GradiantButton>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      Add Method
-                    </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
-                  </div>
-                </GradiantButton>
+                <div className={'row'}>
+                  <GradiantButton onClick={toggleCardModal(true)}>
+                    <div className={'row'}>
+                      <Typography style={{ marginRight: 5 }}>
+                        Add Method
+                      </Typography>
+                    </div>
+                  </GradiantButton>
+                  {paymentMethods && !!paymentMethods.length && (
+                    <GradiantButton
+                      onClick={navigateToPaymentMethodsScreen}
+                      style={{ marginLeft: 15 }}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          Manage Cards
+                        </Typography>
+                        <RightArrow style={{ fontSize: 15 }} />
+                      </div>
+                    </GradiantButton>
+                  )}
+                </div>
               ]}
             </ResponsiveRow>
           </div>
@@ -140,7 +182,7 @@ const SubscriptionScreen = ({ account }: Props & ReduxProps) => {
             <ResponsiveRow>
               {[
                 <div style={{ flex: 1 }}>
-                  {!!account.customerId ? (
+                  {false ? (
                     <div></div> // @todo fetch most recent billing history item
                   ) : (
                     <Typography variant='subtitle1'>
@@ -199,7 +241,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const mapState = (state: ReduxState): StateProps => ({
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  user: state.auth.user as User,
+  paymentMethods: state.stripe.paymentMethods
 })
 
-export default connect(mapState)(SubscriptionScreen)
+const mapDispatch = (dispatch: any): DispatchProps => ({
+  getPaymentMethods: (customerId: string) =>
+    dispatch(requestPaymentMethods(customerId))
+})
+
+export default connect(mapState, mapDispatch)(SubscriptionScreen)

@@ -43,7 +43,7 @@ type EditProjectStates = {
   isImageLoading: boolean | undefined
   isVideoLoading: boolean | undefined
   showTostify: boolean
-  account:Types.Account
+  account: Types.Account
 }
 
 const EditProjectScreen = (props: any) => {
@@ -63,7 +63,7 @@ const EditProjectScreen = (props: any) => {
     isImageLoading: false,
     isVideoLoading: false,
     showTostify: false,
-    account:props.account
+    account: props.account
   })
 
   const openEditProjectModal = (
@@ -113,9 +113,9 @@ const EditProjectScreen = (props: any) => {
   })
 
   useEffect(() => {
-    const { getProjectDetails, match,account } = props
+    const { getProjectDetails, match, account } = props
     if (match.params && match.params.id) {
-      getProjectDetails(account.id,match.params.id)
+      getProjectDetails(account.id, match.params.id)
     }
   }, [])
 
@@ -184,6 +184,7 @@ const EditProjectScreen = (props: any) => {
 
   //submit project details update
   const handleUpdateProject = async (projectData: Project) => {
+    console.log('IU')
     setState({
       ...state,
       projectData,
@@ -265,7 +266,7 @@ const EditProjectScreen = (props: any) => {
               onUpload: onAssetUpload('image'),
               assetIds: state.projectData.images,
               accountId: props.account.id,
-              isLoading: state.isVideoLoading,
+              isLoading: state.isImageLoading,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
               featuredAsset: state.projectData.featuredImage
@@ -317,8 +318,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getProjectDetails: (accountId:string,projectId: string) => {
-    return dispatch(requestGetProjectDetails(accountId,projectId))
+  getProjectDetails: (accountId: string, projectId: string) => {
+    return dispatch(requestGetProjectDetails(accountId, projectId))
   },
   updateProjectDetails: (projectData: Project) => {
     return dispatch(requestUpdateProjectDetails(projectData))

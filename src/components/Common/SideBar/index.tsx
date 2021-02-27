@@ -48,7 +48,7 @@ const SideBarComponent = (props: Props) => {
   const classes = useStyles()
 
   const [topTabs, bottomTabs] = useMemo(() => {
-    return [tabs.slice(0, 5), tabs.slice(5)]
+    return [tabs.slice(0, tabs.length - 2), tabs.slice(tabs.length - 2)]
   }, [tabs])
 
   const handleLogout = () => {

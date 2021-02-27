@@ -45,7 +45,7 @@ export type ButtonConfig = {
   icon?: any
 }
 
-export type Tab = { id: string; icon: any; text: string }
+export type Tab = { id: string; icon?: any; text: string }
 
 export type Asset = {
   id: string
@@ -64,6 +64,34 @@ export type StripeAccount = {
   payouts_enabled: boolean
   email: string
   country: string
+}
+
+export interface StripeCustomer {
+  id: string
+  object: 'customer'
+  address: string | null
+  balance: number
+  created: number
+  currency: string
+  default_source: string | null
+  delinquent: boolean
+  description: string
+  discount: string | null
+  email: string | null
+  invoice_prefix: string
+  invoice_settings: {
+    custom_fields: null
+    default_payment_method: null
+    footer: null
+  }
+  livemode: boolean
+  metadata: {}
+  name: string | null
+  next_invoice_sequence: number
+  phone: string | null
+  preferred_locales: []
+  shipping: string | null
+  tax_exempt?: 'none'
 }
 
 export interface StripeLoginLink {
@@ -87,7 +115,6 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
-  customerId?: string // Stripe customer ID
   security: {
     twoFactorEnabled: boolean
     textMessageVerification: boolean
@@ -138,6 +165,7 @@ export type User = {
   facebook?: string | undefined
   twitter?: string | undefined
   linkedIn?: string | undefined
+  customerId: string
 }
 
 export type AuthUser = {

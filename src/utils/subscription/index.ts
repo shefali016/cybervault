@@ -58,7 +58,7 @@ export const getSubscriptionDetails = (
     case SubscriptionTypes.team:
       return {
         name: 'Team',
-        description: 'Best for freelancers starting out',
+        description: 'For media empires seeking endless capabilities.',
         prices: {
           [SubscriptionDurations.monthly]: '59.99',
           [SubscriptionDurations.yearly]: '719.99'
