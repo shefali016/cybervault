@@ -206,13 +206,16 @@ export const getStripePlansList = async () => {
 
 export const createStripePlanSubcription = async (
   customerId: string,
-  planId: string
+  planId: string,
+  paymentMethodId: string
 ) => {
+
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/plan_subscription`,
     {
       customerId,
-      planId
+      planId,
+      paymentMethodId
     }
   )
 

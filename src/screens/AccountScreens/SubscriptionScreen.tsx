@@ -66,6 +66,7 @@ const SubscriptionScreen = ({
         onRequestClose={closeSubscriptionModal}
         activeSubscriptionType={account.subscription?.type}
         customerId={customerId}
+        paymentMethods={paymentMethods}
       />
 
       <StorageModal

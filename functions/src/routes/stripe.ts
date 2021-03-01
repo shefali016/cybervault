@@ -213,9 +213,10 @@ router.post('/get_plans_list', (req, res) => {
 router.post('/plan_subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { customerId, planId } = req.body
+      const { customerId, planId, paymentMethodId } = req.body
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
+        default_payment_method: paymentMethodId,
         items: [{ price: planId }]
       })
       return res.json(subscription)

@@ -29,13 +29,11 @@ export const getUserWithAccount = async (
   }
 
   const { mainAccount } = user
-
   if (!user.customerId) {
     const customer: StripeCustomer = await createStripeCustomer(user)
     user = { ...user, customerId: customer.id }
     await updateUser(user)
   }
-
   const account = await getAccount(mainAccount)
 
   return { account, user }

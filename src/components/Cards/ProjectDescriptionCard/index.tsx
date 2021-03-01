@@ -164,7 +164,7 @@ const ProjectCard = ({
                       onClick={() => sendInvoice(project.id)}
                       disabled={
                         project.canInvoice === false ||
-                        !account.stripe.payoutsEnabled
+                        (account.stripe && !account.stripe.payoutsEnabled)
                       }>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
