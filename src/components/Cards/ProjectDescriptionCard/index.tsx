@@ -26,6 +26,7 @@ type Props = {
   history?: any
   clients?: Array<Client>
   account: Account
+  userInfo?: any
   onDelete?: (projectId: string) => void
   deletingId?: string
 }
@@ -36,6 +37,7 @@ const ProjectCard = ({
   style,
   history,
   account,
+  userInfo,
   clients,
   onDelete,
   deletingId
@@ -81,6 +83,7 @@ const ProjectCard = ({
         project={project}
         account={account}
         client={client}
+        userInfo={userInfo}
       />
       <Card className={classes.card} elevation={5}>
         <div

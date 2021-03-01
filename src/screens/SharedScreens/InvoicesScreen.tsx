@@ -15,7 +15,7 @@ import {
   createStripeLogin,
   verifyStripeAccount
 } from '../../apis/stripe'
-import { getInvoiceRequest } from '../../actions/invoiceActions'
+import { getAllInvoiceRequest } from '../../actions/invoiceActions'
 import { ToastContext } from 'context/Toast'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { updateAccount } from 'actions/account'
@@ -37,7 +37,12 @@ type State = {
   stripeLoginLink: StripeLoginLink | null
 }
 
-const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
+const InvoicesScreen = ({
+  account,
+  updateAccount,
+  invoices,
+  history
+}: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
@@ -69,7 +74,7 @@ const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
     ) {
       _verifyStripeAccount()
     }
-    dispatch(getInvoiceRequest(account))
+    dispatch(getAllInvoiceRequest(account))
   }, [])
 
   const _verifyStripeAccount = async () => {
@@ -240,6 +245,8 @@ const InvoicesScreen = ({ account, updateAccount, invoices }: Props) => {
               <InvoicesTable
                 invoices={invoices}
                 tableContainerClassName={classes.table}
+                history={history}
+                accountId={account.id}
               />
             </div>
           )}

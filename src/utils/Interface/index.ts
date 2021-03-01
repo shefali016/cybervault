@@ -252,6 +252,21 @@ export type Project = {
   featuredImage?: string
 }
 
+export type InvoiceConversation={
+  name:string
+  sendersEmail:string
+  message:string
+  date:Date|string
+  id:string,
+  receiversEmail:string
+}
+
+export type InvoiceUserInfo={
+  name:string,
+  id:string,
+  email:string
+}
+
 export type Invoice = {
   id: String // Using generateId function
   dateCreated: Date | string
@@ -265,6 +280,8 @@ export type Invoice = {
   projectName: string
   campaignDeadLine: string
   featuredImage?: string
+  conversation?:Array<InvoiceConversation>
+  userDetails:InvoiceUserInfo
 }
 
 export type ProjectStatus =
@@ -319,4 +336,19 @@ export type Cell = {
   key: string
 }
 
-export type Row = Array<Cell>
+export type Mail={
+  to:string
+  data:Object
+  templateId:string,
+  type:string
+}
+
+export type MailTemplate={
+  id:string,
+  type:string
+}
+
+export type Row = {
+  key:string
+  row:Array<Cell>
+}

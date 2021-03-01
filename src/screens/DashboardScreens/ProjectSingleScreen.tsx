@@ -30,6 +30,7 @@ import { Project, ProjectAsset } from 'utils/Interface'
 import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
+import * as Types from '../../utils/Interface'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -42,6 +43,7 @@ type EditProjectStates = {
   isImageLoading: boolean | undefined
   isVideoLoading: boolean | undefined
   showTostify: boolean
+  account: Types.Account
 }
 
 const EditProjectScreen = (props: any) => {
@@ -60,7 +62,8 @@ const EditProjectScreen = (props: any) => {
     isBudgetEdit: false,
     isImageLoading: false,
     isVideoLoading: false,
-    showTostify: false
+    showTostify: false,
+    account: props.account
   })
 
   const openEditProjectModal = (
@@ -110,9 +113,9 @@ const EditProjectScreen = (props: any) => {
   })
 
   useEffect(() => {
-    const { getProjectDetails, match } = props
+    const { getProjectDetails, match, account } = props
     if (match.params && match.params.id) {
-      getProjectDetails(match.params.id)
+      getProjectDetails(account.id, match.params.id)
     }
   }, [])
 
@@ -315,8 +318,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getProjectDetails: (projectId: string) => {
-    return dispatch(requestGetProjectDetails(projectId))
+  getProjectDetails: (accountId: string, projectId: string) => {
+    return dispatch(requestGetProjectDetails(accountId, projectId))
   },
   updateProjectDetails: (projectData: Project) => {
     return dispatch(requestUpdateProjectDetails(projectData))
