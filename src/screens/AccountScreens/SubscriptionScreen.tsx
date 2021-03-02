@@ -16,7 +16,8 @@ import { CardModal } from 'components/Stripe/CardModal'
 import {
   cancelPlanSubscription,
   planSubscription,
-  requestPaymentMethods
+  requestPaymentMethods,
+  updatePlanSubscription
 } from 'actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
@@ -27,11 +28,13 @@ type StateProps = {
   paymentMethods: Array<PaymentMethod>
   customerId: string
   subscription: any
+  subscriptionLoading: boolean
 }
 type DispatchProps = {
   getPaymentMethods: (customerId: string) => void
   planSubscription: (planId: string, paymentMethodId: string) => void
   cancelSubscription: (subscriptionId: string) => void
+  updateSubscription: (subscriptionId: string, planId: string) => void
 }
 type ReduxProps = StateProps & DispatchProps
 type Props = { history: any }
@@ -45,7 +48,9 @@ const SubscriptionScreen = ({
   customerId,
   planSubscription,
   subscription,
-  cancelSubscription
+  cancelSubscription,
+  updateSubscription,
+  subscriptionLoading
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
@@ -81,6 +86,7 @@ const SubscriptionScreen = ({
         planSubscription={planSubscription}
         subscription={subscription}
         cancelSubscription={cancelSubscription}
+        updateSubscription={updateSubscription}
       />
 
       <StorageModal
@@ -263,7 +269,8 @@ const mapState = (state: ReduxState): StateProps => ({
   user: state.auth.user as User,
   paymentMethods: state.stripe.paymentMethods,
   customerId: state.stripe.customer.id as string,
-  subscription: state.stripe.customer.subscriptions.data
+  subscription: state.stripe.customer.subscriptions.data,
+  subscriptionLoading: state.stripe.planSubscriptionLoading
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({
@@ -272,7 +279,9 @@ const mapDispatch = (dispatch: any): DispatchProps => ({
   planSubscription: (planId: string, paymentMethodId: string) =>
     dispatch(planSubscription(planId, paymentMethodId)),
   cancelSubscription: (subscriptionId: string) =>
-    dispatch(cancelPlanSubscription(subscriptionId))
+    dispatch(cancelPlanSubscription(subscriptionId)),
+  updateSubscription: (subscriptionId: string, planId: string) =>
+    dispatch(updatePlanSubscription(subscriptionId, planId))
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

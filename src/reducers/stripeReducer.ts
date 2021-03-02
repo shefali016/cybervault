@@ -17,6 +17,8 @@ export type State = {
   planSubscriptionLoading: boolean
 
   cancelSubscriptionLoading: boolean
+
+  isSubscriptionChange: boolean
 }
 
 export type Action = {
@@ -42,7 +44,8 @@ const initialState = {
   subscription: null,
   planSubscriptionLoading: false,
 
-  cancelSubscriptionLoading: false
+  cancelSubscriptionLoading: false,
+  isSubscriptionChange: false
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -103,6 +106,19 @@ const stripe = (state = initialState, action: Action) => {
       }
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE:
       return { ...state, cancelSubscriptionLoading: false }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION:
+      return { ...state, planSubscriptionLoading: true }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
+      const customerRes: any = state.customer
+      customerRes.subscriptions.data[0] = action.subscription
+      return {
+        ...state,
+        subscription: action.subscription,
+        planSubscriptionLoading: false,
+        customer: customerRes
+      }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE:
+      return { ...state, planSubscriptionLoading: false }
 
     default:
       return state

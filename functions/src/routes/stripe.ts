@@ -257,6 +257,29 @@ router.post('/cancel_plan_subscription', (req, res) => {
   })
 })
 
+router.post('/update_subscription_plan', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { subscriptionId, planId } = req.body
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+      stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: false,
+        proration_behavior: 'create_prorations',
+        items: [
+          {
+            id: subscription.items.data[0].id,
+            price: planId
+          }
+        ]
+      })
+      return res.json(subscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/stripe-webhook', (req, res) => {
   return corsHandler(req, res, async () => {
     // Retrieve the event by verifying the signature using the raw body and secret.

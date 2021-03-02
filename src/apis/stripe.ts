@@ -238,3 +238,21 @@ export const cancelStripePlanSubcription = async (subscriptionId: string) => {
     throw Error('Stripe Subscription cancel error')
   }
 }
+
+export const updateStripePlanSubcription = async (
+  subscriptionId: string,
+  planId: string
+) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/update_subscription_plan`,
+    {
+      subscriptionId,
+      planId
+    }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Subscription update error')
+  }
+}

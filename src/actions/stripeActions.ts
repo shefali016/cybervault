@@ -76,3 +76,20 @@ export const cancelPlanSubscriptionFailure = (error: any) => ({
   type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE,
   error
 })
+
+export const updatePlanSubscription = (
+  subscriptionId: string,
+  planId: string
+) => ({
+  type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION,
+  subscriptionId,
+  planId
+})
+export const updatePlanSubscriptionSuccess = (subscription: any) => ({
+  type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS,
+  subscription
+})
+export const updatePlanSubscriptionFailure = (error: any) => ({
+  type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE,
+  error
+})

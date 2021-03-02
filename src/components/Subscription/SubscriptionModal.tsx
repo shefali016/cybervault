@@ -28,6 +28,7 @@ type Props = {
   planSubscription: (planId: string, paymentMethodId: string) => void
   subscription: any
   cancelSubscription: (subscriptionId: string) => void
+  updateSubscription: (subscriptionId: string, planId: string) => void
 }
 
 export const SubscriptionModal = ({
@@ -37,7 +38,8 @@ export const SubscriptionModal = ({
   paymentMethods,
   planSubscription,
   subscription,
-  cancelSubscription
+  cancelSubscription,
+  updateSubscription
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -63,8 +65,12 @@ export const SubscriptionModal = ({
   }
 
   const handleChoosePlan = (type: SubscriptionType, planId: string) => {
-    setPaymentModal(!paymentModal)
-    setSelectedPlan(planId)
+    if (subscription && subscription.length) {
+      updateSubscription(subscription[0].id, planId)
+    } else {
+      setPaymentModal(!paymentModal)
+      setSelectedPlan(planId)
+    }
   }
   const handleCancelSubscription = (subscriptionIds: Array<any>) => {
     cancelSubscription(subscriptionIds[0].id)
