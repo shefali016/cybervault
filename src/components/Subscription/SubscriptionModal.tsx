@@ -89,7 +89,7 @@ export const SubscriptionModal = ({
         price={price}
         features={features}
         extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === SubscriptionTypes.creator}
+        isSelected={subscription && !subscription.length}
         duration={duration}
         onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator, '')}
         onCancelSubscription={() => handleCancelSubscription([])}
@@ -284,7 +284,6 @@ const SubscriptionItem = ({
   onCancelSubscription
 }: SubscriptionItemProps) => {
   const classes = useStyles()
-
   return (
     <div
       className={clsx(
@@ -332,12 +331,14 @@ const SubscriptionItem = ({
         </div>
       ) : null}
       <div className={classes.choosePlanContainer}>
-        <GradiantButton
-          onClick={isSelected ? onCancelSubscription : onChoosePlan}>
-          <Typography>
-            {isSelected ? 'Cancel Subscription' : 'Choose Plan'}
-          </Typography>
-        </GradiantButton>
+        {name === 'Creator' ? null : (
+          <GradiantButton
+            onClick={isSelected ? onCancelSubscription : onChoosePlan}>
+            <Typography>
+              {isSelected ? 'Cancel Subscription' : 'Choose Plan'}
+            </Typography>
+          </GradiantButton>
+        )}
       </div>
     </div>
   )
