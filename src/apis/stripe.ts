@@ -209,7 +209,6 @@ export const createStripePlanSubcription = async (
   planId: string,
   paymentMethodId: string
 ) => {
-
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/plan_subscription`,
     {
@@ -223,5 +222,19 @@ export const createStripePlanSubcription = async (
     return res.data
   } else {
     throw Error('Stripe Plans Not Found')
+  }
+}
+
+export const cancelStripePlanSubcription = async (subscriptionId: string) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/cancel_plan_subscription`,
+    {
+      subscriptionId
+    }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Subscription cancel error')
   }
 }

@@ -16,10 +16,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import businessSubBg from '../../assets/business-sub-bg.png'
-import {
-  createStripePlanSubcription,
-  getStripePlansList
-} from '../../apis/stripe'
+import { getStripePlansList } from '../../apis/stripe'
 import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 type Props = {
@@ -28,14 +25,19 @@ type Props = {
   activeSubscriptionType: SubscriptionType | undefined
   customerId: string
   paymentMethods: Array<PaymentMethod>
+  planSubscription: (planId: string, paymentMethodId: string) => void
+  subscription: any
+  cancelSubscription: (subscriptionId: string) => void
 }
 
 export const SubscriptionModal = ({
   open,
   onRequestClose,
   activeSubscriptionType,
-  customerId,
-  paymentMethods
+  paymentMethods,
+  planSubscription,
+  subscription,
+  cancelSubscription
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -64,6 +66,10 @@ export const SubscriptionModal = ({
     setPaymentModal(!paymentModal)
     setSelectedPlan(planId)
   }
+  const handleCancelSubscription = (subscriptionIds: Array<any>) => {
+    cancelSubscription(subscriptionIds[0].id)
+  }
+
   const handleChatWithSales = () => {}
 
   const renderCreatorSubscription = () => {
@@ -86,11 +92,17 @@ export const SubscriptionModal = ({
         isSelected={selectedSubscription === SubscriptionTypes.creator}
         duration={duration}
         onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator, '')}
+        onCancelSubscription={() => handleCancelSubscription([])}
       />
     )
   }
 
-  const renderSubscriptionPlans = (planName: string, planId: string) => {
+  const renderSubscriptionPlans = (
+    planName: string,
+    planId: string,
+    isSubscribedPlan: boolean,
+    subscriptionIds: Array<any>
+  ) => {
     const {
       name,
       description,
@@ -109,9 +121,10 @@ export const SubscriptionModal = ({
         price={price}
         features={features}
         extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === SubscriptionTypes.pro}
+        isSelected={isSubscribedPlan}
         duration={duration}
         onChoosePlan={() => handleChoosePlan(SubscriptionTypes.pro, planId)}
+        onCancelSubscription={() => handleCancelSubscription(subscriptionIds)}
       />
     )
   }
@@ -146,11 +159,7 @@ export const SubscriptionModal = ({
   }
 
   const handleSubscription = async (paymentMethod: PaymentMethod) => {
-    const planSubscription = await createStripePlanSubcription(
-      customerId,
-      selectedPlan,
-      paymentMethod.id
-    )
+    planSubscription(selectedPlan, paymentMethod.id)
     setPaymentModal(!paymentModal)
   }
   const renderDurationSwitch = () => {
@@ -205,7 +214,18 @@ export const SubscriptionModal = ({
                   .reverse()
                   .map((planData: StripePlans, index: number) => {
                     let planName: string | any = '',
-                      planId: string = planData.id
+                      planId: string = planData.id,
+                      isSubscribedPlan: boolean = false,
+                      subscriptionIds: Array<any> = []
+
+                    if (subscription && subscription.length) {
+                      isSubscribedPlan = subscription.some(
+                        (item: any) => item.plan.id === planId
+                      )
+                      subscriptionIds = subscription.filter(
+                        (item: any) => item.plan.id === planId
+                      )
+                    }
                     if (planData.amount === 5999) {
                       planName = 'Team'
                     } else if (planData.amount === 2999) {
@@ -213,7 +233,12 @@ export const SubscriptionModal = ({
                     }
                     return (
                       <Fragment key={index}>
-                        {renderSubscriptionPlans(planName, planId)}
+                        {renderSubscriptionPlans(
+                          planName,
+                          planId,
+                          isSubscribedPlan,
+                          subscriptionIds
+                        )}
                       </Fragment>
                     )
                   })
@@ -243,6 +268,7 @@ type SubscriptionItemProps = {
   isSelected: boolean
   onClick: () => void
   onChoosePlan: () => void
+  onCancelSubscription: () => void
 }
 
 const SubscriptionItem = ({
@@ -254,9 +280,11 @@ const SubscriptionItem = ({
   extraFeatures,
   isSelected,
   onClick,
-  onChoosePlan
+  onChoosePlan,
+  onCancelSubscription
 }: SubscriptionItemProps) => {
   const classes = useStyles()
+
   return (
     <div
       className={clsx(
@@ -304,8 +332,11 @@ const SubscriptionItem = ({
         </div>
       ) : null}
       <div className={classes.choosePlanContainer}>
-        <GradiantButton onClick={onChoosePlan}>
-          <Typography>Choose Plan</Typography>
+        <GradiantButton
+          onClick={isSelected ? onCancelSubscription : onChoosePlan}>
+          <Typography>
+            {isSelected ? 'Cancel Subscription' : 'Choose Plan'}
+          </Typography>
         </GradiantButton>
       </div>
     </div>

@@ -210,6 +210,20 @@ router.post('/get_plans_list', (req, res) => {
   })
 })
 
+router.post('/retrive_subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const subscriptions = await stripe.subscriptions.list({
+        limit: 3
+      })
+      return res.json(subscriptions)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/plan_subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
@@ -219,7 +233,23 @@ router.post('/plan_subscription', (req, res) => {
         default_payment_method: paymentMethodId,
         items: [{ price: planId }]
       })
+      await stripe.customers.update(customerId, {
+        metadata: { subscription: subscription.id }
+      })
       return res.json(subscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/cancel_plan_subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { subscriptionId } = req.body
+      const deleted = await stripe.subscriptions.del(subscriptionId)
+      return res.json(deleted)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)
