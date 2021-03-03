@@ -4,7 +4,10 @@ import clsx from 'clsx'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { getSubscriptionDetails } from 'utils/subscription'
+import {
+  getSubscriptionDetails,
+  getSubscriptionPlanType
+} from 'utils/subscription'
 import {
   StripePlans,
   SubscriptionDuration,
@@ -90,16 +93,15 @@ export const SubscriptionModal = ({
     )
   }
 
-  const renderSubscriptionPlans = (planName: string, planId: string) => {
+  const renderSubscriptionPlans = (planId: string) => {
+    const plan: any = getSubscriptionPlanType(planId)
     const {
       name,
       description,
       features,
       extraFeatures,
       prices
-    } = getSubscriptionDetails(
-      planName === 'Pro' ? SubscriptionTypes.pro : SubscriptionTypes.team
-    )
+    } = getSubscriptionDetails(plan)
     const price = prices[duration]
     return (
       <SubscriptionItem
@@ -204,16 +206,10 @@ export const SubscriptionModal = ({
                   .slice(0)
                   .reverse()
                   .map((planData: StripePlans, index: number) => {
-                    let planName: string | any = '',
-                      planId: string = planData.id
-                    if (planData.amount === 5999) {
-                      planName = 'Team'
-                    } else if (planData.amount === 2999) {
-                      planName = 'Pro'
-                    }
+                    let planId: string = planData.id
                     return (
                       <Fragment key={index}>
-                        {renderSubscriptionPlans(planName, planId)}
+                        {renderSubscriptionPlans(planId)}
                       </Fragment>
                     )
                   })

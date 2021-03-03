@@ -102,3 +102,14 @@ export const getSubscriptionDetails = (
       }
   }
 }
+
+export const getSubscriptionPlanType = (planId: string | any) => {
+  switch (planId) {
+    case 'price_1INRiKKwQrkiELoILmCH3mTI':
+      return SubscriptionTypes.pro
+    case 'price_1INRn5KwQrkiELoIww2rXZ0U':
+      return SubscriptionTypes.team
+    default:
+      return SubscriptionTypes.creator
+  }
+}
