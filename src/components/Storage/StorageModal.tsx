@@ -1,45 +1,70 @@
 import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { PaymentMethod } from '@stripe/stripe-js'
+import { createAmountSubscription } from 'apis/stripe'
 import clsx from 'clsx'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { AppCircularProgress } from 'components/Common/Core/AppCircularProgress'
 import { AppSlider } from 'components/Common/Core/AppSlider'
 import Modal from 'components/Common/Modal'
+import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import React, { useState } from 'react'
-import { SubscriptionTypes } from 'utils/enums'
-import { getSubscriptionDetails } from 'utils/subscription'
+import {
+  getSubscriptionDetails,
+  getSubscriptionPlanType
+} from 'utils/subscription'
 import { Account } from '../../utils/Interface'
 
 type Props = {
   open: boolean
   onRequestClose: () => void
   account: Account
+  subscription: any
+  paymentMethods: Array<PaymentMethod>
+  customerId: string
+  createAmountSubscription: (price: number, paymentMethodId: string) => void
 }
 
-export const StorageModal = ({ open, onRequestClose, account }: Props) => {
+export const StorageModal = ({
+  open,
+  onRequestClose,
+  account,
+  subscription,
+  paymentMethods,
+  customerId,
+  createAmountSubscription
+}: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   const [storageUsed] = useState<number>(2)
+  const [paymentModal, setPaymentModal] = useState<boolean>(false)
+
   const [extraStorage, setExtraStorage] = useState<number>(
     account.subscription?.extraStorage || 0
   )
 
-  const getTotalStorage = (account: Account) => {
-    const { storage } = getSubscriptionDetails(
-      account.subscription?.type || SubscriptionTypes.creator
-    )
+  const getTotalStorage = (subscription: any) => {
+    const plan = getSubscriptionPlanType(subscription?.plan.id)
+    const { storage } = getSubscriptionDetails(plan)
     return storage + extraStorage
   }
 
   const handleBuyStorage = () => {
+    setPaymentModal(!paymentModal)
     // Charge user immediately for the different in previous extra storage and increased extra storage
     // Increase their monthly subscription accordingly
   }
+  const handlePayment = async (paymentMethod: PaymentMethod) => {
+    const amount: any = Math.floor(extraStorage * 0.2).toFixed(2)
+    const price = amount * 100
+    setPaymentModal(!paymentModal)
+    createAmountSubscription(price, paymentMethod.id)
+  }
 
   const renderStorageTracker = () => {
-    const totalStorage = getTotalStorage(account)
+    const totalStorage = getTotalStorage(subscription[0])
 
     return (
       <div className={classes.storageTrackerContainer}>
@@ -93,6 +118,12 @@ export const StorageModal = ({ open, onRequestClose, account }: Props) => {
             <Typography variant={'caption'}>Total</Typography>
           </div>
         </div>
+        <PaymentMethodModal
+          open={paymentModal}
+          onRequestClose={() => setPaymentModal(!paymentModal)}
+          paymentMethods={paymentMethods}
+          handleSubscription={handlePayment}
+        />
       </div>
     )
   }

@@ -5,7 +5,14 @@ import * as StripeActions from '../actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
 
-type Params = { type: string; paymentMethod: PaymentMethod }
+type Params = {
+  type: string
+  paymentMethod: PaymentMethod
+  planId: string
+  paymentMethodId: string
+  subscriptionId: string
+  amount: number
+}
 
 function* attachPaymentMethod({ paymentMethod }: Params) {
   try {
@@ -59,11 +66,81 @@ function* getCustomer({}: Params) {
   }
 }
 
+function* planSubscription({ planId, paymentMethodId }: Params) {
+  try {
+    const customerId = yield select(
+      (state: ReduxState) => state.stripe.customer.id
+    )
+    const subscription = yield call(
+      StripeApis.createStripePlanSubcription,
+      customerId,
+      planId,
+      paymentMethodId
+    )
+    yield put(StripeActions.planSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.planSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+
+function* cancelPlanSubscription({ subscriptionId }: Params) {
+  try {
+    yield call(StripeApis.cancelStripePlanSubcription, subscriptionId)
+    yield put(StripeActions.cancelPlanSubscriptionSuccess(subscriptionId))
+  } catch (error: any) {
+    yield put(
+      StripeActions.cancelPlanSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+
+function* updatePlanSubscription({ subscriptionId, planId }: Params) {
+  try {
+    const subscription = yield call(
+      StripeApis.updateStripePlanSubcription,
+      subscriptionId,
+      planId
+    )
+    yield put(StripeActions.updatePlanSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.updatePlanSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+function* createAmountSubscription({ amount, paymentMethodId }: Params) {
+  try {
+    const customerId = yield select(
+      (state: ReduxState) => state.stripe.customer.id
+    )
+    const subscription = yield call(
+      StripeApis.createAmountSubscription,
+      amount,
+      customerId,
+      paymentMethodId
+    )
+    yield put(StripeActions.createAmountSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.createAmountSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.GET_PAYMENT_METHODS, getPaymentMethods)
   yield takeLatest(ActionTypes.ATTACH_PAYMENT_METHOD, attachPaymentMethod)
   yield takeLatest(ActionTypes.DETACH_PAYMENT_METHOD, detachPaymentMethod)
   yield takeLatest(ActionTypes.GET_CUSTOMER, getCustomer)
+  yield takeLatest(ActionTypes.PLAN_SUBSCRIPTION, planSubscription)
+  yield takeLatest(ActionTypes.CANCEL_PLAN_SUBSCRIPTION, cancelPlanSubscription)
+  yield takeLatest(ActionTypes.UPDATE_PLAN_SUBSCRIPTION, updatePlanSubscription)
+  yield takeLatest(
+    ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
+    createAmountSubscription
+  )
 }
 
 export default function* sagas() {

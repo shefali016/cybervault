@@ -13,9 +13,14 @@ import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { SubscriptionModal } from 'components/Subscription/SubscriptionModal'
 import { StorageModal } from 'components/Storage/StorageModal'
 import { CardModal } from 'components/Stripe/CardModal'
-import { requestPaymentMethods } from 'actions/stripeActions'
+import {
+  cancelPlanSubscription,
+  createAmountSubscription,
+  planSubscription,
+  requestPaymentMethods,
+  updatePlanSubscription
+} from 'actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { PaymentMethodList } from 'components/Stripe/PaymentMethodList'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
 
 type StateProps = {
@@ -23,8 +28,16 @@ type StateProps = {
   user: User
   paymentMethods: Array<PaymentMethod>
   customerId: string
+  subscription: any
+  subscriptionLoading: boolean
 }
-type DispatchProps = { getPaymentMethods: (customerId: string) => void }
+type DispatchProps = {
+  getPaymentMethods: (customerId: string) => void
+  planSubscription: (planId: string, paymentMethodId: string) => void
+  cancelSubscription: (subscriptionId: string) => void
+  updateSubscription: (subscriptionId: string, planId: string) => void
+  createAmountSubscription: (price: number, paymentMethodId: string) => void
+}
 type ReduxProps = StateProps & DispatchProps
 type Props = { history: any }
 
@@ -34,7 +47,12 @@ const SubscriptionScreen = ({
   getPaymentMethods,
   paymentMethods,
   history,
-  customerId
+  customerId,
+  planSubscription,
+  subscription,
+  cancelSubscription,
+  updateSubscription,
+  createAmountSubscription
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
@@ -67,12 +85,20 @@ const SubscriptionScreen = ({
         activeSubscriptionType={account.subscription?.type}
         customerId={customerId}
         paymentMethods={paymentMethods}
+        planSubscription={planSubscription}
+        subscription={subscription}
+        cancelSubscription={cancelSubscription}
+        updateSubscription={updateSubscription}
       />
 
       <StorageModal
         open={storageModalOpen}
         onRequestClose={closeStorageModal}
         account={account}
+        subscription={subscription}
+        paymentMethods={paymentMethods}
+        customerId={customerId}
+        createAmountSubscription={createAmountSubscription}
       />
 
       <CardModal
@@ -248,12 +274,22 @@ const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
   user: state.auth.user as User,
   paymentMethods: state.stripe.paymentMethods,
-  customerId: state.stripe.customer.id as string
+  customerId: state.stripe.customer.id as string,
+  subscription: state.stripe.customer.subscriptions.data,
+  subscriptionLoading: state.stripe.planSubscriptionLoading
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({
   getPaymentMethods: (customerId: string) =>
-    dispatch(requestPaymentMethods(customerId))
+    dispatch(requestPaymentMethods(customerId)),
+  planSubscription: (planId: string, paymentMethodId: string) =>
+    dispatch(planSubscription(planId, paymentMethodId)),
+  cancelSubscription: (subscriptionId: string) =>
+    dispatch(cancelPlanSubscription(subscriptionId)),
+  updateSubscription: (subscriptionId: string, planId: string) =>
+    dispatch(updatePlanSubscription(subscriptionId, planId)),
+  createAmountSubscription: (price: number, paymentMethodId: string) =>
+    dispatch(createAmountSubscription(price, paymentMethodId))
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

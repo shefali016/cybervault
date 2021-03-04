@@ -12,6 +12,13 @@ export type State = {
 
   attachError: null | string
   attachSuccess: boolean
+
+  subscription: null | Object
+  planSubscriptionLoading: boolean
+
+  cancelSubscriptionLoading: boolean
+
+  isSubscriptionChange: boolean
 }
 
 export type Action = {
@@ -20,6 +27,8 @@ export type Action = {
   paymentMethod: PaymentMethod
   error: string
   customer: any
+  subscription: any
+  subscriptionId: any
 }
 
 const initialState = {
@@ -30,7 +39,13 @@ const initialState = {
   detachSuccess: false,
 
   attachError: null,
-  attachSuccess: false
+  attachSuccess: false,
+
+  subscription: null,
+  planSubscriptionLoading: false,
+
+  cancelSubscriptionLoading: false,
+  isSubscriptionChange: false
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -64,6 +79,46 @@ const stripe = (state = initialState, action: Action) => {
       }
     case ActionTypes.DETACH_PAYMENT_METHOD_FAILURE:
       return { ...state, detachError: action.error }
+
+    case ActionTypes.PLAN_SUBSCRIPTION:
+      return { ...state, planSubscriptionLoading: true }
+    case ActionTypes.PLAN_SUBSCRIPTION_SUCCESS:
+      const customer: any = state.customer
+      customer.subscriptions.data.push(action.subscription)
+      return {
+        ...state,
+        subscription: action.subscription,
+        planSubscriptionLoading: false,
+        customer
+      }
+    case ActionTypes.PLAN_SUBSCRIPTION_FAILURE:
+      return { ...state, planSubscriptionLoading: false }
+
+    case ActionTypes.CANCEL_PLAN_SUBSCRIPTION:
+      return { ...state, cancelSubscriptionLoading: true }
+    case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS:
+      const customerData: any = state.customer
+      customerData.subscriptions.data = []
+      return {
+        ...state,
+        customer: customerData,
+        cancelSubscriptionLoading: false
+      }
+    case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE:
+      return { ...state, cancelSubscriptionLoading: false }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION:
+      return { ...state, planSubscriptionLoading: true }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
+      const customerRes: any = state.customer
+      customerRes.subscriptions.data[0] = action.subscription
+      return {
+        ...state,
+        subscription: action.subscription,
+        planSubscriptionLoading: false,
+        customer: customerRes
+      }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE:
+      return { ...state, planSubscriptionLoading: false }
 
     default:
       return state

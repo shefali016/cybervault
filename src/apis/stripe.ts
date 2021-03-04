@@ -209,7 +209,6 @@ export const createStripePlanSubcription = async (
   planId: string,
   paymentMethodId: string
 ) => {
-
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/plan_subscription`,
     {
@@ -223,5 +222,57 @@ export const createStripePlanSubcription = async (
     return res.data
   } else {
     throw Error('Stripe Plans Not Found')
+  }
+}
+
+export const cancelStripePlanSubcription = async (subscriptionId: string) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/cancel_plan_subscription`,
+    {
+      subscriptionId
+    }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Subscription cancel error')
+  }
+}
+
+export const updateStripePlanSubcription = async (
+  subscriptionId: string,
+  planId: string
+) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/update_subscription_plan`,
+    {
+      subscriptionId,
+      planId
+    }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Subscription update error')
+  }
+}
+
+export const createAmountSubscription = async (
+  amount: number,
+  customerId: string,
+  paymentMethodId: string
+) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/create_product`,
+    {
+      amount,
+      customerId,
+      paymentMethodId
+    }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Subscription update error')
   }
 }

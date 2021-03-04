@@ -201,8 +201,22 @@ router.post('/create_account_link', (req, res) => {
 router.post('/get_plans_list', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const plans = await stripe.plans.list({ limit: 2 })
+      const plans = await stripe.plans.list({ limit: 10 })
       return res.json(plans)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/retrive_subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const subscriptions = await stripe.subscriptions.list({
+        limit: 3
+      })
+      return res.json(subscriptions)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)
@@ -219,7 +233,82 @@ router.post('/plan_subscription', (req, res) => {
         default_payment_method: paymentMethodId,
         items: [{ price: planId }]
       })
+      await stripe.customers.update(customerId, {
+        metadata: { subscription: subscription.id }
+      })
       return res.json(subscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/cancel_plan_subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { subscriptionId } = req.body
+      const deleted = await stripe.subscriptions.del(subscriptionId)
+      return res.json(deleted)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/update_subscription_plan', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { subscriptionId, planId } = req.body
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+      stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: false,
+        proration_behavior: 'create_prorations',
+        items: [
+          {
+            id: subscription.items.data[0].id,
+            price: planId
+          }
+        ]
+      })
+      return res.json(subscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/create_product', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { amount, customerId /* paymentMethodId */ } = req.body
+      const product = await stripe.products.create({
+        name: 'Storage Data'
+      })
+      const price = await stripe.prices.create({
+        product: product.id,
+        unit_amount: amount,
+        currency: 'usd',
+        recurring: {
+          interval: 'month'
+        }
+      })
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        customer: customerId,
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: price.id,
+            quantity: 1
+          }
+        ],
+        success_url: 'http://localhost:3000/subscription',
+        cancel_url: 'http://localhost:3000/subscription/cancel'
+      })
+      return res.json(session)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)

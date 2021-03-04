@@ -50,3 +50,63 @@ export const getCustomerFailure = (error: any) => ({
   type: ActionTypes.GET_CUSTOMER_FAILURE,
   error
 })
+export const planSubscription = (planId: string, paymentMethodId: string) => ({
+  type: ActionTypes.PLAN_SUBSCRIPTION,
+  planId,
+  paymentMethodId
+})
+export const planSubscriptionSuccess = (subscription: any) => ({
+  type: ActionTypes.PLAN_SUBSCRIPTION_SUCCESS,
+  subscription
+})
+export const planSubscriptionFailure = (error: any) => ({
+  type: ActionTypes.PLAN_SUBSCRIPTION_FAILURE,
+  error
+})
+
+export const cancelPlanSubscription = (subscriptionId: string) => ({
+  type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION,
+  subscriptionId
+})
+export const cancelPlanSubscriptionSuccess = (subscriptionId: any) => ({
+  type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS,
+  subscriptionId
+})
+export const cancelPlanSubscriptionFailure = (error: any) => ({
+  type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE,
+  error
+})
+
+export const updatePlanSubscription = (
+  subscriptionId: string,
+  planId: string
+) => ({
+  type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION,
+  subscriptionId,
+  planId
+})
+export const updatePlanSubscriptionSuccess = (subscription: any) => ({
+  type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS,
+  subscription
+})
+export const updatePlanSubscriptionFailure = (error: any) => ({
+  type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE,
+  error
+})
+
+export const createAmountSubscription = (
+  amount: number,
+  paymentMethodId: string
+) => ({
+  type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
+  amount,
+  paymentMethodId
+})
+export const createAmountSubscriptionSuccess = (subscription: any) => ({
+  type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_SUCCESS,
+  subscription
+})
+export const createAmountSubscriptionFailure = (error: any) => ({
+  type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE,
+  error
+})
