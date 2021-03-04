@@ -26,6 +26,7 @@
     "history": "^4.10.1",
     "material-ui-popup-state": "^1.7.1",
     "react": "^17.0.1",
+    "react-aws-s3": "^1.4.0",
     "react-color": "^2.19.3",
     "react-dom": "^17.0.1",
     "react-dropzone": "10.2.1",

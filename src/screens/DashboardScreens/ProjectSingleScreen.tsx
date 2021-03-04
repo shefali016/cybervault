@@ -63,6 +63,8 @@ const EditProjectScreen = (props: any) => {
     showTostify: false
   })
 
+  const [fileUrl,setDownloadUrl]=useState('')
+
   const openEditProjectModal = (
     currentStep: number,
     isTaskEdit?: boolean,
@@ -116,7 +118,8 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
-  const onAssetUpload = (type: 'image' | 'video') => async (file: File) => {
+  const onAssetUpload = (type: 'image' | 'video') => async (file: any) => {
+    console.log(file,"fileeeeeee")
     try {
       const { account } = props
 
@@ -135,7 +138,14 @@ const EditProjectScreen = (props: any) => {
       const downloadUrl = await setMedia(asset.id, file)
 
       if (typeof downloadUrl === 'string') {
-        asset.files.push(getImageObject(file, downloadUrl, asset.id))
+       
+        setDownloadUrl(downloadUrl)
+        var video = await document.createElement('video');
+        var source = await document.createElement('source');
+        await source.setAttribute('src',`${downloadUrl}`);
+        await video.appendChild(source);
+        video.onloadedmetadata = async () => {
+        await asset.files.push(getImageObject(file, downloadUrl,video.videoHeight,video.videoWidth, asset.id,))
         await addProjectAssets(account.id, asset)
 
         const project = Object.assign(
@@ -145,13 +155,18 @@ const EditProjectScreen = (props: any) => {
             : { videos: [...state.projectData.videos, asset.id] }
         )
 
-        setState({
+        await setState({
           ...state,
           projectData: project,
           isVideoLoading: false
         })
 
         props.updateProjectDetails(project)
+        };
+       video.onerror = async () => {
+        await alert ("Error!");
+        };
+        
       } else {
         throw Error('Download url is not a string')
       }
@@ -245,6 +260,7 @@ const EditProjectScreen = (props: any) => {
       <div className={classes.detailsWrapper}>
         <Fragment>
           {renderProjectDetails()}
+         
           <AppDivider spacing={6} />
           <AssetUploadDisplay
             {...{
@@ -356,6 +372,9 @@ const useStyles = makeStyles((theme) => ({
   uploadImageContainer: {},
   loader: {
     margin: '0 auto'
+  },
+  video:{
+    // display:"none"
   }
 }))
 

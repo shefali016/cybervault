@@ -31,13 +31,13 @@ export default function validate(step: number, projectData: any,clientData:any) 
   }
 }
 
-export const getImageObject = (file: any, url: string, id: string) => {
+export const getImageObject = (file: any, url: string,width:number,height:number,id: string) => {
   return {
     id: id,
     original: true,
     url: url,
-    width: 50,
-    height: 50
+    width: width,
+    height: height,
   }
 }
 

@@ -51,6 +51,7 @@ export const addProjectAssets = async (
   accountId: string,
   asset: ProjectAsset
 ) => {
+  console.log(asset,"assetttt")
   try {
     return firebase
       .firestore()
