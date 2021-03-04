@@ -4,7 +4,10 @@ import clsx from 'clsx'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { getSubscriptionDetails } from 'utils/subscription'
+import {
+  getSubscriptionDetails,
+  getSubscriptionPlanType
+} from 'utils/subscription'
 import {
   StripePlans,
   SubscriptionDuration,
@@ -98,24 +101,22 @@ export const SubscriptionModal = ({
   }
 
   const renderSubscriptionPlans = (
-    planName: string,
     planId: string,
     isSubscribedPlan: boolean,
     subscriptionIds: Array<any>
   ) => {
+    const plan: SubscriptionType = getSubscriptionPlanType(planId)
     const {
       name,
       description,
       features,
       extraFeatures,
       prices
-    } = getSubscriptionDetails(
-      planName === 'Pro' ? SubscriptionTypes.pro : SubscriptionTypes.team
-    )
+    } = getSubscriptionDetails(plan)
     const price = prices[duration]
     return (
       <SubscriptionItem
-        onClick={() => setSelectedSubscription(SubscriptionTypes.pro)}
+        onClick={() => setSelectedSubscription(plan)}
         name={name}
         description={description}
         price={price}
@@ -123,7 +124,7 @@ export const SubscriptionModal = ({
         extraFeatures={extraFeatures}
         isSelected={isSubscribedPlan}
         duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.pro, planId)}
+        onChoosePlan={() => handleChoosePlan(plan, planId)}
         onCancelSubscription={() => handleCancelSubscription(subscriptionIds)}
       />
     )
@@ -213,8 +214,7 @@ export const SubscriptionModal = ({
                   .slice(0)
                   .reverse()
                   .map((planData: StripePlans, index: number) => {
-                    let planName: string | any = '',
-                      planId: string = planData.id,
+                    let planId: string = planData.id,
                       isSubscribedPlan: boolean = false,
                       subscriptionIds: Array<any> = []
 
@@ -226,15 +226,9 @@ export const SubscriptionModal = ({
                         (item: any) => item.plan.id === planId
                       )
                     }
-                    if (planData.amount === 5999) {
-                      planName = 'Team'
-                    } else if (planData.amount === 2999) {
-                      planName = 'Pro'
-                    }
                     return (
                       <Fragment key={index}>
                         {renderSubscriptionPlans(
-                          planName,
                           planId,
                           isSubscribedPlan,
                           subscriptionIds
