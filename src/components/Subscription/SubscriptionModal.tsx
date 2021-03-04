@@ -94,7 +94,7 @@ export const SubscriptionModal = ({
   }
 
   const renderSubscriptionPlans = (planId: string) => {
-    const plan: any = getSubscriptionPlanType(planId)
+    const plan: SubscriptionType = getSubscriptionPlanType(planId)
     const {
       name,
       description,
@@ -105,15 +105,15 @@ export const SubscriptionModal = ({
     const price = prices[duration]
     return (
       <SubscriptionItem
-        onClick={() => setSelectedSubscription(SubscriptionTypes.pro)}
+        onClick={() => setSelectedSubscription(plan)}
         name={name}
         description={description}
         price={price}
         features={features}
         extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === SubscriptionTypes.pro}
+        isSelected={selectedSubscription === plan}
         duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.pro, planId)}
+        onChoosePlan={() => handleChoosePlan(plan, planId)}
       />
     )
   }
