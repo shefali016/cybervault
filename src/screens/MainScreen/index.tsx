@@ -293,10 +293,10 @@ const MainScreen = ({
 
   useEffect(() => {
     if (!userRestored) {
-      getUser(user?.id)
+      getUser(user.id)
     }
     if (!accountRestored) {
-      getAccount(account?.id)
+      getAccount(account.id)
     }
     if (!customerRestored) {
       getCustomer()
