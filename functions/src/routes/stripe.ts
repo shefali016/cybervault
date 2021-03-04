@@ -248,7 +248,7 @@ router.post('/cancel_plan_subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       const { subscriptionId } = req.body
-      const deleted = await stripe.subscriptions.del(subscriptionId)
+      const deleted = await stripe.subscriptions.update(subscriptionId, {cancel_at_period_end: true});
       return res.json(deleted)
     } catch (error) {
       console.log(error)
@@ -264,7 +264,7 @@ router.post('/update_subscription_plan', (req, res) => {
       const subscription = await stripe.subscriptions.retrieve(subscriptionId)
       stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: false,
-        proration_behavior: 'create_prorations',
+        proration_behavior: 'always_invoice',
         items: [
           {
             id: subscription.items.data[0].id,
