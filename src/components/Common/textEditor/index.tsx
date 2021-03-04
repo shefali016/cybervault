@@ -6,11 +6,11 @@ import { useOnChange } from '../../../utils/hooks'
 
 type editorProps = {
   handleTextChange: (val: string) => void
-  placeholder:string
-  resetValue:Boolean
+  placeholder: string
+  resetValue: Boolean
 }
 
-const Editor = ({ handleTextChange,placeholder ,resetValue}: editorProps) => {
+const Editor = ({ handleTextChange, placeholder, resetValue }: editorProps) => {
   const classes = useStyles()
   const [value, setValue] = useState(RichTextEditor.createEmptyValue())
   const onChange = (value: any) => {
@@ -21,10 +21,10 @@ const Editor = ({ handleTextChange,placeholder ,resetValue}: editorProps) => {
   }
   useOnChange(resetValue, (success: string | null) => {
     if (success) {
-     setValue(RichTextEditor.createEmptyValue())
+      setValue(RichTextEditor.createEmptyValue())
     }
   })
-  
+
   return (
     <RichTextEditor
       value={value}

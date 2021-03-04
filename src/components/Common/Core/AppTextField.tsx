@@ -15,6 +15,7 @@ type Props = {
   disabled?: boolean
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
   onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+  onInput?: (e: InputChangeEvent) => void
 }
 
 const AppTextField = (
@@ -30,7 +31,8 @@ const AppTextField = (
     onKeyDown,
     onKeyUp,
     name,
-    disabled
+    disabled,
+    onInput
   }: Props,
   ref: any
 ) => {
@@ -54,6 +56,7 @@ const AppTextField = (
       inputRef={ref}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}
+      onInput={onInput}
       error={error ? error : false}
       label={label}
       variant='outlined'

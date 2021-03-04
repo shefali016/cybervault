@@ -8,6 +8,7 @@ type Props = {
   children?: React.ReactElement
   loading?: boolean
   className?: string
+  disabled?: boolean
 } & any
 
 export const GradiantButton = (props: Props) => {
@@ -16,6 +17,7 @@ export const GradiantButton = (props: Props) => {
     <Button
       color={'primary'}
       variant={'contained'}
+      disabled={props.disabled}
       {...props}
       className={clsx(
         classes.button,

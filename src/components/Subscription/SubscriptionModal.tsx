@@ -2,32 +2,52 @@ import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { AppDivider } from 'components/Common/Core/AppDivider'
-import React, { useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { getSubscriptionDetails } from 'utils/subscription'
-import { SubscriptionDuration, SubscriptionType } from 'utils/Interface'
+import {
+  getSubscriptionDetails,
+  getSubscriptionPlanType
+} from 'utils/subscription'
+import {
+  StripePlans,
+  SubscriptionDuration,
+  SubscriptionType
+} from 'utils/Interface'
 import Modal from '../Common/Modal'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import businessSubBg from '../../assets/business-sub-bg.png'
-
+import {
+  createStripePlanSubcription,
+  getStripePlansList
+} from '../../apis/stripe'
+import { PaymentMethod } from '@stripe/stripe-js'
+import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 type Props = {
   open: boolean
   onRequestClose: () => void
   activeSubscriptionType: SubscriptionType | undefined
+  customerId: string
+  paymentMethods: Array<PaymentMethod>
 }
 
 export const SubscriptionModal = ({
   open,
   onRequestClose,
-  activeSubscriptionType
+  activeSubscriptionType,
+  customerId,
+  paymentMethods
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   const [duration, setDuration] = useState(SubscriptionDurations.monthly)
+  const [planList, setPlanList] = useState<Array<StripePlans> | any>({})
+  const [paymentModal, setPaymentModal] = useState<boolean>(false)
+  const [selectedPlan, setSelectedPlan] = useState<string>('')
+
   const [
     selectedSubscription,
     setSelectedSubscription
@@ -35,8 +55,18 @@ export const SubscriptionModal = ({
     activeSubscriptionType || SubscriptionTypes.pro
   )
 
-  const handleChoosePlan = (type: SubscriptionType) => {}
+  useEffect(() => {
+    stripePlanList()
+  }, [])
+  const stripePlanList = async () => {
+    const plans: any = await getStripePlansList()
+    setPlanList(plans.data)
+  }
 
+  const handleChoosePlan = (type: SubscriptionType, planId: string) => {
+    setPaymentModal(!paymentModal)
+    setSelectedPlan(planId)
+  }
   const handleChatWithSales = () => {}
 
   const renderCreatorSubscription = () => {
@@ -58,55 +88,32 @@ export const SubscriptionModal = ({
         extraFeatures={extraFeatures}
         isSelected={selectedSubscription === SubscriptionTypes.creator}
         duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator)}
+        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator, '')}
       />
     )
   }
 
-  const renderProSubscription = () => {
+  const renderSubscriptionPlans = (planId: string) => {
+    const plan: SubscriptionType = getSubscriptionPlanType(planId)
     const {
       name,
       description,
       features,
       extraFeatures,
       prices
-    } = getSubscriptionDetails(SubscriptionTypes.pro)
+    } = getSubscriptionDetails(plan)
     const price = prices[duration]
     return (
       <SubscriptionItem
-        onClick={() => setSelectedSubscription(SubscriptionTypes.pro)}
+        onClick={() => setSelectedSubscription(plan)}
         name={name}
         description={description}
         price={price}
         features={features}
         extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === SubscriptionTypes.pro}
+        isSelected={selectedSubscription === plan}
         duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.pro)}
-      />
-    )
-  }
-
-  const renderTeamSubscription = () => {
-    const {
-      name,
-      description,
-      features,
-      extraFeatures,
-      prices
-    } = getSubscriptionDetails(SubscriptionTypes.team)
-    const price = prices[duration]
-    return (
-      <SubscriptionItem
-        onClick={() => setSelectedSubscription(SubscriptionTypes.team)}
-        name={name}
-        description={description}
-        price={price}
-        features={features}
-        extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === SubscriptionTypes.team}
-        duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.team)}
+        onChoosePlan={() => handleChoosePlan(plan, planId)}
       />
     )
   }
@@ -140,6 +147,14 @@ export const SubscriptionModal = ({
     setDuration(duration)
   }
 
+  const handleSubscription = async (paymentMethod: PaymentMethod) => {
+    const planSubscription = await createStripePlanSubcription(
+      customerId,
+      selectedPlan,
+      paymentMethod.id
+    )
+    setPaymentModal(!paymentModal)
+  }
   const renderDurationSwitch = () => {
     return (
       <ToggleButtonGroup
@@ -162,36 +177,55 @@ export const SubscriptionModal = ({
   }
 
   return (
-    <Modal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-      <div className={'modalContent'}>
-        <CloseButton
-          onClick={onRequestClose}
-          style={{ position: 'absolute', top: 10, right: 10 }}
-        />
-        <div className={classes.header}>
-          <Typography variant={'h4'}>Upgrade Your Workflow</Typography>
-          <Typography
-            variant={'caption'}
-            style={{
-              marginTop: theme.spacing(1),
-              marginBottom: theme.spacing(4)
-            }}>
-            {activeSubscriptionType
-              ? 'Upgrade your subscription to benefit from extra features'
-              : 'Subscribe to keep using premium Creator Cloud features'}
-          </Typography>
-          {renderDurationSwitch()}
-        </div>
+    <Fragment>
+      <Modal open={open} onRequestClose={onRequestClose} clickToClose={true}>
+        <div className={'modalContent'}>
+          <CloseButton
+            onClick={onRequestClose}
+            style={{ position: 'absolute', top: 10, right: 10 }}
+          />
+          <div className={classes.header}>
+            <Typography variant={'h4'}>Upgrade Your Workflow</Typography>
+            <Typography
+              variant={'caption'}
+              style={{
+                marginTop: theme.spacing(1),
+                marginBottom: theme.spacing(4)
+              }}>
+              {activeSubscriptionType
+                ? 'Upgrade your subscription to benefit from extra features'
+                : 'Subscribe to keep using premium Creator Cloud features'}
+            </Typography>
+            {renderDurationSwitch()}
+          </div>
 
-        <div style={{ display: 'flex' }}>
-          {renderCreatorSubscription()}
-          {renderProSubscription()}
-          {renderTeamSubscription()}
-        </div>
+          <div style={{ display: 'flex' }}>
+            {renderCreatorSubscription()}
+            {planList && planList.length
+              ? planList
+                  .slice(0)
+                  .reverse()
+                  .map((planData: StripePlans, index: number) => {
+                    let planId: string = planData.id
+                    return (
+                      <Fragment key={index}>
+                        {renderSubscriptionPlans(planId)}
+                      </Fragment>
+                    )
+                  })
+              : null}
+          </div>
 
-        <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
-      </div>
-    </Modal>
+          <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
+        </div>
+      </Modal>
+      <PaymentMethodModal
+        open={paymentModal}
+        onRequestClose={() => setPaymentModal(!paymentModal)}
+        paymentMethods={paymentMethods}
+        handleSubscription={handleSubscription}
+      />
+    </Fragment>
   )
 }
 

@@ -201,9 +201,7 @@ const StripeScreen = ({ account, updateAccount }: Props) => {
       </div>
     )
   }
-const handleRowClick=()=>{
-  
-}
+  const handleRowClick = () => {}
   return (
     <div className={clsx('screenContainer', 'centerContent')}>
       <Section className={classes.balanceSection}>

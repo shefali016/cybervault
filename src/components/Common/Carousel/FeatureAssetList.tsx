@@ -17,8 +17,8 @@ export type Props = {
   onFeatureSelect?: (id: string) => void
   isAssetLoading?: boolean | undefined
   accountId: string
-  innerImageClassName?:string
-  assetContainerMinHeight?:string|number
+  innerImageClassName?: string
+  assetContainerMinHeight?: string | number
 }
 
 type State = {
@@ -39,7 +39,7 @@ export const FeatureAssetList = ({
   assetContainerMinHeight
 }: Props) => {
   const theme = useTheme()
-  
+
   const [state, setState] = useState<State>({
     currentIndex: 0,
     renderTopAsset: true,
@@ -47,7 +47,7 @@ export const FeatureAssetList = ({
     bottomAsset: null,
     assets: []
   })
-  const classes = useStyles({assetContainerMinHeight,assets:state.assets})
+  const classes = useStyles({ assetContainerMinHeight, assets: state.assets })
 
   const { currentIndex, renderTopAsset, topAsset, bottomAsset, assets } = state
 
@@ -144,7 +144,7 @@ export const FeatureAssetList = ({
             <img
               src={asset.files[0].url}
               alt={asset.fileName}
-              className={clsx(classes.img,innerImageClassName)}
+              className={clsx(classes.img, innerImageClassName)}
             />
           )}
           {!!asset && (
@@ -167,7 +167,7 @@ export const FeatureAssetList = ({
   }
 
   const renderAssetPicker = () => {
-    if (!assets.length ) {
+    if (!assets.length) {
       return null
     }
     return (
@@ -375,7 +375,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    minHeight: (props:any)=>props.assetContainerMinHeight && props.assets.length?props.assetContainerMinHeight:300,
+    minHeight: (props: any) =>
+      props.assetContainerMinHeight && props.assets.length
+        ? props.assetContainerMinHeight
+        : 300,
     padding: `20px 30px`
   },
   currentAssetOuter: {

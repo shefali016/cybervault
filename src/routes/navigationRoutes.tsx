@@ -26,7 +26,7 @@ const AuthRoutes = () => (
   <Switch>
     <Route path='/signup' component={SignUpScreen} />
     <Route exact path='/' component={LoginScreen} />
-    <Route path='/clientInvoices/:accId/:id' component={InvoicesClientScreen} /> 
+    <Route path='/clientInvoices/:accId/:id' component={InvoicesClientScreen} />
   </Switch>
 )
 

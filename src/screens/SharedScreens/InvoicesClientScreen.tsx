@@ -1,4 +1,4 @@
-import { HtmlHTMLAttributes, useEffect, useState, useMemo,useRef } from 'react'
+import { HtmlHTMLAttributes, useEffect, useState, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getInvoiceRequest,
@@ -129,16 +129,15 @@ const InvoicesClientScreen = (props: any) => {
     </Grid>
   )
 
-  const messagesEndRef =useRef<any>(null)
+  const messagesEndRef = useRef<any>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" })
+    messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   useEffect(() => {
     scrollToBottom()
-  }, [invoiceData?.invoiceConversationData[props.match.params.id]
-  ?.length]);
+  }, [invoiceData?.invoiceConversationData[props.match.params.id]?.length])
 
   return (
     <div className={`${!accountData.isLoggedIn && classes.root}`}>
@@ -149,8 +148,7 @@ const InvoicesClientScreen = (props: any) => {
           </Grid>
         </Grid>
         <Grid item sm={11} className={classes.subHeaderSection}>
-          {projectDetails.campaignName}{' '}
-          <div className={classes.dot}></div>
+          {projectDetails.campaignName} <div className={classes.dot}></div>
         </Grid>
         <Grid
           item
@@ -265,60 +263,67 @@ const InvoicesClientScreen = (props: any) => {
                       ]?.length
                         ? invoiceData.invoiceConversationData[
                             props.match.params.id
-                          ].sort((a:any,b:any)=>{
-                              return new Date(a.date).valueOf()-new Date(b.date).valueOf()
-                          }).map(
-                            (chat: Types.InvoiceConversation, i: number) => {
+                          ]
+                            .sort((a: any, b: any) => {
                               return (
-                                <Grid
-                                  item
-                                  sm={12}
-                                  container
-                                  key={chat.id}
-                                  justify={
-                                    accountData.isLoggedIn
-                                      ? invoiceData.invoiceData.userDetails
-                                          .email === chat.sendersEmail
-                                        ? 'flex-end'
-                                        : 'flex-start'
-                                      : invoiceData.invoiceData.clientEmail ===
-                                        chat.sendersEmail
-                                      ? 'flex-end'
-                                      : 'flex-start'
-                                  }>
+                                new Date(a.date).valueOf() -
+                                new Date(b.date).valueOf()
+                              )
+                            })
+                            .map(
+                              (chat: Types.InvoiceConversation, i: number) => {
+                                return (
                                   <Grid
                                     item
-                                    sm={5}
-                                    className={classes.messageDateWrapper}>
-                                    <div className={classes.messageWrapper}>
-                                      <Typography
-                                        className={`${classes.textBold} ${classes.name}`}>
-                                        {accountData.isLoggedIn
-                                          ? invoiceData.invoiceData.userDetails
-                                              .email !== chat.sendersEmail
+                                    sm={12}
+                                    container
+                                    key={chat.id}
+                                    justify={
+                                      accountData.isLoggedIn
+                                        ? invoiceData.invoiceData.userDetails
+                                            .email === chat.sendersEmail
+                                          ? 'flex-end'
+                                          : 'flex-start'
+                                        : invoiceData.invoiceData
+                                            .clientEmail === chat.sendersEmail
+                                        ? 'flex-end'
+                                        : 'flex-start'
+                                    }>
+                                    <Grid
+                                      item
+                                      sm={5}
+                                      className={classes.messageDateWrapper}>
+                                      <div className={classes.messageWrapper}>
+                                        <Typography
+                                          className={`${classes.textBold} ${classes.name}`}>
+                                          {accountData.isLoggedIn
+                                            ? invoiceData.invoiceData
+                                                .userDetails.email !==
+                                              chat.sendersEmail
+                                              ? chat.name
+                                              : ''
+                                            : invoiceData.invoiceData
+                                                .clientEmail !==
+                                              chat.sendersEmail
                                             ? chat.name
-                                            : ''
-                                          : invoiceData.invoiceData
-                                              .clientEmail !== chat.sendersEmail
-                                          ? chat.name
-                                          : ''}
+                                            : ''}
+                                        </Typography>
+                                        <Typography
+                                          className={classes.message}
+                                          dangerouslySetInnerHTML={{
+                                            __html: chat.message
+                                          }}></Typography>
+                                      </div>
+                                      <Typography className={classes.date}>
+                                        {new Date(chat.date).toLocaleString()}
                                       </Typography>
-                                      <Typography
-                                        className={classes.message}
-                                        dangerouslySetInnerHTML={{
-                                          __html: chat.message
-                                        }}></Typography>
-                                    </div>
-                                    <Typography className={classes.date}>
-                                      {new Date(chat.date).toLocaleString()}
-                                    </Typography>
+                                    </Grid>
                                   </Grid>
-                                </Grid>
-                              )
-                            }
-                          )
+                                )
+                              }
+                            )
                         : null}
-                        <Grid item sm={12} ref={messagesEndRef}></Grid>
+                      <Grid item sm={12} ref={messagesEndRef}></Grid>
                     </Grid>
                     <Editor
                       handleTextChange={handleTextChange}
@@ -450,17 +455,17 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px',
     textAlign: 'center',
     color: '#fff',
-    fontSize:'12px',
-    position:'relative'
+    fontSize: '12px',
+    position: 'relative'
   },
-  dot:{
-    position:'absolute',
-    backgroundColor:'#fff',
-    borderRadius:'50%',
-    bottom:'3px',
-    width:'4px',
-    height:'4px',
-    left:'50%'
+  dot: {
+    position: 'absolute',
+    backgroundColor: '#fff',
+    borderRadius: '50%',
+    bottom: '3px',
+    width: '4px',
+    height: '4px',
+    left: '50%'
   },
   carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' },
   root: {

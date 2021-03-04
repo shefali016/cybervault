@@ -26,7 +26,7 @@ type Props = {
   history?: any
   clients?: Array<Client>
   account: Account
-  userInfo?:any
+  userInfo?: any
   onDelete?: (projectId: string) => void
   deletingId?: string
 }
@@ -167,9 +167,8 @@ const ProjectCard = ({
                       onClick={() => sendInvoice(project.id)}
                       disabled={
                         project.canInvoice === false ||
-                        !account.stripe.payoutsEnabled
-                      }
-                      >
+                        (account.stripe && !account.stripe.payoutsEnabled)
+                      }>
                       <div style={{ display: FLEX }}>
                         <ReceiptIcon
                           style={{ marginRight: 5 }}

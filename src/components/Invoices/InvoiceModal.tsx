@@ -8,14 +8,16 @@ import CloseButton from '../Common/Button/CloseButton'
 import { ReduxState } from 'reducers/rootReducer'
 import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
-import { Project, Account, Client,MailTemplate } from '../../utils/Interface'
+import { Project, Account, Client, MailTemplate } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
 import { InvoiceStatuses } from 'utils/enums'
-import {sendEmailRequest,getAllMailTemplatesRequest} from '../../actions/mails'
-
+import {
+  sendEmailRequest,
+  getAllMailTemplatesRequest
+} from '../../actions/mails'
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
@@ -23,8 +25,8 @@ type InvoiceProps = {
   onRequestClose: () => void
   project: Project
   account: Account
-  client: Client,
-  userInfo:any
+  client: Client
+  userInfo: any
 }
 type MilestoneProps = {
   id: string
@@ -70,18 +72,18 @@ const InvoiceData = ({
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
   const mailData = useSelector((state: ReduxState) => state.mail)
 
-  const getTemplateId=()=>{
-    if(mailData.mailTemplatesData){
-      let data:any
-      data=mailData.mailTemplatesData.find((tmp:MailTemplate)=>{
-        return tmp.type==='invoice'
+  const getTemplateId = () => {
+    if (mailData.mailTemplatesData) {
+      let data: any
+      data = mailData.mailTemplatesData.find((tmp: MailTemplate) => {
+        return tmp.type === 'invoice'
       })
       return data?.templateId
     }
   }
-const templateId=useMemo(()=>{
-  return getTemplateId()
-},[mailData.mailTemplatesData])
+  const templateId = useMemo(() => {
+    return getTemplateId()
+  }, [mailData.mailTemplatesData])
 
   useOnChange(invoiceData.error, (error) => {
     if (!!error) {
@@ -128,9 +130,9 @@ const templateId=useMemo(()=>{
     }
   }, [project])
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(getAllMailTemplatesRequest())
-  },[])
+  }, [])
 
   const getFullAmount = () => {
     return (
@@ -146,7 +148,7 @@ const templateId=useMemo(()=>{
     })
     return cost
   }
-  const handleSendInvoice = (invoiceId:string) => {
+  const handleSendInvoice = (invoiceId: string) => {
     const invoice = {
       id: invoiceId, // Using generateId function
       dateCreated: new Date().toLocaleString(),
@@ -159,36 +161,39 @@ const templateId=useMemo(()=>{
         return mile.check === true
       }), // will contain milestones being invoiced or null if invoicing total amount
       clientEmail: clientData.email,
-      clientId:clientData.id,
+      clientId: clientData.id,
       campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
-      userDetails:{
-        id:userInfo.id,
-        name:userInfo.name,
-        email:userInfo.email
+      userDetails: {
+        id: userInfo.id,
+        name: userInfo.name,
+        email: userInfo.email
       },
       status: InvoiceStatuses.PENDING // has client paid invoice or not
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
   }
 
-  const handleSendMail=()=>{
-    const invoiceId=generateUid();
-    const mailPayload={
-      to:clientData.email.trim()||"",
-      templateId:templateId.trim()||'',
-      type:'invoice',
-      data:{
-        clientEmail:clientData.email.trim() ||'',
-        projectName:projectData.campaignName||'',
-        invoiceId:invoiceId.trim()||'',
-        userEmail:account.email||'',
-        amount:invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()||'',
-        subject:'Creator Cloud Invoice',
-        link:`${window.location.origin}/clientInvoices/${account.id}/${invoiceId}`
+  const handleSendMail = () => {
+    const invoiceId = generateUid()
+    const mailPayload = {
+      to: clientData.email.trim() || '',
+      templateId: templateId.trim() || '',
+      type: 'invoice',
+      data: {
+        clientEmail: clientData.email.trim() || '',
+        projectName: projectData.campaignName || '',
+        invoiceId: invoiceId.trim() || '',
+        userEmail: account.email || '',
+        amount:
+          invoiceType === 'fullAmount'
+            ? getFullAmount()
+            : getAmountByMilestone() || '',
+        subject: 'Creator Cloud Invoice',
+        link: `${window.location.origin}/clientInvoices/${account.id}/${invoiceId}`
       }
     }
-    dispatch( sendEmailRequest(mailPayload))
+    dispatch(sendEmailRequest(mailPayload))
   }
 
   useOnChange(mailData.success, (success) => {
@@ -201,12 +206,15 @@ const templateId=useMemo(()=>{
       toastContext.showToast({ title: 'Failed to send invoice' })
     }
   })
-  useOnChange((invoiceData.success && invoiceData?.newinvoiceData?.projectId === projectData.id),(success) => {
-    if (success) {
-      setCurrentStep((step) => step + 1)
+  useOnChange(
+    invoiceData.success &&
+      invoiceData?.newinvoiceData?.projectId === projectData.id,
+    (success) => {
+      if (success) {
+        setCurrentStep((step) => step + 1)
+      }
     }
-  })
- 
+  )
 
   const handleEdit = (editType: string) => {
     setEdit({
@@ -305,9 +313,7 @@ type InvoiceModalProps = {
   onRequestClose: () => void
   account: Account
   client: Client | undefined
-  userInfo:any
-
-
+  userInfo: any
 }
 
 const InvoiceModal = ({
@@ -321,7 +327,7 @@ const InvoiceModal = ({
   if (!client) {
     return null
   }
-  
+
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <InvoiceData
