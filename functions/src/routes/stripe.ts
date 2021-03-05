@@ -248,7 +248,7 @@ router.post('/cancel_plan_subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       const { subscriptionId } = req.body
-      const deleted = await stripe.subscriptions.update(subscriptionId, {cancel_at_period_end: true});
+      const deleted = await stripe.subscriptions.del(subscriptionId)
       return res.json(deleted)
     } catch (error) {
       console.log(error)

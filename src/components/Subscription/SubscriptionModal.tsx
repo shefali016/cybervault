@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { AppDivider } from 'components/Common/Core/AppDivider'
@@ -22,6 +22,8 @@ import businessSubBg from '../../assets/business-sub-bg.png'
 import { getStripePlansList } from '../../apis/stripe'
 import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+
 type Props = {
   open: boolean
   onRequestClose: () => void
@@ -51,6 +53,10 @@ export const SubscriptionModal = ({
   const [planList, setPlanList] = useState<Array<StripePlans> | any>({})
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
+  const [openDialog, setOpenDialog] = useState<any>({
+    value: false,
+    for: ''
+  })
 
   const [
     selectedSubscription,
@@ -68,17 +74,22 @@ export const SubscriptionModal = ({
   }
 
   const handleChoosePlan = (type: SubscriptionType, planId: string) => {
-    if (subscription && subscription.length) {
-      updateSubscription(subscription[0].id, planId)
+    if (subscription) {
+      setOpenDialog({ value: true, for: 'Update' })
+      setSelectedPlan(planId)
     } else {
       setPaymentModal(!paymentModal)
       setSelectedPlan(planId)
     }
   }
-  const handleCancelSubscription = (subscriptionIds: Array<any>) => {
-    cancelSubscription(subscriptionIds[0].id)
+  const handleCancelSubscription = () => {
+    setOpenDialog({ value: false, for: '' })
+    cancelSubscription(subscription.id)
   }
-
+  const handelUpdateSubscription = () => {
+    setOpenDialog({ value: false, for: '' })
+    updateSubscription(subscription.id, selectedPlan)
+  }
   const handleChatWithSales = () => {}
 
   const renderCreatorSubscription = () => {
@@ -98,18 +109,17 @@ export const SubscriptionModal = ({
         price={price}
         features={features}
         extraFeatures={extraFeatures}
-        isSelected={subscription && !subscription.length}
+        isSelected={!subscription}
         duration={duration}
         onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator, '')}
-        onCancelSubscription={() => handleCancelSubscription([])}
+        onCancelSubscription={() => handleCancelSubscription()}
       />
     )
   }
 
   const renderSubscriptionPlans = (
     planId: string,
-    isSubscribedPlan: boolean,
-    subscriptionIds: Array<any>
+    isSubscribedPlan: boolean
   ) => {
     const plan: SubscriptionType = getSubscriptionPlanType(planId)
     const {
@@ -131,7 +141,9 @@ export const SubscriptionModal = ({
         isSelected={isSubscribedPlan}
         duration={duration}
         onChoosePlan={() => handleChoosePlan(plan, planId)}
-        onCancelSubscription={() => handleCancelSubscription(subscriptionIds)}
+        onCancelSubscription={(open: boolean) =>
+          setOpenDialog({ value: open, for: 'Cancel' })
+        }
       />
     )
   }
@@ -221,24 +233,14 @@ export const SubscriptionModal = ({
                   .reverse()
                   .map((planData: StripePlans, index: number) => {
                     let planId: string = planData.id,
-                      isSubscribedPlan: boolean = false,
-                      subscriptionIds: Array<any> = []
+                      isSubscribedPlan: boolean = false
 
-                    if (subscription && subscription.length) {
-                      isSubscribedPlan = subscription.some(
-                        (item: any) => item.plan.id === planId
-                      )
-                      subscriptionIds = subscription.filter(
-                        (item: any) => item.plan.id === planId
-                      )
+                    if (subscription && subscription.plan.id === planId) {
+                      isSubscribedPlan = true
                     }
                     return (
                       <Fragment key={index}>
-                        {renderSubscriptionPlans(
-                          planId,
-                          isSubscribedPlan,
-                          subscriptionIds
-                        )}
+                        {renderSubscriptionPlans(planId, isSubscribedPlan)}
                       </Fragment>
                     )
                   })
@@ -254,6 +256,18 @@ export const SubscriptionModal = ({
         paymentMethods={paymentMethods}
         handleSubscription={handleSubscription}
       />
+      <ConfirmationDialog
+        isOpen={!!openDialog.value}
+        onClose={() => setOpenDialog({ value: false, for: '' })}
+        title={`${openDialog.for} Subscription`}
+        message={`Are you sure you want to ${openDialog.for} this subscription? This cannot be undone.`}
+        onYes={() =>
+          openDialog.for === 'Update'
+            ? handelUpdateSubscription()
+            : handleCancelSubscription()
+        }
+        onNo={() => setOpenDialog({ value: false, for: '' })}
+      />
     </Fragment>
   )
 }
@@ -268,7 +282,7 @@ type SubscriptionItemProps = {
   isSelected: boolean
   onClick: () => void
   onChoosePlan: () => void
-  onCancelSubscription: () => void
+  onCancelSubscription: (open: boolean) => void
 }
 
 const SubscriptionItem = ({
@@ -285,62 +299,80 @@ const SubscriptionItem = ({
 }: SubscriptionItemProps) => {
   const classes = useStyles()
   return (
-    <div
-      className={clsx(
-        classes.subscriptionItemContainer,
-        isSelected ? classes.selected : ''
-      )}
-      onClick={onClick}>
-      <Typography variant={'h4'}>{name}</Typography>
-      <Typography variant={'caption'} className={classes.descriptionText}>
-        {description}
-      </Typography>
-      <div className={classes.priceContainer}>
-        <Typography variant={'h5'} className={classes.priceText}>
-          ${price}
-        </Typography>
-        <Typography variant={'h6'} className={classes.durationText}>
-          /{duration === SubscriptionDurations.monthly ? 'month' : 'year'}
-        </Typography>
-      </div>
-
-      {features ? (
-        <div>
-          <AppDivider className={classes.divider} />
-          <Typography className={classes.featureTitle}>Features</Typography>
-          <ul>
-            {features.map((feature: string) => (
-              <li>
-                <Typography>{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-      {extraFeatures ? (
-        <div>
-          <AppDivider className={classes.divider} />
-          <Typography className={classes.featureTitle}>and...</Typography>
-          <ul>
-            {extraFeatures.map((feature: string, index: number) => (
-              <li key={index}>
-                <Typography>{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-      <div className={classes.choosePlanContainer}>
-        {name === 'Creator' ? null : (
-          <GradiantButton
-            onClick={isSelected ? onCancelSubscription : onChoosePlan}>
-            <Typography>
-              {isSelected ? 'Cancel Subscription' : 'Choose Plan'}
-            </Typography>
-          </GradiantButton>
+    <Fragment>
+      <div
+        className={clsx(
+          classes.subscriptionItemContainer,
+          isSelected
+            ? name === 'Creator'
+              ? classes.creatorSelected
+              : classes.selected
+            : ''
         )}
+        onClick={onClick}>
+        <Typography variant={'h4'}>{name}</Typography>
+        {isSelected ? (
+          <div className={classes.ribbon}>
+            <span className={classes.span}>Active</span>
+          </div>
+        ) : null}
+        <Typography variant={'caption'} className={classes.descriptionText}>
+          {description}
+        </Typography>
+        <div className={classes.priceContainer}>
+          <Typography variant={'h5'} className={classes.priceText}>
+            ${price}
+          </Typography>
+          <Typography variant={'h6'} className={classes.durationText}>
+            /{duration === SubscriptionDurations.monthly ? 'month' : 'year'}
+          </Typography>
+        </div>
+
+        {features ? (
+          <div>
+            <AppDivider className={classes.divider} />
+            <Typography className={classes.featureTitle}>Features</Typography>
+            <ul>
+              {features.map((feature: string) => (
+                <li>
+                  <Typography>{feature}</Typography>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {extraFeatures ? (
+          <div>
+            <AppDivider className={classes.divider} />
+            <Typography className={classes.featureTitle}>and...</Typography>
+            <ul>
+              {extraFeatures.map((feature: string, index: number) => (
+                <li key={index}>
+                  <Typography>{feature}</Typography>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        <div className={classes.choosePlanContainer}>
+          {name !== 'Creator' ? (
+            isSelected ? (
+              <Button
+                onClick={() => onCancelSubscription(true)}
+                className={classes.cancelBtn}>
+                Cancel Subscription
+              </Button>
+            ) : (
+              <GradiantButton onClick={onChoosePlan}>
+                <Typography>
+                  {isSelected ? 'Cancel Subscription' : 'Choose Plan'}
+                </Typography>
+              </GradiantButton>
+            )
+          ) : null}
+        </div>
       </div>
-    </div>
+    </Fragment>
   )
 }
 
@@ -391,6 +423,9 @@ const useStyles = makeStyles((theme) => ({
         duration: theme.transitions.duration.standard
       }
     ),
+    transform: `translateY(-10px)`
+  },
+  creatorSelected: {
     transform: `translateY(-10px)`
   },
   businessSubscription: {
@@ -445,5 +480,44 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center'
   },
   priceText: { color: theme.palette.grey[600] },
-  durationText: { color: theme.palette.grey[600], fontSize: 12, marginTop: 8 }
+  durationText: { color: theme.palette.grey[600], fontSize: 12, marginTop: 8 },
+  cancelBtn: {
+    minWidth: 200,
+    background: '#fff',
+    paddingTop: 12,
+    paddingBottom: 12,
+    color: 'red',
+    border: 'solid 0.5px #000',
+    boxShadow: ' 1px 1px 5px 1px #00000063'
+  },
+  ribbon: {
+    backgroundColor: 'skyblue',
+    position: 'absolute',
+    color: 'white',
+    width: 67,
+    zIndex: 3,
+    textAlign: 'center',
+    textTransform: 'capitalize',
+    padding: 2,
+    font: 'Lato',
+    '&::before': {
+      position: 'absolute',
+      zIndex: -1,
+      content: '',
+      display: 'block',
+      border: '5px solid #2980b9'
+    },
+    '&::after': {
+      position: 'absolute',
+      zIndex: -1,
+      content: '',
+      display: 'block',
+      border: '5px solid #2980b9'
+    },
+    transform: 'rotate(35deg)',
+    top: 19,
+    marginRight: -37,
+    right: 37
+  },
+  span: {}
 }))

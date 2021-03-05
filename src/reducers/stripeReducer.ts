@@ -13,7 +13,7 @@ export type State = {
   attachError: null | string
   attachSuccess: boolean
 
-  subscription: null | Object
+  activeSubscription: null | Object
   planSubscriptionLoading: boolean
 
   cancelSubscriptionLoading: boolean
@@ -29,6 +29,7 @@ export type Action = {
   customer: any
   subscription: any
   subscriptionId: any
+  planId: string
 }
 
 const initialState = {
@@ -41,7 +42,7 @@ const initialState = {
   attachError: null,
   attachSuccess: false,
 
-  subscription: null,
+  activeSubscription: null,
   planSubscriptionLoading: false,
 
   cancelSubscriptionLoading: false,
@@ -51,7 +52,12 @@ const initialState = {
 const stripe = (state = initialState, action: Action) => {
   switch (action.type) {
     case ActionTypes.GET_CUSTOMER_SUCCESS:
-      return { ...state, customer: action.customer, customerRestored: true }
+      return {
+        ...state,
+        customer: action.customer,
+        activeSubscription: action.customer.subscriptions.data[0],
+        customerRestored: true
+      }
 
     case ActionTypes.GET_PAYMENT_METHODS_SUCCESS:
       return { ...state, paymentMethods: action.paymentMethods }
@@ -87,7 +93,7 @@ const stripe = (state = initialState, action: Action) => {
       customer.subscriptions.data.push(action.subscription)
       return {
         ...state,
-        subscription: action.subscription,
+        activeSubscription: action.subscription,
         planSubscriptionLoading: false,
         customer
       }
@@ -97,11 +103,9 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION:
       return { ...state, cancelSubscriptionLoading: true }
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS:
-      const customerData: any = state.customer
-      customerData.subscriptions.data = []
       return {
         ...state,
-        customer: customerData,
+        activeSubscription: {},
         cancelSubscriptionLoading: false
       }
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE:
@@ -109,13 +113,13 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION:
       return { ...state, planSubscriptionLoading: true }
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
-      const customerRes: any = state.customer
-      customerRes.subscriptions.data[0] = action.subscription
+      const activeSubscription: any = state.activeSubscription
+      activeSubscription.plan.id = action.planId
       return {
         ...state,
         subscription: action.subscription,
         planSubscriptionLoading: false,
-        customer: customerRes
+        activeSubscription
       }
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE:
       return { ...state, planSubscriptionLoading: false }

@@ -68,9 +68,9 @@ export const cancelPlanSubscription = (subscriptionId: string) => ({
   type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION,
   subscriptionId
 })
-export const cancelPlanSubscriptionSuccess = (subscriptionId: any) => ({
+export const cancelPlanSubscriptionSuccess = (subscription: any) => ({
   type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS,
-  subscriptionId
+  subscription
 })
 export const cancelPlanSubscriptionFailure = (error: any) => ({
   type: ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE,
@@ -85,9 +85,9 @@ export const updatePlanSubscription = (
   subscriptionId,
   planId
 })
-export const updatePlanSubscriptionSuccess = (subscription: any) => ({
+export const updatePlanSubscriptionSuccess = (planId: string) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS,
-  subscription
+  planId
 })
 export const updatePlanSubscriptionFailure = (error: any) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE,

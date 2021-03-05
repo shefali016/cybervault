@@ -86,8 +86,11 @@ function* planSubscription({ planId, paymentMethodId }: Params) {
 
 function* cancelPlanSubscription({ subscriptionId }: Params) {
   try {
-    yield call(StripeApis.cancelStripePlanSubcription, subscriptionId)
-    yield put(StripeActions.cancelPlanSubscriptionSuccess(subscriptionId))
+    const subscription = yield call(
+      StripeApis.cancelStripePlanSubcription,
+      subscriptionId
+    )
+    yield put(StripeActions.cancelPlanSubscriptionSuccess(subscription))
   } catch (error: any) {
     yield put(
       StripeActions.cancelPlanSubscriptionFailure(error?.message || 'default')
@@ -97,12 +100,8 @@ function* cancelPlanSubscription({ subscriptionId }: Params) {
 
 function* updatePlanSubscription({ subscriptionId, planId }: Params) {
   try {
-    const subscription = yield call(
-      StripeApis.updateStripePlanSubcription,
-      subscriptionId,
-      planId
-    )
-    yield put(StripeActions.updatePlanSubscriptionSuccess(subscription))
+    yield call(StripeApis.updateStripePlanSubcription, subscriptionId, planId)
+    yield put(StripeActions.updatePlanSubscriptionSuccess(planId))
   } catch (error: any) {
     yield put(
       StripeActions.updatePlanSubscriptionFailure(error?.message || 'default')
