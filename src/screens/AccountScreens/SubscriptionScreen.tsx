@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Account, User } from 'utils/Interface'
+import { Account, StripePlans, User } from 'utils/Interface'
 import {
   getSubscriptionDetails,
   getSubscriptionPlanType
@@ -19,6 +19,7 @@ import { CardModal } from 'components/Stripe/CardModal'
 import {
   cancelPlanSubscription,
   createAmountSubscription,
+  getStripPlanList,
   planSubscription,
   requestPaymentMethods,
   updatePlanSubscription
@@ -34,13 +35,20 @@ type StateProps = {
   customerId: string
   subscription: any
   subscriptionLoading: boolean
+  extraStorage: number
+  subscriptionPlans: Array<StripePlans> | null
 }
 type DispatchProps = {
   getPaymentMethods: (customerId: string) => void
   planSubscription: (planId: string, paymentMethodId: string) => void
   cancelSubscription: (subscriptionId: string) => void
   updateSubscription: (subscriptionId: string, planId: string) => void
-  createAmountSubscription: (price: number, paymentMethodId: string) => void
+  createAmountSubscription: (
+    price: number,
+    paymentMethodId: string,
+    extraStorage: number
+  ) => void
+  getPlanList: () => void
 }
 type ReduxProps = StateProps & DispatchProps
 type Props = { history: any }
@@ -56,12 +64,16 @@ const SubscriptionScreen = ({
   subscription,
   cancelSubscription,
   updateSubscription,
-  createAmountSubscription
+  createAmountSubscription,
+  extraStorage,
+  getPlanList,
+  subscriptionPlans
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
   useEffect(() => {
     getPaymentMethods(user.customerId)
+    getPlanList()
   }, [])
 
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
@@ -95,6 +107,7 @@ const SubscriptionScreen = ({
         paymentMethods={paymentMethods}
         planSubscription={planSubscription}
         subscription={subscription}
+        planList={subscriptionPlans}
         cancelSubscription={cancelSubscription}
         updateSubscription={updateSubscription}
       />
@@ -107,6 +120,7 @@ const SubscriptionScreen = ({
         paymentMethods={paymentMethods}
         customerId={customerId}
         createAmountSubscription={createAmountSubscription}
+        userExtraStorage={extraStorage}
       />
 
       <CardModal
@@ -284,7 +298,9 @@ const mapState = (state: ReduxState): StateProps => ({
   paymentMethods: state.stripe.paymentMethods,
   customerId: state.stripe.customer.id as string,
   subscription: state.stripe.activeSubscription,
-  subscriptionLoading: state.stripe.planSubscriptionLoading
+  subscriptionLoading: state.stripe.planSubscriptionLoading,
+  extraStorage: state.auth.user?.extraStorage as number,
+  subscriptionPlans: state.stripe.subscriptionPlans as Array<StripePlans> | null
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({
@@ -296,8 +312,12 @@ const mapDispatch = (dispatch: any): DispatchProps => ({
     dispatch(cancelPlanSubscription(subscriptionId)),
   updateSubscription: (subscriptionId: string, planId: string) =>
     dispatch(updatePlanSubscription(subscriptionId, planId)),
-  createAmountSubscription: (price: number, paymentMethodId: string) =>
-    dispatch(createAmountSubscription(price, paymentMethodId))
+  createAmountSubscription: (
+    price: number,
+    paymentMethodId: string,
+    extraStorage: number
+  ) => dispatch(createAmountSubscription(price, paymentMethodId, extraStorage)),
+  getPlanList: () => dispatch(getStripPlanList())
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

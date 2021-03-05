@@ -260,14 +260,14 @@ export const updateStripePlanSubcription = async (
 export const createAmountSubscription = async (
   amount: number,
   customerId: string,
-  paymentMethodId: string
+  storagePlanId: string
 ) => {
   const res = await axios.post<Array<StripePlans>>(
-    `${server_url}/api/v1/stripe/create_product`,
+    `${server_url}/api/v1/stripe/update_storage_plan_price`,
     {
       amount,
       customerId,
-      paymentMethodId
+      planId:storagePlanId
     }
   )
   if (res.status === 200) {

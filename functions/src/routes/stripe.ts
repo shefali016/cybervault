@@ -280,16 +280,15 @@ router.post('/update_subscription_plan', (req, res) => {
   })
 })
 
-router.post('/create_product', (req, res) => {
+router.post('/update_storage_plan_price', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, customerId /* paymentMethodId */ } = req.body
-      const product = await stripe.products.create({
-        name: 'Storage Data'
-      })
+      const { amount, customerId, planId } = req.body
+      await stripe.plans.del(planId)
       const price = await stripe.prices.create({
-        product: product.id,
+        product: 'prod_J3lVFSsRKXY99C',
         unit_amount: amount,
+        nickname: 'Storage Plan',
         currency: 'usd',
         recurring: {
           interval: 'month'

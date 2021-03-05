@@ -1,6 +1,7 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
+import { StripePlans } from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -19,6 +20,9 @@ export type State = {
   cancelSubscriptionLoading: boolean
 
   isSubscriptionChange: boolean
+
+  subscriptionPlans: Array<StripePlans> | null
+  storagePlan: StripePlans | null
 }
 
 export type Action = {
@@ -30,6 +34,7 @@ export type Action = {
   subscription: any
   subscriptionId: any
   planId: string
+  plans: Array<StripePlans>
 }
 
 const initialState = {
@@ -46,7 +51,10 @@ const initialState = {
   planSubscriptionLoading: false,
 
   cancelSubscriptionLoading: false,
-  isSubscriptionChange: false
+  isSubscriptionChange: false,
+
+  subscriptionPlans: null,
+  storagePlan: null
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -123,7 +131,23 @@ const stripe = (state = initialState, action: Action) => {
       }
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE:
       return { ...state, planSubscriptionLoading: false }
-
+    case ActionTypes.GET_PLAN_LIST:
+      return { ...state, planSubscriptionLoading: true }
+    case ActionTypes.GET_PLAN_LIST_SUCCESS:
+      const storagePlan = action.plans.filter(
+        (plans: StripePlans) => plans.nickname === 'Storage Plan'
+      )[0]
+      const subscriptionPlans = action.plans.filter(
+        (plans: StripePlans) => plans.nickname !== 'Storage Plan'
+      )
+      return {
+        ...state,
+        storagePlan,
+        subscriptionPlans,
+        planSubscriptionLoading: false
+      }
+    case ActionTypes.GET_PLAN_LIST_FAILURE:
+      return { ...state, planSubscriptionLoading: false }
     default:
       return state
   }

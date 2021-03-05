@@ -4,6 +4,7 @@ import * as StripeApis from '../apis/stripe'
 import * as StripeActions from '../actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
+import { updateUserData } from 'apis/user'
 
 type Params = {
   type: string
@@ -12,6 +13,7 @@ type Params = {
   paymentMethodId: string
   subscriptionId: string
   amount: number
+  extraStorage: number
 }
 
 function* attachPaymentMethod({ paymentMethod }: Params) {
@@ -66,6 +68,17 @@ function* getCustomer({}: Params) {
   }
 }
 
+function* getPlanData({}: Params) {
+  try {
+    const planList = yield call(StripeApis.getStripePlansList)
+    yield put(StripeActions.getStripPlanListSuccess(planList.data))
+  } catch (error: any) {
+    yield put(
+      StripeActions.getStripPlanListFailure(error?.message || 'default')
+    )
+  }
+}
+
 function* planSubscription({ planId, paymentMethodId }: Params) {
   try {
     const customerId = yield select(
@@ -109,16 +122,21 @@ function* updatePlanSubscription({ subscriptionId, planId }: Params) {
     )
   }
 }
-function* createAmountSubscription({ amount, paymentMethodId }: Params) {
+function* createAmountSubscription({ amount, extraStorage }: Params) {
   try {
     const customerId = yield select(
       (state: ReduxState) => state.stripe.customer.id
     )
+    const storagePlanId: string = yield select(
+      (state: ReduxState) => state.stripe.storagePlan?.id
+    )
+    const userId = yield select((state: ReduxState) => state.auth.user?.id)
+    yield call(updateUserData, userId, { extraStorage })
     const subscription = yield call(
       StripeApis.createAmountSubscription,
       amount,
       customerId,
-      paymentMethodId
+      storagePlanId
     )
     yield put(StripeActions.createAmountSubscriptionSuccess(subscription))
   } catch (error: any) {
@@ -140,6 +158,7 @@ function* watchRequests() {
     ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
     createAmountSubscription
   )
+  yield takeLatest(ActionTypes.GET_PLAN_LIST, getPlanData)
 }
 
 export default function* sagas() {

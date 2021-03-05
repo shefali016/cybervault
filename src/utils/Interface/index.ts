@@ -187,6 +187,7 @@ export type User = {
   twitter?: string | undefined
   linkedIn?: string | undefined
   customerId: string
+  extraStorage?: number
 }
 
 export type AuthUser = {
@@ -252,19 +253,19 @@ export type Project = {
   featuredImage?: string
 }
 
-export type InvoiceConversation={
-  name:string
-  sendersEmail:string
-  message:string
-  date:Date|string
-  id:string,
-  receiversEmail:string
+export type InvoiceConversation = {
+  name: string
+  sendersEmail: string
+  message: string
+  date: Date | string
+  id: string
+  receiversEmail: string
 }
 
-export type InvoiceUserInfo={
-  name:string,
-  id:string,
-  email:string
+export type InvoiceUserInfo = {
+  name: string
+  id: string
+  email: string
 }
 
 export type Invoice = {
@@ -280,8 +281,8 @@ export type Invoice = {
   projectName: string
   campaignDeadLine: string
   featuredImage?: string
-  conversation?:Array<InvoiceConversation>
-  userDetails:InvoiceUserInfo
+  conversation?: Array<InvoiceConversation>
+  userDetails: InvoiceUserInfo
 }
 
 export type ProjectStatus =
@@ -336,19 +337,19 @@ export type Cell = {
   key: string
 }
 
-export type Mail={
-  to:string
-  data:Object
-  templateId:string,
-  type:string
+export type Mail = {
+  to: string
+  data: Object
+  templateId: string
+  type: string
 }
 
-export type MailTemplate={
-  id:string,
-  type:string
+export type MailTemplate = {
+  id: string
+  type: string
 }
 
 export type Row = {
-  key:string
-  row:Array<Cell>
+  key: string
+  row: Array<Cell>
 }

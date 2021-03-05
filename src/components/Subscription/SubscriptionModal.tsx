@@ -34,6 +34,7 @@ type Props = {
   subscription: any
   cancelSubscription: (subscriptionId: string) => void
   updateSubscription: (subscriptionId: string, planId: string) => void
+  planList: Array<StripePlans> | null
 }
 
 export const SubscriptionModal = ({
@@ -44,13 +45,13 @@ export const SubscriptionModal = ({
   planSubscription,
   subscription,
   cancelSubscription,
-  updateSubscription
+  updateSubscription,
+  planList
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   const [duration, setDuration] = useState(SubscriptionDurations.monthly)
-  const [planList, setPlanList] = useState<Array<StripePlans> | any>({})
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
   const [openDialog, setOpenDialog] = useState<any>({
@@ -64,14 +65,6 @@ export const SubscriptionModal = ({
   ] = useState<null | SubscriptionType>(
     activeSubscriptionType || SubscriptionTypes.pro
   )
-
-  useEffect(() => {
-    stripePlanList()
-  }, [])
-  const stripePlanList = async () => {
-    const plans: any = await getStripePlansList()
-    setPlanList(plans.data)
-  }
 
   const handleChoosePlan = (type: SubscriptionType, planId: string) => {
     if (subscription) {

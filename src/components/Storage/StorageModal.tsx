@@ -23,7 +23,12 @@ type Props = {
   subscription: any
   paymentMethods: Array<PaymentMethod>
   customerId: string
-  createAmountSubscription: (price: number, paymentMethodId: string) => void
+  userExtraStorage: number
+  createAmountSubscription: (
+    price: number,
+    paymentMethodId: string,
+    extraStorage: number
+  ) => void
 }
 
 export const StorageModal = ({
@@ -33,7 +38,8 @@ export const StorageModal = ({
   subscription,
   paymentMethods,
   customerId,
-  createAmountSubscription
+  createAmountSubscription,
+  userExtraStorage
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -42,7 +48,7 @@ export const StorageModal = ({
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
 
   const [extraStorage, setExtraStorage] = useState<number>(
-    account.subscription?.extraStorage || 0
+    userExtraStorage || 0
   )
 
   const getTotalStorage = (subscription: any) => {
@@ -60,12 +66,16 @@ export const StorageModal = ({
     const amount: any = Math.floor(extraStorage * 0.2).toFixed(2)
     const price = amount * 100
     setPaymentModal(!paymentModal)
-    createAmountSubscription(price, paymentMethod.id)
+    createAmountSubscription(price, paymentMethod.id, extraStorage)
   }
 
   const renderStorageTracker = () => {
-    const totalStorage = getTotalStorage(subscription[0])
-
+    const totalStorage: number = getTotalStorage(subscription)
+    const usedStoragePercent: any = (
+      (storageUsed / totalStorage) *
+      100
+    ).toFixed(2)
+    const availablePercentage: number | any = 100 - usedStoragePercent
     return (
       <div className={classes.storageTrackerContainer}>
         <Typography variant={'h5'}>Manage Storage</Typography>
@@ -85,11 +95,11 @@ export const StorageModal = ({
           <div className={classes.storagePieInner}>
             <div className={classes.storagePercentContainer}>
               <Typography variant='h3' style={{ marginRight: 4 }}>
-                90
+                {availablePercentage}
               </Typography>
               <Typography variant='h6'> %</Typography>
             </div>
-            <Typography variant='body1'>full</Typography>
+            <Typography variant='body1'>available</Typography>
           </div>
         </div>
 
