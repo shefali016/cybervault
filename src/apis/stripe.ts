@@ -5,11 +5,57 @@ import {
   StripeAccountLink,
   StripeCustomer,
   StripeLoginLink,
+  StripePlans,
   User
 } from '../utils/Interface'
 import { updateAccount } from './account'
+import { PaymentMethod } from '@stripe/stripe-js'
 
-const { server_url, domain, local_server_url } = require('../config.json')
+const { server_url, domain } = require('../config.json')
+
+export const detachPaymentMethod = async (paymentMethodId: string) => {
+  const res = await axios.post<PaymentMethod>(
+    `${server_url}/api/v1/stripe/detach_payment_method`,
+    { paymentMethodId }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Failed to detach payment method')
+  }
+}
+
+export const getPaymentMethods = async (
+  customerId: string
+): Promise<Array<PaymentMethod>> => {
+  const res = await axios.get<Array<PaymentMethod>>(
+    `${server_url}/api/v1/stripe/payment_methods`,
+    { params: { customerId } }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Failed to create stripe customer')
+  }
+}
+
+export const attachPaymentMethod = async (
+  paymentMethodId: string,
+  customerId: string
+) => {
+  const res = await axios.post<PaymentMethod>(
+    `${server_url}/api/v1/stripe/attach_payment_method`,
+    { customerId, paymentMethodId }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Failed to attach payment method')
+  }
+}
 
 export const verifyStripeAccount = async (
   account: Account
@@ -44,11 +90,29 @@ export const verifyStripeAccount = async (
   }
 }
 
-export const createStripeCustomer = async (user: User): Promise<StripeCustomer> => {
-  const {email, name} = user
+export const getStripeCustomer = async (
+  customerId: string
+): Promise<StripeCustomer> => {
+  const res = await axios.get<StripeCustomer>(
+    `${server_url}/api/v1/stripe/customer`,
+    { params: { customerId } }
+  )
+
+  if (res.status === 200) {
+    const stripeCustomer = res.data
+    return stripeCustomer
+  } else {
+    throw Error('Failed to get stripe customer')
+  }
+}
+
+export const createStripeCustomer = async (
+  user: User
+): Promise<StripeCustomer> => {
+  const { email, name } = user
 
   const res = await axios.post<StripeCustomer>(
-    `${local_server_url}/api/v1/stripe/create_customer`,
+    `${server_url}/api/v1/stripe/customer`,
     { email, name }
   )
 
@@ -125,5 +189,39 @@ export const createStripeLogin = async (stripeAccountId: string) => {
     return res.data
   } else {
     throw Error('Failed to create stripe account')
+  }
+}
+
+export const getStripePlansList = async () => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/get_plans_list`
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Plans Not Found')
+  }
+}
+
+export const createStripePlanSubcription = async (
+  customerId: string,
+  planId: string,
+  paymentMethodId: string
+) => {
+
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/plan_subscription`,
+    {
+      customerId,
+      planId,
+      paymentMethodId
+    }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Plans Not Found')
   }
 }

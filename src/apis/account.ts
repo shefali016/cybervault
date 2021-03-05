@@ -9,18 +9,22 @@ export const getAccount = async (id: string): Promise<Account> => {
     .doc(id)
     .get()
 
-    const account = accountSnapshot.data() as Account
+  const account = accountSnapshot.data() as Account
 
-    if (!!account) {
-      if(typeof account.stripe.accountId === "string" && !account.stripe.payoutsEnabled) {
-        const {account: updatedAccount} = await verifyStripeAccount(account)
-        return updatedAccount
-      }
-      return account
-    } else {
-      throw Error('Account not found')
+  if (!!account) {
+    if (
+      account.stripe &&
+      typeof account.stripe.accountId === 'string' &&
+      !account.stripe.payoutsEnabled
+    ) {
+      const { account: updatedAccount } = await verifyStripeAccount(account)
+      return updatedAccount
     }
 
+    return account
+  } else {
+    throw Error('Account not found')
+  }
 }
 
 export const updateAccount = (account: Account): Promise<Account> => {

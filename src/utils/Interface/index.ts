@@ -45,7 +45,7 @@ export type ButtonConfig = {
   icon?: any
 }
 
-export type Tab = { id: string; icon: any; text: string }
+export type Tab = { id: string; icon?: any; text: string }
 
 export type Asset = {
   id: string
@@ -68,30 +68,30 @@ export type StripeAccount = {
 
 export interface StripeCustomer {
   id: string
-  object: "customer"
-  address: string | null,
-  balance: number,
+  object: 'customer'
+  address: string | null
+  balance: number
   created: number
   currency: string
-  default_source: string | null,
-  delinquent: boolean,
+  default_source: string | null
+  delinquent: boolean
   description: string
-  discount: string | null,
-  email: string | null,
+  discount: string | null
+  email: string | null
   invoice_prefix: string
   invoice_settings: {
-    custom_fields: null,
-    default_payment_method: null,
+    custom_fields: null
+    default_payment_method: null
     footer: null
-  },
-  livemode: boolean,
-  metadata: {},
-  name: string | null,
-  next_invoice_sequence: number,
-  phone: string | null,
-  preferred_locales: [],
-  shipping: string |null,
-  tax_exempt?: "none"
+  }
+  livemode: boolean
+  metadata: {}
+  name: string | null
+  next_invoice_sequence: number
+  phone: string | null
+  preferred_locales: []
+  shipping: string | null
+  tax_exempt?: 'none'
 }
 
 export interface StripeLoginLink {
@@ -107,6 +107,27 @@ export type StripeAccountLink = {
   created: number
   expires_at: number
 }
+export interface StripePlans {
+  id: string
+  object: string
+  active: boolean
+  aggregate_usage: any | null
+  amount: number
+  amount_decimal: string
+  billing_scheme: string
+  created: number
+  currency: string
+  interval: string
+  interval_count: number
+  livemode: boolean
+  metadata: Object
+  nickname: any | null
+  product: string
+  tiers_mode: any | null
+  transform_usage: any | null
+  trial_period_days: any | null
+  usage_type: string
+}
 
 export type Account = {
   id: string
@@ -115,7 +136,6 @@ export type Account = {
   type: 'creator' | 'client'
   region?: Region
   name?: string
-  customerId?: string // Stripe customer ID
   security: {
     twoFactorEnabled: boolean
     textMessageVerification: boolean
@@ -166,7 +186,7 @@ export type User = {
   facebook?: string | undefined
   twitter?: string | undefined
   linkedIn?: string | undefined
-  customerId?: string
+  customerId: string
 }
 
 export type AuthUser = {
@@ -232,6 +252,21 @@ export type Project = {
   featuredImage?: string
 }
 
+export type InvoiceConversation={
+  name:string
+  sendersEmail:string
+  message:string
+  date:Date|string
+  id:string,
+  receiversEmail:string
+}
+
+export type InvoiceUserInfo={
+  name:string,
+  id:string,
+  email:string
+}
+
 export type Invoice = {
   id: String // Using generateId function
   dateCreated: Date | string
@@ -245,6 +280,8 @@ export type Invoice = {
   projectName: string
   campaignDeadLine: string
   featuredImage?: string
+  conversation?:Array<InvoiceConversation>
+  userDetails:InvoiceUserInfo
 }
 
 export type ProjectStatus =
@@ -300,4 +337,19 @@ export type Cell = {
   key: string
 }
 
-export type Row = Array<Cell>
+export type Mail={
+  to:string
+  data:Object
+  templateId:string,
+  type:string
+}
+
+export type MailTemplate={
+  id:string,
+  type:string
+}
+
+export type Row = {
+  key:string
+  row:Array<Cell>
+}

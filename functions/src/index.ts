@@ -3,22 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
 import axios from 'axios'
-// import firebase from 'firebase'
-// import 'firebase/storage'
-// import 'firebase/firestore'
-
-// const config = {
-//   apiKey: 'AIzaSyA0BdrojB50-mTWwLdK4udDSiZP8vpQHjw',
-//   authDomain: 'cybervault-8cfe9.firebaseapp.com',
-//   databaseURL: 'https://cybervault-8cfe9.firebaseio.com',
-//   projectId: 'cybervault-8cfe9',
-//   storageBucket: 'cybervault-8cfe9.appspot.com',
-//   messagingSenderId: '33561487991',
-//   appId: '1:33561487991:web:a2b2f3c7edd1f75cf5f472',
-//   measurementId: 'G-HL31DXGLWC'
-// }
-
-// firebase.initializeApp(config)
+const sgMail = require('@sendgrid/mail')
 
 // import firebaseAccountCredentials from "./cybervault-8cfe9-firebase-adminsdk-kpppk-d07b59a821.json";
 
@@ -40,18 +25,21 @@ export const corsHandler = cors({ origin: true })
 app.use(corsHandler)
 
 // Routes
-const stripeRoute = require('./routes/stripe')
+// const stripeRoute = require('./routes/stripe')
 const mediaConvert=require('./routes/mediaConvert')
-app.use('/api/v1/stripe', stripeRoute)
-app.use('/api/v1',mediaConvert)
+// app.use('/api/v1/stripe', stripeRoute)
+app.use('/api/v1/media',mediaConvert)
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: 'https://cybervault-8cfe9.firebaseio.com',
   storageBucket: 'cybervault-8cfe9.appspot.com'
 })
+const runtimeOpts = {
+  timeoutSeconds: 300
+}
 
-export const httpsRequests = functions.https.onRequest(app)
+export const httpsRequests = functions.runWith(runtimeOpts).https.onRequest(app)
 
 export const myFunction = functions.firestore
   .document(`AccountData/{accountId}/Invoices/{invoiceId}`)
@@ -96,7 +84,36 @@ export const myFunction = functions.firestore
     }
   })
 
-export const checkVideoSize = functions.firestore
+export const sendEmail = functions.firestore
+  .document(`Mails/{mailId}`)
+  .onWrite((change, context) => {
+    try {
+      let newData = change.after.data()
+      let oldData = change.before.data()
+      if (!oldData && newData?.to && newData?.templateId) {
+        const msg = {
+          to: newData.to,
+          from: functions.config().from_email.key,
+          templateId: newData.templateId,
+          dynamic_template_data: newData.data
+        }
+        sgMail.setApiKey(`${functions.config().sendgrid.key}`)
+        sgMail
+          .send(msg)
+          .then((res: any) => {
+            console.log('success')
+          })
+          .catch((error: any) => {
+            console.log(error, 'error Occurs')
+          })
+      }
+    } catch (error) {
+      console.log(error, 'error occurs')
+    }
+  })
+
+
+  export const uploadMedia = functions.firestore
   .document(`AccountData/{accId}/Assets/{assetId}`)
   .onWrite((change, context) => {
     try {
@@ -129,7 +146,7 @@ export const checkVideoSize = functions.firestore
                 Key: `${newData?.files[0].id}${newData?.fileName}`
               },
               (err: any) => {
-                console.log(err,"errorrrrrrrr")
+                console.log(err,"errorrrrrrrrfffffffffffffffffffff")
               }
             )
           })

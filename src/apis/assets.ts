@@ -2,9 +2,27 @@ import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
 import { Asset, Project, ProjectAsset } from '../utils/Interface'
-import { generateUid } from 'utils'
+import { generateUid } from 'utils';
+import axios from 'axios';
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
+
+
+const { server_url, domain } = require('../config.json')
+
+export const convertMedia = async (data: any) => {
+  const res = await axios.post<any>(
+    `${server_url}/api/v1/media/convert`,
+    { ...data }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Failed to convert')
+  }
+}
+
 
 export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)

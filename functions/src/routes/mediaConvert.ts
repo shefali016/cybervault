@@ -15,7 +15,9 @@ AWS.config.update({
   endpoint: 'https://wa11sy9gb.mediaconvert.us-east-2.amazonaws.com'
 })
 
-router.post('/mediaConvert', (req, res) => {
+// var s3 = new AWS.S3()
+
+router.post('/convert', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       const {
@@ -33,8 +35,8 @@ router.post('/mediaConvert', (req, res) => {
       //     email,
       //     name
       //   });
-
-      await resizeVideo(
+      // return await getMedia(assetId, fileName)
+      return await resizeVideo(
         resolution,
         ratio,
         format,
@@ -47,11 +49,42 @@ router.post('/mediaConvert', (req, res) => {
 
       //   return res.json(customer)
     } catch (error) {
-      //   console.log("create_customer", error)
-      //   return res.status(400).send(error)
+      console.log('create_customer', error)
+      return res.status(400).send(error)
     }
   })
 })
+
+// const getMedia = async (assetId: string, fileName: string) => {
+//   var params = {
+//     Bucket: 'cybervault-bucket',
+//     Key: `${assetId}${fileName}`
+//   }
+//   return await s3.getObject(params, (err: any, data: any) => {
+//     if (err) {
+//       console.log(err, err.stack,"yyyyyyyyyyyyyyyyyyy")
+//     }
+//     // an error occurred
+//     else {
+//       console.log(assetId,fileName,"rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+//       console.log(data.Metadata,"jjjjjjjjjjjjjjjjjjj")
+//       return data
+//     } // successful response
+//     /*
+//    data = {
+//     AcceptRanges: "bytes", 
+//     ContentLength: 3191, 
+//     ContentType: "image/jpeg", 
+//     ETag: "\"6805f2cfc46c0f04559748bb039d69ae\"", 
+//     LastModified: <Date Representation>, 
+//     Metadata: {
+//     }, 
+//     TagCount: 2, 
+//     VersionId: "null"
+//    }
+//    */
+//   })
+// }
 
 const resizeVideo = async (
   resolution: number,
@@ -60,8 +93,8 @@ const resizeVideo = async (
   container: string,
   assetId: string,
   fileName: string,
-  fileHeight: number,
-  fileWidth: number
+  fileWidth: number,
+  fileHeight: number
 ) => {
   console.log(
     resolution,
@@ -70,26 +103,28 @@ const resizeVideo = async (
     container,
     assetId,
     fileName,
-    fileHeight,
     fileWidth,
+    fileHeight,
     'vvvvvvvvvvvvvvvvvv'
   )
 
-//const originalRatio =  fileWidth/fileHeight      //1280 x 720 
+const originalRatio =  fileWidth/fileHeight      //1280 x 720
 const newRatio = ratio.w/ratio.h      // 0.5625
 
 // original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
-const newWidth=fileWidth>ratio.w?newRatio*fileHeight:ratio.w
-const newHeight=fileHeight>ratio.h?newRatio*fileWidth:ratio.h
+const cropWidth=originalRatio>newRatio?newRatio*fileHeight:ratio.w
+const cropHeight=originalRatio<newRatio?newRatio*fileWidth:ratio.h
 
 // //That gives us `width` and `height` for cropping params
 
-// // Now we have crop frame but we need to center it. 
-// // Since we are cropping width we will be centering with X. 
-const croppedWidth = fileWidth>ratio.w?fileWidth - newWidth:2 ;// This is amount of px being cut
-const croppedHeight=fileHeight>ratio.h?fileHeight-newHeight:2
-const X = fileWidth>ratio.w?croppedWidth / 2:0 ;// Even spacing on both sides of video
-const Y = fileHeight>ratio.h?croppedWidth / 2:0 ;
+// // Now we have crop frame but we need to center it.
+// // Since we are cropping width we will be centering with X.
+const croppedWidth = originalRatio>newRatio?Math.ceil((fileWidth - cropWidth)/2)*2:2 ;// This is amount of px being cut
+const croppedHeight=originalRatio<newRatio?Math.ceil((fileHeight - cropHeight)/2)*2:2
+const X = originalRatio>newRatio?croppedWidth / 2:0 ;// Even spacing on both sides of video
+const Y = originalRatio<newRatio?croppedWidth / 2:0 ;
+
+console.log(originalRatio,newRatio,croppedWidth,croppedHeight,X,Y,"hhhhhhhhhhhhhhhhh")
   try {
     console.log('resizessssssssssssssssssssssssssssssssssssssssss')
     var params = {
@@ -106,7 +141,7 @@ const Y = fileHeight>ratio.h?croppedWidth / 2:0 ;
             OutputGroupSettings: {
               Type: 'FILE_GROUP_SETTINGS',
               FileGroupSettings: {
-                Destination: 's3://cybervault-bucket/new-file'
+                Destination: 's3://cybervault-bucket/'
               }
             },
             Outputs: [
@@ -187,7 +222,7 @@ const Y = fileHeight>ratio.h?croppedWidth / 2:0 ;
             DenoiseFilter: 'DISABLED',
             TimecodeSource: 'EMBEDDED',
             FileInput:
-              's3://cybervault-bucket/8K ● Nature Videos high resolution.mp4'
+              `s3://cybervault-bucket/${fileName}`
           }
         ],
         TimecodeConfig: {

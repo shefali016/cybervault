@@ -11,6 +11,8 @@ import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
+import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
+import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -48,6 +50,7 @@ import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
+import { getCustomer } from 'actions/stripeActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -61,8 +64,11 @@ export const AccountTabIds = {
   profile: 'profile',
   manage: 'manage',
   branding: 'branding',
-  subscription: 'subscription',
-  storage: 'storage'
+  subscription: 'subscription'
+}
+
+export const ChildTabs = {
+  paymentMethods: 'paymentmethods'
 }
 
 export const SharedTabIds = {
@@ -79,10 +85,12 @@ type DispatchProps = {
   createNewProject: (project: Project) => void
   getUser: (id: string) => void
   getAccount: (id: string) => void
+  getCustomer: () => void
 }
 type StateProps = {
   userRestored: boolean
   accountRestored: boolean
+  customerRestored: boolean
   user: User
   account: Account
 }
@@ -93,8 +101,10 @@ const MainScreen = ({
   history,
   userRestored,
   accountRestored,
+  customerRestored,
   getUser,
   getAccount,
+  getCustomer,
   user,
   account
 }: Props) => {
@@ -122,7 +132,7 @@ const MainScreen = ({
     []
   )
 
-  const getTab = (id: string) => {
+  const getTab = (id: string): Tab => {
     switch (id) {
       // Dashboard tabs
       case DashboardTabIds.dashboard:
@@ -193,11 +203,17 @@ const MainScreen = ({
           text: 'Subscription',
           icon: <SubscriptionIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.storage:
+      // case AccountTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      // Child tabs
+      case ChildTabs.paymentMethods:
         return {
           id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
+          text: 'Payment Methods'
         }
 
       default:
@@ -282,6 +298,9 @@ const MainScreen = ({
     if (!accountRestored) {
       getAccount(account.id)
     }
+    if (!customerRestored) {
+      getCustomer()
+    }
   }, [])
 
   if (!(userRestored && accountRestored)) {
@@ -305,7 +324,12 @@ const MainScreen = ({
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
+          <Route
+            path='/clientInvoices/:accId/:id'
+            component={InvoicesClientScreen}
+          />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
+          <Route path='/paymentmethods' component={PaymentMethodsScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}
@@ -355,6 +379,7 @@ const useStyles = makeStyles((theme) => ({
 const mapStateToProps = (state: ReduxState): StateProps => ({
   accountRestored: state.auth.accountRestored,
   userRestored: state.auth.userRestored,
+  customerRestored: state.stripe.customerRestored,
   user: state.auth.user as User,
   account: state.auth.account as Account
 })
@@ -363,7 +388,8 @@ const mapDispatchToProps: DispatchProps = {
   createNewProject: (projectData: Project) =>
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
-  getAccount: (id: string) => getAccount(id)
+  getAccount: (id: string) => getAccount(id),
+  getCustomer: () => getCustomer()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

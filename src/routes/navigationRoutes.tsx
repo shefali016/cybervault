@@ -5,6 +5,7 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen'
 import SignUpScreen from '../screens/AuthScreens/SignUpScreen'
 import MainScreen from 'screens/MainScreen'
 import { useGlobalStyles } from '../utils/globalStyles'
+import InvoicesClientScreen from '../screens/SharedScreens/InvoicesClientScreen'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 
 type Props = { isLoggedIn?: boolean }
@@ -24,7 +25,8 @@ const MainRoutes = () => (
 const AuthRoutes = () => (
   <Switch>
     <Route path='/signup' component={SignUpScreen} />
-    <Route path='/' component={LoginScreen} />
+    <Route exact path='/' component={LoginScreen} />
+    <Route path='/clientInvoices/:accId/:id' component={InvoicesClientScreen} />
   </Switch>
 )
 

@@ -2,7 +2,6 @@ import { Typography } from '@material-ui/core'
 import Section from '../../components/Common/Section'
 import { ResponsiveRow } from '../../components/ResponsiveRow'
 import React from 'react'
-import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Account } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
@@ -41,7 +40,6 @@ const SecurityScreen = ({ account }: Props) => {
                   <Typography style={{ marginRight: 5 }}>
                     Change Password
                   </Typography>
-                  <RightArrow style={{ fontSize: 15 }} />
                 </div>
               </GradiantButton>
             ]}
@@ -74,7 +72,6 @@ const SecurityScreen = ({ account }: Props) => {
                     <Typography style={{ marginRight: 5 }}>
                       {!!security?.twoFactorEnabled ? 'Enabled' : 'Enable'}
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -104,7 +101,6 @@ const SecurityScreen = ({ account }: Props) => {
                         ? 'Enabled'
                         : 'Enable'}
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -130,7 +126,6 @@ const SecurityScreen = ({ account }: Props) => {
                         ? 'Enabled'
                         : 'Enable'}
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -156,7 +151,6 @@ const SecurityScreen = ({ account }: Props) => {
               <GradiantButton onClick={handleChangePassword}>
                 <div className={'row'}>
                   <Typography style={{ marginRight: 5 }}>Set Up</Typography>
-                  <RightArrow style={{ fontSize: 15 }} />
                 </div>
               </GradiantButton>
             ]}
