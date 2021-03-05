@@ -226,7 +226,7 @@ export const createStripePlanSubcription = async (
 }
 
 export const cancelStripePlanSubcription = async (subscriptionId: string) => {
-  const res = await axios.post<Array<StripePlans>>(
+  const res = await axios.post<StripePlans>(
     `${server_url}/api/v1/stripe/cancel_plan_subscription`,
     {
       subscriptionId
@@ -243,7 +243,7 @@ export const updateStripePlanSubcription = async (
   subscriptionId: string,
   planId: string
 ) => {
-  const res = await axios.post<Array<StripePlans>>(
+  const res = await axios.post<StripePlans>(
     `${server_url}/api/v1/stripe/update_subscription_plan`,
     {
       subscriptionId,

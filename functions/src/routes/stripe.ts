@@ -264,7 +264,7 @@ router.post('/update_subscription_plan', (req, res) => {
       const subscription = await stripe.subscriptions.retrieve(subscriptionId)
       stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: false,
-        proration_behavior: 'create_prorations',
+        proration_behavior: 'always_invoice',
         items: [
           {
             id: subscription.items.data[0].id,

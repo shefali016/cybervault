@@ -6,7 +6,10 @@ import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
 import { Account, User } from 'utils/Interface'
-import { getSubscriptionDetails } from 'utils/subscription'
+import {
+  getSubscriptionDetails,
+  getSubscriptionPlanType
+} from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
@@ -22,6 +25,7 @@ import {
 } from 'actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
+import { SubscriptionTypes } from 'utils/enums'
 
 type StateProps = {
   account: Account
@@ -82,7 +86,11 @@ const SubscriptionScreen = ({
       <SubscriptionModal
         open={subscriptionModalOpen}
         onRequestClose={closeSubscriptionModal}
-        activeSubscriptionType={account.subscription?.type}
+        activeSubscriptionType={
+          subscription
+            ? getSubscriptionPlanType(subscription.plan.id)
+            : SubscriptionTypes.creator
+        }
         customerId={customerId}
         paymentMethods={paymentMethods}
         planSubscription={planSubscription}
@@ -275,7 +283,7 @@ const mapState = (state: ReduxState): StateProps => ({
   user: state.auth.user as User,
   paymentMethods: state.stripe.paymentMethods,
   customerId: state.stripe.customer.id as string,
-  subscription: state.stripe.customer.subscriptions.data,
+  subscription: state.stripe.activeSubscription,
   subscriptionLoading: state.stripe.planSubscriptionLoading
 })
 
