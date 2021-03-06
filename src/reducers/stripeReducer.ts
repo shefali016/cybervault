@@ -105,7 +105,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: {},
+        activeSubscription: null,
         cancelSubscriptionLoading: false
       }
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE:
