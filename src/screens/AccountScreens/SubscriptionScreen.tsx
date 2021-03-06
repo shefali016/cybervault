@@ -6,10 +6,7 @@ import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
 import { Account, User } from 'utils/Interface'
-import {
-  getSubscriptionDetails,
-  getSubscriptionPlanType
-} from 'utils/subscription'
+import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
@@ -85,9 +82,7 @@ const SubscriptionScreen = ({
         open={subscriptionModalOpen}
         onRequestClose={closeSubscriptionModal}
         activeSubscriptionType={
-          subscription
-            ? getSubscriptionPlanType(subscription.plan.id)
-            : SubscriptionTypes.creator
+          subscription ? subscription.metadata.type : SubscriptionTypes.CREATOR
         }
         customerId={customerId}
         paymentMethods={paymentMethods}
@@ -101,6 +96,7 @@ const SubscriptionScreen = ({
         open={storageModalOpen}
         onRequestClose={closeStorageModal}
         account={account}
+        subscription={subscription}
       />
 
       <CardModal
@@ -116,9 +112,11 @@ const SubscriptionScreen = ({
               {[
                 <div style={{ flex: 1 }}>
                   <Typography variant='subtitle1'>
-                    {account.subscription
+                    {!!subscription
                       ? `${
-                          getSubscriptionDetails(account.subscription.type).name
+                          getSubscriptionDetails(
+                            getSubscriptionType(subscription)
+                          ).name
                         } Plan`
                       : 'Unsubscribed'}
                   </Typography>

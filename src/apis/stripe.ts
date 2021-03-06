@@ -192,15 +192,28 @@ export const createStripeLogin = async (stripeAccountId: string) => {
   }
 }
 
-export const getStripePlansList = async () => {
-  const res = await axios.post<Array<StripePlans>>(
-    `${server_url}/api/v1/stripe/get_plans_list`
+export const getProducts = async () => {
+  const res = await axios.get<{ data: Array<StripePlans> }>(
+    `${server_url}/api/v1/stripe/get_products`
   )
 
   if (res.status === 200) {
-    return res.data
+    return res.data.data
   } else {
-    throw Error('Stripe Plans Not Found')
+    throw Error('Stripe products not found')
+  }
+}
+
+export const getPlans = async (productId: string) => {
+  const res = await axios.get<{ data: Array<StripePlans> }>(
+    `${server_url}/api/v1/stripe/get_plans`,
+    { params: { productId } }
+  )
+
+  if (res.status === 200) {
+    return res.data.data
+  } else {
+    throw Error('Stripe plans not found')
   }
 }
 

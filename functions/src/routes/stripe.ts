@@ -198,10 +198,23 @@ router.post('/create_account_link', (req, res) => {
   })
 })
 
-router.post('/get_plans_list', (req, res) => {
+router.get('/get_products', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const plans = await stripe.plans.list({ limit: 2 })
+      const plans = await stripe.products.list()
+      return res.json(plans)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.get('/get_plans', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { productId } = req.query
+      const plans = await stripe.plans.list({ product: productId })
       return res.json(plans)
     } catch (error) {
       console.log(error)

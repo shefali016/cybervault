@@ -9,15 +9,21 @@ import Modal from 'components/Common/Modal'
 import React, { useState } from 'react'
 import { SubscriptionTypes } from 'utils/enums'
 import { getSubscriptionDetails } from 'utils/subscription'
-import { Account } from '../../utils/Interface'
+import { Account, Subscription } from '../../utils/Interface'
 
 type Props = {
   open: boolean
   onRequestClose: () => void
   account: Account
+  subscription: Subscription
 }
 
-export const StorageModal = ({ open, onRequestClose, account }: Props) => {
+export const StorageModal = ({
+  open,
+  onRequestClose,
+  account,
+  subscription
+}: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -27,9 +33,7 @@ export const StorageModal = ({ open, onRequestClose, account }: Props) => {
   )
 
   const getTotalStorage = (account: Account) => {
-    const { storage } = getSubscriptionDetails(
-      account.subscription?.type || SubscriptionTypes.creator
-    )
+    const { storage } = getSubscriptionDetails(subscription?.metadata?.type)
     return storage + extraStorage
   }
 

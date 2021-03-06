@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles, Typography } from '@material-ui/core'
 import { BOLD } from '../../utils/constants/stringConstants'
-import { useTabletLayout } from '../../utils/hooks'
 
 type Props = {
   title: string
@@ -15,7 +14,7 @@ const NewProjectTitle = ({ title, subtitle }: Props) => {
       <Typography variant={'h5'} className={classes.headerTitle}>
         {title}
       </Typography>
-      <Typography variant={'body2'}>{subtitle}</Typography>
+      {!!subtitle && <Typography variant={'body2'}>{subtitle}</Typography>}
     </div>
   )
 }

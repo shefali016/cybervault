@@ -4,11 +4,9 @@ import clsx from 'clsx'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
+import { getSubscriptionDetails, findProductWithType } from 'utils/subscription'
 import {
-  getSubscriptionDetails,
-  getSubscriptionPlanType
-} from 'utils/subscription'
-import {
+  Product,
   StripePlans,
   SubscriptionDuration,
   SubscriptionType
@@ -19,10 +17,11 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import businessSubBg from '../../assets/business-sub-bg.png'
-import { getStripePlansList } from '../../apis/stripe'
+import { getProducts, getPlans } from '../../apis/stripe'
 import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import { AppLoader } from 'components/Common/Core/AppLoader'
 
 type Props = {
   open: boolean
@@ -49,8 +48,11 @@ export const SubscriptionModal = ({
   const classes = useStyles()
   const theme = useTheme()
 
-  const [duration, setDuration] = useState(SubscriptionDurations.monthly)
-  const [planList, setPlanList] = useState<Array<StripePlans> | any>({})
+  const [duration, setDuration] = useState(SubscriptionDurations.MONTHLY)
+  const [products, setProducts] = useState<Array<Product>>([])
+  const [productPlans, setProductPlans] = useState<{
+    [productId: string]: Array<StripePlans>
+  }>({})
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
   const [openDialog, setOpenDialog] = useState<any>({
@@ -62,18 +64,46 @@ export const SubscriptionModal = ({
     selectedSubscription,
     setSelectedSubscription
   ] = useState<null | SubscriptionType>(
-    activeSubscriptionType || SubscriptionTypes.pro
+    activeSubscriptionType || SubscriptionTypes.PRO
   )
 
   useEffect(() => {
     stripePlanList()
   }, [])
   const stripePlanList = async () => {
-    const plans: any = await getStripePlansList()
-    setPlanList(plans.data)
+    try {
+      const products: any = await getProducts()
+      setProducts(products)
+
+      const planRequests: Array<
+        Promise<{
+          productId: string
+          plans: Array<StripePlans>
+        }>
+      > = products.map((product: Product) =>
+        getPlans(product.id).then((plans: Array<StripePlans>) => ({
+          productId: product.id,
+          plans
+        }))
+      )
+
+      const plans = await Promise.all(planRequests)
+      const productPlans: {
+        [productId: string]: Array<StripePlans>
+      } = plans.reduce(
+        (acc: {}, res: { productId: string; plans: Array<StripePlans> }) => {
+          return { ...acc, [res.productId]: res.plans }
+        },
+        {}
+      )
+
+      setProductPlans(productPlans)
+    } catch (error) {
+      console.log(error.message)
+    }
   }
 
-  const handleChoosePlan = (type: SubscriptionType, planId: string) => {
+  const handleChoosePlan = (planId: string) => {
     if (subscription) {
       setOpenDialog({ value: true, for: 'Update' })
       setSelectedPlan(planId)
@@ -92,57 +122,39 @@ export const SubscriptionModal = ({
   }
   const handleChatWithSales = () => {}
 
-  const renderCreatorSubscription = () => {
+  const renderSubscriptionPlan = (type: SubscriptionType) => {
     const {
       name,
       description,
       features,
-      extraFeatures,
-      prices
-    } = getSubscriptionDetails(SubscriptionTypes.creator)
-    const price = prices[duration]
-    return (
-      <SubscriptionItem
-        onClick={() => setSelectedSubscription(SubscriptionTypes.creator)}
-        name={name}
-        description={description}
-        price={price}
-        features={features}
-        extraFeatures={extraFeatures}
-        isSelected={!subscription}
-        duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator, '')}
-        onCancelSubscription={() => handleCancelSubscription()}
-      />
-    )
-  }
+      extraFeatures
+    } = getSubscriptionDetails(type)
 
-  const renderSubscriptionPlans = (
-    planId: string,
-    isSubscribedPlan: boolean
-  ) => {
-    const plan: SubscriptionType = getSubscriptionPlanType(planId)
-    const {
-      name,
-      description,
-      features,
-      extraFeatures,
-      prices
-    } = getSubscriptionDetails(plan)
-    const price = prices[duration]
+    const product: Product | undefined = findProductWithType(products, type)
+
+    const plans =
+      product && productPlans[product.id] ? productPlans[product.id] : []
+    const plan = plans.find((plan) => plan.interval === duration)
+
+    const isSubscribed =
+      subscription && product && subscription.plan.id === product.id
+
     return (
       <SubscriptionItem
-        onClick={() => setSelectedSubscription(plan)}
+        onClick={() => setSelectedSubscription(type)}
         name={name}
         description={description}
-        price={price}
         features={features}
+        plan={plan}
         extraFeatures={extraFeatures}
-        isSelected={isSubscribedPlan}
+        isSelected={selectedSubscription === type}
+        isSubscribed={isSubscribed}
         duration={duration}
-        onChoosePlan={() => handleChoosePlan(plan, planId)}
-        onCancelSubscription={(open: boolean) =>
-          setOpenDialog({ value: open, for: 'Cancel' })
+        onChoosePlan={(plan: StripePlans) => {
+          handleChoosePlan(plan.id)
+        }}
+        onCancelSubscription={() =>
+          setOpenDialog({ value: true, for: 'Cancel' })
         }
       />
     )
@@ -192,10 +204,10 @@ export const SubscriptionModal = ({
           }
         }}
         style={{ marginBottom: theme.spacing(3) }}>
-        <ToggleButton value={SubscriptionDurations.monthly}>
+        <ToggleButton value={SubscriptionDurations.MONTHLY}>
           <Typography variant='inherit'>Monthly</Typography>
         </ToggleButton>
-        <ToggleButton value={SubscriptionDurations.yearly}>
+        <ToggleButton value={SubscriptionDurations.YEARLY}>
           <Typography variant='inherit'>Annualy</Typography>
         </ToggleButton>
       </ToggleButtonGroup>
@@ -226,25 +238,13 @@ export const SubscriptionModal = ({
           </div>
 
           <div style={{ display: 'flex' }}>
-            {renderCreatorSubscription()}
-            {planList && planList.length
-              ? planList
-                  .slice(0)
-                  .reverse()
-                  .map((planData: StripePlans, index: number) => {
-                    let planId: string = planData.id,
-                      isSubscribedPlan: boolean = false
-
-                    if (subscription && subscription.plan.id === planId) {
-                      isSubscribedPlan = true
-                    }
-                    return (
-                      <Fragment key={index}>
-                        {renderSubscriptionPlans(planId, isSubscribedPlan)}
-                      </Fragment>
-                    )
-                  })
-              : null}
+            {[
+              SubscriptionTypes.CREATOR,
+              SubscriptionTypes.PRO,
+              SubscriptionTypes.TEAM
+            ].map((type: SubscriptionType) => (
+              <Fragment key={type}>{renderSubscriptionPlan(type)}</Fragment>
+            ))}
           </div>
 
           <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
@@ -275,60 +275,63 @@ export const SubscriptionModal = ({
 type SubscriptionItemProps = {
   name: string
   description: string
-  price: string
   duration: SubscriptionDuration
   features?: Array<string>
   extraFeatures?: Array<string>
   isSelected: boolean
+  isSubscribed: boolean
   onClick: () => void
-  onChoosePlan: () => void
-  onCancelSubscription: (open: boolean) => void
+  onChoosePlan: (plan: StripePlans) => void
+  onCancelSubscription: () => void
+  plan: StripePlans | undefined
 }
 
 const SubscriptionItem = ({
   name,
   description,
-  price,
   duration,
   features,
   extraFeatures,
   isSelected,
   onClick,
   onChoosePlan,
-  onCancelSubscription
+  onCancelSubscription,
+  isSubscribed,
+  plan
 }: SubscriptionItemProps) => {
   const classes = useStyles()
+  const theme = useTheme()
   return (
     <Fragment>
       <div
         className={clsx(
           classes.subscriptionItemContainer,
-          isSelected
-            ? name === 'Creator'
-              ? classes.creatorSelected
-              : classes.selected
-            : ''
+          isSelected ? classes.selected : ''
         )}
         onClick={onClick}>
         <Typography variant={'h4'}>{name}</Typography>
-        {isSelected ? (
+        {!!isSubscribed && (
           <div className={classes.ribbon}>
             <span className={classes.span}>Active</span>
           </div>
-        ) : null}
+        )}
         <Typography variant={'caption'} className={classes.descriptionText}>
           {description}
         </Typography>
-        <div className={classes.priceContainer}>
-          <Typography variant={'h5'} className={classes.priceText}>
-            ${price}
-          </Typography>
-          <Typography variant={'h6'} className={classes.durationText}>
-            /{duration === SubscriptionDurations.monthly ? 'month' : 'year'}
-          </Typography>
-        </div>
+        {!!plan ? (
+          <div className={classes.priceContainer}>
+            <Typography variant={'h5'} className={classes.priceText}>
+              ${(plan.amount / 100).toFixed(2)}
+            </Typography>
+            <Typography variant={'h6'} className={classes.durationText}>
+              /{duration === SubscriptionDurations.MONTHLY ? 'month' : 'year'}
+            </Typography>
+          </div>
+        ) : (
+          <AppLoader color={theme.palette.primary.main} />
+        )}
 
-        {features ? (
+        {!!features && (
           <div>
             <AppDivider className={classes.divider} />
             <Typography className={classes.featureTitle}>Features</Typography>
@@ -340,8 +343,8 @@ const SubscriptionItem = ({
               ))}
             </ul>
           </div>
-        ) : null}
-        {extraFeatures ? (
+        )}
+        {!!extraFeatures && (
           <div>
             <AppDivider className={classes.divider} />
             <Typography className={classes.featureTitle}>and...</Typography>
@@ -353,23 +356,23 @@ const SubscriptionItem = ({
               ))}
             </ul>
           </div>
-        ) : null}
+        )}
         <div className={classes.choosePlanContainer}>
-          {name !== 'Creator' ? (
-            isSelected ? (
-              <Button
-                onClick={() => onCancelSubscription(true)}
-                className={classes.cancelBtn}>
-                Cancel Subscription
-              </Button>
-            ) : (
-              <GradiantButton onClick={onChoosePlan}>
-                <Typography>
-                  {isSelected ? 'Cancel Subscription' : 'Choose Plan'}
-                </Typography>
-              </GradiantButton>
-            )
-          ) : null}
+          {isSubscribed ? (
+            <Button
+              onClick={onCancelSubscription}
+              className={classes.cancelBtn}>
+              Cancel Subscription
+            </Button>
+          ) : (
+            <GradiantButton
+              onClick={() => {
+                !!plan && onChoosePlan(plan)
+              }}
+              disabled={!plan}>
+              <Typography>Choose Plan</Typography>
+            </GradiantButton>
+          )}
         </div>
       </div>
     </Fragment>
