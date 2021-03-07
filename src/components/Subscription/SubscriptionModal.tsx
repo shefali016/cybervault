@@ -108,7 +108,7 @@ export const SubscriptionModal = ({
       setOpenDialog({ value: true, for: 'Update' })
       setSelectedPlan(planId)
     } else {
-      setPaymentModal(!paymentModal)
+      setPaymentModal(true)
       setSelectedPlan(planId)
     }
   }
@@ -137,7 +137,7 @@ export const SubscriptionModal = ({
     const plan = plans.find((plan) => plan.interval === duration)
 
     const isSubscribed =
-      subscription && product && subscription.plan.id === product.id
+      subscription && plan && subscription.plan.id === plan.id
 
     return (
       <SubscriptionItem
@@ -309,70 +309,72 @@ const SubscriptionItem = ({
           isSelected ? classes.selected : ''
         )}
         onClick={onClick}>
-        <Typography variant={'h4'}>{name}</Typography>
-        {!!isSubscribed && (
-          <div className={classes.ribbon}>
-            <span className={classes.span}>Active</span>
-          </div>
-        )}
-        <Typography variant={'caption'} className={classes.descriptionText}>
-          {description}
-        </Typography>
-        {!!plan ? (
-          <div className={classes.priceContainer}>
-            <Typography variant={'h5'} className={classes.priceText}>
-              ${(plan.amount / 100).toFixed(2)}
-            </Typography>
-            <Typography variant={'h6'} className={classes.durationText}>
-              /{duration === SubscriptionDurations.MONTHLY ? 'month' : 'year'}
-            </Typography>
-          </div>
-        ) : (
-          <AppLoader color={theme.palette.primary.main} />
-        )}
-
-        {!!features && (
-          <div>
-            <AppDivider className={classes.divider} />
-            <Typography className={classes.featureTitle}>Features</Typography>
-            <ul>
-              {features.map((feature: string) => (
-                <li>
-                  <Typography>{feature}</Typography>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {!!extraFeatures && (
-          <div>
-            <AppDivider className={classes.divider} />
-            <Typography className={classes.featureTitle}>and...</Typography>
-            <ul>
-              {extraFeatures.map((feature: string, index: number) => (
-                <li key={index}>
-                  <Typography>{feature}</Typography>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div className={classes.choosePlanContainer}>
-          {isSubscribed ? (
-            <Button
-              onClick={onCancelSubscription}
-              className={classes.cancelBtn}>
-              Cancel Subscription
-            </Button>
-          ) : (
-            <GradiantButton
-              onClick={() => {
-                !!plan && onChoosePlan(plan)
-              }}
-              disabled={!plan}>
-              <Typography>Choose Plan</Typography>
-            </GradiantButton>
+        <div className={classes.subscriptionItemInner}>
+          <Typography variant={'h4'}>{name}</Typography>
+          {!!isSubscribed && (
+            <div className={classes.ribbon}>
+              <span className={classes.span}>Active</span>
+            </div>
           )}
+          <Typography variant={'caption'} className={classes.descriptionText}>
+            {description}
+          </Typography>
+          {!!plan ? (
+            <div className={classes.priceContainer}>
+              <Typography variant={'h5'} className={classes.priceText}>
+                ${(plan.amount / 100).toFixed(2)}
+              </Typography>
+              <Typography variant={'h6'} className={classes.durationText}>
+                /{duration === SubscriptionDurations.MONTHLY ? 'month' : 'year'}
+              </Typography>
+            </div>
+          ) : (
+            <AppLoader color={theme.palette.primary.main} />
+          )}
+
+          {!!features && (
+            <div>
+              <AppDivider className={classes.divider} />
+              <Typography className={classes.featureTitle}>Features</Typography>
+              <ul>
+                {features.map((feature: string) => (
+                  <li key={feature}>
+                    <Typography>{feature}</Typography>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {!!extraFeatures && (
+            <div>
+              <AppDivider className={classes.divider} />
+              <Typography className={classes.featureTitle}>and...</Typography>
+              <ul>
+                {extraFeatures.map((feature: string, index: number) => (
+                  <li key={index}>
+                    <Typography>{feature}</Typography>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className={classes.choosePlanContainer}>
+            {isSubscribed ? (
+              <Button
+                onClick={onCancelSubscription}
+                className={classes.cancelBtn}>
+                Cancel Subscription
+              </Button>
+            ) : (
+              <GradiantButton
+                onClick={() => {
+                  !!plan && onChoosePlan(plan)
+                }}
+                disabled={!plan}>
+                <Typography>Choose Plan</Typography>
+              </GradiantButton>
+            )}
+          </div>
         </div>
       </div>
     </Fragment>
@@ -394,14 +396,22 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     paddingBottom: theme.spacing(3)
   },
+  subscriptionItemInner: {
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    position: 'relative',
+    padding: theme.spacing(3),
+    minWidth: 250,
+    maxWidth: 250
+  },
   subscriptionItemContainer: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     borderRadius: theme.shape.borderRadius,
     boxShadow: '0 5px 10px #999999',
-    padding: theme.spacing(3),
-    minWidth: 250,
-    maxWidth: 250,
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
     borderWidth: 1,
@@ -486,22 +496,18 @@ const useStyles = makeStyles((theme) => ({
   durationText: { color: theme.palette.grey[600], fontSize: 12, marginTop: 8 },
   cancelBtn: {
     minWidth: 200,
-    background: '#fff',
-    paddingTop: 12,
-    paddingBottom: 12,
-    color: 'red',
-    border: 'solid 0.5px #000',
-    boxShadow: ' 1px 1px 5px 1px #00000063'
+    paddingTop: 13,
+    paddingBottom: 13,
+    color: 'red'
   },
   ribbon: {
-    backgroundColor: 'skyblue',
+    backgroundColor: theme.palette.primary.main,
     position: 'absolute',
     color: 'white',
-    width: 67,
-    zIndex: 3,
+    width: 200,
     textAlign: 'center',
     textTransform: 'capitalize',
-    padding: 2,
+    padding: 7,
     font: 'Lato',
     '&::before': {
       position: 'absolute',
@@ -517,10 +523,10 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
       border: '5px solid #2980b9'
     },
-    transform: 'rotate(35deg)',
-    top: 19,
+    transform: 'rotate(40deg)',
+    top: 10,
     marginRight: -37,
-    right: 37
+    right: -38
   },
   span: {}
 }))

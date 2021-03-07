@@ -41,6 +41,19 @@ export const useGlobalStyles = makeStyles((theme) => ({
       overflowY: 'scroll',
       position: 'relative'
     },
+    '.scrollY': { overflowY: 'scroll' },
+    '.modalContentNoScroll': {
+      color: theme.palette.text.paper,
+      backgroundColor: theme.palette.background.paper,
+      padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
+      maxHeight: '80vh',
+      minWidth: 400,
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative'
+    },
     '.modalCloseButton': { position: 'absolute', top: 10, right: 10 },
     '.horizontalGradient': {
       background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`

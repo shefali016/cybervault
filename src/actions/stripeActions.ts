@@ -1,5 +1,6 @@
 import * as ActionTypes from './actionTypes'
 import { PaymentMethod } from '@stripe/stripe-js'
+import { Subscription } from 'utils/Interface'
 
 export const requestPaymentMethods = (customerId: string) => ({
   type: ActionTypes.GET_PAYMENT_METHODS,
@@ -85,9 +86,9 @@ export const updatePlanSubscription = (
   subscriptionId,
   planId
 })
-export const updatePlanSubscriptionSuccess = (planId: string) => ({
+export const updatePlanSubscriptionSuccess = (subscription: Subscription) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS,
-  planId
+  subscription
 })
 export const updatePlanSubscriptionFailure = (error: any) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE,

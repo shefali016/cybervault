@@ -1,13 +1,13 @@
 import React from 'react'
 import { makeStyles, Typography } from '@material-ui/core'
-import { BOLD } from '../../utils/constants/stringConstants'
+import { BOLD } from '../../../utils/constants/stringConstants'
 
 type Props = {
   title: string
-  subtitle: string
+  subtitle?: string
 }
 
-const NewProjectTitle = ({ title, subtitle }: Props) => {
+const ModalTitle = ({ title, subtitle }: Props) => {
   const classes = useStyles()
   return (
     <div className={classes.container}>
@@ -26,4 +26,4 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default NewProjectTitle
+export default ModalTitle

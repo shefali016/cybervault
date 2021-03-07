@@ -11,7 +11,7 @@ import {
 import AppTextField from '../Common/Core/AppTextField'
 import { useTabletLayout } from '../../utils/hooks'
 import { Client, Account } from '../../utils/Interface'
-import NewProjectTitle from '../Projects/NewProjectTitle'
+import NewProjectTitle from '../Common/Modal/ModalTitle'
 import NewProjectFooter from '../Projects/NewProjectFooter'
 import { generateUid, getClientData } from '../../utils'
 import { addClientRequest } from '../../actions/clientActions'

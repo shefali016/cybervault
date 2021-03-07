@@ -83,7 +83,8 @@ router.post('/customer', (req, res) => {
 
       const customer = await stripe.customers.create({
         email,
-        name
+        name,
+        currency: "usd"
       })
 
       return res.json(customer)
@@ -275,17 +276,20 @@ router.post('/update_subscription_plan', (req, res) => {
     try {
       const { subscriptionId, planId } = req.body
       const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-      stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: false,
-        proration_behavior: 'always_invoice',
-        items: [
-          {
-            id: subscription.items.data[0].id,
-            price: planId
-          }
-        ]
-      })
-      return res.json(subscription)
+      const updatedSubscription = await stripe.subscriptions.update(
+        subscriptionId,
+        {
+          cancel_at_period_end: false,
+          proration_behavior: 'always_invoice',
+          items: [
+            {
+              id: subscription.items.data[0].id,
+              price: planId
+            }
+          ]
+        }
+      )
+      return res.json(updatedSubscription)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)

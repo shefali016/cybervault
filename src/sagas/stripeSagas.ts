@@ -100,8 +100,12 @@ function* cancelPlanSubscription({ subscriptionId }: Params) {
 
 function* updatePlanSubscription({ subscriptionId, planId }: Params) {
   try {
-    yield call(StripeApis.updateStripePlanSubcription, subscriptionId, planId)
-    yield put(StripeActions.updatePlanSubscriptionSuccess(planId))
+    const updatedSubscription = yield call(
+      StripeApis.updateStripePlanSubcription,
+      subscriptionId,
+      planId
+    )
+    yield put(StripeActions.updatePlanSubscriptionSuccess(updatedSubscription))
   } catch (error: any) {
     yield put(
       StripeActions.updatePlanSubscriptionFailure(error?.message || 'default')

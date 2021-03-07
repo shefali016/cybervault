@@ -276,7 +276,7 @@ const mapState = (state: ReduxState): StateProps => ({
   paymentMethods: state.stripe.paymentMethods,
   customerId: state.stripe.customer.id as string,
   subscription: state.stripe.activeSubscription,
-  subscriptionLoading: state.stripe.planSubscriptionLoading
+  subscriptionLoading: state.stripe.subscriptionLoading
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({

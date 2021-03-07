@@ -11,7 +11,9 @@ type Props = {
 export const PaymentMethodInline = ({ paymentMethod }: Props) => {
   const classes = useStyles()
 
-  const CardIcon = useMemo(() => getCardIcon(paymentMethod.card?.brand), [])
+  const CardIcon = useMemo(() => getCardIcon(paymentMethod.card?.brand), [
+    paymentMethod.card?.brand
+  ])
 
   if (!paymentMethod.card) {
     return null
