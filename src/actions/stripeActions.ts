@@ -1,6 +1,6 @@
 import * as ActionTypes from './actionTypes'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { Subscription } from 'utils/Interface'
+import { Subscription, SubscriptionType } from 'utils/Interface'
 
 export const requestPaymentMethods = (customerId: string) => ({
   type: ActionTypes.GET_PAYMENT_METHODS,
@@ -51,10 +51,15 @@ export const getCustomerFailure = (error: any) => ({
   type: ActionTypes.GET_CUSTOMER_FAILURE,
   error
 })
-export const planSubscription = (planId: string, paymentMethodId: string) => ({
+export const planSubscription = (
+  planId: string,
+  paymentMethodId: string,
+  subscriptionType: SubscriptionType
+) => ({
   type: ActionTypes.PLAN_SUBSCRIPTION,
   planId,
-  paymentMethodId
+  paymentMethodId,
+  subscriptionType
 })
 export const planSubscriptionSuccess = (subscription: any) => ({
   type: ActionTypes.PLAN_SUBSCRIPTION_SUCCESS,
@@ -80,11 +85,13 @@ export const cancelPlanSubscriptionFailure = (error: any) => ({
 
 export const updatePlanSubscription = (
   subscriptionId: string,
-  planId: string
+  planId: string,
+  subscriptionType: SubscriptionType
 ) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION,
   subscriptionId,
-  planId
+  planId,
+  subscriptionType
 })
 export const updatePlanSubscriptionSuccess = (subscription: Subscription) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS,

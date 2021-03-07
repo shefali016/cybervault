@@ -23,16 +23,26 @@ import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 
+type SubscriptionParams = { planId: string; type: SubscriptionType }
+
 type Props = {
   open: boolean
   onRequestClose: () => void
   activeSubscriptionType: SubscriptionType | undefined
   customerId: string
   paymentMethods: Array<PaymentMethod>
-  planSubscription: (planId: string, paymentMethodId: string) => void
+  planSubscription: (
+    planId: string,
+    paymentMethodId: string,
+    type: SubscriptionType
+  ) => void
   subscription: any
   cancelSubscription: (subscriptionId: string) => void
-  updateSubscription: (subscriptionId: string, planId: string) => void
+  updateSubscription: (
+    subscriptionId: string,
+    planId: string,
+    type: SubscriptionType
+  ) => void
 }
 
 export const SubscriptionModal = ({
@@ -54,7 +64,10 @@ export const SubscriptionModal = ({
     [productId: string]: Array<StripePlans>
   }>({})
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
-  const [selectedPlan, setSelectedPlan] = useState<string>('')
+  const [
+    subscriptionParams,
+    setSubscriptionParams
+  ] = useState<SubscriptionParams | null>(null)
   const [openDialog, setOpenDialog] = useState<any>({
     value: false,
     for: ''
@@ -103,13 +116,13 @@ export const SubscriptionModal = ({
     }
   }
 
-  const handleChoosePlan = (planId: string) => {
+  const handleChoosePlan = (planId: string, type: SubscriptionType) => {
     if (subscription) {
       setOpenDialog({ value: true, for: 'Update' })
-      setSelectedPlan(planId)
+      setSubscriptionParams({ planId, type })
     } else {
       setPaymentModal(true)
-      setSelectedPlan(planId)
+      setSubscriptionParams({ planId, type })
     }
   }
   const handleCancelSubscription = () => {
@@ -118,8 +131,20 @@ export const SubscriptionModal = ({
   }
   const handelUpdateSubscription = () => {
     setOpenDialog({ value: false, for: '' })
-    updateSubscription(subscription.id, selectedPlan)
+    if (subscriptionParams) {
+      const { planId, type } = subscriptionParams
+      updateSubscription(subscription.id, planId, type)
+    }
   }
+
+  const handleSubscription = async (paymentMethod: PaymentMethod) => {
+    if (subscriptionParams) {
+      const { planId, type } = subscriptionParams
+      planSubscription(planId, paymentMethod.id, type)
+    }
+    setPaymentModal(false)
+  }
+
   const handleChatWithSales = () => {}
 
   const renderSubscriptionPlan = (type: SubscriptionType) => {
@@ -151,7 +176,7 @@ export const SubscriptionModal = ({
         isSubscribed={isSubscribed}
         duration={duration}
         onChoosePlan={(plan: StripePlans) => {
-          handleChoosePlan(plan.id)
+          handleChoosePlan(plan.id, type)
         }}
         onCancelSubscription={() =>
           setOpenDialog({ value: true, for: 'Cancel' })
@@ -189,10 +214,6 @@ export const SubscriptionModal = ({
     setDuration(duration)
   }
 
-  const handleSubscription = async (paymentMethod: PaymentMethod) => {
-    planSubscription(selectedPlan, paymentMethod.id)
-    setPaymentModal(!paymentModal)
-  }
   const renderDurationSwitch = () => {
     return (
       <ToggleButtonGroup

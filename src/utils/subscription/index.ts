@@ -49,7 +49,7 @@ export const getSubscriptionDetails = (
         name: 'Team',
         description: 'For media empires seeking endless capabilities.',
         features: [
-          '1 project per month',
+          '100 project per month',
           'Secure invoicing transactions',
           'Content theft protection',
           '7% security transaction fee',

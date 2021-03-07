@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Account, User } from 'utils/Interface'
+import { Account, User, SubscriptionType } from 'utils/Interface'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
@@ -33,9 +33,17 @@ type StateProps = {
 }
 type DispatchProps = {
   getPaymentMethods: (customerId: string) => void
-  planSubscription: (planId: string, paymentMethodId: string) => void
+  planSubscription: (
+    planId: string,
+    paymentMethodId: string,
+    type: SubscriptionType
+  ) => void
   cancelSubscription: (subscriptionId: string) => void
-  updateSubscription: (subscriptionId: string, planId: string) => void
+  updateSubscription: (
+    subscriptionId: string,
+    planId: string,
+    type: SubscriptionType
+  ) => void
 }
 type ReduxProps = StateProps & DispatchProps
 type Props = { history: any }
@@ -282,12 +290,18 @@ const mapState = (state: ReduxState): StateProps => ({
 const mapDispatch = (dispatch: any): DispatchProps => ({
   getPaymentMethods: (customerId: string) =>
     dispatch(requestPaymentMethods(customerId)),
-  planSubscription: (planId: string, paymentMethodId: string) =>
-    dispatch(planSubscription(planId, paymentMethodId)),
+  planSubscription: (
+    planId: string,
+    paymentMethodId: string,
+    type: SubscriptionType
+  ) => dispatch(planSubscription(planId, paymentMethodId, type)),
   cancelSubscription: (subscriptionId: string) =>
     dispatch(cancelPlanSubscription(subscriptionId)),
-  updateSubscription: (subscriptionId: string, planId: string) =>
-    dispatch(updatePlanSubscription(subscriptionId, planId))
+  updateSubscription: (
+    subscriptionId: string,
+    planId: string,
+    type: SubscriptionType
+  ) => dispatch(updatePlanSubscription(subscriptionId, planId, type))
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

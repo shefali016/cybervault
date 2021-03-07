@@ -6,6 +6,7 @@ import {
   StripeCustomer,
   StripeLoginLink,
   StripePlans,
+  SubscriptionType,
   User
 } from '../utils/Interface'
 import { updateAccount } from './account'
@@ -220,14 +221,16 @@ export const getPlans = async (productId: string) => {
 export const createStripePlanSubcription = async (
   customerId: string,
   planId: string,
-  paymentMethodId: string
+  paymentMethodId: string,
+  type: SubscriptionType
 ) => {
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/plan_subscription`,
     {
       customerId,
       planId,
-      paymentMethodId
+      paymentMethodId,
+      type
     }
   )
 
@@ -254,13 +257,15 @@ export const cancelStripePlanSubcription = async (subscriptionId: string) => {
 
 export const updateStripePlanSubcription = async (
   subscriptionId: string,
-  planId: string
+  planId: string,
+  type: SubscriptionType
 ) => {
   const res = await axios.post<StripePlans>(
     `${server_url}/api/v1/stripe/update_subscription_plan`,
     {
       subscriptionId,
-      planId
+      planId,
+      type
     }
   )
 

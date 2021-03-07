@@ -84,7 +84,7 @@ router.post('/customer', (req, res) => {
       const customer = await stripe.customers.create({
         email,
         name,
-        currency: "usd"
+        currency: 'usd'
       })
 
       return res.json(customer)
@@ -241,11 +241,12 @@ router.post('/retrive_subscription', (req, res) => {
 router.post('/plan_subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { customerId, planId, paymentMethodId } = req.body
+      const { customerId, planId, paymentMethodId, type } = req.body
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
         default_payment_method: paymentMethodId,
-        items: [{ price: planId }]
+        items: [{ price: planId }],
+        metadata: { type }
       })
       await stripe.customers.update(customerId, {
         metadata: { subscription: subscription.id }
@@ -274,7 +275,7 @@ router.post('/cancel_plan_subscription', (req, res) => {
 router.post('/update_subscription_plan', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { subscriptionId, planId } = req.body
+      const { subscriptionId, planId, type } = req.body
       const subscription = await stripe.subscriptions.retrieve(subscriptionId)
       const updatedSubscription = await stripe.subscriptions.update(
         subscriptionId,
@@ -286,7 +287,8 @@ router.post('/update_subscription_plan', (req, res) => {
               id: subscription.items.data[0].id,
               price: planId
             }
-          ]
+          ],
+          metadata: { type }
         }
       )
       return res.json(updatedSubscription)

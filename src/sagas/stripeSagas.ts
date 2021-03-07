@@ -4,6 +4,7 @@ import * as StripeApis from '../apis/stripe'
 import * as StripeActions from '../actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
+import { SubscriptionType } from 'utils/Interface'
 
 type Params = {
   type: string
@@ -11,6 +12,7 @@ type Params = {
   planId: string
   paymentMethodId: string
   subscriptionId: string
+  subscriptionType: SubscriptionType
 }
 
 function* attachPaymentMethod({ paymentMethod }: Params) {
@@ -65,7 +67,11 @@ function* getCustomer({}: Params) {
   }
 }
 
-function* planSubscription({ planId, paymentMethodId }: Params) {
+function* planSubscription({
+  planId,
+  paymentMethodId,
+  subscriptionType
+}: Params) {
   try {
     const customerId = yield select(
       (state: ReduxState) => state.stripe.customer.id
@@ -74,7 +80,8 @@ function* planSubscription({ planId, paymentMethodId }: Params) {
       StripeApis.createStripePlanSubcription,
       customerId,
       planId,
-      paymentMethodId
+      paymentMethodId,
+      subscriptionType
     )
     yield put(StripeActions.planSubscriptionSuccess(subscription))
   } catch (error: any) {
@@ -98,12 +105,17 @@ function* cancelPlanSubscription({ subscriptionId }: Params) {
   }
 }
 
-function* updatePlanSubscription({ subscriptionId, planId }: Params) {
+function* updatePlanSubscription({
+  subscriptionId,
+  planId,
+  subscriptionType
+}: Params) {
   try {
     const updatedSubscription = yield call(
       StripeApis.updateStripePlanSubcription,
       subscriptionId,
-      planId
+      planId,
+      subscriptionType
     )
     yield put(StripeActions.updatePlanSubscriptionSuccess(updatedSubscription))
   } catch (error: any) {
