@@ -20,6 +20,7 @@ type Props = {
   className?: string
   labelClassName?: string
   labelFocusedClassName?: string
+  autoFocus?: boolean
 }
 
 const AppTextField = (
@@ -39,7 +40,8 @@ const AppTextField = (
     onInput,
     className = '',
     labelClassName = '',
-    labelFocusedClassName = ''
+    labelFocusedClassName = '',
+    autoFocus
   }: Props,
   ref: any
 ) => {
@@ -60,6 +62,7 @@ const AppTextField = (
 
   return (
     <TextField
+      autoFocus={autoFocus}
       inputRef={ref}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}

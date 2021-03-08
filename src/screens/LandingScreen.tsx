@@ -27,6 +27,7 @@ import classes from '*.module.css'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
+import { logout } from 'actions/authActions'
 
 const LandingScreen = (props: any) => {
   const classes = useStyles()
@@ -79,11 +80,20 @@ const LandingScreen = (props: any) => {
             ].map((navItem: string) => renderNavItem(navItem))}
           </div>
           <div className={classes.navLoginContainer}>
-            <AppButton className={classes.loginButton} onClick={goToDashboard}>
+            <AppButton
+              className={classes.loginButton}
+              onClick={props.isLoggedIn ? props.logout : goToDashboard}>
               <Typography className={classes.loginTitle}>
-                {props.isLoggedIn ? 'Dashboard' : 'Log in'}
+                {props.isLoggedIn ? 'Log out' : 'Log in'}
               </Typography>
             </AppButton>
+            <GradiantButton
+              className={classes.signUpButton}
+              onClick={props.isLoggedIn ? goToDashboard : goToSignUp}>
+              <Typography className={classes.loginTitle}>
+                {props.isLoggedIn ? 'Dashboard' : 'Sign up'}
+              </Typography>
+            </GradiantButton>
           </div>
           <IconButton
             className={classes.navToggle}
@@ -121,6 +131,13 @@ const LandingScreen = (props: any) => {
     props.history.push('/dashboard')
   }
 
+  const goToSignUp = () => {
+    props.history.push({
+      pathname: '/signUp',
+      state: { email: state.email }
+    })
+  }
+
   const renderSignUpInput = () => {
     if (props.isLoggedIn) {
       return (
@@ -146,9 +163,10 @@ const LandingScreen = (props: any) => {
           style={{ maxWidth: 400, minWidth: 300 }}
           labelClassName={classes.signUpInputLabel}
           labelFocusedClassName={classes.signUpInputLabelFocused}
+          onKeyUp={handleSignUpKeyUp}
         />
         <div className={classes.signUpButtonContainer}>
-          <GradiantButton className={classes.signUpButton}>
+          <GradiantButton className={classes.signUpButton} onClick={goToSignUp}>
             <Typography>Sign up free</Typography>
           </GradiantButton>
           <Typography variant='caption' className={classes.signUpButtonCaption}>
@@ -157,6 +175,12 @@ const LandingScreen = (props: any) => {
         </div>
       </div>
     )
+  }
+
+  const handleSignUpKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      goToSignUp()
+    }
   }
 
   return (
@@ -949,7 +973,6 @@ const useStyles = makeStyles((theme) => ({
   navItemInactive: { opacity: 0 },
   navItemTitle: { fontSize: 20 },
   navLoginContainer: {
-    width: 200,
     color: theme.palette.common.white,
     display: 'flex',
     justifyContent: 'center',
@@ -1092,4 +1115,6 @@ const useStyles = makeStyles((theme) => ({
 
 const mapState = (state: ReduxState) => ({ isLoggedIn: state.auth.isLoggedIn })
 
-export default connect(mapState)(LandingScreen)
+const mapDispatch = { logout: () => logout() }
+
+export default connect(mapState, mapDispatch)(LandingScreen)
