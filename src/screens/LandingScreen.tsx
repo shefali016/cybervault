@@ -79,14 +79,17 @@ const LandingScreen = (props: any) => {
               'News'
             ].map((navItem: string) => renderNavItem(navItem))}
           </div>
+
           <div className={classes.navLoginContainer}>
             <AppButton
               className={classes.loginButton}
-              onClick={props.isLoggedIn ? props.logout : goToDashboard}>
+              onClick={props.isLoggedIn ? props.logout : goToDashboard}
+              style={{ marginRight: 20 }}>
               <Typography className={classes.loginTitle}>
                 {props.isLoggedIn ? 'Log out' : 'Log in'}
               </Typography>
             </AppButton>
+
             <GradiantButton
               className={classes.signUpButton}
               onClick={props.isLoggedIn ? goToDashboard : goToSignUp}>
@@ -95,6 +98,7 @@ const LandingScreen = (props: any) => {
               </Typography>
             </GradiantButton>
           </div>
+
           <IconButton
             className={classes.navToggle}
             onClick={() =>
@@ -122,6 +126,17 @@ const LandingScreen = (props: any) => {
               {props.isLoggedIn ? 'Dashboard' : 'Log in'}
             </Typography>
           </AppButton>
+
+          <GradiantButton
+            className={clsx(
+              classes.signUpButton,
+              !navOpen ? classes.navItemInactive : ''
+            )}
+            onClick={props.isLoggedIn ? goToDashboard : goToSignUp}>
+            <Typography className={classes.loginTitle}>
+              {props.isLoggedIn ? 'Dashboard' : 'Sign up'}
+            </Typography>
+          </GradiantButton>
         </div>
       </div>
     )
@@ -975,6 +990,7 @@ const useStyles = makeStyles((theme) => ({
   navLoginContainer: {
     color: theme.palette.common.white,
     display: 'flex',
+    alignItems: 'center',
     justifyContent: 'center',
     [theme.breakpoints.down('md')]: {
       display: 'none'
@@ -989,7 +1005,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navToggleIcon: { fontSize: 40, color: theme.palette.common.white },
   navCollapsed: {
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(5),
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
@@ -1011,8 +1027,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       width: '90%',
       paddingTop: 15,
-      paddingBottom: 15,
-      color: theme.palette.primary.light
+      paddingBottom: 15
     },
     transition: theme.transitions.create(['opacity'], {
       duration: 500
@@ -1074,12 +1089,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    position: 'relative',
-    [theme.breakpoints.down('sm')]: {
+    position: 'relative'
+  },
+  signUpButton: {
+    height: 60,
+    borderRadius: 30,
+    transition: theme.transitions.create(['opacity'], {
+      duration: 500
+    }),
+    [theme.breakpoints.down('md')]: {
       marginTop: theme.spacing(2)
     }
   },
-  signUpButton: { height: 60, borderRadius: 30 },
   signUpButtonCaption: { position: 'absolute', bottom: -25 },
 
   appIcon: {
