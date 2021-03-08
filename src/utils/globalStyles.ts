@@ -45,7 +45,14 @@ export const useGlobalStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'scroll',
-      position: 'relative'
+      position: 'relative',
+      [theme.breakpoints.down("md")]: {
+        // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+      },
+      [theme.breakpoints.down("sm")]: {
+        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+        minWidth: "auto"
+      }
     },
     '.scrollY': { overflowY: 'scroll' },
     '.modalContentNoScroll': {

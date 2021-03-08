@@ -270,7 +270,7 @@ export const SubscriptionModal = ({
               {renderDurationSwitch()}
             </div>
 
-            <div style={{ display: 'flex' }}>
+            <div className={classes.subscriptionContainer}>
               {[
                 SubscriptionTypes.CREATOR,
                 SubscriptionTypes.PRO,
@@ -430,6 +430,12 @@ const SubscriptionItem = ({
 }
 
 const useStyles = makeStyles((theme) => ({
+  subscriptionContainer: {
+    display: 'flex',
+    [theme.breakpoints.down(1000)]: {
+      flexDirection: 'column'
+    }
+  },
   cancelDateText: {
     color: theme.palette.error.main,
     paddingTop: theme.spacing(2),
@@ -460,7 +466,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     flex: 1,
-    paddingBottom: theme.spacing(3)
+    paddingBottom: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: theme.spacing(3)
+    }
   },
   subscriptionItemInner: {
     overflow: 'hidden',
@@ -469,10 +478,13 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     position: 'relative',
     padding: theme.spacing(3),
-    minWidth: 250,
-    maxWidth: 250
+
+    [theme.breakpoints.down(1000)]: {
+      flexDirection: 'column'
+    }
   },
   subscriptionItemContainer: {
+    backgroundColor: theme.palette.background.paper,
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
@@ -490,7 +502,13 @@ const useStyles = makeStyles((theme) => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.standard
       }
-    )
+    ),
+
+    [theme.breakpoints.down(1000)]: {
+      marginLeft: theme.spacing(0),
+      marginRight: theme.spacing(0),
+      marginBottom: theme.spacing(4)
+    }
   },
   selected: {
     borderColor: theme.palette.primary.main,
@@ -513,7 +531,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     minHeight: theme.spacing(12),
-    minWidth: 250,
 
     overflow: 'hidden',
     marginLeft: theme.spacing(2),
@@ -533,7 +550,16 @@ const useStyles = makeStyles((theme) => ({
         duration: theme.transitions.duration.standard
       }
     ),
-    [theme.breakpoints.down('sm')]: { flexDirection: 'column', maxWidth: 250 },
+    [theme.breakpoints.down(1000)]: {
+      marginLeft: theme.spacing(0),
+      marginRight: theme.spacing(0),
+      marginTop: theme.spacing(2)
+    },
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
+      textAlign: 'center'
+    },
     '&:hover': {
       boxShadow: `0 5px 30px ${theme.palette.primary.light}`
     }
@@ -544,7 +570,7 @@ const useStyles = makeStyles((theme) => ({
   businessSubscriptionButton: {
     [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(3),
-      alignSelf: 'stretch'
+      alignSelf: 'center'
     }
   },
   divider: { margin: `${theme.spacing(3)}px 0` },
