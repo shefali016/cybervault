@@ -5,6 +5,7 @@ import * as StripeActions from '../actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
 import { updateUserData } from 'apis/user'
+import { SubscriptionType } from 'utils/Interface'
 
 type Params = {
   type: string
@@ -14,6 +15,7 @@ type Params = {
   subscriptionId: string
   amount: number
   extraStorage: number
+  subscriptionType: SubscriptionType
 }
 
 function* attachPaymentMethod({ paymentMethod }: Params) {
@@ -68,18 +70,22 @@ function* getCustomer({}: Params) {
   }
 }
 
-function* getPlanData({}: Params) {
-  try {
-    const planList = yield call(StripeApis.getStripePlansList)
-    yield put(StripeActions.getStripPlanListSuccess(planList.data))
-  } catch (error: any) {
-    yield put(
-      StripeActions.getStripPlanListFailure(error?.message || 'default')
-    )
-  }
-}
+// function* getPlanData({}: Params) {
+//   try {
+//     const planList = yield call(StripeApis.getStripePlansList)
+//     yield put(StripeActions.getStripPlanListSuccess(planList.data))
+//   } catch (error: any) {
+//     yield put(
+//       StripeActions.getStripPlanListFailure(error?.message || 'default')
+//     )
+//   }
+// }
 
-function* planSubscription({ planId, paymentMethodId }: Params) {
+function* planSubscription({
+  planId,
+  paymentMethodId,
+  subscriptionType
+}: Params) {
   try {
     const customerId = yield select(
       (state: ReduxState) => state.stripe.customer.id
@@ -88,7 +94,8 @@ function* planSubscription({ planId, paymentMethodId }: Params) {
       StripeApis.createStripePlanSubcription,
       customerId,
       planId,
-      paymentMethodId
+      paymentMethodId,
+      subscriptionType
     )
     yield put(StripeActions.planSubscriptionSuccess(subscription))
   } catch (error: any) {
@@ -112,10 +119,19 @@ function* cancelPlanSubscription({ subscriptionId }: Params) {
   }
 }
 
-function* updatePlanSubscription({ subscriptionId, planId }: Params) {
+function* updatePlanSubscription({
+  subscriptionId,
+  planId,
+  subscriptionType
+}: Params) {
   try {
-    yield call(StripeApis.updateStripePlanSubcription, subscriptionId, planId)
-    yield put(StripeActions.updatePlanSubscriptionSuccess(planId))
+    const updatedSubscription = yield call(
+      StripeApis.updateStripePlanSubcription,
+      subscriptionId,
+      planId,
+      subscriptionType
+    )
+    yield put(StripeActions.updatePlanSubscriptionSuccess(updatedSubscription))
   } catch (error: any) {
     yield put(
       StripeActions.updatePlanSubscriptionFailure(error?.message || 'default')
@@ -127,22 +143,29 @@ function* createAmountSubscription({ amount, extraStorage }: Params) {
     const customerId = yield select(
       (state: ReduxState) => state.stripe.customer.id
     )
-    const storagePlanId: string = yield select(
-      (state: ReduxState) => state.stripe.storagePlan?.id
-    )
     const userId = yield select((state: ReduxState) => state.auth.user?.id)
     yield call(updateUserData, userId, { extraStorage })
     const subscription = yield call(
       StripeApis.createAmountSubscription,
       amount,
       customerId,
-      storagePlanId
+      userId
     )
     yield put(StripeActions.createAmountSubscriptionSuccess(subscription))
   } catch (error: any) {
     yield put(
       StripeActions.createAmountSubscriptionFailure(error?.message || 'default')
     )
+  }
+}
+
+function* getSubscription() {
+  try {
+    const customerId = yield select((state) => state.auth.user.customerId)
+    const subscription = yield call(StripeApis.getSubscription, customerId)
+    yield put(StripeActions.getSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(StripeActions.getSubscriptionFailure(error?.message || 'default'))
   }
 }
 
@@ -154,11 +177,12 @@ function* watchRequests() {
   yield takeLatest(ActionTypes.PLAN_SUBSCRIPTION, planSubscription)
   yield takeLatest(ActionTypes.CANCEL_PLAN_SUBSCRIPTION, cancelPlanSubscription)
   yield takeLatest(ActionTypes.UPDATE_PLAN_SUBSCRIPTION, updatePlanSubscription)
+  yield takeLatest(ActionTypes.GET_SUBSCRIPTION, getSubscription)
   yield takeLatest(
     ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
     createAmountSubscription
   )
-  yield takeLatest(ActionTypes.GET_PLAN_LIST, getPlanData)
+  // yield takeLatest(ActionTypes.GET_PLAN_LIST, getPlanData)
 }
 
 export default function* sagas() {

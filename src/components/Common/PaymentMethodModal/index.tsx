@@ -8,11 +8,13 @@ import {
   Typography
 } from '@material-ui/core'
 import { PaymentMethod } from '@stripe/stripe-js'
+import clsx from 'clsx'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
 import { useState } from 'react'
 import Modal from '../Modal'
+import ModalTitle from '../Modal/ModalTitle'
 
 type Props = {
   open: boolean
@@ -43,20 +45,21 @@ const PaymentMethodModal = ({
 
   return (
     <Modal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-      <div className={'modalContent'}>
+      <div className={'modalContentNoScroll'}>
         <CloseButton
           onClick={onRequestClose}
           style={{ position: 'absolute', top: 10, right: 10 }}
         />
-        <div className={classes.header}>
-          <Typography variant={'h4'}>Select Payment Method</Typography>
-        </div>
-        <List dense>
+        <ModalTitle title={'Select Payment Method'} />
+        <List dense className={'scrollY'}>
           {paymentMethods && paymentMethods.length
             ? paymentMethods.map((data: PaymentMethod, index: number) => {
                 const labelId = `payment-method-${index}`
                 return (
-                  <ListItem key={index} button>
+                  <ListItem
+                    key={index}
+                    button
+                    onClick={() => handlePaymentSelect(data, index)}>
                     <ListItemText
                       id={labelId}
                       primary={<PaymentMethodInline paymentMethod={data} />}
@@ -91,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     paddingBottom: theme.spacing(3)
   },
-  saveButton: { marginTop: theme.spacing(1) }
+  saveButton: { marginTop: theme.spacing(3) }
 }))
 
 export default PaymentMethodModal

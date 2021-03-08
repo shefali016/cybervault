@@ -1,7 +1,6 @@
 import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { createAmountSubscription } from 'apis/stripe'
 import clsx from 'clsx'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
@@ -10,17 +9,15 @@ import { AppSlider } from 'components/Common/Core/AppSlider'
 import Modal from 'components/Common/Modal'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import React, { useState } from 'react'
-import {
-  getSubscriptionDetails,
-  getSubscriptionPlanType
-} from 'utils/subscription'
-import { Account } from '../../utils/Interface'
+import { SubscriptionTypes } from 'utils/enums'
+import { getSubscriptionDetails } from 'utils/subscription'
+import { Account, Subscription } from '../../utils/Interface'
 
 type Props = {
   open: boolean
   onRequestClose: () => void
   account: Account
-  subscription: any
+  subscription: Subscription | any
   paymentMethods: Array<PaymentMethod>
   customerId: string
   userExtraStorage: number
@@ -51,9 +48,8 @@ export const StorageModal = ({
     userExtraStorage || 0
   )
 
-  const getTotalStorage = (subscription: any) => {
-    const plan = getSubscriptionPlanType(subscription?.plan.id)
-    const { storage } = getSubscriptionDetails(plan)
+  const getTotalStorage = (account: Account) => {
+    const { storage } = getSubscriptionDetails(subscription?.metadata?.type)
     return storage + extraStorage
   }
 
@@ -78,11 +74,6 @@ export const StorageModal = ({
     const availablePercentage: number | any = 100 - usedStoragePercent
     return (
       <div className={classes.storageTrackerContainer}>
-        <Typography variant={'h5'}>Manage Storage</Typography>
-        <Typography variant={'caption'}>
-          Your current storage plan is {totalStorage}
-        </Typography>
-
         <div className={classes.storagePieOuter}>
           <AppCircularProgress
             variant='determinate'
@@ -141,6 +132,10 @@ export const StorageModal = ({
   const renderStorageSlider = () => {
     return (
       <div className={classes.storageSliderContainer}>
+        <Typography variant={'h5'}>Extra Storage</Typography>
+        <Typography variant={'caption'}>
+          Add storage to upload more content
+        </Typography>
         <Typography variant={'h2'} className={classes.extraStorage}>
           {extraStorage}
         </Typography>
@@ -196,8 +191,16 @@ export const StorageModal = ({
 const useStyles = makeStyles((theme) => ({
   applyButton: { marginTop: theme.spacing(5) },
   modalContent: {},
-  content: { display: 'flex', flex: 1 },
-  extraStorage: { color: theme.palette.primary.main, fontWeight: 'bold' },
+  content: {
+    display: 'flex',
+    flex: 1,
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
+  },
+  extraStorage: {
+    color: theme.palette.primary.main,
+    fontWeight: 'bold',
+    marginTop: theme.spacing(2)
+  },
   extraStorageSize: { color: theme.palette.text.meta },
   extraStorageCaption: {
     color: theme.palette.text.meta,
@@ -217,7 +220,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     flex: 1,
     padding: `0 ${theme.spacing(5)}px`,
-    width: 300
+    width: 300,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(8),
+      width: 'auto'
+    }
   },
   storageTrackerContainer: {
     display: 'flex',

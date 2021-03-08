@@ -1,21 +1,20 @@
 import React from 'react'
 import { makeStyles, Typography } from '@material-ui/core'
-import { BOLD } from '../../utils/constants/stringConstants'
-import { useTabletLayout } from '../../utils/hooks'
+import { BOLD } from '../../../utils/constants/stringConstants'
 
 type Props = {
   title: string
-  subtitle: string
+  subtitle?: string
 }
 
-const NewProjectTitle = ({ title, subtitle }: Props) => {
+const ModalTitle = ({ title, subtitle }: Props) => {
   const classes = useStyles()
   return (
     <div className={classes.container}>
       <Typography variant={'h5'} className={classes.headerTitle}>
         {title}
       </Typography>
-      <Typography variant={'body2'}>{subtitle}</Typography>
+      {!!subtitle && <Typography variant={'body2'}>{subtitle}</Typography>}
     </div>
   )
 }
@@ -27,4 +26,4 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default NewProjectTitle
+export default ModalTitle

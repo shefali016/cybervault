@@ -113,7 +113,7 @@ const logoutSuccess = (state: State, action: Action) => {
     ...state,
     isLoggedIn: false,
     user: null,
-    account: null
+    account: null,
   }
 }
 
@@ -144,7 +144,6 @@ const authReducer = (state = initialState, action: Action) => {
     case LOGIN_SUCCESS:
       return loginSuccess(state, action)
     case LOGIN_FAILURE:
-      console.log(action)
       return loginFailure(state, action)
     case LOGOUT_SUCCESS:
       return logoutSuccess(state, action)

@@ -15,11 +15,16 @@ export type State = {
   attachSuccess: boolean
 
   activeSubscription: null | Object
-  planSubscriptionLoading: boolean
+  subscriptionLoading: boolean
 
-  cancelSubscriptionLoading: boolean
+  planSubscriptionError: null | string
+  planSubscriptionSuccess: boolean
 
-  isSubscriptionChange: boolean
+  cancelSubscriptionError: null | string
+  cancelSubscriptionSuccess: boolean
+
+  updateSubscriptionSuccess: boolean
+  updateSubscriptionError: null | string
 
   subscriptionPlans: Array<StripePlans> | null
   storagePlan: StripePlans | null
@@ -48,10 +53,16 @@ const initialState = {
   attachSuccess: false,
 
   activeSubscription: null,
-  planSubscriptionLoading: false,
+  subscriptionLoading: false,
 
-  cancelSubscriptionLoading: false,
-  isSubscriptionChange: false,
+  planSubscriptionError: null,
+  planSubscriptionSuccess: false,
+
+  updateSubscriptionSuccess: false,
+  updateSubscriptionError: null,
+
+  cancelSubscriptionError: null,
+  cancelSubscriptionSuccess: false,
 
   subscriptionPlans: null,
   storagePlan: null
@@ -94,43 +105,73 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.DETACH_PAYMENT_METHOD_FAILURE:
       return { ...state, detachError: action.error }
 
+    case ActionTypes.GET_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        subscription: action.subscription
+      }
+
     case ActionTypes.PLAN_SUBSCRIPTION:
-      return { ...state, planSubscriptionLoading: true }
+      return {
+        ...state,
+        subscriptionLoading: true,
+        planSubscriptionSuccess: false,
+        planSubscriptionError: null
+      }
     case ActionTypes.PLAN_SUBSCRIPTION_SUCCESS:
-      const customer: any = state.customer
-      customer.subscriptions.data.push(action.subscription)
       return {
         ...state,
         activeSubscription: action.subscription,
-        planSubscriptionLoading: false,
-        customer
+        subscriptionLoading: false,
+        planSubscriptionSuccess: true
       }
     case ActionTypes.PLAN_SUBSCRIPTION_FAILURE:
-      return { ...state, planSubscriptionLoading: false }
+      return {
+        ...state,
+        subscriptionLoading: false,
+        planSubscriptionError: action.error
+      }
 
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION:
-      return { ...state, cancelSubscriptionLoading: true }
+      return {
+        ...state,
+        subscriptionLoading: true,
+        cancelSubscriptionSuccess: false,
+        cancelSubscriptionError: null
+      }
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: {},
-        cancelSubscriptionLoading: false
+        activeSubscription: action.subscription,
+        subscriptionLoading: false,
+        cancelSubscriptionSuccess: true
       }
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_FAILURE:
-      return { ...state, cancelSubscriptionLoading: false }
-    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION:
-      return { ...state, planSubscriptionLoading: true }
-    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
-      const activeSubscription: any = state.activeSubscription
-      activeSubscription.plan.id = action.planId
       return {
         ...state,
-        subscription: action.subscription,
-        planSubscriptionLoading: false,
-        activeSubscription
+        subscriptionLoading: false,
+        cancelSubscriptionError: action.error
+      }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION:
+      return {
+        ...state,
+        subscriptionLoading: true,
+        updateSubscriptionSuccess: false,
+        updateSubscriptionError: null
+      }
+    case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        activeSubscription: action.subscription,
+        subscriptionLoading: false,
+        updateSubscriptionSuccess: true
       }
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE:
-      return { ...state, planSubscriptionLoading: false }
+      return {
+        ...state,
+        subscriptionLoading: false,
+        updateSubscriptionError: action.error
+      }
     case ActionTypes.GET_PLAN_LIST:
       return { ...state, planSubscriptionLoading: true }
     case ActionTypes.GET_PLAN_LIST_SUCCESS:

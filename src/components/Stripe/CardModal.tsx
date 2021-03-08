@@ -95,10 +95,16 @@ export const CardInputElement = injectStripe(
   }
 )
 
-export const CardInput = ({ customerId }: CardInputElementProps) => {
+export const CardInput = ({
+  customerId,
+  onPaymentMethodCreated
+}: CardInputElementProps) => {
   return (
     <Elements>
-      <CardInputElement customerId={customerId} />
+      <CardInputElement
+        customerId={customerId}
+        onPaymentMethodCreated={onPaymentMethodCreated}
+      />
     </Elements>
   )
 }
@@ -117,7 +123,10 @@ export const CardModal = ({
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
       <div className='modalContent'>
         <CloseButton onClick={onRequestClose} className={'modalCloseButton'} />
-        <CardInput customerId={customerId} />
+        <CardInput
+          customerId={customerId}
+          onPaymentMethodCreated={onRequestClose}
+        />
       </div>
     </AppModal>
   )
