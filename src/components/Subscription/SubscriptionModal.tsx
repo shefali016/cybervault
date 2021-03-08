@@ -22,6 +22,7 @@ import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { AppLoader } from 'components/Common/Core/AppLoader'
+import moment from 'moment'
 
 type SubscriptionParams = { planId: string; type: SubscriptionType }
 
@@ -60,7 +61,9 @@ export const SubscriptionModal = ({
   const classes = useStyles()
   const theme = useTheme()
 
-  const [duration, setDuration] = useState(SubscriptionDurations.MONTHLY)
+  const [duration, setDuration] = useState(
+    subscription?.plan?.interval || SubscriptionDurations.MONTHLY
+  )
   const [products, setProducts] = useState<Array<Product>>([])
   const [productPlans, setProductPlans] = useState<{
     [productId: string]: Array<StripePlans>
@@ -166,6 +169,11 @@ export const SubscriptionModal = ({
     const isSubscribed =
       subscription && plan && subscription.plan.id === plan.id
 
+    const cancelDate =
+      isSubscribed &&
+      subscription.cancel_at_period_end &&
+      subscription.current_period_end * 1000
+
     return (
       <SubscriptionItem
         onClick={() => setSelectedSubscription(type)}
@@ -176,6 +184,7 @@ export const SubscriptionModal = ({
         extraFeatures={extraFeatures}
         isSelected={selectedSubscription === type}
         isSubscribed={isSubscribed}
+        cancelDate={cancelDate}
         duration={duration}
         onChoosePlan={(plan: StripePlans) => {
           handleChoosePlan(plan.id, type)
@@ -312,6 +321,7 @@ type SubscriptionItemProps = {
   extraFeatures?: Array<string>
   isSelected: boolean
   isSubscribed: boolean
+  cancelDate: number | undefined
   onClick: () => void
   onChoosePlan: (plan: StripePlans) => void
   onCancelSubscription: () => void
@@ -325,6 +335,7 @@ const SubscriptionItem = ({
   features,
   extraFeatures,
   isSelected,
+  cancelDate,
   onClick,
   onChoosePlan,
   onCancelSubscription,
@@ -390,8 +401,13 @@ const SubscriptionItem = ({
               </ul>
             </div>
           )}
+          {!!cancelDate && (
+            <Typography className={classes.cancelDateText}>
+              Cancels on {moment(cancelDate).format('YYYY-MM-DD')}
+            </Typography>
+          )}
           <div className={classes.choosePlanContainer}>
-            {isSubscribed ? (
+            {isSubscribed && !cancelDate ? (
               <Button
                 onClick={onCancelSubscription}
                 className={classes.cancelBtn}>
@@ -414,6 +430,11 @@ const SubscriptionItem = ({
 }
 
 const useStyles = makeStyles((theme) => ({
+  cancelDateText: {
+    color: theme.palette.error.main,
+    paddingTop: theme.spacing(2),
+    textAlign: 'center'
+  },
   loadingView: {
     display: 'flex',
     position: 'absolute',

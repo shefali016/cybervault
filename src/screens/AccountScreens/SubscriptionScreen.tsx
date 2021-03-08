@@ -22,6 +22,7 @@ import {
 import { PaymentMethod } from '@stripe/stripe-js'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
 import { SubscriptionTypes } from 'utils/enums'
+import moment from 'moment'
 
 type StateProps = {
   account: Account
@@ -130,8 +131,14 @@ const SubscriptionScreen = ({
                       : 'Unsubscribed'}
                   </Typography>
                   <Typography variant='caption'>
-                    {account.subscription
-                      ? 'Your subscription renews on DATE' // @todo connect to real renewal date
+                    {!!subscription
+                      ? subscription.cancel_at_period_end
+                        ? `Your subscription ends ${moment(
+                            subscription.current_period_end * 1000
+                          ).format('YYYY-MM-DD')}`
+                        : `Your subscription renews on ${moment(
+                            subscription.current_period_end * 1000
+                          ).format('YYYY-MM-DD')}` // @todo connect to real renewal date
                       : 'Subscribe to benefit from the full features of Creator Cloud'}
                   </Typography>
                 </div>,
