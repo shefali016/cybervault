@@ -47,9 +47,7 @@ const LandingScreen = (props: any) => {
     let scrollTop = window.scrollY
     const atTop = scrollTop < 30
 
-    if (atTop !== state.atTop || navOpen) {
-      setState((state) => ({ ...state, atTop, navOpen: false }))
-    }
+    setState((state) => ({ ...state, atTop, navOpen: false }))
   }
 
   const renderNavItem = (title: string, hide?: boolean) => {
@@ -81,8 +79,10 @@ const LandingScreen = (props: any) => {
             ].map((navItem: string) => renderNavItem(navItem))}
           </div>
           <div className={classes.navLoginContainer}>
-            <AppButton className={classes.loginButton}>
-              <Typography className={classes.loginTitle}>Log in</Typography>
+            <AppButton className={classes.loginButton} onClick={goToDashboard}>
+              <Typography className={classes.loginTitle}>
+                {props.isLoggedIn ? 'Dashboard' : 'Log in'}
+              </Typography>
             </AppButton>
           </div>
           <IconButton
@@ -106,15 +106,33 @@ const LandingScreen = (props: any) => {
             className={clsx(
               classes.loginButton,
               !navOpen ? classes.navItemInactive : ''
-            )}>
-            <Typography className={classes.loginTitle}>Log in</Typography>
+            )}
+            onClick={goToDashboard}>
+            <Typography className={classes.loginTitle}>
+              {props.isLoggedIn ? 'Dashboard' : 'Log in'}
+            </Typography>
           </AppButton>
         </div>
       </div>
     )
   }
 
+  const goToDashboard = () => {
+    props.history.push('/dashboard')
+  }
+
   const renderSignUpInput = () => {
+    if (props.isLoggedIn) {
+      return (
+        <div className={classes.signUpInputContainer}>
+          <GradiantButton
+            className={classes.signUpButton}
+            onClick={goToDashboard}>
+            <Typography>Go to dashboard</Typography>
+          </GradiantButton>
+        </div>
+      )
+    }
     return (
       <div className={classes.signUpInputContainer}>
         <AppTextField
@@ -425,10 +443,14 @@ const LandingScreen = (props: any) => {
         <img src={footerImage} className={classes.imageFooterImage} />
         <div className={classes.footerContent}>
           <Typography className={classes.footerTitle} variant='h4'>
-            Get started with a free trial today.
+            {props.isLoggedIn
+              ? 'Your dashboard awaits you'
+              : 'Get started with a free trial today.'}
           </Typography>
           <Typography className={classes.footerSubTitle} variant='h6'>
-            Enjoy a 7-day free trial on us, no strings attached.
+            {props.isLoggedIn
+              ? 'Start your project now'
+              : 'Enjoy a 7-day free trial on us, no strings attached.'}
           </Typography>
           {renderSignUpInput()}
         </div>
