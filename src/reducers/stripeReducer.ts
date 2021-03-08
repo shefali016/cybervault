@@ -97,6 +97,12 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.DETACH_PAYMENT_METHOD_FAILURE:
       return { ...state, detachError: action.error }
 
+    case ActionTypes.GET_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        subscription: action.subscription
+      }
+
     case ActionTypes.PLAN_SUBSCRIPTION:
       return {
         ...state,

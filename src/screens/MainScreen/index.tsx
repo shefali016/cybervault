@@ -50,7 +50,7 @@ import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
-import { getCustomer } from 'actions/stripeActions'
+import { getCustomer, getSubscription } from 'actions/stripeActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -86,6 +86,7 @@ type DispatchProps = {
   getUser: (id: string) => void
   getAccount: (id: string) => void
   getCustomer: () => void
+  getSubscription: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -105,6 +106,7 @@ const MainScreen = ({
   getUser,
   getAccount,
   getCustomer,
+  getSubscription,
   user,
   account
 }: Props) => {
@@ -301,6 +303,7 @@ const MainScreen = ({
     if (!customerRestored) {
       getCustomer()
     }
+    getSubscription()
   }, [])
 
   if (!(userRestored && accountRestored)) {
@@ -389,7 +392,8 @@ const mapDispatchToProps: DispatchProps = {
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
   getAccount: (id: string) => getAccount(id),
-  getCustomer: () => getCustomer()
+  getCustomer: () => getCustomer(),
+  getSubscription: () => getSubscription()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

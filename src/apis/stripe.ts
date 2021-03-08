@@ -6,6 +6,7 @@ import {
   StripeCustomer,
   StripeLoginLink,
   StripePlans,
+  Subscription,
   SubscriptionType,
   User
 } from '../utils/Interface'
@@ -273,5 +274,27 @@ export const updateStripePlanSubcription = async (
     return res.data
   } else {
     throw Error('Stripe Subscription update error')
+  }
+}
+
+export const getSubscription = async (customerId: string) => {
+  const res = await axios.get<{ object: 'list'; data: Array<Subscription> }>(
+    `${server_url}/api/v1/stripe/subscription`,
+    {
+      params: { customerId }
+    }
+  )
+
+  if (res.status === 200) {
+    const data = res.data
+    if (data.object !== 'list') {
+      throw Error('Invalid subscription data')
+    }
+
+    const subscriptionList = data.data
+
+    return subscriptionList[0]
+  } else {
+    throw Error('Failed to fetch subscription')
   }
 }

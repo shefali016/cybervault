@@ -125,6 +125,16 @@ function* updatePlanSubscription({
   }
 }
 
+function* getSubscription() {
+  try {
+    const customerId = yield select((state) => state.auth.user.customerId)
+    const subscription = yield call(StripeApis.getSubscription, customerId)
+    yield put(StripeActions.getSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(StripeActions.getSubscriptionFailure(error?.message || 'default'))
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.GET_PAYMENT_METHODS, getPaymentMethods)
   yield takeLatest(ActionTypes.ATTACH_PAYMENT_METHOD, attachPaymentMethod)
@@ -133,6 +143,7 @@ function* watchRequests() {
   yield takeLatest(ActionTypes.PLAN_SUBSCRIPTION, planSubscription)
   yield takeLatest(ActionTypes.CANCEL_PLAN_SUBSCRIPTION, cancelPlanSubscription)
   yield takeLatest(ActionTypes.UPDATE_PLAN_SUBSCRIPTION, updatePlanSubscription)
+  yield takeLatest(ActionTypes.GET_SUBSCRIPTION, getSubscription)
 }
 
 export default function* sagas() {

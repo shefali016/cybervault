@@ -224,11 +224,12 @@ router.get('/get_plans', (req, res) => {
   })
 })
 
-router.post('/retrive_subscription', (req, res) => {
+router.get('/subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
+      const { customerId } = req.query
       const subscriptions = await stripe.subscriptions.list({
-        limit: 3
+        customer: customerId
       })
       return res.json(subscriptions)
     } catch (error) {

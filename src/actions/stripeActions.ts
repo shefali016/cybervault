@@ -51,6 +51,17 @@ export const getCustomerFailure = (error: any) => ({
   type: ActionTypes.GET_CUSTOMER_FAILURE,
   error
 })
+
+export const getSubscription = () => ({ type: ActionTypes.GET_SUBSCRIPTION })
+export const getSubscriptionSuccess = (subscription: Subscription) => ({
+  type: ActionTypes.GET_SUBSCRIPTION_SUCCESS,
+  subscription
+})
+export const getSubscriptionFailure = (error: string) => ({
+  type: ActionTypes.GET_SUBSCRIPTION_FAILURE,
+  error
+})
+
 export const planSubscription = (
   planId: string,
   paymentMethodId: string,
