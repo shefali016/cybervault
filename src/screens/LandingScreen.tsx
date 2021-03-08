@@ -1,6 +1,6 @@
 import { IconButton, Typography } from '@material-ui/core'
 import { useTheme, makeStyles } from '@material-ui/core/styles'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import headerImage from '../assets/landing_screen_header_1.png'
 import { AppIcon } from 'components/Common/Core/AppIcon'
 import { AppButton } from 'components/Common/Core/AppButton'
@@ -38,6 +38,7 @@ const LandingScreen = (props: any) => {
     navOpen: false
   })
   const { navOpen } = state
+  const atTopRef = useRef(state.atTop)
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, true)
@@ -48,7 +49,11 @@ const LandingScreen = (props: any) => {
     let scrollTop = window.scrollY
     const atTop = scrollTop < 30
 
-    setState((state) => ({ ...state, atTop, navOpen: false }))
+    if (atTop !== atTopRef.current) {
+      setState((state) => ({ ...state, atTop, navOpen: false }))
+    }
+
+    atTopRef.current = atTop
   }
 
   const renderNavItem = (title: string, hide?: boolean) => {
@@ -965,6 +970,7 @@ const useStyles = makeStyles((theme) => {
       zIndex: 100,
       alignItems: 'center',
       justifyContent: 'space-between',
+      padding: theme.spacing(3),
       transition: theme.transitions.create(['background'], transitionConfig),
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(1),
@@ -1017,14 +1023,17 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      justifyContent: 'center',
       transformOrigin: 'top',
       background: theme.palette.background.secondary,
-      transition: theme.transitions.create(['transform'], transitionConfig)
+      transition: theme.transitions.create(['height'], transitionConfig)
     },
-    navCollapsedOpen: {},
+    navCollapsedOpen: { height: 400 },
     navCollapsedClosed: {
+      overflow: 'hidden',
       pointerEvents: 'none',
-      transform: 'scaleY(0)'
+      paddingBottom: theme.spacing(0),
+      height: 0
     },
 
     loginButton: {
