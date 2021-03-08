@@ -47,11 +47,6 @@ export const StorageModal = ({
 
     return (
       <div className={classes.storageTrackerContainer}>
-        <Typography variant={'h5'}>Manage Storage</Typography>
-        <Typography variant={'caption'}>
-          Your current storage plan is {totalStorage}
-        </Typography>
-
         <div className={classes.storagePieOuter}>
           <AppCircularProgress
             variant='determinate'
@@ -104,6 +99,10 @@ export const StorageModal = ({
   const renderStorageSlider = () => {
     return (
       <div className={classes.storageSliderContainer}>
+        <Typography variant={'h5'}>Extra Storage</Typography>
+        <Typography variant={'caption'}>
+          Add storage to upload more content
+        </Typography>
         <Typography variant={'h2'} className={classes.extraStorage}>
           {extraStorage}
         </Typography>
@@ -159,8 +158,16 @@ export const StorageModal = ({
 const useStyles = makeStyles((theme) => ({
   applyButton: { marginTop: theme.spacing(5) },
   modalContent: {},
-  content: { display: 'flex', flex: 1 },
-  extraStorage: { color: theme.palette.primary.main, fontWeight: 'bold' },
+  content: {
+    display: 'flex',
+    flex: 1,
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
+  },
+  extraStorage: {
+    color: theme.palette.primary.main,
+    fontWeight: 'bold',
+    marginTop: theme.spacing(2)
+  },
   extraStorageSize: { color: theme.palette.text.meta },
   extraStorageCaption: {
     color: theme.palette.text.meta,
@@ -180,7 +187,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     flex: 1,
     padding: `0 ${theme.spacing(5)}px`,
-    width: 300
+    width: 300,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(8),
+      width: 'auto'
+    }
   },
   storageTrackerContainer: {
     display: 'flex',
