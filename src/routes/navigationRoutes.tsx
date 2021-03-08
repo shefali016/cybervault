@@ -7,6 +7,7 @@ import MainScreen from 'screens/MainScreen'
 import { useGlobalStyles } from '../utils/globalStyles'
 import InvoicesClientScreen from '../screens/SharedScreens/InvoicesClientScreen'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
+import LandingScreen from 'screens/LandingScreen'
 
 type Props = { isLoggedIn?: boolean }
 
@@ -17,6 +18,7 @@ const Routes = (props: Props): JSX.Element => {
 
 const MainRoutes = () => (
   <Switch>
+    <Route path='/' exact component={LandingScreen} />
     <Route path='/portfolio/:id' component={PortfolioSingleScreen} />
     <Route path='/' component={MainScreen} />
   </Switch>
@@ -24,6 +26,7 @@ const MainRoutes = () => (
 
 const AuthRoutes = () => (
   <Switch>
+    <Route path='/' exact component={LandingScreen} />
     <Route path='/signup' component={SignUpScreen} />
     <Route path='/clientInvoices/:accId/:id' component={InvoicesClientScreen} />
     <Route path='/' component={LoginScreen} />
