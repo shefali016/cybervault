@@ -12,7 +12,6 @@ import { getUser, updateUser } from 'apis/user'
 import { getAccount } from 'apis/account'
 import {
   SharingPrivacies,
-  SubscriptionTypes,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
@@ -121,7 +120,9 @@ export const createAccount = (
       detailsSubmitted: false,
       payoutsEnabled: false
     },
-    subscription: { type: SubscriptionTypes.creator },
+    subscription: {
+      extraStorage: 0
+    },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,
       watermarkStyle: WatermarkStyles.single,

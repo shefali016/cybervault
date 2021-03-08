@@ -4,8 +4,16 @@ import * as StripeApis from '../apis/stripe'
 import * as StripeActions from '../actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
+import { SubscriptionType } from 'utils/Interface'
 
-type Params = { type: string; paymentMethod: PaymentMethod }
+type Params = {
+  type: string
+  paymentMethod: PaymentMethod
+  planId: string
+  paymentMethodId: string
+  subscriptionId: string
+  subscriptionType: SubscriptionType
+}
 
 function* attachPaymentMethod({ paymentMethod }: Params) {
   try {
@@ -59,11 +67,72 @@ function* getCustomer({}: Params) {
   }
 }
 
+function* planSubscription({
+  planId,
+  paymentMethodId,
+  subscriptionType
+}: Params) {
+  try {
+    const customerId = yield select(
+      (state: ReduxState) => state.stripe.customer.id
+    )
+    const subscription = yield call(
+      StripeApis.createStripePlanSubcription,
+      customerId,
+      planId,
+      paymentMethodId,
+      subscriptionType
+    )
+    yield put(StripeActions.planSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.planSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+
+function* cancelPlanSubscription({ subscriptionId }: Params) {
+  try {
+    const subscription = yield call(
+      StripeApis.cancelStripePlanSubcription,
+      subscriptionId
+    )
+    yield put(StripeActions.cancelPlanSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.cancelPlanSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+
+function* updatePlanSubscription({
+  subscriptionId,
+  planId,
+  subscriptionType
+}: Params) {
+  try {
+    const updatedSubscription = yield call(
+      StripeApis.updateStripePlanSubcription,
+      subscriptionId,
+      planId,
+      subscriptionType
+    )
+    yield put(StripeActions.updatePlanSubscriptionSuccess(updatedSubscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.updatePlanSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.GET_PAYMENT_METHODS, getPaymentMethods)
   yield takeLatest(ActionTypes.ATTACH_PAYMENT_METHOD, attachPaymentMethod)
   yield takeLatest(ActionTypes.DETACH_PAYMENT_METHOD, detachPaymentMethod)
   yield takeLatest(ActionTypes.GET_CUSTOMER, getCustomer)
+  yield takeLatest(ActionTypes.PLAN_SUBSCRIPTION, planSubscription)
+  yield takeLatest(ActionTypes.CANCEL_PLAN_SUBSCRIPTION, cancelPlanSubscription)
+  yield takeLatest(ActionTypes.UPDATE_PLAN_SUBSCRIPTION, updatePlanSubscription)
 }
 
 export default function* sagas() {

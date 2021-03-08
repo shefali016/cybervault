@@ -17,7 +17,7 @@ import {
 import CheckIcon from '@material-ui/icons/Check'
 import { useStyles } from './style'
 import { useOnChange } from 'utils/hooks'
-import ModalTitle from 'components/Projects/NewProjectTitle'
+import ModalTitle from 'components/Common/Modal/ModalTitle'
 import clsx from 'clsx'
 
 type State = {

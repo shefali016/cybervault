@@ -28,6 +28,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modalContentWrapper': {
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      overflow: 'hidden',
+      position: 'relative'
+    },
     '.modalContent': {
       color: theme.palette.text.paper,
       backgroundColor: theme.palette.background.paper,
@@ -39,6 +45,19 @@ export const useGlobalStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'scroll',
+      position: 'relative'
+    },
+    '.scrollY': { overflowY: 'scroll' },
+    '.modalContentNoScroll': {
+      color: theme.palette.text.paper,
+      backgroundColor: theme.palette.background.paper,
+      padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
+      maxHeight: '80vh',
+      minWidth: 400,
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      display: 'flex',
+      flexDirection: 'column',
       position: 'relative'
     },
     '.modalCloseButton': { position: 'absolute', top: 10, right: 10 },
