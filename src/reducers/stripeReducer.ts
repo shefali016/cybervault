@@ -20,10 +20,10 @@ export type State = {
   planSubscriptionSuccess: boolean
 
   cancelSubscriptionError: null | string
-  cancelSubscriptionSuccess: boolean,
+  cancelSubscriptionSuccess: boolean
 
-  updateSubscriptionSuccess: boolean,
-  updateSubscriptionError: null | string,
+  updateSubscriptionSuccess: boolean
+  updateSubscriptionError: null | string
 }
 
 export type Action = {
@@ -150,7 +150,7 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         activeSubscription: action.subscription,
         subscriptionLoading: false,
-        updateSubscription: true
+        updateSubscriptionSuccess: true
       }
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE:
       return {

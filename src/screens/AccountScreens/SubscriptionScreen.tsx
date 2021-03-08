@@ -87,6 +87,7 @@ const SubscriptionScreen = ({
   return (
     <div className={clsx('container', classes.container)}>
       <SubscriptionModal
+        loading={subscriptionLoading}
         open={subscriptionModalOpen}
         onRequestClose={closeSubscriptionModal}
         activeSubscriptionType={

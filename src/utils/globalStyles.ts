@@ -28,6 +28,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modalContentWrapper': {
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      overflow: 'hidden',
+      position: 'relative'
+    },
     '.modalContent': {
       color: theme.palette.text.paper,
       backgroundColor: theme.palette.background.paper,
