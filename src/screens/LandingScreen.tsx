@@ -465,6 +465,7 @@ const LandingScreen = (props: any) => {
             {[trusted3, trusted4, trusted5, trusted2, trusted1, trusted6].map(
               (src, index) => (
                 <img
+                  key={src}
                   src={src}
                   className={
                     index === 2 || index === 3
@@ -716,7 +717,10 @@ const FooterList = ({
       <div className={classes.footerListItems}>
         {items.map(({ title, onClick }) => {
           return (
-            <AppButton onClick={onClick} className={classes.footerListButton}>
+            <AppButton
+              key={title}
+              onClick={onClick}
+              className={classes.footerListButton}>
               <Typography>{title}</Typography>
             </AppButton>
           )
