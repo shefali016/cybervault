@@ -86,25 +86,24 @@ const AppTextField = (
           ? {
               shrink: true,
               classes: {
-                root: clsx(
-                  !value
-                    ? darkStyle
-                      ? classes.dateRootDark
-                      : classes.dateRoot
-                    : darkStyle
-                    ? classes.dateRootDarkFilled
-                    : classes.dateRootFilled,
-                  labelClassName
-                ),
+                root: !value
+                  ? clsx(
+                      darkStyle ? classes.dateRootDark : classes.dateRoot,
+                      labelClassName
+                    )
+                  : darkStyle
+                  ? classes.dateRootDarkFilled
+                  : classes.dateRootFilled,
+
                 focused: clsx(classes.labelFocused, labelFocusedClassName)
               }
             }
           : {
               classes: {
-                root: clsx(
-                  !value ? classes.labelRoot : classes.labelRootFilled,
-                  labelClassName
-                ),
+                root: !value
+                  ? clsx(classes.labelRoot, labelClassName)
+                  : classes.labelRootFilled,
+
                 focused: clsx(classes.labelFocused, labelFocusedClassName)
               }
             }
