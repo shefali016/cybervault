@@ -4,9 +4,6 @@ import cors from 'cors'
 import * as admin from 'firebase-admin'
 const sgMail = require('@sendgrid/mail')
 
-// import firebaseAccountCredentials from "./cybervault-8cfe9-firebase-adminsdk-kpppk-d07b59a821.json";
-
-// const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 const app = express()
 
 export const corsHandler = cors({ origin: true })

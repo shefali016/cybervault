@@ -958,13 +958,16 @@ const useStyles = makeStyles((theme) => ({
   nav: {
     top: 0,
     display: 'flex',
-    padding: theme.spacing(3),
     zIndex: 100,
     alignItems: 'center',
     justifyContent: 'space-between',
     transition: theme.transitions.create(['background'], {
       duration: 500
-    })
+    }),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1),
+      paddingLeft: theme.spacing(2)
+    }
   },
   navTranslucent: { background: `${theme.palette.background.secondary}` },
   navOpen: { background: theme.palette.background.secondary },
