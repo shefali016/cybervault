@@ -66,8 +66,6 @@ const EditProjectScreen = (props: any) => {
     account: props.account
   })
 
-  const [fileUrl,setDownloadUrl]=useState('')
-
   const openEditProjectModal = (
     currentStep: number,
     isTaskEdit?: boolean,
@@ -135,14 +133,11 @@ const EditProjectScreen = (props: any) => {
         type,
         files: [],
         fileName: file.name,
-        id: id,
-        path:`${type==='image'?`${id}/${id}-original`:`${id}`}`
+        id: id
       }
       const downloadUrl = await setMedia(asset.id, file)
 
       if (typeof downloadUrl === 'string') {
-       
-        setDownloadUrl(downloadUrl)
         var video = await document.createElement('video');
         var source = await document.createElement('source');
         await source.setAttribute('src',`${downloadUrl}`);

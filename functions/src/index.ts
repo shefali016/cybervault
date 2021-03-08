@@ -128,8 +128,7 @@ export const sendEmail = functions.firestore
         !oldData &&
         newData && 
         newData?.files?.length &&
-        newData.files[0].url &&
-        newData.path
+        newData.files[0].url
       ) {
         // let bucket=admin.storage().bucket()
         // upload(newData.files[0].file)
