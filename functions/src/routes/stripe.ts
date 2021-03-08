@@ -201,6 +201,7 @@ router.post('/create_account_link', (req, res) => {
 router.post('/get_plans_list', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
+      await stripe.plans.del('price_1IS7sJKwQrkiELoISx1Lw7Iw')
       const plans = await stripe.plans.list({ limit: 10 })
       return res.json(plans)
     } catch (error) {
@@ -283,8 +284,9 @@ router.post('/update_subscription_plan', (req, res) => {
 router.post('/update_storage_plan_price', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, customerId, planId } = req.body
-      await stripe.plans.del(planId)
+      const { amount, customerId /* planId */ } = req.body
+
+      // await stripe.plans.del(planId)
       const price = await stripe.prices.create({
         product: 'prod_J3lVFSsRKXY99C',
         unit_amount: amount,
