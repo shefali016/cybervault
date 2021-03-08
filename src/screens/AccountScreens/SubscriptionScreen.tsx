@@ -134,7 +134,7 @@ const SubscriptionScreen = ({
                     {!!subscription
                       ? subscription.cancel_at_period_end
                         ? `Your subscription ends ${moment(
-                            subscription.current_period_end * 1000
+                            subscription.cancel_at * 1000
                           ).format('YYYY-MM-DD')}`
                         : `Your subscription renews on ${moment(
                             subscription.current_period_end * 1000

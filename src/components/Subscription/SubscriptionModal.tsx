@@ -172,7 +172,7 @@ export const SubscriptionModal = ({
     const cancelDate =
       isSubscribed &&
       subscription.cancel_at_period_end &&
-      subscription.current_period_end * 1000
+      subscription.cancel_at * 1000
 
     return (
       <SubscriptionItem
