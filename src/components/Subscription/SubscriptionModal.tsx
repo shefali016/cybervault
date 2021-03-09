@@ -46,6 +46,7 @@ type Props = {
   ) => void
   loading: boolean
   planList: Array<StripePlans> | null
+  setStorageProduct: (storageProduct: any) => void
 }
 
 export const SubscriptionModal = ({
@@ -57,7 +58,7 @@ export const SubscriptionModal = ({
   subscription,
   cancelSubscription,
   updateSubscription,
-  planList,
+  setStorageProduct,
   loading
 }: Props) => {
   const classes = useStyles()
@@ -94,7 +95,10 @@ export const SubscriptionModal = ({
     try {
       const products: any = await getProducts()
       setProducts(products)
-
+      const storageProduct = products.filter(
+        (item: any) => item.name === 'Storage Subscription'
+      )[0]
+      setStorageProduct(storageProduct)
       const planRequests: Array<
         Promise<{
           productId: string

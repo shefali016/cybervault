@@ -307,23 +307,31 @@ router.post('/update_subscription_plan', (req, res) => {
 router.post('/update_storage_plan_price', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, customerId, userId } = req.body
-      const plans = await stripe.plans.list({ product: 'prod_J3lVFSsRKXY99C' })
+      const {
+        amount,
+        customerId,
+        accountId,
+        paymentMethodId,
+        productId,
+        subscriptionPlanId
+      } = req.body
+      const plans = await stripe.plans.list({ product: productId })
       let subscribedPlan: any = null
       for (let index = 0; index < plans.data.length; index++) {
         const plan = plans.data[index]
-        if (plan.metadata?.userId === userId) {
+        if (plan.metadata?.accountId === accountId) {
           subscribedPlan = plan
         }
       }
+      
       if (subscribedPlan) {
         await stripe.plans.del(subscribedPlan.id)
       }
 
       const price = await stripe.prices.create({
-        product: 'prod_J3lVFSsRKXY99C',
+        product: productId,
         metadata: {
-          userId: userId
+          accountId: accountId
         },
         unit_amount: amount,
         nickname: 'Storage Plan',
@@ -332,20 +340,23 @@ router.post('/update_storage_plan_price', (req, res) => {
           interval: 'month'
         }
       })
-      const session = await stripe.checkout.sessions.create({
-        mode: 'subscription',
-        customer: customerId,
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price: price.id,
-            quantity: 1
-          }
-        ],
-        success_url: 'http://localhost:3000/subscription',
-        cancel_url: 'http://localhost:3000/subscription/cancel'
-      })
-      return res.json(session)
+
+      let subscription: any
+      if (subscriptionPlanId) {
+        subscription = await stripe.subscriptions.update(subscriptionPlanId, {
+          default_payment_method: paymentMethodId,
+          items: [{ price: price.id }],
+          metadata: { type: 'storage' }
+        })
+      } else {
+        subscription = await stripe.subscriptions.create({
+          customer: customerId,
+          default_payment_method: paymentMethodId,
+          items: [{ price: price.id }],
+          metadata: { type: 'storage' }
+        })
+      }
+      return res.json(subscription)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)
