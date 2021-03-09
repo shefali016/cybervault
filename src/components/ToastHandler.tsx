@@ -70,6 +70,14 @@ const toastSelector = createSelector<
         'Failed to update subscription. Please try again or contact support.',
       success:
         !!stripe.updateSubscriptionSuccess && 'Your subscription has be updated'
+    },
+    {
+      error:
+        !!stripe.storagePurchaseError &&
+        'Failed to purchase extra storage. Please try again or contact support.',
+      success:
+        !!stripe.storagePurchaseSuccess &&
+        'Extra storage has be added to your account!'
     }
   ]
 

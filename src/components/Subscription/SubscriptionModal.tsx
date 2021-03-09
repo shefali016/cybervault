@@ -250,47 +250,42 @@ export const SubscriptionModal = ({
 
   return (
     <Fragment>
-      <Modal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-        <div className={'modalContentWrapper'}>
-          <div className={'modalContent'}>
-            <CloseButton
-              onClick={onRequestClose}
-              style={{ position: 'absolute', top: 10, right: 10 }}
-            />
-            <div className={classes.header}>
-              <Typography variant={'h4'}>Upgrade Your Workflow</Typography>
-              <Typography
-                variant={'caption'}
-                style={{
-                  marginTop: theme.spacing(1),
-                  marginBottom: theme.spacing(4)
-                }}>
-                {activeSubscriptionType
-                  ? 'Upgrade your subscription to benefit from extra features'
-                  : 'Subscribe to keep using premium Creator Cloud features'}
-              </Typography>
-              {renderDurationSwitch()}
-            </div>
-
-            <div className={classes.subscriptionContainer}>
-              {[
-                SubscriptionTypes.CREATOR,
-                SubscriptionTypes.PRO,
-                SubscriptionTypes.TEAM
-              ].map((type: SubscriptionType) => (
-                <Fragment key={type}>{renderSubscriptionPlan(type)}</Fragment>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex' }}>
-              {renderBusinessSubscription()}
-            </div>
+      <Modal
+        open={open}
+        onRequestClose={onRequestClose}
+        clickToClose={true}
+        showLoadingOverlay={loading}>
+        <div className={'modalContent'}>
+          <CloseButton
+            onClick={onRequestClose}
+            style={{ position: 'absolute', top: 10, right: 10 }}
+          />
+          <div className={classes.header}>
+            <Typography variant={'h4'}>Upgrade Your Workflow</Typography>
+            <Typography
+              variant={'caption'}
+              style={{
+                marginTop: theme.spacing(1),
+                marginBottom: theme.spacing(4)
+              }}>
+              {activeSubscriptionType
+                ? 'Upgrade your subscription to benefit from extra features'
+                : 'Subscribe to keep using premium Creator Cloud features'}
+            </Typography>
+            {renderDurationSwitch()}
           </div>
-          {loading && (
-            <div className={classes.loadingView}>
-              <AppLoader color={theme.palette.primary.main} />
-            </div>
-          )}
+
+          <div className={classes.subscriptionContainer}>
+            {[
+              SubscriptionTypes.CREATOR,
+              SubscriptionTypes.PRO,
+              SubscriptionTypes.TEAM
+            ].map((type: SubscriptionType) => (
+              <Fragment key={type}>{renderSubscriptionPlan(type)}</Fragment>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
         </div>
       </Modal>
       <PaymentMethodModal
@@ -442,19 +437,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.error.main,
     paddingTop: theme.spacing(2),
     textAlign: 'center'
-  },
-  loadingView: {
-    display: 'flex',
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    width: 'auto',
-    height: 'auto',
-    backgroundColor: 'rgba(255, 255, 255, 0.75)'
   },
   choosePlanContainer: {
     display: 'flex',
