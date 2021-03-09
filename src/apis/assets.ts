@@ -5,31 +5,37 @@ import { Asset, Project, ProjectAsset } from '../utils/Interface'
 import { generateUid } from 'utils'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
+var AWS = require('aws-sdk')
+AWS.config.update({
+  accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+  secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
+  region:`${process.env.REACT_APP_AWS_REGION}`,
+})
+var s3 = new AWS.S3();
 
 export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
 }
 
-export const setMedia = (id: string, file: any) => {
-  return new Promise((resolve, reject) => {
-    const uploadTask = firebase.storage().ref(id).put(file)
-    uploadTask.on(
-      'state_changed',
-      (snapshot: any) => {
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        console.log('Upload is ' + progress + '% done')
-      },
-      () => reject(),
-      () => {
-        uploadTask.snapshot.ref
-          .getDownloadURL()
-          .then(function (downloadURL: string) {
-            resolve(downloadURL)
-          })
+export const setMedia = async (id: string, file:any) => {
+  return new Promise(function (resolve, reject) {
+    var params = { 
+      Body: file,
+      Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+      Key:`${id}${file.name}`,
+      ACL: 'public-read'
+     };
+     s3.upload(params, function(err:any, data:any) {    
+      if (err) {
+        reject(err)
       }
-    )
+      else {
+      resolve(data.Location)
+      }
+    })
   })
 }
+
 
 export const uploadMedia = (id: string, file: any) => {
   const childRef = firebase.storage().ref().child(buildAssetPath(id))
