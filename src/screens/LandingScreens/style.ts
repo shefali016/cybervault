@@ -30,7 +30,7 @@ export const useStyles = makeStyles((theme) => {
 
     pricingScreenContent: {
       zIndex: 1,
-      paddingTop: theme.spacing(20),
+      paddingTop: theme.spacing(15),
       color: 'white'
     },
 
