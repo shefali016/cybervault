@@ -7,7 +7,7 @@ import MainScreen from 'screens/MainScreen'
 import { useGlobalStyles } from '../utils/globalStyles'
 import InvoicesClientScreen from '../screens/SharedScreens/InvoicesClientScreen'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
-import LandingScreen from 'screens/LandingScreen'
+import LandingScreen from 'screens/LandingScreens/HomeScreen'
 
 type Props = { isLoggedIn?: boolean }
 
