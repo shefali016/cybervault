@@ -40,6 +40,7 @@ type StateProps = {
   subscription: any
   subscriptionLoading: boolean
   subscriptionPlans: Array<StripePlans> | null
+  storagePurchaseLoading: boolean
 }
 type DispatchProps = {
   getPaymentMethods: (customerId: string) => void
@@ -79,7 +80,8 @@ const SubscriptionScreen = ({
   createAmountSubscription,
   getPlanList,
   subscriptionPlans,
-  subscriptionLoading
+  subscriptionLoading,
+  storagePurchaseLoading
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
@@ -134,6 +136,7 @@ const SubscriptionScreen = ({
         customerId={customerId}
         createAmountSubscription={createAmountSubscription}
         storageProduct={storageProduct}
+        storagePurchaseLoading={storagePurchaseLoading}
       />
 
       <CardModal
@@ -190,7 +193,7 @@ const SubscriptionScreen = ({
                 <div style={{ flex: 1 }}>
                   <Typography variant='subtitle1'>Your Storage</Typography>
                   <Typography variant='caption'>
-                    Viewers can also download a previewed watermarked version
+                    Add storage to account to upload more content
                   </Typography>
                 </div>,
                 <GradiantButton onClick={openStorageModal}>
@@ -320,7 +323,9 @@ const mapState = (state: ReduxState): StateProps => ({
   customerId: state.stripe.customer?.id as string,
   subscription: state.stripe.accountSubscription,
   subscriptionLoading: state.stripe.subscriptionLoading,
-  subscriptionPlans: state.stripe.subscriptionPlans as Array<StripePlans> | null
+  subscriptionPlans: state.stripe
+    .subscriptionPlans as Array<StripePlans> | null,
+  storagePurchaseLoading: state.stripe.storagePurchaseLoading
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({

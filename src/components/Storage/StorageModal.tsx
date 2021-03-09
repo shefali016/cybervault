@@ -27,6 +27,7 @@ type Props = {
     productId: string
   ) => void
   storageProduct: Product
+  storagePurchaseLoading: boolean
 }
 
 export const StorageModal = ({
@@ -37,7 +38,8 @@ export const StorageModal = ({
   paymentMethods,
   customerId,
   createAmountSubscription,
-  storageProduct
+  storageProduct,
+  storagePurchaseLoading
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -168,7 +170,10 @@ export const StorageModal = ({
   }
 
   return (
-    <Modal {...{ open, onRequestClose }} clickToClose={true}>
+    <Modal
+      {...{ open, onRequestClose }}
+      clickToClose={true}
+      showLoadingOverlay={storagePurchaseLoading}>
       <div className={clsx('modalContent', classes.modalContent)}>
         <CloseButton
           onClick={onRequestClose}
@@ -217,7 +222,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     flex: 1,
-    paddingBottom: theme.spacing(3)
+    paddingBottom: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: theme.spacing(3)
+    }
   },
   storageSliderContainer: {
     display: 'flex',
@@ -264,11 +272,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2
+    justifyContent: 'center'
   },
   storagePie: {
-    position: 'absolute',
-    zIndex: 1
+    position: 'absolute'
   }
 }))

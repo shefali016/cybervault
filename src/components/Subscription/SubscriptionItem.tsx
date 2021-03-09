@@ -16,7 +16,7 @@ import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { getSubscriptionDetails } from 'utils/subscription'
 
 type SubscriptionItemProps = {
-  type: SubscriptionType
+  type: SubscriptionType | any
   duration: SubscriptionDuration
   isSelected?: boolean
   isSubscribed?: boolean

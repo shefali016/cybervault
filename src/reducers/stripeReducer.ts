@@ -29,6 +29,10 @@ export type State = {
 
   subscriptionPlans: Array<StripePlans> | null
   storagePlan: StripePlans | null
+
+  storagePurchaseLoading: boolean
+  storagePurchaseSuccess: boolean
+  storagePurchaseError: null | string
 }
 
 export type Action = {
@@ -67,7 +71,11 @@ const initialState = {
   cancelSubscriptionSuccess: false,
 
   subscriptionPlans: null,
-  storagePlan: null
+  storagePlan: null,
+
+  storagePurchaseLoading: false,
+  storagePurchaseSuccess: false,
+  storagePurchaseError: null
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -190,7 +198,7 @@ const stripe = (state = initialState, action: Action) => {
         updateSubscriptionError: action.error
       }
     case ActionTypes.GET_PLAN_LIST:
-      return { ...state, planSubscriptionLoading: true }
+      return { ...state, plansLoading: true }
     case ActionTypes.GET_PLAN_LIST_SUCCESS:
       const storagePlan = action.plans.filter(
         (plans: StripePlans) => plans.nickname === 'Storage Plan'
@@ -202,10 +210,31 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         storagePlan,
         subscriptionPlans,
-        planSubscriptionLoading: false
+        plansLoading: false
       }
     case ActionTypes.GET_PLAN_LIST_FAILURE:
-      return { ...state, planSubscriptionLoading: false }
+      return { ...state, plansLoading: false }
+
+    case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION:
+      return {
+        ...state,
+        storagePurchaseLoading: true,
+        storagePurchaseSuccess: false,
+        storagePurchaseError: null
+      }
+    case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        storagePurchaseLoading: false,
+        storagePurchaseSuccess: true
+      }
+    case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE:
+      return {
+        ...state,
+        storagePurchaseLoading: false,
+        storagePurchaseError: action.error
+      }
+
     default:
       return state
   }
@@ -217,7 +246,8 @@ export const stripeTransform = createTransform(
   },
   (outboundState: State) => ({
     ...initialState,
-    // customer: outboundState.customer,
+    accountSubscription: outboundState.accountSubscription,
+    customer: outboundState.customer,
     paymentMethods: outboundState.paymentMethods.filter((p) => !!p)
   }),
   { whitelist: ['stripe'] }
