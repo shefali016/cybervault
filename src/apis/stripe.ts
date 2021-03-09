@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {
   Account,
+  Product,
   StripeAccount,
   StripeAccountLink,
   StripeCustomer,
@@ -322,4 +323,32 @@ export const getSubscription = async (customerId: string) => {
   } else {
     throw Error('Failed to fetch subscription')
   }
+}
+
+export const getProductsWithPlans = async () => {
+  const products: any = await getProducts()
+
+  const planRequests: Array<
+    Promise<{
+      productId: string
+      plans: Array<StripePlans>
+    }>
+  > = products.map((product: Product) =>
+    getPlans(product.id).then((plans: Array<StripePlans>) => ({
+      productId: product.id,
+      plans
+    }))
+  )
+
+  const plans = await Promise.all(planRequests)
+  const productPlans: {
+    [productId: string]: Array<StripePlans>
+  } = plans.reduce(
+    (acc: {}, res: { productId: string; plans: Array<StripePlans> }) => {
+      return { ...acc, [res.productId]: res.plans }
+    },
+    {}
+  )
+
+  return { products, plans: productPlans }
 }

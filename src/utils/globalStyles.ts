@@ -40,18 +40,26 @@ export const useGlobalStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
       maxHeight: '80vh',
       minWidth: 400,
+      maxWidth: 1200,
       outline: 'none',
       borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'scroll',
       position: 'relative',
-      [theme.breakpoints.down("md")]: {
+      [theme.breakpoints.down('md')]: {
         // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
       },
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('sm')]: {
         padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-        minWidth: "auto"
+        minWidth: 'auto'
+      }
+    },
+    '.bold': { fontWeight: 'bold' },
+    '.responsiveRow': {
+      display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
       }
     },
     '.scrollY': { overflowY: 'scroll' },
@@ -144,6 +152,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Text
-    '.metaText': { color: theme.palette.text.meta }
+    '.metaText': { color: theme.palette.text.meta },
+    '.whiteText': { color: 'white' }
   }
 }))
