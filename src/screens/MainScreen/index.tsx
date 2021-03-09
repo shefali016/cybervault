@@ -56,15 +56,13 @@ export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
-  settings: 'settings',
-  storage: 'storage'
+  invoices: 'invoices'
 }
 
 export const AccountTabIds = {
   profile: 'profile',
   manage: 'manage',
-  branding: 'branding',
-  subscription: 'subscription'
+  branding: 'branding'
 }
 
 export const ChildTabs = {
@@ -72,7 +70,7 @@ export const ChildTabs = {
 }
 
 export const SharedTabIds = {
-  invoices: 'invoices',
+  subscription: 'subscription',
   security: 'security'
 }
 
@@ -114,7 +112,7 @@ const MainScreen = ({
   const theme = useTheme()
 
   const getInitialScreenView = () => {
-    return Object.values(DashboardTabIds).includes(
+    return Object.values({ ...DashboardTabIds, ...SharedTabIds }).includes(
       history.location.pathname.replace('/', '')
     )
       ? ScreenViews.dashboard
@@ -153,22 +151,22 @@ const MainScreen = ({
       case DashboardTabIds.portfolio:
         return {
           id,
-          text: 'Portfolio',
+          text: 'Portfolios',
           icon: <PortfolioIcon className={classes.listIconStyle} />
         }
-      case DashboardTabIds.settings:
-        return {
-          id,
-          text: 'Settings',
-          icon: <SettingsIcon className={classes.listIconStyle} />
-        }
-      case DashboardTabIds.storage:
-        return {
-          id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
-        }
-      case SharedTabIds.invoices:
+      // case DashboardTabIds.settings:
+      //   return {
+      //     id,
+      //     text: 'Settings',
+      //     icon: <SettingsIcon className={classes.listIconStyle} />
+      //   }
+      // case DashboardTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      case DashboardTabIds.invoices:
         return {
           id,
           text: 'Invoices',
@@ -199,7 +197,7 @@ const MainScreen = ({
           text: 'Branding',
           icon: <BrandingIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.subscription:
+      case SharedTabIds.subscription:
         return {
           id,
           text: 'Subscription',
