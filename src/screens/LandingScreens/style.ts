@@ -50,7 +50,9 @@ export const useStyles = makeStyles((theme) => {
     footerListButton: {
       color: theme.palette.common.white,
       justifyContent: 'flex-start',
-      minWidth: 200
+      minWidth: 200,
+      paddingLeft: theme.spacing(2),
+      marginLeft: -theme.spacing(2)
     },
     footerListItems: {
       marginTop: theme.spacing(1),
