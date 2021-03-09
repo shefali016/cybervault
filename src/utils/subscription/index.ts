@@ -9,19 +9,25 @@ export const getSubscriptionDetails = (
   features: Array<string>
   extraFeatures?: Array<string>
   storage: number
+  numProjects: number
+  transactionFee: string
 } => {
   switch (type) {
     case SubscriptionTypes.CREATOR:
       return {
         name: 'Creator',
         description: 'Best for freelancers starting out',
+        numProjects: 1,
+        transactionFee: '7%',
         features: [
           '1 project per month',
+          '7% security transaction fee',
+          '5GB storage'
+        ],
+        extraFeatures: [
           'Secure invoicing transactions',
           'Content theft protection',
-          '7% security transaction fee',
-          'Auto crop downloadable content',
-          '5GB storage'
+          'Auto crop downloadable content'
         ],
         storage: 5
       }
@@ -29,15 +35,17 @@ export const getSubscriptionDetails = (
       return {
         name: 'Pro',
         description: 'Most popular for small production agencies',
+        transactionFee: '7%',
+        numProjects: 10,
         features: [
           '10 projects per month',
-          'Secure invoicing transactions',
-          'Content theft protection',
           '7% security transaction fee',
-          'Auto crop downloadable content',
           '50GB storage'
         ],
         extraFeatures: [
+          'Secure invoicing transactions',
+          'Content theft protection',
+          'Auto crop downloadable content',
           'Customizable portfolio sharing',
           'Personalized watermark',
           'Additional storage plans'
@@ -48,15 +56,17 @@ export const getSubscriptionDetails = (
       return {
         name: 'Team',
         description: 'For media empires seeking endless capabilities.',
+        transactionFee: '7%',
+        numProjects: 100,
         features: [
           '100 project per month',
-          'Secure invoicing transactions',
-          'Content theft protection',
           '7% security transaction fee',
-          'Auto crop downloadable content',
           '150GB storage'
         ],
         extraFeatures: [
+          'Secure invoicing transactions',
+          'Content theft protection',
+          'Auto crop downloadable content',
           'Customizable portfolio sharing',
           'Personalized watermark',
           'Additional storage plans'
@@ -67,6 +77,8 @@ export const getSubscriptionDetails = (
       return {
         name: 'Business',
         description: '',
+        transactionFee: '',
+        numProjects: 0,
         features: [],
         storage: 0
       }
@@ -74,6 +86,8 @@ export const getSubscriptionDetails = (
       return {
         name: '',
         description: '',
+        transactionFee: '',
+        numProjects: 0,
         features: [],
         storage: 0
       }

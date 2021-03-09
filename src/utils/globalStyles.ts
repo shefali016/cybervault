@@ -40,6 +40,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
       maxHeight: '80vh',
       minWidth: 400,
+      maxWidth: 1200,
       outline: 'none',
       borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
@@ -151,6 +152,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Text
-    '.metaText': { color: theme.palette.text.meta }
+    '.metaText': { color: theme.palette.text.meta },
+    '.whiteText': { color: 'white' }
   }
 }))
