@@ -39,7 +39,6 @@ type StateProps = {
   customerId: string
   subscription: any
   subscriptionLoading: boolean
-  extraStorage: number
   subscriptionPlans: Array<StripePlans> | null
 }
 type DispatchProps = {
@@ -78,7 +77,6 @@ const SubscriptionScreen = ({
   cancelSubscription,
   updateSubscription,
   createAmountSubscription,
-  extraStorage,
   getPlanList,
   subscriptionPlans,
   subscriptionLoading
@@ -135,7 +133,6 @@ const SubscriptionScreen = ({
         paymentMethods={paymentMethods}
         customerId={customerId}
         createAmountSubscription={createAmountSubscription}
-        userExtraStorage={extraStorage}
         storageProduct={storageProduct}
       />
 
@@ -323,7 +320,6 @@ const mapState = (state: ReduxState): StateProps => ({
   customerId: state.stripe.customer?.id as string,
   subscription: state.stripe.accountSubscription,
   subscriptionLoading: state.stripe.subscriptionLoading,
-  extraStorage: state.auth.account?.subscription.extraStorage as number,
   subscriptionPlans: state.stripe.subscriptionPlans as Array<StripePlans> | null
 })
 

@@ -20,7 +20,6 @@ type Props = {
   subscription: Subscription | any
   paymentMethods: Array<PaymentMethod>
   customerId: string
-  userExtraStorage: number
   createAmountSubscription: (
     price: number,
     paymentMethodId: string,
@@ -38,7 +37,6 @@ export const StorageModal = ({
   paymentMethods,
   customerId,
   createAmountSubscription,
-  userExtraStorage,
   storageProduct
 }: Props) => {
   const classes = useStyles()
@@ -48,7 +46,7 @@ export const StorageModal = ({
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
 
   const [extraStorage, setExtraStorage] = useState<number>(
-    userExtraStorage || 0
+    account.subscription.extraStorage || 0
   )
 
   const getTotalStorage = (account: Account) => {
