@@ -153,7 +153,7 @@ const logoutSuccess = (state: State, action: Action) => {
     ...state,
     isLoggedIn: false,
     user: null,
-    account: null
+    account: null,
   }
 }
 

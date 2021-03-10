@@ -153,7 +153,7 @@ export const getPortfolioRequest = async (
     for (let index = 0; index < portfolioPorijects.length; index++) {
       const projectId = portfolioPorijects[index]
       const projects: Project | any = await getProjectDetailsRequest(
-        account,
+        account.id,
         projectId
       )
       projectDataList.push(projects)

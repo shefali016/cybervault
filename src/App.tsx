@@ -5,6 +5,9 @@ import history from './services/history'
 import React from 'react'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
+import { StripeProvider } from 'react-stripe-elements'
+import { stripe_public_key } from 'config.json'
+import ToastHandler from 'components/ToastHandler'
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -47,11 +50,16 @@ initFirebase()
 function App() {
   return (
     <Router history={history}>
-      <ThemeProvider theme={theme}>
-        <ToastProvider>
-          <Routes />
-        </ToastProvider>
-      </ThemeProvider>
+      <StripeProvider apiKey={stripe_public_key}>
+        <ThemeProvider theme={theme}>
+          <ToastProvider>
+            <React.Fragment>
+              <Routes />
+              <ToastHandler />
+            </React.Fragment>
+          </ToastProvider>
+        </ThemeProvider>
+      </StripeProvider>
     </Router>
   )
 }

@@ -1,4 +1,5 @@
 import { makeStyles, TextField, useTheme } from '@material-ui/core'
+import clsx from 'clsx'
 import React, { useMemo, forwardRef } from 'react'
 import { InputChangeEvent } from '../../../utils/Interface'
 
@@ -15,6 +16,11 @@ type Props = {
   disabled?: boolean
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
   onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+  onInput?: (e: InputChangeEvent) => void
+  className?: string
+  labelClassName?: string
+  labelFocusedClassName?: string
+  autoFocus?: boolean
 }
 
 const AppTextField = (
@@ -30,7 +36,12 @@ const AppTextField = (
     onKeyDown,
     onKeyUp,
     name,
-    disabled
+    disabled,
+    onInput,
+    className = '',
+    labelClassName = '',
+    labelFocusedClassName = '',
+    autoFocus
   }: Props,
   ref: any
 ) => {
@@ -51,9 +62,11 @@ const AppTextField = (
 
   return (
     <TextField
+      autoFocus={autoFocus}
       inputRef={ref}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}
+      onInput={onInput}
       error={error ? error : false}
       label={label}
       variant='outlined'
@@ -67,7 +80,7 @@ const AppTextField = (
       disabled={disabled ? disabled : false}
       InputProps={{
         classes: {
-          root: dynamicInputStyle
+          root: clsx(dynamicInputStyle, className)
         }
       }}
       inputProps={type === 'date' ? { min: currentDate } : {}}
@@ -77,19 +90,24 @@ const AppTextField = (
               shrink: true,
               classes: {
                 root: !value
-                  ? darkStyle
-                    ? classes.dateRootDark
-                    : classes.dateRoot
+                  ? clsx(
+                      darkStyle ? classes.dateRootDark : classes.dateRoot,
+                      labelClassName
+                    )
                   : darkStyle
                   ? classes.dateRootDarkFilled
                   : classes.dateRootFilled,
-                focused: classes.labelFocused
+
+                focused: clsx(classes.labelFocused, labelFocusedClassName)
               }
             }
           : {
               classes: {
-                root: !value ? classes.labelRoot : classes.labelRootFilled,
-                focused: classes.labelFocused
+                root: !value
+                  ? clsx(classes.labelRoot, labelClassName)
+                  : classes.labelRootFilled,
+
+                focused: clsx(classes.labelFocused, labelFocusedClassName)
               }
             }
       }
@@ -160,7 +178,9 @@ const useStyles = makeStyles((theme) => ({
   },
   inputRoot: {
     backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    color: theme.palette.grey[900]
+    color: theme.palette.grey[900],
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   multilineInputRoot: {
     backgroundColor: 'rgba(255, 255, 255, 0.04)',

@@ -1,91 +1,84 @@
-import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { SubscriptionType } from 'utils/Interface'
+import { SubscriptionTypes } from 'utils/enums'
+import { Product, Subscription, SubscriptionType } from 'utils/Interface'
 
 export const getSubscriptionDetails = (
-  type: SubscriptionType
+  type: SubscriptionType | undefined
 ): {
   name: string
   description: string
-  prices: {
-    [key in SubscriptionDurations]: string
-  }
   features: Array<string>
   extraFeatures?: Array<string>
   storage: number
+  numProjects: number
+  transactionFee: string
 } => {
   switch (type) {
-    case SubscriptionTypes.creator:
+    case SubscriptionTypes.CREATOR:
       return {
         name: 'Creator',
         description: 'Best for freelancers starting out',
-        prices: {
-          [SubscriptionDurations.monthly]: '0.00',
-          [SubscriptionDurations.yearly]: '0.00'
-        },
+        numProjects: 1,
+        transactionFee: '7%',
         features: [
           '1 project per month',
+          '7% security transaction fee',
+          '5GB storage'
+        ],
+        extraFeatures: [
           'Secure invoicing transactions',
           'Content theft protection',
-          '7% security transaction fee',
-          'Auto crop downloadable content',
-          '5GB storage'
+          'Auto crop downloadable content'
         ],
         storage: 5
       }
-    case SubscriptionTypes.pro:
+    case SubscriptionTypes.PRO:
       return {
         name: 'Pro',
         description: 'Most popular for small production agencies',
-        prices: {
-          [SubscriptionDurations.monthly]: '29.99',
-          [SubscriptionDurations.yearly]: '359.99'
-        },
+        transactionFee: '7%',
+        numProjects: 10,
         features: [
           '10 projects per month',
-          'Secure invoicing transactions',
-          'Content theft protection',
           '7% security transaction fee',
-          'Auto crop downloadable content',
           '50GB storage'
         ],
         extraFeatures: [
+          'Secure invoicing transactions',
+          'Content theft protection',
+          'Auto crop downloadable content',
           'Customizable portfolio sharing',
           'Personalized watermark',
           'Additional storage plans'
         ],
         storage: 50
       }
-    case SubscriptionTypes.team:
+    case SubscriptionTypes.TEAM:
       return {
         name: 'Team',
         description: 'For media empires seeking endless capabilities.',
-        prices: {
-          [SubscriptionDurations.monthly]: '59.99',
-          [SubscriptionDurations.yearly]: '719.99'
-        },
+        transactionFee: '7%',
+        numProjects: 100,
         features: [
-          '1 project per month',
-          'Secure invoicing transactions',
-          'Content theft protection',
+          '100 project per month',
           '7% security transaction fee',
-          'Auto crop downloadable content',
           '150GB storage'
         ],
         extraFeatures: [
+          'Secure invoicing transactions',
+          'Content theft protection',
+          'Auto crop downloadable content',
           'Customizable portfolio sharing',
           'Personalized watermark',
           'Additional storage plans'
         ],
         storage: 150
       }
-    case SubscriptionTypes.business:
+    case SubscriptionTypes.BUSINESS:
       return {
         name: 'Business',
         description: '',
-        prices: {
-          [SubscriptionDurations.monthly]: '',
-          [SubscriptionDurations.yearly]: ''
-        },
+        transactionFee: '',
+        numProjects: 0,
         features: [],
         storage: 0
       }
@@ -93,12 +86,23 @@ export const getSubscriptionDetails = (
       return {
         name: '',
         description: '',
-        prices: {
-          [SubscriptionDurations.monthly]: '',
-          [SubscriptionDurations.yearly]: ''
-        },
+        transactionFee: '',
+        numProjects: 0,
         features: [],
         storage: 0
       }
   }
 }
+
+export const findProductWithType = (
+  products: Array<Product>,
+  type: SubscriptionType
+): Product | undefined => {
+  return products.find((product) => {
+    return product.metadata.type === type
+  })
+}
+
+export const getSubscriptionType = (
+  subscription: Subscription
+): SubscriptionType => subscription.metadata.type

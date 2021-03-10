@@ -2,7 +2,6 @@ import { Box, Card, Grid, Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
 import { Client, Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
-import ConfirmBox from 'components/Common/ConfirmBox'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -11,7 +10,6 @@ import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { useStyles } from './style'
 import { AppButton } from 'components/Common/Core/AppButton'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
-import { setCommentRange } from 'typescript'
 
 type Props = {
   folderList: Array<PortfolioFolder>

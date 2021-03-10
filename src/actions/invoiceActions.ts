@@ -28,10 +28,33 @@ export function generateNewInvoiceRequest(
     }
   }
  
-  export function getInvoiceRequest(account: Types.Account) {
+  export function getAllInvoiceRequest(account: Types.Account) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_REQUEST,
+      account,
+    }
+  }
+  export function getAllInvoiceSuccess(
+    invoicesData:Array<Types.Invoice>
+  ) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_SUCCESS,
+      payload:invoicesData
+    }
+  }
+  export function getAllInvoiceError(error: string) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_ERROR,
+      error
+    }
+  }
+
+
+  export function getInvoiceRequest(accountId: string,invoiceId:string) {
     return {
       type: ActionTypes.GET_INVOICE_REQUEST,
-      account,
+      accountId,
+      invoiceId
     }
   }
   export function getInvoiceSuccess(
@@ -45,6 +68,54 @@ export function generateNewInvoiceRequest(
   export function getInvoiceError(error: string) {
     return {
       type: ActionTypes.GET_INVOICE_ERROR,
+      error
+    }
+  }
+  export function sendRevisionRequest(accountId: string,
+    invoiceId:string,
+    conversation:Types.InvoiceConversation
+  ) {
+    return {
+      type: ActionTypes.SEND_REVISION_REQUEST,
+      accountId,
+      invoiceId,
+      conversation
+    }
+  }
+  export function sendRevisionSuccess(
+  ) {
+    return {
+      type: ActionTypes.SEND_REVISION_SUCCESS,
+    }
+  }
+  export function sendRevisionError(error: string) {
+    return {
+      type: ActionTypes.SEND_REVISION_ERROR,
+      error
+    }
+  }
+
+  export function getAllInvoiceConversationRequest(accountId: string,
+    invoiceId:string,
+  ) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_REQUEST,
+      accountId,
+      invoiceId,
+    }
+  }
+  
+  export function getAllInvoiceConversationSuccess(
+    data:any
+  ) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_SUCCESS,
+      payload:data
+    }
+  }
+  export function getAllInvoiceConversationError(error: string) {
+    return {
+      type: ActionTypes.GET_ALL_INVOICE_CONVERSATION_ERROR,
       error
     }
   }

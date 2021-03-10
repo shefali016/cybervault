@@ -28,7 +28,42 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modalContentWrapper': {
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      overflow: 'hidden',
+      position: 'relative'
+    },
     '.modalContent': {
+      color: theme.palette.text.paper,
+      backgroundColor: theme.palette.background.paper,
+      padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
+      maxHeight: '80vh',
+      minWidth: 400,
+      maxWidth: 1200,
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      display: 'flex',
+      flexDirection: 'column',
+      overflowY: 'scroll',
+      position: 'relative',
+      [theme.breakpoints.down('md')]: {
+        // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+      },
+      [theme.breakpoints.down('sm')]: {
+        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+        minWidth: 'auto'
+      }
+    },
+    '.bold': { fontWeight: 'bold' },
+    '.responsiveRow': {
+      display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
+      }
+    },
+    '.scrollY': { overflowY: 'scroll' },
+    '.modalContentNoScroll': {
       color: theme.palette.text.paper,
       backgroundColor: theme.palette.background.paper,
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
@@ -38,9 +73,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
       flexDirection: 'column',
-      overflowY: 'scroll',
       position: 'relative'
     },
+    '.modalCloseButton': { position: 'absolute', top: 10, right: 10 },
     '.horizontalGradient': {
       background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`
     },
@@ -53,7 +88,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.dashboardScreen': {
       paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5)
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down(530)]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3)
+      },
+      color: theme.palette.text.background
     },
     '.screenContainer': {
       display: 'flex',
@@ -78,6 +118,27 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: '#626262',
       fontSize: '10px !important'
     },
+    '.dashBox': {
+      borderRadius: '18px',
+      border: '2px dashed #9ea0a28c',
+      textAlign: 'center',
+      cursor: 'pointer',
+      color: theme.palette.text.meta,
+      transition: theme.transitions.create(
+        ['border', 'background', 'color', 'opacity'],
+        {
+          duration: 500
+        }
+      ),
+      '&:hover': {
+        border: `2px dashed ${theme.palette.grey[600]}`,
+        color: theme.palette.common.white,
+        background: 'rgba(0,0,0,0.1)',
+        '& $uploadFolderIcon': {
+          opacity: 1
+        }
+      }
+    },
     // Section
     '.sectionInner': {
       background: theme.palette.common.white,
@@ -91,6 +152,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Text
-    '.metaText': { color: theme.palette.text.meta }
+    '.metaText': { color: theme.palette.text.meta },
+    '.whiteText': { color: 'white' }
   }
 }))

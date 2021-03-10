@@ -12,7 +12,6 @@ import { getUser, updateUser } from 'apis/user'
 import { getAccount } from 'apis/account'
 import {
   SharingPrivacies,
-  SubscriptionTypes,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
@@ -29,13 +28,11 @@ export const getUserWithAccount = async (
   }
 
   const { mainAccount } = user
-
   if (!user.customerId) {
     const customer: StripeCustomer = await createStripeCustomer(user)
     user = { ...user, customerId: customer.id }
     await updateUser(user)
   }
-
   const account = await getAccount(mainAccount)
 
   return { account, user }
@@ -140,7 +137,6 @@ export const createAccount = (
       detailsSubmitted: false,
       payoutsEnabled: false
     },
-    subscription: { type: SubscriptionTypes.creator },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,
       watermarkStyle: WatermarkStyles.single,
@@ -167,7 +163,8 @@ export const createAccount = (
     accounts: [account.id],
     mainAccount: account.id,
     email: authUser.email,
-    name: authUser.name
+    name: authUser.name,
+    customerId: ''
   }
 
   const firestore = firebase.firestore()

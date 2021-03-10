@@ -1,6 +1,6 @@
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useTheme } from '@material-ui/core/styles'
-import { useRef, useEffect, useMemo } from 'react'
+import { useRef, useEffect, useMemo, useState } from 'react'
 import { Client, Project } from 'utils/Interface'
 
 export const useTabletLayout = () => {
@@ -27,3 +27,11 @@ export const useGetClient = (clients: Array<Client>, project: Project) =>
         : undefined,
     [clients, project?.clientId]
   )
+
+export const useModalState = (
+  initialOpen: boolean
+): [boolean, (open: boolean) => void, (open: boolean) => () => void] => {
+  const [open, setOpen] = useState(initialOpen)
+  const toggle = (open: boolean) => () => setOpen(open)
+  return [open, setOpen, toggle]
+}

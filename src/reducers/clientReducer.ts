@@ -1,7 +1,10 @@
 import {
-    GET_CLIENTS_REQUEST,
-    GET_CLIENTS_SUCCESS,
-    GET_CLIENTS_ERROR,
+    GET_ALL_CLIENTS_REQUEST,
+    GET_ALL_CLIENTS_SUCCESS,
+    GET_ALL_CLIENTS_ERROR,
+    GET_CLIENT_REQUEST,
+    GET_CLIENT_ERROR,
+    GET_CLIENT_SUCCESS,
     ADD_CLIENT_REQUEST,
     ADD_CLIENT_SUCCESS,
     ADD_CLIENT_ERROR
@@ -17,7 +20,6 @@ import {
     type: string
     payload: {}
     error: string
-    clientsData:[]
   }
   
   const initialState = {
@@ -28,18 +30,22 @@ import {
     newClientSuccess:false,
     newClientError:false,
     newClientLoading:false,
-    newClientErrorMsg:null
+    newClientErrorMsg:null,
+    clientDetailLoading:false,
+    clientDetailSuccess:false,
+    clientDetailError:false,
+    clientDetailData:{}
   }
   
   
-  const getClientsRequest = (state: State, action: Action) => ({
+  const getAllClientsRequest = (state: State, action: Action) => ({
     ...state,
     loading:true,
     success:false,
     error:false
   })
   
-  const getClientsSuccess = (state: State, action: Action) => {
+  const getAllClientsSuccess = (state: State, action: Action) => {
     return {
       ...state,
       clientsData:action.payload,
@@ -49,7 +55,7 @@ import {
     }
   }
   
-  const getClientsError = (state: State, action: Action) => ({
+  const getAllClientsError = (state: State, action: Action) => ({
     ...state,
     error:true,
     loading:false,
@@ -83,15 +89,45 @@ import {
 
   })
 
+  const getClientRequest = (state: State, action: Action) => ({
+    ...state,
+    clientDetailLoading:true,
+    clientDetailSuccess:false,
+    clientDetailError:false
+  })
+  
+  const getClientSuccess = (state: State, action: Action) => {
+    return {
+      ...state,
+      clientDetailData:action.payload,
+      clientDetailLoading:false,
+      clientDetailSuccess:true,
+      clientDetailError:false
+    }
+  }
+  
+  const getClientError = (state: State, action: Action) => ({
+    ...state,
+    clientDetailError:true,
+    clientDetailLoading:false,
+    success:false
+  })
+
 
   const clientReducer = (state = initialState, action: Action) => {
     switch (action.type) {
-      case GET_CLIENTS_REQUEST:
-        return getClientsRequest(state, action)
-      case GET_CLIENTS_SUCCESS:
-        return getClientsSuccess(state, action)
-      case GET_CLIENTS_ERROR:
-        return getClientsError(state, action)
+      case GET_ALL_CLIENTS_REQUEST:
+        return getAllClientsRequest(state, action)
+      case GET_ALL_CLIENTS_SUCCESS:
+        return getAllClientsSuccess(state, action)
+      case GET_ALL_CLIENTS_ERROR:
+        return getAllClientsError(state, action)
+        case GET_CLIENT_REQUEST:
+          return getClientRequest(state, action)
+        case GET_CLIENT_SUCCESS:
+          return getClientSuccess(state, action)
+        case GET_CLIENT_ERROR:
+          return getClientError(state, action)
       case ADD_CLIENT_REQUEST:
           return newClientRequest(state, action)
       case ADD_CLIENT_ERROR:

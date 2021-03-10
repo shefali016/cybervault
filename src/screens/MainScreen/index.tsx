@@ -11,6 +11,8 @@ import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
+import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
+import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -48,25 +50,28 @@ import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
+import { getCustomer, getSubscription } from 'actions/stripeActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
-  settings: 'settings',
-  storage: 'storage'
+  invoices: 'invoices',
+  settings: 'settings'
 }
 
 export const AccountTabIds = {
-  profile: 'profile',
   manage: 'manage',
-  branding: 'branding',
-  subscription: 'subscription',
-  storage: 'storage'
+  profile: 'profile',
+  branding: 'branding'
+}
+
+export const ChildTabs = {
+  paymentMethods: 'paymentmethods'
 }
 
 export const SharedTabIds = {
-  invoices: 'invoices',
+  subscription: 'subscription',
   security: 'security'
 }
 
@@ -79,10 +84,13 @@ type DispatchProps = {
   createNewProject: (project: Project) => void
   getUser: (id: string) => void
   getAccount: (id: string) => void
+  getCustomer: () => void
+  getSubscription: () => void
 }
 type StateProps = {
   userRestored: boolean
   accountRestored: boolean
+  customerRestored: boolean
   user: User
   account: Account
 }
@@ -93,8 +101,11 @@ const MainScreen = ({
   history,
   userRestored,
   accountRestored,
+  customerRestored,
   getUser,
   getAccount,
+  getCustomer,
+  getSubscription,
   user,
   account
 }: Props) => {
@@ -102,7 +113,7 @@ const MainScreen = ({
   const theme = useTheme()
 
   const getInitialScreenView = () => {
-    return Object.values(DashboardTabIds).includes(
+    return Object.values({ ...DashboardTabIds, ...SharedTabIds }).includes(
       history.location.pathname.replace('/', '')
     )
       ? ScreenViews.dashboard
@@ -122,7 +133,7 @@ const MainScreen = ({
     []
   )
 
-  const getTab = (id: string) => {
+  const getTab = (id: string): Tab => {
     switch (id) {
       // Dashboard tabs
       case DashboardTabIds.dashboard:
@@ -141,26 +152,30 @@ const MainScreen = ({
       case DashboardTabIds.portfolio:
         return {
           id,
-          text: 'Portfolio',
+          text: 'Portfolios',
           icon: <PortfolioIcon className={classes.listIconStyle} />
+        }
+      // case DashboardTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      case DashboardTabIds.invoices:
+        return {
+          id,
+          text: 'Invoices',
+          icon: <InvoiceIcon className={classes.listIconStyle} />
         }
       case DashboardTabIds.settings:
         return {
           id,
           text: 'Settings',
-          icon: <SettingsIcon className={classes.listIconStyle} />
-        }
-      case DashboardTabIds.storage:
-        return {
-          id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
-        }
-      case SharedTabIds.invoices:
-        return {
-          id,
-          text: 'Invoices',
-          icon: <InvoiceIcon className={classes.listIconStyle} />
+          icon: <SettingsIcon className={classes.listIconStyle} />,
+          onPress: () => {
+            history.replace(`/manage`)
+            setScreenView(ScreenViews.account)
+          }
         }
       case SharedTabIds.security:
         return {
@@ -187,17 +202,23 @@ const MainScreen = ({
           text: 'Branding',
           icon: <BrandingIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.subscription:
+      case SharedTabIds.subscription:
         return {
           id,
           text: 'Subscription',
           icon: <SubscriptionIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.storage:
+      // case AccountTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      // Child tabs
+      case ChildTabs.paymentMethods:
         return {
           id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
+          text: 'Payment Methods'
         }
 
       default:
@@ -239,7 +260,11 @@ const MainScreen = ({
   }
 
   const handleActiveTabPress = (tab: Tab) => {
-    history.replace(`/${tab.id}`)
+    if (typeof tab.onPress === 'function') {
+      tab.onPress()
+    } else {
+      history.replace(`/${tab.id}`)
+    }
     if (tab.id !== activeTab.id) {
       setActiveTab(tab)
     }
@@ -282,6 +307,10 @@ const MainScreen = ({
     if (!accountRestored) {
       getAccount(account.id)
     }
+    if (!customerRestored) {
+      getCustomer()
+    }
+    // getSubscription()
   }, [])
 
   if (!(userRestored && accountRestored)) {
@@ -305,7 +334,12 @@ const MainScreen = ({
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
+          <Route
+            path='/clientInvoices/:accId/:id'
+            component={InvoicesClientScreen}
+          />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
+          <Route path='/paymentmethods' component={PaymentMethodsScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}
@@ -355,6 +389,7 @@ const useStyles = makeStyles((theme) => ({
 const mapStateToProps = (state: ReduxState): StateProps => ({
   accountRestored: state.auth.accountRestored,
   userRestored: state.auth.userRestored,
+  customerRestored: state.stripe.customerRestored,
   user: state.auth.user as User,
   account: state.auth.account as Account
 })
@@ -363,7 +398,9 @@ const mapDispatchToProps: DispatchProps = {
   createNewProject: (projectData: Project) =>
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
-  getAccount: (id: string) => getAccount(id)
+  getAccount: (id: string) => getAccount(id),
+  getCustomer: () => getCustomer(),
+  getSubscription: () => getSubscription()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

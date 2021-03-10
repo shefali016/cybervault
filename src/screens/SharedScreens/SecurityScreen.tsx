@@ -1,22 +1,20 @@
 import { Typography } from '@material-ui/core'
 import Section from '../../components/Common/Section'
 import { ResponsiveRow } from '../../components/ResponsiveRow'
-import React,{useContext} from 'react'
+import React, { useContext } from 'react'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Account } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
-import { connect,useSelector } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
 import Modal from '../../components/Common/Modal'
-import {useState,ChangeEvent} from 'react';
+import { useState, ChangeEvent } from 'react'
 import CloseButton from '../../components/Common/Button/CloseButton'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import ResetPassword from './ResetPassword'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext, ToastTypes } from '../../context/Toast'
-
-
 
 type StateProps = { account: Account }
 type Props = {} & StateProps
@@ -25,33 +23,36 @@ const SecurityScreen = ({ account }: Props) => {
   const theme = useTheme()
   const { security } = account
 
-  const[open,setOpen]=useState(false)
- 
-  const onRequestClose=()=>{
+  const [open, setOpen] = useState(false)
+
+  const onRequestClose = () => {
     setOpen(false)
   }
 
-  const authData=useSelector((state:ReduxState)=>state.auth)
+  const authData = useSelector((state: ReduxState) => state.auth)
 
   const handleToggleTwoFactor = () => {}
   const toastContext = useContext(ToastContext)
-  
 
   useOnChange(authData.changePasswordSuccess, (success) => {
     if (success) {
       onRequestClose()
-      toastContext.showToast({ title: authData.changePasswordData,type: ToastTypes.success
+      toastContext.showToast({
+        title: authData.changePasswordData,
+        type: ToastTypes.success
       })
     }
-  })  
+  })
 
   useOnChange(authData.changePasswordError, (error) => {
     if (error) {
-      toastContext.showToast({ title: authData.changePasswordData,type: ToastTypes.error 
+      toastContext.showToast({
+        title: authData.changePasswordData,
+        type: ToastTypes.error
       })
     }
-  })  
-  
+  })
+
   return (
     <div className={'screenContainer'}>
       <Section
@@ -68,32 +69,29 @@ const SecurityScreen = ({ account }: Props) => {
                   Reset or change your existing password
                 </Typography>
               </div>,
-              <GradiantButton onClick={()=>setOpen(true)} >
+              <GradiantButton onClick={() => setOpen(true)}>
                 <div className={'row'}>
                   <Typography style={{ marginRight: 5 }}>
                     Change Password
                   </Typography>
-                  <RightArrow style={{ fontSize: 15 }} />
                 </div>
               </GradiantButton>
             ]}
           </ResponsiveRow>
-          <Modal open={open} onRequestClose={onRequestClose} >
-          <div className='new-project-modal-content' >
-            <CloseButton
-              onClick={onRequestClose}
-              style={{
-                position: POSITION_ABSOLUTE,
-                top: 10,
-                right: 10
-              }}
-            />
-            <ResetPassword loading={authData.changePasswordLoading}/>
-          </div>
+          <Modal open={open} onRequestClose={onRequestClose}>
+            <div className='new-project-modal-content'>
+              <CloseButton
+                onClick={onRequestClose}
+                style={{
+                  position: POSITION_ABSOLUTE,
+                  top: 10,
+                  right: 10
+                }}
+              />
+              <ResetPassword loading={authData.changePasswordLoading} />
+            </div>
           </Modal>
         </div>
-        
-      
       </Section>
 
       <Section
@@ -121,7 +119,6 @@ const SecurityScreen = ({ account }: Props) => {
                     <Typography style={{ marginRight: 5 }}>
                       {!!security?.twoFactorEnabled ? 'Enabled' : 'Enable'}
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -151,7 +148,6 @@ const SecurityScreen = ({ account }: Props) => {
                         ? 'Enabled'
                         : 'Enable'}
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -177,7 +173,6 @@ const SecurityScreen = ({ account }: Props) => {
                         ? 'Enabled'
                         : 'Enable'}
                     </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
                   </div>
                 </GradiantButton>
               ]}
@@ -200,10 +195,9 @@ const SecurityScreen = ({ account }: Props) => {
                   Use a recovery email to reset forgotten passwords.
                 </Typography>
               </div>,
-              <GradiantButton onClick={()=>setOpen(true)}>
+              <GradiantButton onClick={() => setOpen(true)}>
                 <div className={'row'}>
                   <Typography style={{ marginRight: 5 }}>Set Up</Typography>
-                  <RightArrow style={{ fontSize: 15 }} />
                 </div>
               </GradiantButton>
             ]}
