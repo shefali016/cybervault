@@ -4,7 +4,9 @@ import * as StripeApis from '../apis/stripe'
 import * as StripeActions from '../actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
+import { updateUserData } from 'apis/user'
 import { SubscriptionType } from 'utils/Interface'
+import { updateAccountFields } from 'apis/account'
 
 type Params = {
   type: string
@@ -12,6 +14,9 @@ type Params = {
   planId: string
   paymentMethodId: string
   subscriptionId: string
+  productId: string
+  amount: number
+  extraStorage: number
   subscriptionType: SubscriptionType
 }
 
@@ -124,6 +129,40 @@ function* updatePlanSubscription({
     )
   }
 }
+function* createAmountSubscription({
+  amount,
+  extraStorage,
+  paymentMethodId,
+  productId
+}: Params) {
+  try {
+    const customerId = yield select(
+      (state: ReduxState) => state.stripe.customer.id
+    )
+    const accountId = yield select(
+      (state: ReduxState) => state.auth.account?.id
+    )
+
+    const subscriptionPlanId = yield select(
+      (state: ReduxState) => state.stripe.storageSubscription?.id
+    )
+    const subscription = yield call(
+      StripeApis.createAmountSubscription,
+      amount,
+      customerId,
+      accountId,
+      paymentMethodId,
+      productId,
+      subscriptionPlanId,
+      extraStorage
+    )
+    yield put(StripeActions.createAmountSubscriptionSuccess(subscription))
+  } catch (error: any) {
+    yield put(
+      StripeActions.createAmountSubscriptionFailure(error?.message || 'default')
+    )
+  }
+}
 
 function* getSubscription() {
   try {
@@ -144,6 +183,11 @@ function* watchRequests() {
   yield takeLatest(ActionTypes.CANCEL_PLAN_SUBSCRIPTION, cancelPlanSubscription)
   yield takeLatest(ActionTypes.UPDATE_PLAN_SUBSCRIPTION, updatePlanSubscription)
   yield takeLatest(ActionTypes.GET_SUBSCRIPTION, getSubscription)
+  yield takeLatest(
+    ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
+    createAmountSubscription
+  )
+  // yield takeLatest(ActionTypes.GET_PLAN_LIST, getPlanData)
 }
 
 export default function* sagas() {

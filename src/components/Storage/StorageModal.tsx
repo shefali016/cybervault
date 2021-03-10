@@ -1,50 +1,91 @@
 import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { PaymentMethod } from '@stripe/stripe-js'
 import clsx from 'clsx'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { AppCircularProgress } from 'components/Common/Core/AppCircularProgress'
 import { AppSlider } from 'components/Common/Core/AppSlider'
 import Modal from 'components/Common/Modal'
+import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import React, { useState } from 'react'
 import { SubscriptionTypes } from 'utils/enums'
 import { getSubscriptionDetails } from 'utils/subscription'
-import { Account, Subscription } from '../../utils/Interface'
+import { Account, Product, Subscription } from '../../utils/Interface'
 
 type Props = {
   open: boolean
   onRequestClose: () => void
   account: Account
-  subscription: Subscription
+  accountSubscription: Subscription | undefined
+  storageSubscription: Subscription | undefined
+  paymentMethods: Array<PaymentMethod>
+  customerId: string
+  createAmountSubscription: (
+    price: number,
+    paymentMethodId: string,
+    extraStorage: number,
+    productId: string
+  ) => void
+  storageProduct: Product
+  storagePurchaseLoading: boolean
 }
 
 export const StorageModal = ({
   open,
   onRequestClose,
   account,
-  subscription
+  accountSubscription,
+  storageSubscription,
+  paymentMethods,
+  customerId,
+  createAmountSubscription,
+  storageProduct,
+  storagePurchaseLoading
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   const [storageUsed] = useState<number>(2)
+  const [paymentModal, setPaymentModal] = useState<boolean>(false)
+
   const [extraStorage, setExtraStorage] = useState<number>(
-    account.subscription?.extraStorage || 0
+    typeof storageSubscription?.metadata?.extraStorage === 'string'
+      ? parseInt(storageSubscription?.metadata?.extraStorage)
+      : 0
   )
 
-  const getTotalStorage = (account: Account) => {
-    const { storage } = getSubscriptionDetails(subscription?.metadata?.type)
+  const getTotalStorage = () => {
+    const { storage } = getSubscriptionDetails(
+      accountSubscription?.metadata?.type
+    )
     return storage + extraStorage
   }
 
   const handleBuyStorage = () => {
+    setPaymentModal(!paymentModal)
     // Charge user immediately for the different in previous extra storage and increased extra storage
     // Increase their monthly subscription accordingly
   }
+  const handlePayment = async (paymentMethod: PaymentMethod) => {
+    const amount: any = Math.floor(extraStorage * 0.2).toFixed(2)
+    const price = amount * 100
+    setPaymentModal(!paymentModal)
+    createAmountSubscription(
+      price,
+      paymentMethod.id,
+      extraStorage,
+      storageProduct.id
+    )
+  }
 
   const renderStorageTracker = () => {
-    const totalStorage = getTotalStorage(account)
-
+    const totalStorage: number = getTotalStorage()
+    const usedStoragePercent: any = (
+      (storageUsed / totalStorage) *
+      100
+    ).toFixed(2)
+    const availablePercentage: number | any = 100 - usedStoragePercent
     return (
       <div className={classes.storageTrackerContainer}>
         <div className={classes.storagePieOuter}>
@@ -59,11 +100,11 @@ export const StorageModal = ({
           <div className={classes.storagePieInner}>
             <div className={classes.storagePercentContainer}>
               <Typography variant='h3' style={{ marginRight: 4 }}>
-                90
+                {availablePercentage}
               </Typography>
               <Typography variant='h6'> %</Typography>
             </div>
-            <Typography variant='body1'>full</Typography>
+            <Typography variant='body1'>available</Typography>
           </div>
         </div>
 
@@ -92,6 +133,12 @@ export const StorageModal = ({
             <Typography variant={'caption'}>Total</Typography>
           </div>
         </div>
+        <PaymentMethodModal
+          open={paymentModal}
+          onRequestClose={() => setPaymentModal(!paymentModal)}
+          paymentMethods={paymentMethods}
+          handleSubscription={handlePayment}
+        />
       </div>
     )
   }
@@ -129,7 +176,10 @@ export const StorageModal = ({
   }
 
   return (
-    <Modal {...{ open, onRequestClose }} clickToClose={true}>
+    <Modal
+      {...{ open, onRequestClose }}
+      clickToClose={true}
+      showLoadingOverlay={storagePurchaseLoading}>
       <div className={clsx('modalContent', classes.modalContent)}>
         <CloseButton
           onClick={onRequestClose}
@@ -178,7 +228,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     flex: 1,
-    paddingBottom: theme.spacing(3)
+    paddingBottom: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: theme.spacing(3)
+    }
   },
   storageSliderContainer: {
     display: 'flex',
@@ -225,11 +278,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2
+    justifyContent: 'center'
   },
   storagePie: {
-    position: 'absolute',
-    zIndex: 1
+    position: 'absolute'
   }
 }))

@@ -1,6 +1,7 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
+import { StripePlans, Subscription } from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -13,7 +14,8 @@ export type State = {
   attachError: null | string
   attachSuccess: boolean
 
-  activeSubscription: null | Object
+  accountSubscription: null | Object | any
+  storageSubscription: null | Object | any
   subscriptionLoading: boolean
 
   planSubscriptionError: null | string
@@ -24,6 +26,13 @@ export type State = {
 
   updateSubscriptionSuccess: boolean
   updateSubscriptionError: null | string
+
+  subscriptionPlans: Array<StripePlans> | null
+  storagePlan: StripePlans | null
+
+  storagePurchaseLoading: boolean
+  storagePurchaseSuccess: boolean
+  storagePurchaseError: null | string
 }
 
 export type Action = {
@@ -32,9 +41,11 @@ export type Action = {
   paymentMethod: PaymentMethod
   error: string
   customer: any
-  subscription: any
-  subscriptionId: any
+  subscription: Subscription
+  subscriptionId: string
   planId: string
+  plans: Array<StripePlans>
+  storageSubscription: Subscription
 }
 
 const initialState = {
@@ -47,7 +58,8 @@ const initialState = {
   attachError: null,
   attachSuccess: false,
 
-  activeSubscription: null,
+  accountSubscription: null,
+  storageSubscription: null,
   subscriptionLoading: false,
 
   planSubscriptionError: null,
@@ -57,16 +69,38 @@ const initialState = {
   updateSubscriptionError: null,
 
   cancelSubscriptionError: null,
-  cancelSubscriptionSuccess: false
+  cancelSubscriptionSuccess: false,
+
+  subscriptionPlans: null,
+  storagePlan: null,
+
+  storagePurchaseLoading: false,
+  storagePurchaseSuccess: false,
+  storagePurchaseError: null
 }
 
 const stripe = (state = initialState, action: Action) => {
   switch (action.type) {
     case ActionTypes.GET_CUSTOMER_SUCCESS:
+      const { subscriptions } = action.customer
+      const { data } = subscriptions
+      const accountSubscription =
+        data && data.length
+          ? data[0].metadata.type !== 'storage'
+            ? data[0]
+            : data[1]
+          : null
+      const storageSubscription =
+        data && data.length
+          ? data[0].metadata.type === 'storage'
+            ? data[0]
+            : data[1]
+          : null
       return {
         ...state,
         customer: action.customer,
-        activeSubscription: action.customer.subscriptions.data[0],
+        accountSubscription,
+        storageSubscription,
         customerRestored: true
       }
 
@@ -113,7 +147,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: action.subscription,
+        accountSubscription: action.subscription,
         subscriptionLoading: false,
         planSubscriptionSuccess: true
       }
@@ -134,7 +168,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: action.subscription,
+        accountSubscription: action.subscription,
         subscriptionLoading: false,
         cancelSubscriptionSuccess: true
       }
@@ -154,7 +188,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: action.subscription,
+        accountSubscription: action.subscription,
         subscriptionLoading: false,
         updateSubscriptionSuccess: true
       }
@@ -163,6 +197,44 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         subscriptionLoading: false,
         updateSubscriptionError: action.error
+      }
+    case ActionTypes.GET_PLAN_LIST:
+      return { ...state, plansLoading: true }
+    case ActionTypes.GET_PLAN_LIST_SUCCESS:
+      const storagePlan = action.plans.filter(
+        (plans: StripePlans) => plans.nickname === 'Storage Plan'
+      )[0]
+      const subscriptionPlans = action.plans.filter(
+        (plans: StripePlans) => plans.nickname !== 'Storage Plan'
+      )
+      return {
+        ...state,
+        storagePlan,
+        subscriptionPlans,
+        plansLoading: false
+      }
+    case ActionTypes.GET_PLAN_LIST_FAILURE:
+      return { ...state, plansLoading: false }
+
+    case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION:
+      return {
+        ...state,
+        storagePurchaseLoading: true,
+        storagePurchaseSuccess: false,
+        storagePurchaseError: null
+      }
+    case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        storagePurchaseLoading: false,
+        storagePurchaseSuccess: true,
+        storageSubscription: action.subscription
+      }
+    case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE:
+      return {
+        ...state,
+        storagePurchaseLoading: false,
+        storagePurchaseError: action.error
       }
 
     default:
@@ -176,6 +248,7 @@ export const stripeTransform = createTransform(
   },
   (outboundState: State) => ({
     ...initialState,
+    accountSubscription: outboundState.accountSubscription,
     customer: outboundState.customer,
     paymentMethods: outboundState.paymentMethods.filter((p) => !!p)
   }),

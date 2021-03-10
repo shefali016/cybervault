@@ -19,7 +19,8 @@ export enum SubscriptionTypes {
   CREATOR = 'creator',
   PRO = 'pro',
   TEAM = 'team',
-  BUSINESS = 'business'
+  BUSINESS = 'business',
+  STORAGE = 'storage'
 }
 
 export enum SubscriptionDurations {

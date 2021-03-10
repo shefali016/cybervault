@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { getSubscriptionDetails, findProductWithType } from 'utils/subscription'
+import { findProductWithType } from 'utils/subscription'
 import {
   Product,
   StripePlans,
@@ -14,14 +14,13 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { getProducts, getPlans, getProductsWithPlans } from '../../apis/stripe'
+import { getProductsWithPlans } from '../../apis/stripe'
 import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
-import { AppLoader } from 'components/Common/Core/AppLoader'
-import { SubscriptionDurationSwitch } from './SubscriptionDurationSwitch'
 import { useStyles } from './style'
 import { SubscriptionItem } from './SubscriptionItem'
+import { SubscriptionDurationSwitch } from './SubscriptionDurationSwitch'
 
 type SubscriptionParams = { planId: string; type: SubscriptionType }
 
@@ -44,6 +43,8 @@ type Props = {
     type: SubscriptionType
   ) => void
   loading: boolean
+  planList: Array<StripePlans> | null
+  setStorageProduct: (storageProduct: any) => void
 }
 
 export const SubscriptionModal = ({
@@ -55,6 +56,7 @@ export const SubscriptionModal = ({
   subscription,
   cancelSubscription,
   updateSubscription,
+  setStorageProduct,
   loading
 }: Props) => {
   const classes = useStyles()
@@ -91,6 +93,10 @@ export const SubscriptionModal = ({
     try {
       const { products, plans } = await getProductsWithPlans()
       setProducts(products)
+      const storageProduct = products.filter(
+        (item: any) => item.name === 'Storage Subscription'
+      )[0]
+      setStorageProduct(storageProduct)
       setProductPlans(plans)
     } catch (error) {
       console.log(error.message)
@@ -214,53 +220,48 @@ export const SubscriptionModal = ({
 
   return (
     <Fragment>
-      <Modal open={open} onRequestClose={onRequestClose} clickToClose={true}>
-        <div className={'modalContentWrapper'}>
-          <div className={'modalContent'}>
-            <CloseButton
-              onClick={onRequestClose}
-              style={{ position: 'absolute', top: 10, right: 10 }}
+      <Modal
+        open={open}
+        onRequestClose={onRequestClose}
+        clickToClose={true}
+        showLoadingOverlay={loading}>
+        <div className={'modalContent'}>
+          <CloseButton
+            onClick={onRequestClose}
+            style={{ position: 'absolute', top: 10, right: 10 }}
+          />
+          <div className={classes.header}>
+            <Typography variant={'h4'}>Upgrade Your Workflow</Typography>
+            <Typography
+              variant={'caption'}
+              style={{
+                marginTop: theme.spacing(1),
+                marginBottom: theme.spacing(4)
+              }}>
+              {activeSubscriptionType
+                ? 'Upgrade your subscription to benefit from extra features'
+                : 'Subscribe to keep using premium Creator Cloud features'}
+            </Typography>
+
+            <SubscriptionDurationSwitch
+              value={duration}
+              onChange={(duration: SubscriptionDuration) =>
+                setDuration(duration)
+              }
             />
-            <div className={classes.header}>
-              <Typography variant={'h4'}>Upgrade Your Workflow</Typography>
-              <Typography
-                variant={'caption'}
-                style={{
-                  marginTop: theme.spacing(1),
-                  marginBottom: theme.spacing(4)
-                }}>
-                {activeSubscriptionType
-                  ? 'Upgrade your subscription to benefit from extra features'
-                  : 'Subscribe to keep using premium Creator Cloud features'}
-              </Typography>
-
-              <SubscriptionDurationSwitch
-                value={duration}
-                onChange={(duration: SubscriptionDuration) =>
-                  setDuration(duration)
-                }
-              />
-            </div>
-
-            <div className={classes.subscriptionContainer}>
-              {[
-                SubscriptionTypes.CREATOR,
-                SubscriptionTypes.PRO,
-                SubscriptionTypes.TEAM
-              ].map((type: SubscriptionType) => (
-                <Fragment key={type}>{renderSubscriptionPlan(type)}</Fragment>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex' }}>
-              {renderBusinessSubscription()}
-            </div>
           </div>
-          {loading && (
-            <div className={classes.loadingView}>
-              <AppLoader color={theme.palette.primary.main} />
-            </div>
-          )}
+
+          <div className={classes.subscriptionContainer}>
+            {[
+              SubscriptionTypes.CREATOR,
+              SubscriptionTypes.PRO,
+              SubscriptionTypes.TEAM
+            ].map((type: SubscriptionType) => (
+              <Fragment key={type}>{renderSubscriptionPlan(type)}</Fragment>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
         </div>
       </Modal>
       <PaymentMethodModal

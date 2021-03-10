@@ -120,9 +120,6 @@ export const createAccount = (
       detailsSubmitted: false,
       payoutsEnabled: false
     },
-    subscription: {
-      extraStorage: 0
-    },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,
       watermarkStyle: WatermarkStyles.single,

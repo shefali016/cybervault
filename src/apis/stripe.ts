@@ -14,7 +14,7 @@ import {
 import { updateAccount } from './account'
 import { PaymentMethod } from '@stripe/stripe-js'
 
-const { server_url, domain } = require('../config.json')
+const { server_url, domain } = require('../config')
 
 export const detachPaymentMethod = async (paymentMethodId: string) => {
   const res = await axios.post<PaymentMethod>(
@@ -278,6 +278,33 @@ export const updateStripePlanSubcription = async (
   }
 }
 
+export const createAmountSubscription = async (
+  amount: number,
+  customerId: string,
+  accountId: string,
+  paymentMethodId: string,
+  productId: string,
+  subscriptionPlanId: string,
+  extraStorage: number
+) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/update_storage_plan_price`,
+    {
+      amount,
+      customerId,
+      accountId,
+      paymentMethodId,
+      productId,
+      subscriptionPlanId,
+      extraStorage
+    }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe Subscription update error')
+  }
+}
 export const getSubscription = async (customerId: string) => {
   const res = await axios.get<{ object: 'list'; data: Array<Subscription> }>(
     `${server_url}/api/v1/stripe/subscription`,

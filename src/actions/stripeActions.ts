@@ -52,6 +52,16 @@ export const getCustomerFailure = (error: any) => ({
   error
 })
 
+export const getStripPlanList = () => ({ type: ActionTypes.GET_PLAN_LIST })
+export const getStripPlanListSuccess = (plans: any) => ({
+  type: ActionTypes.GET_PLAN_LIST_SUCCESS,
+  plans
+})
+export const getStripPlanListFailure = (error: any) => ({
+  type: ActionTypes.GET_PLAN_LIST_FAILURE,
+  error
+})
+
 export const getSubscription = () => ({ type: ActionTypes.GET_SUBSCRIPTION })
 export const getSubscriptionSuccess = (subscription: Subscription) => ({
   type: ActionTypes.GET_SUBSCRIPTION_SUCCESS,
@@ -110,5 +120,26 @@ export const updatePlanSubscriptionSuccess = (subscription: Subscription) => ({
 })
 export const updatePlanSubscriptionFailure = (error: any) => ({
   type: ActionTypes.UPDATE_PLAN_SUBSCRIPTION_FAILURE,
+  error
+})
+
+export const createAmountSubscription = (
+  amount: number,
+  paymentMethodId: string,
+  extraStorage: number,
+  productId: string
+) => ({
+  type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
+  amount,
+  paymentMethodId,
+  extraStorage,
+  productId
+})
+export const createAmountSubscriptionSuccess = (subscription: any) => ({
+  type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_SUCCESS,
+  subscription
+})
+export const createAmountSubscriptionFailure = (error: any) => ({
+  type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE,
   error
 })

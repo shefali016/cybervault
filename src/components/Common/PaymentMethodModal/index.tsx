@@ -52,35 +52,41 @@ const PaymentMethodModal = ({
         />
         <ModalTitle title={'Select Payment Method'} />
         <List dense className={'scrollY'}>
-          {paymentMethods && paymentMethods.length
-            ? paymentMethods.map((data: PaymentMethod, index: number) => {
-                const labelId = `payment-method-${index}`
-                return (
-                  <ListItem
-                    key={index}
-                    button
-                    onClick={() => handlePaymentSelect(data, index)}>
-                    <ListItemText
-                      id={labelId}
-                      primary={<PaymentMethodInline paymentMethod={data} />}
+          {paymentMethods && paymentMethods.length ? (
+            paymentMethods.map((data: PaymentMethod, index: number) => {
+              const labelId = `payment-method-${index}`
+              return (
+                <ListItem
+                  key={index}
+                  button
+                  onClick={() => handlePaymentSelect(data, index)}>
+                  <ListItemText
+                    id={labelId}
+                    primary={<PaymentMethodInline paymentMethod={data} />}
+                  />
+                  <ListItemSecondaryAction>
+                    <Radio
+                      checked={selectedPaymentMethod.index === index}
+                      onChange={() => handlePaymentSelect(data, index)}
                     />
-                    <ListItemSecondaryAction>
-                      <Radio
-                        checked={selectedPaymentMethod.index === index}
-                        onChange={() => handlePaymentSelect(data, index)}
-                      />
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                )
-              })
-            : null}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )
+            })
+          ) : (
+            <Typography variant={'h4'}>
+              Please Add Payment Method to Continue
+            </Typography>
+          )}
         </List>
-        <GradiantButton
-          disabled={selectedPaymentMethod ? false : true}
-          onClick={() => handleSubscription(selectedPaymentMethod)}
-          className={classes.saveButton}>
-          <Typography variant='button'>Submit</Typography>
-        </GradiantButton>
+        {paymentMethods && paymentMethods.length ? (
+          <GradiantButton
+            disabled={selectedPaymentMethod ? false : true}
+            onClick={() => handleSubscription(selectedPaymentMethod)}
+            className={classes.saveButton}>
+            <Typography variant='button'>Submit</Typography>
+          </GradiantButton>
+        ) : null}
       </div>
     </Modal>
   )
