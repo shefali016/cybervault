@@ -56,12 +56,13 @@ export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
-  invoices: 'invoices'
+  invoices: 'invoices',
+  settings: 'settings'
 }
 
 export const AccountTabIds = {
-  profile: 'profile',
   manage: 'manage',
+  profile: 'profile',
   branding: 'branding'
 }
 
@@ -154,12 +155,6 @@ const MainScreen = ({
           text: 'Portfolios',
           icon: <PortfolioIcon className={classes.listIconStyle} />
         }
-      // case DashboardTabIds.settings:
-      //   return {
-      //     id,
-      //     text: 'Settings',
-      //     icon: <SettingsIcon className={classes.listIconStyle} />
-      //   }
       // case DashboardTabIds.storage:
       //   return {
       //     id,
@@ -171,6 +166,16 @@ const MainScreen = ({
           id,
           text: 'Invoices',
           icon: <InvoiceIcon className={classes.listIconStyle} />
+        }
+      case DashboardTabIds.settings:
+        return {
+          id,
+          text: 'Settings',
+          icon: <SettingsIcon className={classes.listIconStyle} />,
+          onPress: () => {
+            history.replace(`/manage`)
+            setScreenView(ScreenViews.account)
+          }
         }
       case SharedTabIds.security:
         return {
@@ -255,7 +260,11 @@ const MainScreen = ({
   }
 
   const handleActiveTabPress = (tab: Tab) => {
-    history.replace(`/${tab.id}`)
+    if (typeof tab.onPress === 'function') {
+      tab.onPress()
+    } else {
+      history.replace(`/${tab.id}`)
+    }
     if (tab.id !== activeTab.id) {
       setActiveTab(tab)
     }
