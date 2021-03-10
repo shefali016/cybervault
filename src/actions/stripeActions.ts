@@ -126,12 +126,14 @@ export const updatePlanSubscriptionFailure = (error: any) => ({
 export const createAmountSubscription = (
   amount: number,
   paymentMethodId: string,
-  extraStorage: number
+  extraStorage: number,
+  productId: string
 ) => ({
   type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
   amount,
   paymentMethodId,
-  extraStorage
+  extraStorage,
+  productId
 })
 export const createAmountSubscriptionSuccess = (subscription: any) => ({
   type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_SUCCESS,

@@ -6,6 +6,7 @@ import { PaymentMethod } from '@stripe/stripe-js'
 import { ReduxState } from 'reducers/rootReducer'
 import { updateUserData } from 'apis/user'
 import { SubscriptionType } from 'utils/Interface'
+import { updateAccountFields } from 'apis/account'
 
 type Params = {
   type: string
@@ -13,6 +14,7 @@ type Params = {
   planId: string
   paymentMethodId: string
   subscriptionId: string
+  productId: string
   amount: number
   extraStorage: number
   subscriptionType: SubscriptionType
@@ -69,17 +71,6 @@ function* getCustomer({}: Params) {
     yield put(StripeActions.getCustomerFailure(error?.message || 'default'))
   }
 }
-
-// function* getPlanData({}: Params) {
-//   try {
-//     const planList = yield call(StripeApis.getStripePlansList)
-//     yield put(StripeActions.getStripPlanListSuccess(planList.data))
-//   } catch (error: any) {
-//     yield put(
-//       StripeActions.getStripPlanListFailure(error?.message || 'default')
-//     )
-//   }
-// }
 
 function* planSubscription({
   planId,
@@ -138,18 +129,36 @@ function* updatePlanSubscription({
     )
   }
 }
-function* createAmountSubscription({ amount, extraStorage }: Params) {
+function* createAmountSubscription({
+  amount,
+  extraStorage,
+  paymentMethodId,
+  productId
+}: Params) {
   try {
     const customerId = yield select(
       (state: ReduxState) => state.stripe.customer.id
     )
-    const userId = yield select((state: ReduxState) => state.auth.user?.id)
-    yield call(updateUserData, userId, { extraStorage })
+    const accountId = yield select(
+      (state: ReduxState) => state.auth.account?.id
+    )
+
+    const subscriptionPlanId = yield select(
+      (state: ReduxState) => state.stripe.storageSubscription?.id
+    )
+    yield call(updateAccountFields, accountId, {
+      subscription: {
+        extraStorage
+      }
+    })
     const subscription = yield call(
       StripeApis.createAmountSubscription,
       amount,
       customerId,
-      userId
+      accountId,
+      paymentMethodId,
+      productId,
+      subscriptionPlanId
     )
     yield put(StripeActions.createAmountSubscriptionSuccess(subscription))
   } catch (error: any) {

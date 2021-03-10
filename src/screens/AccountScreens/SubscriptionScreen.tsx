@@ -5,7 +5,13 @@ import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Account, User, SubscriptionType, StripePlans } from 'utils/Interface'
+import {
+  Account,
+  User,
+  SubscriptionType,
+  StripePlans,
+  Product
+} from 'utils/Interface'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
@@ -33,7 +39,6 @@ type StateProps = {
   customerId: string
   subscription: any
   subscriptionLoading: boolean
-  extraStorage: number
   subscriptionPlans: Array<StripePlans> | null
   storagePurchaseLoading: boolean
 }
@@ -53,7 +58,8 @@ type DispatchProps = {
   createAmountSubscription: (
     price: number,
     paymentMethodId: string,
-    extraStorage: number
+    extraStorage: number,
+    productId: string
   ) => void
   getPlanList: () => void
 }
@@ -72,7 +78,6 @@ const SubscriptionScreen = ({
   cancelSubscription,
   updateSubscription,
   createAmountSubscription,
-  extraStorage,
   getPlanList,
   subscriptionPlans,
   subscriptionLoading,
@@ -89,6 +94,7 @@ const SubscriptionScreen = ({
     false
   )
   const [storageModalOpen, setStorageModalOpen] = useState<boolean>(false)
+  const [storageProduct, setStorageProduct] = useState<Product | any>({})
 
   const openSubscriptionModal = () => setSubscriptionModalOpen(true)
   const closeSubscriptionModal = () => setSubscriptionModalOpen(false)
@@ -114,6 +120,7 @@ const SubscriptionScreen = ({
         customerId={customerId}
         paymentMethods={paymentMethods}
         planSubscription={planSubscription}
+        setStorageProduct={setStorageProduct}
         subscription={subscription}
         planList={subscriptionPlans}
         cancelSubscription={cancelSubscription}
@@ -128,7 +135,7 @@ const SubscriptionScreen = ({
         paymentMethods={paymentMethods}
         customerId={customerId}
         createAmountSubscription={createAmountSubscription}
-        userExtraStorage={extraStorage}
+        storageProduct={storageProduct}
         storagePurchaseLoading={storagePurchaseLoading}
       />
 
@@ -313,10 +320,9 @@ const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
   user: state.auth.user as User,
   paymentMethods: state.stripe.paymentMethods,
-  customerId: state.stripe.customer.id as string,
-  subscription: state.stripe.activeSubscription,
+  customerId: state.stripe.customer?.id as string,
+  subscription: state.stripe.accountSubscription,
   subscriptionLoading: state.stripe.subscriptionLoading,
-  extraStorage: state.auth.user?.extraStorage as number,
   subscriptionPlans: state.stripe
     .subscriptionPlans as Array<StripePlans> | null,
   storagePurchaseLoading: state.stripe.storagePurchaseLoading
@@ -340,8 +346,12 @@ const mapDispatch = (dispatch: any): DispatchProps => ({
   createAmountSubscription: (
     price: number,
     paymentMethodId: string,
-    extraStorage: number
-  ) => dispatch(createAmountSubscription(price, paymentMethodId, extraStorage)),
+    extraStorage: number,
+    productId: string
+  ) =>
+    dispatch(
+      createAmountSubscription(price, paymentMethodId, extraStorage, productId)
+    ),
   getPlanList: () => dispatch(getStripPlanList())
 })
 

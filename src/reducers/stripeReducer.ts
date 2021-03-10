@@ -14,7 +14,8 @@ export type State = {
   attachError: null | string
   attachSuccess: boolean
 
-  activeSubscription: null | Object
+  accountSubscription: null | Object | any
+  storageSubscription: null | Object | any
   subscriptionLoading: boolean
 
   planSubscriptionError: null | string
@@ -56,7 +57,8 @@ const initialState = {
   attachError: null,
   attachSuccess: false,
 
-  activeSubscription: null,
+  accountSubscription: null,
+  storageSubscription: null,
   subscriptionLoading: false,
 
   planSubscriptionError: null,
@@ -79,10 +81,25 @@ const initialState = {
 const stripe = (state = initialState, action: Action) => {
   switch (action.type) {
     case ActionTypes.GET_CUSTOMER_SUCCESS:
+      const { subscriptions } = action.customer
+      const { data } = subscriptions
+      const accountSubscription =
+        data && data.length
+          ? data[0].metadata.type !== 'storage'
+            ? data[0]
+            : data[1]
+          : null
+      const storageSubscription =
+        data && data.length
+          ? data[0].metadata.type === 'storage'
+            ? data[0]
+            : data[1]
+          : null
       return {
         ...state,
         customer: action.customer,
-        activeSubscription: action.customer.subscriptions.data[0],
+        accountSubscription,
+        storageSubscription,
         customerRestored: true
       }
 
@@ -129,7 +146,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: action.subscription,
+        accountSubscription: action.subscription,
         subscriptionLoading: false,
         planSubscriptionSuccess: true
       }
@@ -150,7 +167,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.CANCEL_PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: action.subscription,
+        accountSubscription: action.subscription,
         subscriptionLoading: false,
         cancelSubscriptionSuccess: true
       }
@@ -170,7 +187,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.UPDATE_PLAN_SUBSCRIPTION_SUCCESS:
       return {
         ...state,
-        activeSubscription: action.subscription,
+        accountSubscription: action.subscription,
         subscriptionLoading: false,
         updateSubscriptionSuccess: true
       }
@@ -229,7 +246,7 @@ export const stripeTransform = createTransform(
   },
   (outboundState: State) => ({
     ...initialState,
-    activeSubscription: outboundState.activeSubscription,
+    accountSubscription: outboundState.accountSubscription,
     customer: outboundState.customer,
     paymentMethods: outboundState.paymentMethods.filter((p) => !!p)
   }),

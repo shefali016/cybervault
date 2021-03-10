@@ -11,7 +11,7 @@ import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import React, { useState } from 'react'
 import { SubscriptionTypes } from 'utils/enums'
 import { getSubscriptionDetails } from 'utils/subscription'
-import { Account, Subscription } from '../../utils/Interface'
+import { Account, Product, Subscription } from '../../utils/Interface'
 
 type Props = {
   open: boolean
@@ -20,12 +20,13 @@ type Props = {
   subscription: Subscription | any
   paymentMethods: Array<PaymentMethod>
   customerId: string
-  userExtraStorage: number
   createAmountSubscription: (
     price: number,
     paymentMethodId: string,
-    extraStorage: number
+    extraStorage: number,
+    productId: string
   ) => void
+  storageProduct: Product
   storagePurchaseLoading: boolean
 }
 
@@ -37,7 +38,7 @@ export const StorageModal = ({
   paymentMethods,
   customerId,
   createAmountSubscription,
-  userExtraStorage,
+  storageProduct,
   storagePurchaseLoading
 }: Props) => {
   const classes = useStyles()
@@ -47,7 +48,7 @@ export const StorageModal = ({
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
 
   const [extraStorage, setExtraStorage] = useState<number>(
-    userExtraStorage || 0
+    account.subscription.extraStorage || 0
   )
 
   const getTotalStorage = (account: Account) => {
@@ -64,7 +65,12 @@ export const StorageModal = ({
     const amount: any = Math.floor(extraStorage * 0.2).toFixed(2)
     const price = amount * 100
     setPaymentModal(!paymentModal)
-    createAmountSubscription(price, paymentMethod.id, extraStorage)
+    createAmountSubscription(
+      price,
+      paymentMethod.id,
+      extraStorage,
+      storageProduct.id
+    )
   }
 
   const renderStorageTracker = () => {

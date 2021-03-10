@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
-import { getSubscriptionDetails, findProductWithType } from 'utils/subscription'
+import { findProductWithType } from 'utils/subscription'
 import {
   Product,
   StripePlans,
@@ -14,12 +14,10 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { getProducts, getPlans, getProductsWithPlans } from '../../apis/stripe'
+import { getProductsWithPlans } from '../../apis/stripe'
 import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
-import { AppLoader } from 'components/Common/Core/AppLoader'
-import { SubscriptionDurationSwitch } from './SubscriptionDurationSwitch'
 import { useStyles } from './style'
 import { SubscriptionItem } from './SubscriptionItem'
 
@@ -45,6 +43,7 @@ type Props = {
   ) => void
   loading: boolean
   planList: Array<StripePlans> | null
+  setStorageProduct: (storageProduct: any) => void
 }
 
 export const SubscriptionModal = ({
@@ -56,7 +55,7 @@ export const SubscriptionModal = ({
   subscription,
   cancelSubscription,
   updateSubscription,
-  planList,
+  setStorageProduct,
   loading
 }: Props) => {
   const classes = useStyles()
@@ -93,6 +92,10 @@ export const SubscriptionModal = ({
     try {
       const { products, plans } = await getProductsWithPlans()
       setProducts(products)
+      const storageProduct = products.filter(
+        (item: any) => item.name === 'Storage Subscription'
+      )[0]
+      setStorageProduct(storageProduct)
       setProductPlans(plans)
     } catch (error) {
       console.log(error.message)
