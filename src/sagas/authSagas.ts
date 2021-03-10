@@ -21,7 +21,12 @@ import {
   resetPassword
 } from '../apis/authRequest'
 
-type Params = { loginInfo: Types.UserLoginInfo; type: string;password:string}
+type Params = {
+  loginInfo: Types.UserLoginInfo
+  type: string
+  password: string
+  currentPassword: string
+}
 
 function* login({ loginInfo }: Params) {
   try {
@@ -43,9 +48,9 @@ function* signUp({ loginInfo }: Params) {
   }
 }
 
-function* changePassword({password}:Params) {
+function* changePassword({ password, currentPassword }: Params) {
   try {
-    let response=yield call(resetPassword, password)
+    let response = yield call(resetPassword, password, currentPassword)
     yield put(resetPasswordSuccess(response))
   } catch (error: any) {
     yield put(resetPasswordError(error?.message))

@@ -35,16 +35,18 @@ export type State = {
   accountRestored: boolean
   getAccountError: string | null
   error: string | null
+  signUpError: string | null
   userUpdating: boolean
   userUpdateSuccess: boolean
   userUpdateError: string | null
   accountUpdating: boolean
   accountUpdateSuccess: boolean
   accountUpdateError: string | null
-  changePasswordLoading:boolean,
-  changePasswordSuccess:boolean,
-  changePasswordError:boolean,
-  changePasswordData:string
+  changePasswordLoading: boolean
+  changePasswordSuccess: boolean
+  changePasswordError: boolean
+  changePasswordData: string
+  signUpLoading: boolean
 }
 
 export type Action = {
@@ -62,6 +64,7 @@ const initialState = {
   accountRestored: false,
   isLoggedIn: false,
   error: null,
+  signUpError: null,
   userUpdating: false,
   userUpdateSuccess: false,
   userUpdateError: null,
@@ -70,17 +73,23 @@ const initialState = {
   accountUpdateError: null,
   getAccountError: null,
   getUserError: null,
-  changePasswordLoading:false,
-  changePasswordSuccess:false,
-  changePasswordError:false,
-  changePasswordData:''
+  changePasswordLoading: false,
+  changePasswordSuccess: false,
+  changePasswordError: false,
+  changePasswordData: '',
+  signUpLoading: false
 }
 
-const signUp = (state: State, action: Action) => ({ ...state, error: null })
+const signUp = (state: State, action: Action) => ({
+  ...state,
+  signUpError: null,
+  signUpLoading: true
+})
 
 const signUpFailure = (state: State, action: Action) => ({
   ...state,
-  error: action.error
+  signUpError: action.error,
+  signUpLoading: false
 })
 
 const signUpSuccess = (state: State, action: Action) => {
@@ -90,7 +99,8 @@ const signUpSuccess = (state: State, action: Action) => {
     user: action.user,
     account: action.account,
     userRestored: true,
-    accountRestored: true
+    accountRestored: true,
+    signUpLoading: false
   }
 }
 
@@ -117,31 +127,30 @@ const loginSuccess = (state: State, action: Action) => {
 const resetPasswordRequest = (state: State, action: Action) => {
   return {
     ...state,
-    changePasswordLoading:true,
-    changePasswordSuccess:false,
-    changePasswordError:false
+    changePasswordLoading: true,
+    changePasswordSuccess: false,
+    changePasswordError: false
   }
 }
 const resetPasswordSuccess = (state: State, action: Action) => {
   return {
     ...state,
-    changePasswordLoading:false,
-    changePasswordSuccess:true,
-    changePasswordError:false,
-    changePasswordData:action.payload
+    changePasswordLoading: false,
+    changePasswordSuccess: true,
+    changePasswordError: false,
+    changePasswordData: action.payload
   }
 }
 
 const resetPasswordError = (state: State, action: Action) => {
   return {
     ...state,
-    changePasswordLoading:false,
-    changePasswordSuccess:false,
-    changePasswordError:true,
-    changePasswordData:action.error
+    changePasswordLoading: false,
+    changePasswordSuccess: false,
+    changePasswordError: true,
+    changePasswordData: action.error
   }
 }
-
 
 const logoutFailure = (state: State, action: Action) => ({
   ...state,
@@ -153,7 +162,7 @@ const logoutSuccess = (state: State, action: Action) => {
     ...state,
     isLoggedIn: false,
     user: null,
-    account: null,
+    account: null
   }
 }
 
@@ -185,12 +194,12 @@ const authReducer = (state = initialState, action: Action) => {
       return loginSuccess(state, action)
     case LOGIN_FAILURE:
       return loginFailure(state, action)
-      case RESET_PASSWORD_REQUEST:
-        return resetPasswordRequest(state, action)
-      case RESET_PASSWORD_SUCCESS:
-        return resetPasswordSuccess(state, action)
-      case RESET_PASSWORD_ERROR:
-        return resetPasswordError(state, action)
+    case RESET_PASSWORD_REQUEST:
+      return resetPasswordRequest(state, action)
+    case RESET_PASSWORD_SUCCESS:
+      return resetPasswordSuccess(state, action)
+    case RESET_PASSWORD_ERROR:
+      return resetPasswordError(state, action)
     case LOGOUT_SUCCESS:
       return logoutSuccess(state, action)
     case LOGOUT_FAILURE:
@@ -244,7 +253,7 @@ const authReducer = (state = initialState, action: Action) => {
         accountUpdating: false,
         accountUpdateError: action.error
       }
-      
+
     default:
       return state
   }

@@ -3,9 +3,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { State as StripeState } from 'reducers/stripeReducer'
+import { State as AuthState } from 'reducers/authReducer'
 import { createSelector } from 'reselect'
 
-type ToastState = { error: string | false; success: string | false }
+type ToastState = { error?: string | false; success?: string | false }
 
 type Props = {
   toastState: Array<ToastState>
@@ -44,42 +45,54 @@ const mapState = (state: ReduxState): Props => ({
 export default connect(mapState)(ToastHandler)
 
 const stripeState = (state: ReduxState) => state.stripe
+const authState = (state: ReduxState) => state.auth
 
-const toastSelector = createSelector<
-  ReduxState,
-  StripeState,
-  Array<ToastState>
->([stripeState], (stripe) => {
-  const stripeToasts = [
-    {
-      error:
-        !!stripe.cancelSubscriptionError &&
-        'Failed to cancel subscription. Please try again or contact support.',
-      success: !!stripe.cancelSubscriptionSuccess && 'Subscription canceled'
-    },
-    {
-      error:
-        !!stripe.planSubscriptionError &&
-        'Failed to start your subscription. Please try again or contact support.',
-      success:
-        !!stripe.planSubscriptionSuccess && 'Your subscription has started!'
-    },
-    {
-      error:
-        !!stripe.updateSubscriptionError &&
-        'Failed to update subscription. Please try again or contact support.',
-      success:
-        !!stripe.updateSubscriptionSuccess && 'Your subscription has be updated'
-    },
-    {
-      error:
-        !!stripe.storagePurchaseError &&
-        'Failed to purchase extra storage. Please try again or contact support.',
-      success:
-        !!stripe.storagePurchaseSuccess &&
-        'Extra storage has be added to your account!'
-    }
-  ]
+const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
+  [stripeState, authState],
+  (stripe, auth) => {
+    const stripeToasts = [
+      {
+        error:
+          !!stripe.cancelSubscriptionError &&
+          'Failed to cancel subscription. Please try again or contact support.',
+        success: !!stripe.cancelSubscriptionSuccess && 'Subscription canceled'
+      },
+      {
+        error:
+          !!stripe.planSubscriptionError &&
+          'Failed to start your subscription. Please try again or contact support.',
+        success:
+          !!stripe.planSubscriptionSuccess && 'Your subscription has started!'
+      },
+      {
+        error:
+          !!stripe.updateSubscriptionError &&
+          'Failed to update subscription. Please try again or contact support.',
+        success:
+          !!stripe.updateSubscriptionSuccess &&
+          'Your subscription has be updated'
+      },
+      {
+        error:
+          !!stripe.storagePurchaseError &&
+          'Failed to purchase extra storage. Please try again or contact support.',
+        success:
+          !!stripe.storagePurchaseSuccess &&
+          'Extra storage has be added to your account!'
+      }
+    ]
 
-  return [...stripeToasts]
-})
+    const authToasts = [
+      { error: auth.signUpError },
+      {
+        error:
+          !!auth.changePasswordError &&
+          'Failed to change password. Please try again or contact support.',
+        success:
+          !!auth.changePasswordSuccess && 'Your password has been updated.'
+      }
+    ]
+
+    return [...stripeToasts, ...authToasts]
+  }
+)

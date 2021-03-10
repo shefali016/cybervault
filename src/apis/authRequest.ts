@@ -77,22 +77,24 @@ export const signUpRequest = (
 
 export const logoutRequest = () => firebase.auth().signOut()
 
-export const resetPassword=async(password:string)=>{
-  var user = firebase.auth().currentUser;
- try{
-  if(user){
-    return user.updatePassword(password).then(function(res:any) {
-      return ('Password Changed Successfully')
-    }).catch(function(error:any) {
-      throw Error(error?.message)
-    });
-  }
- }
- catch(error){
+export const resetPassword = async (
+  password: string,
+  currentPassword: string
+) => {
+  var user = firebase.auth().currentUser
+  try {
+    if (user && user.email) {
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, currentPassword)
+      return user.updatePassword(password)
+    } else {
+      throw Error()
+    }
+  } catch (error) {
     throw Error('Failed to change Password')
- }
+  }
 }
-
 
 export const googleLoginRequest = async () => {
   const googleProvider = await new firebase.auth.GoogleAuthProvider()
