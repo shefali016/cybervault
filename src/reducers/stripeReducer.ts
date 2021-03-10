@@ -1,7 +1,7 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { StripePlans } from 'utils/Interface'
+import { StripePlans, Subscription } from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -41,10 +41,11 @@ export type Action = {
   paymentMethod: PaymentMethod
   error: string
   customer: any
-  subscription: any
-  subscriptionId: any
+  subscription: Subscription
+  subscriptionId: string
   planId: string
   plans: Array<StripePlans>
+  storageSubscription: Subscription
 }
 
 const initialState = {
@@ -226,7 +227,8 @@ const stripe = (state = initialState, action: Action) => {
       return {
         ...state,
         storagePurchaseLoading: false,
-        storagePurchaseSuccess: true
+        storagePurchaseSuccess: true,
+        storageSubscription: action.subscription
       }
     case ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE:
       return {

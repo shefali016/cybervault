@@ -2,7 +2,7 @@ import { SubscriptionTypes } from 'utils/enums'
 import { Product, Subscription, SubscriptionType } from 'utils/Interface'
 
 export const getSubscriptionDetails = (
-  type: SubscriptionType
+  type: SubscriptionType | undefined
 ): {
   name: string
   description: string

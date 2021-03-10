@@ -50,6 +50,29 @@ export function signUpSuccess({
   }
 }
 
+export function resetPasswordRequest(
+  password: string,
+  currentPassword: string
+) {
+  return {
+    type: ActionTypes.RESET_PASSWORD_REQUEST,
+    password,
+    currentPassword
+  }
+}
+export function resetPasswordSuccess(message: string) {
+  return {
+    type: ActionTypes.RESET_PASSWORD_SUCCESS,
+    payload: message
+  }
+}
+export function resetPasswordError(error: any) {
+  return {
+    type: ActionTypes.RESET_PASSWORD_ERROR,
+    error: error
+  }
+}
+
 export function signUpFailure(error: string) {
   return {
     type: ActionTypes.SIGNUP_FAILURE,

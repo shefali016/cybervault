@@ -15,6 +15,7 @@ export type SubscriptionType =
   | SubscriptionTypes.PRO
   | SubscriptionTypes.TEAM
   | SubscriptionTypes.BUSINESS
+  | SubscriptionTypes.STORAGE
 
 export type SubscriptionDuration =
   | SubscriptionDurations.YEARLY
@@ -46,7 +47,7 @@ export type ButtonConfig = {
   icon?: any
 }
 
-export type Tab = { id: string; icon?: any; text: string }
+export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
 
 export type Asset = {
   id: string
@@ -209,7 +210,7 @@ export interface Subscription {
   }
   latest_invoice: null
   livemode: boolean
-  metadata: { type: SubscriptionType }
+  metadata: { type: SubscriptionType; extraStorage?: string }
   next_pending_invoice_item_invoice: null
   pause_collection: null
   pending_invoice_item_interval: null
@@ -239,9 +240,6 @@ export type Account = {
     accountId: string | null
     detailsSubmitted: boolean
     payoutsEnabled: boolean
-  }
-  subscription: {
-    extraStorage?: number
   }
   settings: {
     sharingPrivacy: SharingPrivacy
@@ -280,7 +278,6 @@ export type User = {
   twitter?: string | undefined
   linkedIn?: string | undefined
   customerId: string
-  extraStorage?: number
 }
 
 export type AuthUser = {

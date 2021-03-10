@@ -106,6 +106,39 @@ export const validateAddClient = (clientData: any) => {
   }
 }
 
+type PasswordType = {
+  newPassword: string
+  confirmPassword: string
+  currentPassword: string
+}
+
+export const validatePassword = (data: PasswordType) => {
+  let errors: any
+  errors = {}
+  if (data.hasOwnProperty('newPassword')) {
+    if (data.newPassword == '') {
+      errors.newPassword = 'Enter a password'
+    } else if (data.newPassword && data.newPassword.length < 6) {
+      errors.newPassword = 'Password should not be less than 6 characters'
+    }
+  }
+  if (data.hasOwnProperty('confirmPassword')) {
+    if (data.confirmPassword == '') {
+      errors.confirmPassword = 'Confirm your password'
+    } else if (data.confirmPassword !== data.newPassword) {
+      errors.confirmPassword = 'Passwords do not match'
+    }
+  }
+  if (data.hasOwnProperty('currentPassword')) {
+    if (data.currentPassword == '') {
+      errors.currentPassword = 'Enter current password'
+    } else if (data.currentPassword && data.currentPassword.length < 6) {
+      errors.currentPassword = 'Password should not be less than 6 characters'
+    }
+  }
+  return errors
+}
+
 export const findProjectLimit = (allProjectsData: Array<Project>) => {
   const d = new Date()
   const currentMonth = monthNames[d.getMonth()]

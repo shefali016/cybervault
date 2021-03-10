@@ -17,7 +17,8 @@ type Props = {
   open: boolean
   onRequestClose: () => void
   account: Account
-  subscription: Subscription | any
+  accountSubscription: Subscription | undefined
+  storageSubscription: Subscription | undefined
   paymentMethods: Array<PaymentMethod>
   customerId: string
   createAmountSubscription: (
@@ -34,7 +35,8 @@ export const StorageModal = ({
   open,
   onRequestClose,
   account,
-  subscription,
+  accountSubscription,
+  storageSubscription,
   paymentMethods,
   customerId,
   createAmountSubscription,
@@ -48,11 +50,15 @@ export const StorageModal = ({
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
 
   const [extraStorage, setExtraStorage] = useState<number>(
-    account.subscription.extraStorage || 0
+    typeof storageSubscription?.metadata?.extraStorage === 'string'
+      ? parseInt(storageSubscription?.metadata?.extraStorage)
+      : 0
   )
 
-  const getTotalStorage = (account: Account) => {
-    const { storage } = getSubscriptionDetails(subscription?.metadata?.type)
+  const getTotalStorage = () => {
+    const { storage } = getSubscriptionDetails(
+      accountSubscription?.metadata?.type
+    )
     return storage + extraStorage
   }
 
@@ -74,7 +80,7 @@ export const StorageModal = ({
   }
 
   const renderStorageTracker = () => {
-    const totalStorage: number = getTotalStorage(subscription)
+    const totalStorage: number = getTotalStorage()
     const usedStoragePercent: any = (
       (storageUsed / totalStorage) *
       100
