@@ -146,11 +146,6 @@ function* createAmountSubscription({
     const subscriptionPlanId = yield select(
       (state: ReduxState) => state.stripe.storageSubscription?.id
     )
-    yield call(updateAccountFields, accountId, {
-      subscription: {
-        extraStorage
-      }
-    })
     const subscription = yield call(
       StripeApis.createAmountSubscription,
       amount,
@@ -158,7 +153,8 @@ function* createAmountSubscription({
       accountId,
       paymentMethodId,
       productId,
-      subscriptionPlanId
+      subscriptionPlanId,
+      extraStorage
     )
     yield put(StripeActions.createAmountSubscriptionSuccess(subscription))
   } catch (error: any) {

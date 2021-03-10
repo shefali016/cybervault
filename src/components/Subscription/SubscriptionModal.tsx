@@ -20,6 +20,7 @@ import PaymentMethodModal from 'components/Common/PaymentMethodModal'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { useStyles } from './style'
 import { SubscriptionItem } from './SubscriptionItem'
+import { SubscriptionDurationSwitch } from './SubscriptionDurationSwitch'
 
 type SubscriptionParams = { planId: string; type: SubscriptionType }
 

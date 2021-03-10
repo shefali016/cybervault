@@ -37,7 +37,8 @@ type StateProps = {
   user: User
   paymentMethods: Array<PaymentMethod>
   customerId: string
-  subscription: any
+  accountSubscription: any
+  storageSubscription: any
   subscriptionLoading: boolean
   subscriptionPlans: Array<StripePlans> | null
   storagePurchaseLoading: boolean
@@ -74,7 +75,8 @@ const SubscriptionScreen = ({
   history,
   customerId,
   planSubscription,
-  subscription,
+  accountSubscription,
+  storageSubscription,
   cancelSubscription,
   updateSubscription,
   createAmountSubscription,
@@ -115,13 +117,15 @@ const SubscriptionScreen = ({
         open={subscriptionModalOpen}
         onRequestClose={closeSubscriptionModal}
         activeSubscriptionType={
-          subscription ? subscription.metadata.type : SubscriptionTypes.CREATOR
+          accountSubscription
+            ? accountSubscription.metadata.type
+            : SubscriptionTypes.CREATOR
         }
         customerId={customerId}
         paymentMethods={paymentMethods}
         planSubscription={planSubscription}
         setStorageProduct={setStorageProduct}
-        subscription={subscription}
+        subscription={accountSubscription}
         planList={subscriptionPlans}
         cancelSubscription={cancelSubscription}
         updateSubscription={updateSubscription}
@@ -131,7 +135,8 @@ const SubscriptionScreen = ({
         open={storageModalOpen}
         onRequestClose={closeStorageModal}
         account={account}
-        subscription={subscription}
+        storageSubscription={storageSubscription}
+        accountSubscription={accountSubscription}
         paymentMethods={paymentMethods}
         customerId={customerId}
         createAmountSubscription={createAmountSubscription}
@@ -152,22 +157,22 @@ const SubscriptionScreen = ({
               {[
                 <div style={{ flex: 1 }}>
                   <Typography variant='subtitle1'>
-                    {!!subscription
+                    {!!accountSubscription
                       ? `${
                           getSubscriptionDetails(
-                            getSubscriptionType(subscription)
+                            getSubscriptionType(accountSubscription)
                           ).name
                         } Plan`
                       : 'Unsubscribed'}
                   </Typography>
                   <Typography variant='caption'>
-                    {!!subscription
-                      ? subscription.cancel_at_period_end
+                    {!!accountSubscription
+                      ? accountSubscription.cancel_at_period_end
                         ? `Your subscription ends ${moment(
-                            subscription.cancel_at * 1000
+                            accountSubscription.cancel_at * 1000
                           ).format('YYYY-MM-DD')}`
                         : `Your subscription renews on ${moment(
-                            subscription.current_period_end * 1000
+                            accountSubscription.current_period_end * 1000
                           ).format('YYYY-MM-DD')}` // @todo connect to real renewal date
                       : 'Subscribe to benefit from the full features of Creator Cloud'}
                   </Typography>
@@ -321,7 +326,8 @@ const mapState = (state: ReduxState): StateProps => ({
   user: state.auth.user as User,
   paymentMethods: state.stripe.paymentMethods,
   customerId: state.stripe.customer?.id as string,
-  subscription: state.stripe.accountSubscription,
+  accountSubscription: state.stripe.accountSubscription,
+  storageSubscription: state.stripe.storageSubscription,
   subscriptionLoading: state.stripe.subscriptionLoading,
   subscriptionPlans: state.stripe
     .subscriptionPlans as Array<StripePlans> | null,

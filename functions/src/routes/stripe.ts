@@ -308,6 +308,7 @@ router.post('/update_storage_plan_price', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       const {
+        extraStorage,
         amount,
         customerId,
         accountId,
@@ -323,39 +324,51 @@ router.post('/update_storage_plan_price', (req, res) => {
           subscribedPlan = plan
         }
       }
-      
+
       if (subscribedPlan) {
         await stripe.plans.del(subscribedPlan.id)
       }
 
-      const price = await stripe.prices.create({
-        product: productId,
-        metadata: {
-          accountId: accountId
-        },
-        unit_amount: amount,
-        nickname: 'Storage Plan',
-        currency: 'usd',
-        recurring: {
-          interval: 'month'
-        }
-      })
+      let subscription: any = null
 
-      let subscription: any
-      if (subscriptionPlanId) {
-        subscription = await stripe.subscriptions.update(subscriptionPlanId, {
-          default_payment_method: paymentMethodId,
-          items: [{ price: price.id }],
-          metadata: { type: 'storage' }
-        })
+      if (subscriptionPlanId && parseInt(extraStorage) === 0) {
+        // delete subscription
+        await stripe.subscriptions.del(subscriptionPlanId)
       } else {
-        subscription = await stripe.subscriptions.create({
-          customer: customerId,
-          default_payment_method: paymentMethodId,
-          items: [{ price: price.id }],
-          metadata: { type: 'storage' }
+        // create subscription
+        const price = await stripe.prices.create({
+          product: productId,
+          metadata: {
+            accountId: accountId,
+            extraStorage,
+            type: 'storage'
+          },
+          unit_amount: amount,
+          nickname: 'Storage Plan',
+          currency: 'usd',
+          recurring: {
+            interval: 'month'
+          }
         })
+
+        if (subscriptionPlanId) {
+          subscription = await stripe.subscriptions.update(subscriptionPlanId, {
+            default_payment_method: paymentMethodId,
+            cancel_at_period_end: false,
+            proration_behavior: 'always_invoice',
+            items: [{ price: price.id }],
+            metadata: { type: 'storage', extraStorage }
+          })
+        } else {
+          subscription = await stripe.subscriptions.create({
+            customer: customerId,
+            default_payment_method: paymentMethodId,
+            items: [{ price: price.id }],
+            metadata: { type: 'storage', extraStorage }
+          })
+        }
       }
+
       return res.json(subscription)
     } catch (error) {
       console.log(error)

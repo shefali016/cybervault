@@ -310,7 +310,7 @@ const MainScreen = ({
     if (!customerRestored) {
       getCustomer()
     }
-    getSubscription()
+    // getSubscription()
   }, [])
 
   if (!(userRestored && accountRestored)) {
