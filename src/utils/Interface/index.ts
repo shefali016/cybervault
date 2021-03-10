@@ -336,8 +336,8 @@ export type Project = {
   campaignExpenses: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt?: Date
-  updatedAt?: Date
+  createdAt?: Date | string
+  updatedAt?: Date | string
   id: string
   videos: Array<MediaObject>
   images: Array<MediaObject>

@@ -106,3 +106,4 @@ export const findProductWithType = (
 export const getSubscriptionType = (
   subscription: Subscription
 ): SubscriptionType => subscription.metadata.type
+

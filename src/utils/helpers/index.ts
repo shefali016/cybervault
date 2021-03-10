@@ -1,17 +1,34 @@
-export default function validate(step: number, projectData: any,clientData:any) {
+import { Project } from 'utils/Interface'
+const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
 
+export default function validate(
+  step: number,
+  projectData: any,
+  clientData: any
+) {
   switch (step) {
     case 1:
-      if (
-        clientData.id.trim() === '' 
-      ) {
+      if (clientData.id.trim() === '') {
         return true
       }
       break
     case 2:
       if (
         projectData.campaignName.trim() === '' ||
-        projectData.campaignDate.trim() === ''|| 
+        projectData.campaignDate.trim() === '' ||
         projectData.campaignObjective.trim() === '' ||
         projectData.campaignDeadLine.trim() === ''
       ) {
@@ -75,16 +92,35 @@ export const getTextColor = (color: any) => {
   }
 }
 
-export const validateAddClient=(clientData:any)=>{
+export const validateAddClient = (clientData: any) => {
   if (
     clientData.name.trim() === '' ||
     clientData.email.trim() === '' ||
     clientData.address.trim() === '' ||
     clientData.city.trim() === '' ||
     clientData.state.trim() === '' ||
-    clientData.address.trim() === ''||
+    clientData.address.trim() === '' ||
     clientData.country.trim() === ''
   ) {
     return true
   }
+}
+
+export const findProjectLimit = (allProjectsData: Array<Project>) => {
+  const d = new Date()
+  const currentMonth = monthNames[d.getMonth()]
+  const currentYear = d.getFullYear()
+  let curentMonthProjects = []
+  for (let index = 0; index < allProjectsData.length; index++) {
+    const element: any = allProjectsData[index]
+    const projectCreatedDate = new Date(element.createdAt)
+    const projectYear = projectCreatedDate.getFullYear()
+    const projectMonth = monthNames[projectCreatedDate.getMonth()]
+    if (currentYear === projectYear) {
+      if (projectMonth === currentMonth) {
+        curentMonthProjects.push(element)
+      }
+    }
+  }
+  return curentMonthProjects.length
 }

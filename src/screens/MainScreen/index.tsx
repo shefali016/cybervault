@@ -22,7 +22,9 @@ import {
   Tab,
   User,
   Account,
-  Portfolio
+  Portfolio,
+  Subscription,
+  SubscriptionType
 } from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
@@ -51,6 +53,8 @@ import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
 import { getCustomer, getSubscription } from 'actions/stripeActions'
+import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
+import { findProjectLimit } from 'utils/helpers'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -92,6 +96,8 @@ type StateProps = {
   customerRestored: boolean
   user: User
   account: Account
+  allProjectsData: Array<Project>
+  accountSubscription: Subscription
 }
 type Props = { history: any; location: any } & StateProps & DispatchProps
 
@@ -106,7 +112,9 @@ const MainScreen = ({
   getCustomer,
   getSubscription,
   user,
-  account
+  account,
+  allProjectsData,
+  accountSubscription
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -120,8 +128,24 @@ const MainScreen = ({
   }
 
   const [screenView, setScreenView] = useState(getInitialScreenView())
+  const [isBeyondLimit, setIsBeyondLimit] = useState(false)
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+
+  const handleProjectModalShow = () => {
+    const subscriptionType: SubscriptionType = getSubscriptionType(
+      accountSubscription
+    )
+    const subscriptionDetails: any = getSubscriptionDetails(subscriptionType)
+    const allowedProjects = subscriptionDetails.numProjects
+    const currentMonthProjects = findProjectLimit(allProjectsData)
+    if (currentMonthProjects < allowedProjects) {
+      setIsBeyondLimit(false)
+    } else {
+      setIsBeyondLimit(true)
+    }
+    openNewProjectModal()
+  }
 
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
@@ -248,7 +272,7 @@ const MainScreen = ({
       default:
         return {
           title: 'New Project',
-          onClick: openNewProjectModal,
+          onClick: handleProjectModalShow,
           icon: <AddIcon className={classes.buttonIcon} />
         }
     }
@@ -314,6 +338,7 @@ const MainScreen = ({
         open={newProjectModalOpen}
         onRequestClose={closeNewProjectModal}
         onSubmitClicked={createNewProject}
+        isBeyondLimit={isBeyondLimit}
       />
       <div className={classes.screen}>
         <Switch>
@@ -382,7 +407,9 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   userRestored: state.auth.userRestored,
   customerRestored: state.stripe.customerRestored,
   user: state.auth.user as User,
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  allProjectsData: state.project.allProjectsData as Array<Project>,
+  accountSubscription: state.stripe.accountSubscription as Subscription
 })
 
 const mapDispatchToProps: DispatchProps = {

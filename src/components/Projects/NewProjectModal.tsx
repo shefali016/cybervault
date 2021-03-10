@@ -16,6 +16,7 @@ import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
 import { Client } from '../../utils/Interface'
+import { Typography } from '@material-ui/core'
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -33,6 +34,7 @@ type NewProjectProps = {
   editBudget?: boolean
   initialStep?: number
   onUpdate?: (project: Types.Project) => void
+  isBeyondLimit?: boolean
 }
 
 const NewProject = ({
@@ -50,7 +52,8 @@ const NewProject = ({
   editExpenses,
   editBudget,
   initialStep = 1,
-  onUpdate
+  onUpdate,
+  isBeyondLimit
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -188,7 +191,14 @@ const NewProject = ({
 
   return (
     <div className='new-project-modal-content' ref={modalContentRef}>
-      {renderStepsView()}
+      {isBeyondLimit ? (
+        <Typography variant={'h4'}>
+          You have reached this month's project limit. Upgrade your subscription
+          to create more projects.
+        </Typography>
+      ) : (
+        renderStepsView()
+      )}
       <CloseButton
         onClick={onRequestClose}
         style={{
@@ -214,6 +224,7 @@ type NewProjectModalProps = {
   project?: Types.Project
   initialStep?: number
   onUpdate?: (project: Types.Project) => void
+  isBeyondLimit?: boolean
 }
 
 const NewProjectModal = ({
@@ -230,7 +241,8 @@ const NewProjectModal = ({
   editBudget,
   project,
   initialStep,
-  onUpdate
+  onUpdate,
+  isBeyondLimit
 }: NewProjectModalProps & StateProps) => {
   const newClientSuccess = useSelector(
     (state: any) => state.clients.newClientSuccess
@@ -247,6 +259,7 @@ const NewProjectModal = ({
         success={success}
         account={account}
         clients={clients}
+        isBeyondLimit={isBeyondLimit}
         addClientSuccess={newClientSuccess}
         newClientData={newClientData}
         project={project}
