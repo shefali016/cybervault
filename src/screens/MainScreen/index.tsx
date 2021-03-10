@@ -113,11 +113,11 @@ const MainScreen = ({
   const theme = useTheme()
 
   const getInitialScreenView = () => {
-    return Object.values({ ...DashboardTabIds, ...SharedTabIds }).includes(
+    return Object.values({ ...AccountTabIds }).includes(
       history.location.pathname.replace('/', '')
     )
-      ? ScreenViews.dashboard
-      : ScreenViews.account
+      ? ScreenViews.account
+      : ScreenViews.dashboard
   }
 
   const [screenView, setScreenView] = useState(getInitialScreenView())

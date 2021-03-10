@@ -1,12 +1,20 @@
 import { Typography } from '@material-ui/core'
 import Section from '../../components/Common/Section'
 import { ResponsiveRow } from '../../components/ResponsiveRow'
-import React from 'react'
+import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Account } from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
+import Modal from '../../components/Common/Modal'
+import React, { useState, useContext, useMemo } from 'react'
+import CloseButton from '../../components/Common/Button/CloseButton'
+import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
+import ResetPassword from './ResetPassword'
+import { useOnChange } from 'utils/hooks'
+import { ToastContext, ToastTypes } from '../../context/Toast'
+import firebase from 'firebase'
 
 type StateProps = { account: Account }
 type Props = {} & StateProps
@@ -15,37 +23,69 @@ const SecurityScreen = ({ account }: Props) => {
   const theme = useTheme()
   const { security } = account
 
-  const handleChangePassword = () => {}
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false)
+  const closePasswordModal = () => setPasswordModalOpen(false)
+
+  const authData = useSelector((state: ReduxState) => state.auth)
 
   const handleToggleTwoFactor = () => {}
 
+  useOnChange(authData.changePasswordSuccess, (success) => {
+    if (success) {
+      setPasswordModalOpen(false)
+    }
+  })
+
+  const accounthasPassword = useMemo(() => {
+    const currentUser = firebase.auth().currentUser
+    const providerData =
+      currentUser && currentUser.providerData && currentUser.providerData[0]
+
+    return providerData && providerData.providerId === 'password'
+  }, [])
+
   return (
     <div className={'screenContainer'}>
-      <Section
-        title='Password Reset'
-        style={{ marginBottom: theme.spacing(4) }}>
-        <div className={'sectionInner'}>
-          <ResponsiveRow>
-            {[
-              <div style={{ flex: 1 }}>
-                <Typography variant='subtitle1'>
-                  Change your login password
-                </Typography>
-                <Typography variant='caption'>
-                  Reset or change your existing password
-                </Typography>
-              </div>,
-              <GradiantButton onClick={handleChangePassword}>
-                <div className={'row'}>
-                  <Typography style={{ marginRight: 5 }}>
-                    Change Password
+      {accounthasPassword && (
+        <Section
+          title='Password Reset'
+          style={{ marginBottom: theme.spacing(4) }}>
+          <div className={'sectionInner'}>
+            <ResponsiveRow>
+              {[
+                <div style={{ flex: 1 }}>
+                  <Typography variant='subtitle1'>
+                    Change your login password
                   </Typography>
-                </div>
-              </GradiantButton>
-            ]}
-          </ResponsiveRow>
-        </div>
-      </Section>
+                  <Typography variant='caption'>
+                    Reset or change your existing password
+                  </Typography>
+                </div>,
+                <GradiantButton onClick={() => setPasswordModalOpen(true)}>
+                  <div className={'row'}>
+                    <Typography style={{ marginRight: 5 }}>
+                      Change Password
+                    </Typography>
+                  </div>
+                </GradiantButton>
+              ]}
+            </ResponsiveRow>
+            <Modal open={passwordModalOpen} onRequestClose={closePasswordModal}>
+              <div className='modalContent'>
+                <CloseButton
+                  onClick={closePasswordModal}
+                  style={{
+                    position: POSITION_ABSOLUTE,
+                    top: 10,
+                    right: 10
+                  }}
+                />
+                <ResetPassword loading={authData.changePasswordLoading} />
+              </div>
+            </Modal>
+          </div>
+        </Section>
+      )}
 
       <Section
         title={'Two Factor Verification'}
@@ -148,7 +188,7 @@ const SecurityScreen = ({ account }: Props) => {
                   Use a recovery email to reset forgotten passwords.
                 </Typography>
               </div>,
-              <GradiantButton onClick={handleChangePassword}>
+              <GradiantButton>
                 <div className={'row'}>
                   <Typography style={{ marginRight: 5 }}>Set Up</Typography>
                 </div>
