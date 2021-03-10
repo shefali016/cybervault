@@ -201,7 +201,7 @@ router.post('/create_account_link', (req, res) => {
 router.get('/get_products', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const plans = await stripe.products.list()
+      const plans = await stripe.products.list({ active: true })
       return res.json(plans)
     } catch (error) {
       console.log(error)

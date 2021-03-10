@@ -46,7 +46,7 @@ export type ButtonConfig = {
   icon?: any
 }
 
-export type Tab = { id: string; icon?: any; text: string }
+export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
 
 export type Asset = {
   id: string

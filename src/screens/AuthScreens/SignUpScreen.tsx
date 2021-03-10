@@ -29,7 +29,10 @@ export const SignUpScreen = (props: any) => {
 
   const toastContext = useContext(ToastContext)
 
-  const [state, setState] = useState(initialState)
+  const [state, setState] = useState({
+    ...initialState,
+    email: props.location.state?.email || ''
+  })
   const { email, password, loading, name } = state
 
   const signUpErrorRef = useRef(props.signUpError)
@@ -76,6 +79,7 @@ export const SignUpScreen = (props: any) => {
         <ReactLoading type={loading ? 'bubbles' : 'blank'} color={'#fff'} />
         <div style={{ maxWidth: 400, marginBottom: theme.spacing(4) }}>
           <AppTextField
+            autoFocus={true}
             label='Full Name'
             onChange={handleInputChange('name')}
             value={name}

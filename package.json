@@ -30,6 +30,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^17.0.1",
     "react-dropzone": "10.2.1",
+    "react-easy-swipe": "^0.0.21",
     "react-icons": "^4.2.0",
     "react-loading": "^2.0.3",
     "react-player": "^2.7.0",
