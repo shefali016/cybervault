@@ -24,7 +24,8 @@ import {
   Account,
   Portfolio,
   Subscription,
-  SubscriptionType
+  SubscriptionType,
+  SubscriptionDetails
 } from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
@@ -55,6 +56,7 @@ import { AppLoader } from '../../components/Common/Core/AppLoader'
 import { getCustomer, getSubscription } from 'actions/stripeActions'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import { findProjectLimit } from 'utils/helpers'
+import { SubscriptionItem } from 'components/Subscription/SubscriptionItem'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -129,22 +131,25 @@ const MainScreen = ({
   }
 
   const [screenView, setScreenView] = useState(getInitialScreenView())
-  const [isBeyondLimit, setIsBeyondLimit] = useState(false)
+
+  const isBeyondProjectLimit = useMemo(() => {
+    const subscriptionType: SubscriptionType = getSubscriptionType(
+      accountSubscription
+    )
+    const subscriptionDetails: SubscriptionDetails = getSubscriptionDetails(
+      subscriptionType
+    )
+    const allowedProjects = subscriptionDetails.numProjects
+    const currentMonthProjects = allProjectsData
+      ? findProjectLimit(allProjectsData)
+      : 0
+
+    return currentMonthProjects >= allowedProjects
+  }, [accountSubscription, allProjectsData])
 
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
 
   const handleProjectModalShow = () => {
-    const subscriptionType: SubscriptionType = getSubscriptionType(
-      accountSubscription
-    )
-    const subscriptionDetails: any = getSubscriptionDetails(subscriptionType)
-    const allowedProjects = subscriptionDetails.numProjects
-    const currentMonthProjects = findProjectLimit(allProjectsData)
-    if (currentMonthProjects < allowedProjects) {
-      setIsBeyondLimit(false)
-    } else {
-      setIsBeyondLimit(true)
-    }
     openNewProjectModal()
   }
 
@@ -341,13 +346,26 @@ const MainScreen = ({
     return renderLoading()
   }
 
+  const handleUpgradeSubscription = () => {
+    closeNewProjectModal()
+    setTimeout(
+      () =>
+        history.push({
+          pathname: '/subscription',
+          state: { params: { isSubscribing: true } }
+        }),
+      1
+    )
+  }
+
   return (
     <Layout {...getLayoutProps()}>
       <NewProjectModal
+        onUpgradeSubscription={handleUpgradeSubscription}
         open={newProjectModalOpen}
         onRequestClose={closeNewProjectModal}
         onSubmitClicked={createNewProject}
-        isBeyondLimit={isBeyondLimit}
+        isBeyondLimit={isBeyondProjectLimit}
       />
       <div className={classes.screen}>
         <Switch>

@@ -147,6 +147,16 @@ export interface StripePlans {
   usage_type: string
 }
 
+export interface SubscriptionDetails {
+  name: string
+  description: string
+  features: Array<string>
+  extraFeatures?: Array<string>
+  storage: number
+  numProjects: number
+  transactionFee: string
+}
+
 export interface Subscription {
   id: string
   object: 'subscription'
