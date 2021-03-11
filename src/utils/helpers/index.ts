@@ -1,3 +1,6 @@
+import { Project } from 'utils/Interface'
+import moment from 'moment'
+
 export default function validate(
   step: number,
   projectData: any,
@@ -121,4 +124,15 @@ export const validatePassword = (data: PasswordType) => {
     }
   }
   return errors
+}
+
+export const findProjectLimit = (allProjectsData: Array<Project>) => {
+  let curentMonthProjects = []
+  for (let index = 0; index < allProjectsData.length; index++) {
+    const element = allProjectsData[index]
+    if (moment().isSame(element.createdAt, 'month')) {
+      curentMonthProjects.push(element)
+    }
+  }
+  return curentMonthProjects.length
 }

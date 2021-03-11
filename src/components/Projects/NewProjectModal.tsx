@@ -16,6 +16,9 @@ import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
 import { Client } from '../../utils/Interface'
+import { Typography } from '@material-ui/core'
+import { useTheme } from '@material-ui/core/styles'
+import { GradiantButton } from 'components/Common/Button/GradiantButton'
 
 type NewProjectProps = {
   onRequestClose: () => void
@@ -33,6 +36,8 @@ type NewProjectProps = {
   editBudget?: boolean
   initialStep?: number
   onUpdate?: (project: Types.Project) => void
+  isBeyondLimit?: boolean
+  onUpgradeSubscription?: () => void
 }
 
 const NewProject = ({
@@ -50,7 +55,9 @@ const NewProject = ({
   editExpenses,
   editBudget,
   initialStep = 1,
-  onUpdate
+  onUpdate,
+  isBeyondLimit,
+  onUpgradeSubscription
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -60,6 +67,7 @@ const NewProject = ({
   const [addClient, setAddClient] = useState(false)
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
+  const theme = useTheme()
 
   useOnChange(success, (success) => {
     if (success) {
@@ -186,9 +194,36 @@ const NewProject = ({
     }
   }
 
+  const renderProjectLimitMessage = () => {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: theme.spacing(2),
+          textAlign: 'center',
+          maxWidth: 450
+        }}>
+        <Typography variant='h5' style={{ marginBottom: theme.spacing(2) }}>
+          Limit Reached
+        </Typography>
+        <Typography variant={'h6'} style={{ marginBottom: theme.spacing(3) }}>
+          You have reached this month's project limit. Upgrade your subscription
+          to create more projects.
+        </Typography>
+        <GradiantButton onClick={onUpgradeSubscription}>
+          Upgrade Subscription
+        </GradiantButton>
+      </div>
+    )
+  }
+
   return (
-    <div className='new-project-modal-content' ref={modalContentRef}>
-      {renderStepsView()}
+    <div
+      className={isBeyondLimit ? 'modalContent' : 'new-project-modal-content'}
+      ref={modalContentRef}>
+      {isBeyondLimit ? renderProjectLimitMessage() : renderStepsView()}
       <CloseButton
         onClick={onRequestClose}
         style={{
@@ -214,6 +249,8 @@ type NewProjectModalProps = {
   project?: Types.Project
   initialStep?: number
   onUpdate?: (project: Types.Project) => void
+  isBeyondLimit?: boolean
+  onUpgradeSubscription?: () => void
 }
 
 const NewProjectModal = ({
@@ -230,7 +267,9 @@ const NewProjectModal = ({
   editBudget,
   project,
   initialStep,
-  onUpdate
+  onUpdate,
+  isBeyondLimit,
+  onUpgradeSubscription
 }: NewProjectModalProps & StateProps) => {
   const newClientSuccess = useSelector(
     (state: any) => state.clients.newClientSuccess
@@ -240,6 +279,7 @@ const NewProjectModal = ({
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
+        onUpgradeSubscription={onUpgradeSubscription}
         initialStep={initialStep}
         onRequestClose={onRequestClose}
         onSubmitClicked={onSubmitClicked}
@@ -247,6 +287,7 @@ const NewProjectModal = ({
         success={success}
         account={account}
         clients={clients}
+        isBeyondLimit={isBeyondLimit}
         addClientSuccess={newClientSuccess}
         newClientData={newClientData}
         project={project}

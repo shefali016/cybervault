@@ -147,6 +147,16 @@ export interface StripePlans {
   usage_type: string
 }
 
+export interface SubscriptionDetails {
+  name: string
+  description: string
+  features: Array<string>
+  extraFeatures?: Array<string>
+  storage: number
+  numProjects: number
+  transactionFee: string
+}
+
 export interface Subscription {
   id: string
   object: 'subscription'
@@ -333,8 +343,8 @@ export type Project = {
   campaignExpenses: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt?: Date
-  updatedAt?: Date
+  createdAt?: Date | string
+  updatedAt?: Date | string
   id: string
   videos: Array<MediaObject>
   images: Array<MediaObject>

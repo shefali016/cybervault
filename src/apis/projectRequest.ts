@@ -5,10 +5,7 @@ import { Project } from '../utils/Interface'
 /**
  * @deleteProject
  */
-export const deleteProject = async (
-  projectId: string,
-  account: Account
-) => {
+export const deleteProject = async (projectId: string, account: Account) => {
   return firebase
     .firestore()
     .collection('AccountData')
@@ -25,6 +22,7 @@ export const createNewProjectRequest = async (
   newProjectData: Project,
   account: Account
 ) => {
+  newProjectData.createdAt = new Date().toUTCString()
   await firebase
     .firestore()
     .collection('AccountData')

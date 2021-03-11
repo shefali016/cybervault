@@ -65,7 +65,7 @@ type DispatchProps = {
   getPlanList: () => void
 }
 type ReduxProps = StateProps & DispatchProps
-type Props = { history: any }
+type Props = { history: any; location: any }
 
 const SubscriptionScreen = ({
   account,
@@ -73,6 +73,7 @@ const SubscriptionScreen = ({
   getPaymentMethods,
   paymentMethods,
   history,
+  location,
   customerId,
   planSubscription,
   accountSubscription,
@@ -93,7 +94,7 @@ const SubscriptionScreen = ({
   }, [])
 
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
-    false
+    !!location.state?.params?.isSubscribing
   )
   const [storageModalOpen, setStorageModalOpen] = useState<boolean>(false)
   const [storageProduct, setStorageProduct] = useState<Product | any>({})
