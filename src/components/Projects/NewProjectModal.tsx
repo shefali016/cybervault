@@ -192,7 +192,7 @@ const NewProject = ({
   return (
     <div className='new-project-modal-content' ref={modalContentRef}>
       {isBeyondLimit ? (
-        <Typography variant={'h4'}>
+        <Typography variant={'h6'}>
           You have reached this month's project limit. Upgrade your subscription
           to create more projects.
         </Typography>

@@ -143,3 +143,28 @@ export const createAmountSubscriptionFailure = (error: any) => ({
   type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE,
   error
 })
+
+export const setDefultPaymentMethod = (paymentMethodId: string) => ({
+  type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD,
+  paymentMethodId
+})
+export const setDefultPaymentMethodSuccess = (paymentMethodId: string) => ({
+  type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS,
+  paymentMethodId
+})
+export const setDefultPaymentMethodFailure = (error: any) => ({
+  type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE,
+  error
+})
+
+export const getCustomerInvoices = () => ({
+  type: ActionTypes.GET_CUSTOMER_INVOICE
+})
+export const getCustomerInvoicesSuccess = (billingHistory: any) => ({
+  type: ActionTypes.GET_CUSTOMER_INVOICE_SUCCESS,
+  billingHistory
+})
+export const getCustomerInvoicesFailure = (error: any) => ({
+  type: ActionTypes.GET_CUSTOMER_INVOICE_FAILURE,
+  error
+})

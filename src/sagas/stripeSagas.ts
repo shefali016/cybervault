@@ -174,6 +174,37 @@ function* getSubscription() {
   }
 }
 
+function* setDefultPaymentMethod({ paymentMethodId }: Params) {
+  try {
+    const customerId = yield select((state) => state.auth.user.customerId)
+    yield call(
+      StripeApis.attachDefultPaymentMethod,
+      paymentMethodId,
+      customerId
+    )
+    yield put(StripeActions.setDefultPaymentMethodSuccess(paymentMethodId))
+  } catch (error: any) {
+    yield put(
+      StripeActions.setDefultPaymentMethodFailure(error?.message || 'default')
+    )
+  }
+}
+
+function* getCustomerInvoices() {
+  try {
+    const customerId = yield select((state) => state.auth.user.customerId)
+    const billingHistory = yield call(
+      StripeApis.getCutomerInvoicesList,
+      customerId
+    )
+    yield put(StripeActions.getCustomerInvoicesSuccess(billingHistory.data))
+  } catch (error: any) {
+    yield put(
+      StripeActions.getCustomerInvoicesFailure(error?.message || 'default')
+    )
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.GET_PAYMENT_METHODS, getPaymentMethods)
   yield takeLatest(ActionTypes.ATTACH_PAYMENT_METHOD, attachPaymentMethod)
@@ -187,7 +218,11 @@ function* watchRequests() {
     ActionTypes.CREATE_AMOUNT_SUBSCRIPTION,
     createAmountSubscription
   )
-  // yield takeLatest(ActionTypes.GET_PLAN_LIST, getPlanData)
+  yield takeLatest(
+    ActionTypes.SET_DEFAULT_PAYMENT_METHOD,
+    setDefultPaymentMethod
+  )
+  yield takeLatest(ActionTypes.GET_CUSTOMER_INVOICE, getCustomerInvoices)
 }
 
 export default function* sagas() {

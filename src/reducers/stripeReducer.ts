@@ -1,7 +1,7 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { StripePlans, Subscription } from 'utils/Interface'
+import { Invoice, StripePlans, Subscription } from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -33,6 +33,11 @@ export type State = {
   storagePurchaseLoading: boolean
   storagePurchaseSuccess: boolean
   storagePurchaseError: null | string
+
+  billingHistory: Array<Invoice> | null
+  billingHistoryLoading: boolean
+  billingHistorySuccess: boolean
+  billingHistoryError: null | string
 }
 
 export type Action = {
@@ -46,6 +51,7 @@ export type Action = {
   planId: string
   plans: Array<StripePlans>
   storageSubscription: Subscription
+  billingHistory: Array<Invoice>
 }
 
 const initialState = {
@@ -76,7 +82,12 @@ const initialState = {
 
   storagePurchaseLoading: false,
   storagePurchaseSuccess: false,
-  storagePurchaseError: null
+  storagePurchaseError: null,
+
+  billingHistory: null,
+  billingHistoryLoading: false,
+  billingHistorySuccess: false,
+  billingHistoryError: null
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -235,6 +246,25 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         storagePurchaseLoading: false,
         storagePurchaseError: action.error
+      }
+    case ActionTypes.GET_CUSTOMER_INVOICE:
+      return {
+        ...state,
+        billingHistoryLoading: true
+      }
+    case ActionTypes.GET_CUSTOMER_INVOICE_SUCCESS:
+      return {
+        ...state,
+        billingHistory: action.billingHistory,
+        billingHistoryLoading: false,
+        billingHistorySuccess: true
+      }
+    case ActionTypes.GET_CUSTOMER_INVOICE_FAILURE:
+      return {
+        ...state,
+        billingHistoryError: action.error,
+        billingHistoryLoading: false,
+        billingHistorySuccess: false
       }
 
     default:

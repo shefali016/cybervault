@@ -354,3 +354,30 @@ export const getProductsWithPlans = async () => {
 
   return { products, plans: productPlans }
 }
+
+export const attachDefultPaymentMethod = async (
+  paymentMethodId: string,
+  customerId: string
+) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/set_payment_method_to_default`,
+    { paymentMethodId, customerId }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe default payment method error')
+  }
+}
+
+export const getCutomerInvoicesList = async (customerId: string) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/get_customer_invoices`,
+    { customerId }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe customer invoice error')
+  }
+}

@@ -8,7 +8,10 @@ import { CardModal } from './CardModal'
 import clsx from 'clsx'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { useDispatch, useSelector } from 'react-redux'
-import { detachPaymentMethod } from 'actions/stripeActions'
+import {
+  detachPaymentMethod,
+  setDefultPaymentMethod
+} from 'actions/stripeActions'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext, ToastTypes } from 'context/Toast'
 import { ReduxState } from 'reducers/rootReducer'
@@ -16,9 +19,14 @@ import { ReduxState } from 'reducers/rootReducer'
 type Props = {
   paymentMethods: Array<PaymentMethod>
   customerId: string
+  defaultPaymentMethod: string
 }
 
-export const PaymentMethodList = ({ paymentMethods, customerId }: Props) => {
+export const PaymentMethodList = ({
+  paymentMethods,
+  customerId,
+  defaultPaymentMethod
+}: Props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -80,6 +88,13 @@ export const PaymentMethodList = ({ paymentMethods, customerId }: Props) => {
   const [cardModalOpen, setCardModalOpen] = useState(false)
   const toggleCardModal = (open: boolean) => () => setCardModalOpen(open)
 
+  //Attach Default Payment Method
+
+  const [
+    confirmingAttachDefaultPayment,
+    setConfirmingAttachDefaultPayment
+  ] = useState<PaymentMethod | null>(null)
+
   // Detaching PaymentMethod
 
   const [
@@ -90,10 +105,21 @@ export const PaymentMethodList = ({ paymentMethods, customerId }: Props) => {
   const toggleConfirmDetach = (paymentMethod: PaymentMethod | null) => () =>
     setConfirmingDetach(paymentMethod)
 
+  const toggleconfirmingAttachDefaultPayment = (
+    paymentMethod: PaymentMethod | null
+  ) => () => setConfirmingAttachDefaultPayment(paymentMethod)
+
   const handleDetach = () => {
     if (confirmingDetach) {
       dispatch(detachPaymentMethod(confirmingDetach))
       setConfirmingDetach(null)
+    }
+  }
+
+  const handleAttachPaymentMethod = () => {
+    if (confirmingAttachDefaultPayment) {
+      dispatch(setDefultPaymentMethod(confirmingAttachDefaultPayment.id))
+      setConfirmingAttachDefaultPayment(null)
     }
   }
 
@@ -122,6 +148,15 @@ export const PaymentMethodList = ({ paymentMethods, customerId }: Props) => {
           <div className={classes.primaryCardTitleContainer}></div>
           <AppButton onClick={toggleConfirmDetach(paymentMethod)}>
             <Typography className={classes.buttonText}>Remove</Typography>
+          </AppButton>
+          <AppButton
+            disabled={defaultPaymentMethod === paymentMethod.id ? true : false}
+            onClick={toggleconfirmingAttachDefaultPayment(paymentMethod)}>
+            <Typography className={classes.buttonText}>
+              {defaultPaymentMethod === paymentMethod.id
+                ? 'Default Method'
+                : 'Set as default'}
+            </Typography>
           </AppButton>
         </div>
       </div>
@@ -158,14 +193,28 @@ export const PaymentMethodList = ({ paymentMethods, customerId }: Props) => {
         customerId={customerId}
       />
       <ConfirmationDialog
-        title={'Remove payment method'}
-        message={
-          'Are you sure you want to remove this payment method. This cannot be undone.'
+        title={
+          confirmingDetach
+            ? 'Remove payment method'
+            : 'Set as default payment method'
         }
-        isOpen={!!confirmingDetach}
-        onYes={handleDetach}
-        onNo={toggleConfirmDetach(null)}
-        onClose={toggleConfirmDetach(null)}
+        message={`Are you sure you want to ${
+          confirmingDetach ? 'remove' : 'set as default'
+        } this payment method. ${
+          confirmingDetach ? 'This cannot be undone.' : ''
+        }`}
+        isOpen={!!confirmingDetach || !!confirmingAttachDefaultPayment}
+        onYes={!!confirmingDetach ? handleDetach : handleAttachPaymentMethod}
+        onNo={
+          !!confirmingDetach
+            ? toggleConfirmDetach(null)
+            : toggleconfirmingAttachDefaultPayment(null)
+        }
+        onClose={
+          !!confirmingDetach
+            ? toggleConfirmDetach(null)
+            : toggleconfirmingAttachDefaultPayment(null)
+        }
       />
     </div>
   )
