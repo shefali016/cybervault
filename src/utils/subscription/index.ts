@@ -1,17 +1,14 @@
 import { SubscriptionTypes } from 'utils/enums'
-import { Product, Subscription, SubscriptionType } from 'utils/Interface'
+import {
+  Product,
+  Subscription,
+  SubscriptionDetails,
+  SubscriptionType
+} from 'utils/Interface'
 
 export const getSubscriptionDetails = (
   type: SubscriptionType | undefined
-): {
-  name: string
-  description: string
-  features: Array<string>
-  extraFeatures?: Array<string>
-  storage: number
-  numProjects: number
-  transactionFee: string
-} => {
+): SubscriptionDetails => {
   switch (type) {
     case SubscriptionTypes.CREATOR:
       return {
@@ -84,12 +81,12 @@ export const getSubscriptionDetails = (
       }
     default:
       return {
-        name: '',
+        name: 'Unsubscribed',
         description: '',
         transactionFee: '',
-        numProjects: 0,
+        numProjects: 1,
         features: [],
-        storage: 0
+        storage: 10
       }
   }
 }
@@ -105,5 +102,4 @@ export const findProductWithType = (
 
 export const getSubscriptionType = (
   subscription: Subscription
-): SubscriptionType => subscription.metadata.type
-
+): SubscriptionType => subscription?.metadata?.type

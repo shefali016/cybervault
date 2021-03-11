@@ -1,18 +1,5 @@
 import { Project } from 'utils/Interface'
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-]
+import moment from 'moment'
 
 export default function validate(
   step: number,
@@ -140,19 +127,11 @@ export const validatePassword = (data: PasswordType) => {
 }
 
 export const findProjectLimit = (allProjectsData: Array<Project>) => {
-  const d = new Date()
-  const currentMonth = monthNames[d.getMonth()]
-  const currentYear = d.getFullYear()
   let curentMonthProjects = []
   for (let index = 0; index < allProjectsData.length; index++) {
-    const element: any = allProjectsData[index]
-    const projectCreatedDate = new Date(element.createdAt)
-    const projectYear = projectCreatedDate.getFullYear()
-    const projectMonth = monthNames[projectCreatedDate.getMonth()]
-    if (currentYear === projectYear) {
-      if (projectMonth === currentMonth) {
-        curentMonthProjects.push(element)
-      }
+    const element = allProjectsData[index]
+    if (moment().isSame(element.createdAt, 'month')) {
+      curentMonthProjects.push(element)
     }
   }
   return curentMonthProjects.length

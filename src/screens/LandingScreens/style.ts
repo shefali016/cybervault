@@ -266,7 +266,8 @@ export const useStyles = makeStyles((theme) => {
       flexDirection: 'column',
       backgroundColor: theme.palette.background.default,
       position: 'relative',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      userSelect: 'none'
     },
 
     navContainer: { position: 'fixed', width: '100%', zIndex: 100 },

@@ -19,6 +19,8 @@ import { getProductsWithPlans } from 'apis/stripe'
 import clsx from 'clsx'
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import Swipe from 'react-easy-swipe'
+import blackSwirl from 'assets/swirly_black.jpeg'
+import whiteSwirl from 'assets/swirly_white.jpeg'
 
 const subscriptionTypes = [
   SubscriptionTypes.CREATOR,
@@ -53,6 +55,10 @@ const SubscriptionPricingSlider = (props: any) => {
       console.log(error.message)
     }
   }
+
+  const itemWidth = isWidthDown('sm', props.width)
+    ? ITEM_SM_WIDTH
+    : ITEM_LG_WIDTH
 
   const renderItem = ({
     type,
@@ -100,7 +106,10 @@ const SubscriptionPricingSlider = (props: any) => {
             plan,
             duration,
             onClick: () => props.onStart(type),
-            featured
+            featured,
+            index,
+            selectedIndex,
+            width: itemWidth
           }}
         />
         <SubscriptionDetails
@@ -156,16 +165,15 @@ const SubscriptionPricingSlider = (props: any) => {
                 style={Object.assign(
                   {
                     transition: theme.transitions.create(['transform'], {
-                      easing: theme.transitions.easing.easeOut,
-                      duration: 400
+                      easing: theme.transitions.easing.easeInOut,
+                      duration: 500
                     })
                   },
                   !isWidthDown('md', props.width)
                     ? {}
                     : {
                         transform: `translateX(${
-                          -(selectedIndex - 1) *
-                          (isWidthDown('sm', props.width) ? 280 : 350)
+                          -(selectedIndex - 1) * itemWidth
                         }px)`
                       }
                 )}>
@@ -200,6 +208,9 @@ type SubscriptionHeaderProps = {
   onClick: () => void
   featured: boolean
   plan: StripePlans | undefined
+  index: number
+  selectedIndex: number
+  width: number
 }
 
 const SubscriptionHeader = ({
@@ -208,49 +219,76 @@ const SubscriptionHeader = ({
   duration,
   onClick,
   featured,
-  plan
+  plan,
+  index,
+  selectedIndex,
+  width
 }: SubscriptionHeaderProps) => {
   const subscriptionClasses = useSubscriptionStyles()
   const classes = useStyles()
   const theme = useTheme()
+
+  const imageOffet = Math.abs(1 - selectedIndex) * 0.5 + 1
+
+  const lastSelected = useRef(selectedIndex)
+
+  const selectingFarItem = Math.abs(selectedIndex - lastSelected.current) > 1
+
   return (
     <div
       className={clsx(classes.header, featured ? classes.headerFeatured : '')}>
-      <Typography
-        variant='h4'
-        className={clsx(classes.headerTitle, featured ? 'whiteText' : '')}>
-        {name}
-      </Typography>
-      <Typography
-        variant='caption'
-        className={clsx(classes.headerSubtitle, featured ? 'whiteText' : '')}>
-        {description}
-      </Typography>
-      {!!plan ? (
-        <div className={subscriptionClasses.priceContainer}>
-          <Typography
-            variant={'h5'}
-            className={clsx(
-              subscriptionClasses.priceText,
-              featured ? 'whiteText' : ''
-            )}>
-            ${(plan.amount / 100).toFixed(2)}
-          </Typography>
-          <Typography
-            variant={'caption'}
-            className={clsx(
-              subscriptionClasses.durationText,
-              featured ? 'whiteText' : ''
-            )}>
-            /{duration === SubscriptionDurations.MONTHLY ? 'month' : 'year'}
-          </Typography>
-        </div>
-      ) : (
-        <AppLoader color={theme.palette.primary.main} />
-      )}
-      <GradiantButton onClick={onClick} className={classes.getStartedButton}>
-        Get started free
-      </GradiantButton>
+      <img
+        src={featured ? blackSwirl : whiteSwirl}
+        style={{
+          transform: `translateX(${
+            (selectedIndex - index) * width
+          }px) translateY(-25px) scaleX(${
+            Math.abs(1 - selectedIndex) * 0.7 + 1
+          })`,
+          transition: theme.transitions.create(['transform'], {
+            duration: 1000,
+            easing: theme.transitions.easing.easeInOut
+          })
+        }}
+        className={classes.headerBgImage}
+      />
+      <div className={classes.headerContent}>
+        <Typography
+          variant='h4'
+          className={clsx(classes.headerTitle, featured ? 'whiteText' : '')}>
+          {name}
+        </Typography>
+        <Typography
+          variant='caption'
+          className={clsx(classes.headerSubtitle, featured ? 'whiteText' : '')}>
+          {description}
+        </Typography>
+        {!!plan ? (
+          <div className={subscriptionClasses.priceContainer}>
+            <Typography
+              variant={'h5'}
+              className={clsx(
+                subscriptionClasses.priceText,
+                featured ? 'whiteText' : ''
+              )}>
+              ${(plan.amount / 100).toFixed(2)}
+            </Typography>
+            <Typography
+              variant={'caption'}
+              className={clsx(
+                subscriptionClasses.durationText,
+                featured ? 'whiteText' : ''
+              )}>
+              /{duration === SubscriptionDurations.MONTHLY ? 'month' : 'year'}
+            </Typography>
+          </div>
+        ) : (
+          <AppLoader color={theme.palette.primary.main} />
+        )}
+        <GradiantButton onClick={onClick} className={classes.getStartedButton}>
+          Get started free
+        </GradiantButton>
+      </div>
     </div>
   )
 }
@@ -295,6 +333,9 @@ const SubscriptionDetails = ({
 }
 
 const BORDER_RADIUS = 35
+
+const ITEM_LG_WIDTH = 350
+const ITEM_SM_WIDTH = 280
 
 const useStyles = makeStyles((theme) => ({
   feature: { marginBottom: theme.spacing(1) },
@@ -343,9 +384,9 @@ const useStyles = makeStyles((theme) => ({
         duration: 400
       }
     ),
-    width: 350,
+    width: ITEM_LG_WIDTH,
     [theme.breakpoints.down('sm')]: {
-      width: 280
+      width: ITEM_SM_WIDTH
     }
   },
   featuredItem: {
@@ -359,12 +400,29 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0
   },
 
-  header: {
+  headerBgImage: {
+    position: 'absolute',
+    objectFit: 'cover',
+    width: ITEM_LG_WIDTH * 3,
+    [theme.breakpoints.down('sm')]: {
+      width: ITEM_SM_WIDTH * 3
+    },
+    overflow: 'hidden'
+  },
+  headerContent: {
+    zIndex: 1,
     padding: theme.spacing(3),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center'
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden'
   },
   headerFeatured: {
     background: 'black',
