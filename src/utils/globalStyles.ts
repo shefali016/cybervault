@@ -28,7 +28,42 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modalContentWrapper': {
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      overflow: 'hidden',
+      position: 'relative'
+    },
     '.modalContent': {
+      color: theme.palette.text.paper,
+      backgroundColor: theme.palette.background.paper,
+      padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
+      maxHeight: '80vh',
+      minWidth: 400,
+      maxWidth: 1200,
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      display: 'flex',
+      flexDirection: 'column',
+      overflowY: 'scroll',
+      position: 'relative',
+      [theme.breakpoints.down('md')]: {
+        // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+      },
+      [theme.breakpoints.down('sm')]: {
+        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+        minWidth: 'auto'
+      }
+    },
+    '.bold': { fontWeight: 'bold' },
+    '.responsiveRow': {
+      display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
+      }
+    },
+    '.scrollY': { overflowY: 'scroll' },
+    '.modalContentNoScroll': {
       color: theme.palette.text.paper,
       backgroundColor: theme.palette.background.paper,
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
@@ -38,7 +73,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
       flexDirection: 'column',
-      overflowY: 'scroll',
       position: 'relative'
     },
     '.modalCloseButton': { position: 'absolute', top: 10, right: 10 },
@@ -118,6 +152,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Text
-    '.metaText': { color: theme.palette.text.meta }
+    '.metaText': { color: theme.palette.text.meta },
+    '.whiteText': { color: 'white' }
   }
 }))

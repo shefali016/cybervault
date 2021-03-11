@@ -18,7 +18,7 @@ import {
 } from 'utils/constants/stringConstants'
 import { Milestone } from '../../../utils/Interface'
 import { useTabletLayout } from '../../../utils/hooks'
-import NewProjectTitle from '../NewProjectTitle'
+import NewProjectTitle from '../../Common/Modal/ModalTitle'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import { InputChangeEvent, Expense } from '../../../utils/Interface'

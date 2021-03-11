@@ -19,8 +19,7 @@ const initialState = {
   email: '',
   password: '',
   name: '',
-  passwordConfirm: '',
-  loading: false
+  passwordConfirm: ''
 }
 
 export const SignUpScreen = (props: any) => {
@@ -29,17 +28,11 @@ export const SignUpScreen = (props: any) => {
 
   const toastContext = useContext(ToastContext)
 
-  const [state, setState] = useState(initialState)
-  const { email, password, loading, name } = state
-
-  const signUpErrorRef = useRef(props.signUpError)
-  useEffect(() => {
-    if (!signUpErrorRef.current && props.signUpError) {
-      setState((state) => ({ ...state, loading: false }))
-      toastContext.showToast({ title: props.signUpError })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.signUpError])
+  const [state, setState] = useState({
+    ...initialState,
+    email: props.location.state?.email || ''
+  })
+  const { email, password, name } = state
 
   useEffect(() => {
     if (props.isLoggedIn && props.user) {
@@ -57,7 +50,6 @@ export const SignUpScreen = (props: any) => {
     if (!_email || !_name || !_password) {
       toastContext.showToast({ title: 'Complete all fields before signing up' })
     } else {
-      setState((state) => ({ ...state, loading: true }))
       props.signUp({ email: _email, password: _password, name: _name })
     }
   }
@@ -73,9 +65,13 @@ export const SignUpScreen = (props: any) => {
         <Typography variant={'h5'} style={{ marginTop: theme.spacing(2) }}>
           Welcome
         </Typography>
-        <ReactLoading type={loading ? 'bubbles' : 'blank'} color={'#fff'} />
+        <ReactLoading
+          type={props.loading ? 'bubbles' : 'blank'}
+          color={'#fff'}
+        />
         <div style={{ maxWidth: 400, marginBottom: theme.spacing(4) }}>
           <AppTextField
+            autoFocus={true}
             label='Full Name'
             onChange={handleInputChange('name')}
             value={name}
@@ -174,7 +170,7 @@ const useStyles = makeStyles((theme) => ({
 const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
   user: state.auth.user,
-  signUpError: state.auth.error
+  loading: state.auth.signUpLoading
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

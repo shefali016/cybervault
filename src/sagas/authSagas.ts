@@ -7,7 +7,9 @@ import {
   logoutSuccess,
   logoutFailure,
   googleLoginSuccess,
-  googleLoginFailure
+  googleLoginFailure,
+  resetPasswordSuccess,
+  resetPasswordError
 } from '../actions/authActions'
 import * as Types from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
@@ -15,10 +17,16 @@ import {
   authRequest,
   signUpRequest,
   logoutRequest,
-  googleLoginRequest
+  googleLoginRequest,
+  resetPassword
 } from '../apis/authRequest'
 
-type Params = { loginInfo: Types.UserLoginInfo; type: string }
+type Params = {
+  loginInfo: Types.UserLoginInfo
+  type: string
+  password: string
+  currentPassword: string
+}
 
 function* login({ loginInfo }: Params) {
   try {
@@ -37,6 +45,15 @@ function* signUp({ loginInfo }: Params) {
     yield put(signUpSuccess(signUpResponse))
   } catch (error: any) {
     yield put(signUpFailure(error?.message))
+  }
+}
+
+function* changePassword({ password, currentPassword }: Params) {
+  try {
+    let response = yield call(resetPassword, password, currentPassword)
+    yield put(resetPasswordSuccess(response))
+  } catch (error: any) {
+    yield put(resetPasswordError(error?.message))
   }
 }
 
@@ -63,6 +80,7 @@ function* watchGetRequest() {
   yield takeLatest(ActionTypes.SIGNUP_REQUEST, signUp)
   yield takeLatest(ActionTypes.LOGOUT, logout)
   yield takeLatest(ActionTypes.GOOGLE_LOGIN_REQUEST, googleLogin)
+  yield takeLatest(ActionTypes.RESET_PASSWORD_REQUEST, changePassword)
 }
 
 export default function* sagas() {

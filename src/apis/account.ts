@@ -35,3 +35,15 @@ export const updateAccount = (account: Account): Promise<Account> => {
     .set(account)
     .then(() => account)
 }
+
+export const updateAccountFields = (
+  accountId: string,
+  accountData: Object | any
+): Promise<Account> => {
+  return firebase
+    .firestore()
+    .collection('Accounts')
+    .doc(accountId)
+    .update(accountData)
+    .then(() => accountData)
+}

@@ -27,3 +27,15 @@ export const getUser = async (id: string): Promise<User> => {
       }
     })
 }
+
+export const updateUserData = (
+  userId: string,
+  userData: any
+): Promise<User> => {
+  return firebase
+    .firestore()
+    .collection('Users')
+    .doc(userId)
+    .update(userData)
+    .then(() => userData)
+}

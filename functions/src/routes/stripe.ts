@@ -198,11 +198,39 @@ router.post('/create_account_link', (req, res) => {
   })
 })
 
-router.post('/get_plans_list', (req, res) => {
+router.get('/get_products', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const plans = await stripe.plans.list({ limit: 2 })
+      const plans = await stripe.products.list({ active: true })
       return res.json(plans)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.get('/get_plans', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { productId } = req.query
+      const plans = await stripe.plans.list({ product: productId })
+      return res.json(plans)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.get('/subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId } = req.query
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId
+      })
+      return res.json(subscriptions)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)
@@ -213,12 +241,134 @@ router.post('/get_plans_list', (req, res) => {
 router.post('/plan_subscription', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { customerId, planId, paymentMethodId } = req.body
+      const { customerId, planId, paymentMethodId, type } = req.body
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
         default_payment_method: paymentMethodId,
-        items: [{ price: planId }]
+        items: [{ price: planId }],
+        metadata: { type }
       })
+      await stripe.customers.update(customerId, {
+        metadata: { subscription: subscription.id }
+      })
+      return res.json(subscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/cancel_plan_subscription', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { subscriptionId } = req.body
+      const updatedSubscription = await stripe.subscriptions.update(
+        subscriptionId,
+        {
+          cancel_at_period_end: true
+        }
+      )
+      return res.json(updatedSubscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/update_subscription_plan', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { subscriptionId, planId, type } = req.body
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+      const updatedSubscription = await stripe.subscriptions.update(
+        subscriptionId,
+        {
+          cancel_at_period_end: false,
+          proration_behavior: 'always_invoice',
+          items: [
+            {
+              id: subscription.items.data[0].id,
+              price: planId
+            }
+          ],
+          metadata: { type }
+        }
+      )
+      return res.json(updatedSubscription)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/update_storage_plan_price', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const {
+        extraStorage,
+        amount,
+        customerId,
+        accountId,
+        paymentMethodId,
+        productId,
+        subscriptionPlanId
+      } = req.body
+      const plans = await stripe.plans.list({ product: productId })
+      let subscribedPlan: any = null
+      for (let index = 0; index < plans.data.length; index++) {
+        const plan = plans.data[index]
+        if (plan.metadata?.accountId === accountId) {
+          subscribedPlan = plan
+        }
+      }
+
+      if (subscribedPlan) {
+        await stripe.plans.del(subscribedPlan.id)
+      }
+
+      let subscription: any = null
+
+      if (subscriptionPlanId && parseInt(extraStorage) === 0) {
+        // delete subscription
+        await stripe.subscriptions.del(subscriptionPlanId)
+      } else {
+        // create subscription
+        const price = await stripe.prices.create({
+          product: productId,
+          metadata: {
+            accountId: accountId,
+            extraStorage,
+            type: 'storage'
+          },
+          unit_amount: amount,
+          nickname: 'Storage Plan',
+          currency: 'usd',
+          recurring: {
+            interval: 'month'
+          }
+        })
+
+        if (subscriptionPlanId) {
+          subscription = await stripe.subscriptions.update(subscriptionPlanId, {
+            default_payment_method: paymentMethodId,
+            cancel_at_period_end: false,
+            proration_behavior: 'always_invoice',
+            items: [{ price: price.id }],
+            metadata: { type: 'storage', extraStorage }
+          })
+        } else {
+          subscription = await stripe.subscriptions.create({
+            customer: customerId,
+            default_payment_method: paymentMethodId,
+            items: [{ price: price.id }],
+            metadata: { type: 'storage', extraStorage }
+          })
+        }
+      }
+
       return res.json(subscription)
     } catch (error) {
       console.log(error)

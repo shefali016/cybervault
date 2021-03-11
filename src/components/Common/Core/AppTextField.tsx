@@ -1,4 +1,5 @@
-import { makeStyles, TextField, useTheme } from '@material-ui/core'
+import { makeStyles, TextField, Typography, useTheme } from '@material-ui/core'
+import clsx from 'clsx'
 import React, { useMemo, forwardRef } from 'react'
 import { InputChangeEvent } from '../../../utils/Interface'
 
@@ -16,6 +17,11 @@ type Props = {
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
   onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
   onInput?: (e: InputChangeEvent) => void
+  className?: string
+  labelClassName?: string
+  labelFocusedClassName?: string
+  autoFocus?: boolean
+  errorMessage?: string | undefined
 }
 
 const AppTextField = (
@@ -32,7 +38,12 @@ const AppTextField = (
     onKeyUp,
     name,
     disabled,
-    onInput
+    onInput,
+    className = '',
+    labelClassName = '',
+    labelFocusedClassName = '',
+    autoFocus,
+    errorMessage
   }: Props,
   ref: any
 ) => {
@@ -52,60 +63,78 @@ const AppTextField = (
   }, [multiline, darkStyle])
 
   return (
-    <TextField
-      inputRef={ref}
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
-      onInput={onInput}
-      error={error ? error : false}
-      label={label}
-      variant='outlined'
-      size='small'
-      type={type}
-      className={error ? classes.errorTextField : classes.textField}
-      onChange={onChange}
-      multiline={multiline}
-      value={value}
-      name={name}
-      disabled={disabled ? disabled : false}
-      InputProps={{
-        classes: {
-          root: dynamicInputStyle
+    <React.Fragment>
+      <TextField
+        autoFocus={autoFocus}
+        inputRef={ref}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onInput={onInput}
+        error={error ? error : false}
+        label={label}
+        variant='outlined'
+        size='small'
+        type={type}
+        className={error ? classes.errorTextField : classes.textField}
+        onChange={onChange}
+        multiline={multiline}
+        value={value}
+        name={name}
+        disabled={disabled ? disabled : false}
+        InputProps={{
+          classes: {
+            root: clsx(dynamicInputStyle, className)
+          }
+        }}
+        inputProps={type === 'date' ? { min: currentDate } : {}}
+        InputLabelProps={
+          type === 'date'
+            ? {
+                shrink: true,
+                classes: {
+                  root: !value
+                    ? clsx(
+                        darkStyle ? classes.dateRootDark : classes.dateRoot,
+                        labelClassName
+                      )
+                    : darkStyle
+                    ? classes.dateRootDarkFilled
+                    : classes.dateRootFilled,
+
+                  focused: clsx(classes.labelFocused, labelFocusedClassName)
+                }
+              }
+            : {
+                classes: {
+                  root: !value
+                    ? clsx(classes.labelRoot, labelClassName)
+                    : classes.labelRootFilled,
+
+                  focused: clsx(classes.labelFocused, labelFocusedClassName)
+                }
+              }
         }
-      }}
-      inputProps={type === 'date' ? { min: currentDate } : {}}
-      InputLabelProps={
-        type === 'date'
-          ? {
-              shrink: true,
-              classes: {
-                root: !value
-                  ? darkStyle
-                    ? classes.dateRootDark
-                    : classes.dateRoot
-                  : darkStyle
-                  ? classes.dateRootDarkFilled
-                  : classes.dateRootFilled,
-                focused: classes.labelFocused
-              }
-            }
-          : {
-              classes: {
-                root: !value ? classes.labelRoot : classes.labelRootFilled,
-                focused: classes.labelFocused
-              }
-            }
-      }
-      style={{
-        marginTop: theme.spacing(1.5),
-        marginBottom: theme.spacing(1.5),
-        ...style
-      }}
-    />
+        style={{
+          marginTop: theme.spacing(1.5),
+          marginBottom: errorMessage ? theme.spacing(0.5) : theme.spacing(1.5),
+          ...style
+        }}
+      />
+      {!!errorMessage && (
+        <Typography className={classes.errorText} variant='caption'>
+          {errorMessage}
+        </Typography>
+      )}
+    </React.Fragment>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  errorText: {
+    color: theme.palette.error.main,
+    marginBottom: theme.spacing(1.5),
+    marginLeft: theme.spacing(1)
+  },
   dateRoot: {
     color: theme.palette.grey[500],
     '&$labelFocused': {
@@ -163,7 +192,9 @@ const useStyles = makeStyles((theme) => ({
   },
   inputRoot: {
     backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    color: theme.palette.grey[900]
+    color: theme.palette.grey[900],
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   multilineInputRoot: {
     backgroundColor: 'rgba(255, 255, 255, 0.04)',

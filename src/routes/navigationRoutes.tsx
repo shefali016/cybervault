@@ -7,12 +7,23 @@ import MainScreen from 'screens/MainScreen'
 import { useGlobalStyles } from '../utils/globalStyles'
 import InvoicesClientScreen from '../screens/SharedScreens/InvoicesClientScreen'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
+import LandingScreen from 'screens/LandingScreens/HomeScreen'
+import PricingScreen from 'screens/LandingScreens/PricingScreen'
 
 type Props = { isLoggedIn?: boolean }
 
 const Routes = (props: Props): JSX.Element => {
   useGlobalStyles()
-  return props.isLoggedIn ? MainRoutes() : AuthRoutes()
+
+  const AuthSwitch = props.isLoggedIn ? MainRoutes() : AuthRoutes()
+
+  return (
+    <Switch>
+      <Route path='/' exact component={LandingScreen} />
+      <Route path='/pricing' exact component={PricingScreen} />
+      {AuthSwitch}
+    </Switch>
+  )
 }
 
 const MainRoutes = () => (
@@ -25,8 +36,8 @@ const MainRoutes = () => (
 const AuthRoutes = () => (
   <Switch>
     <Route path='/signup' component={SignUpScreen} />
-    <Route exact path='/' component={LoginScreen} />
     <Route path='/clientInvoices/:accId/:id' component={InvoicesClientScreen} />
+    <Route path='/' component={LoginScreen} />
   </Switch>
 )
 

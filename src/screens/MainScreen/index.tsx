@@ -50,21 +50,20 @@ import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
-import { getCustomer } from 'actions/stripeActions'
+import { getCustomer, getSubscription } from 'actions/stripeActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
-  settings: 'settings',
-  storage: 'storage'
+  invoices: 'invoices',
+  settings: 'settings'
 }
 
 export const AccountTabIds = {
-  profile: 'profile',
   manage: 'manage',
-  branding: 'branding',
-  subscription: 'subscription'
+  profile: 'profile',
+  branding: 'branding'
 }
 
 export const ChildTabs = {
@@ -72,7 +71,7 @@ export const ChildTabs = {
 }
 
 export const SharedTabIds = {
-  invoices: 'invoices',
+  subscription: 'subscription',
   security: 'security'
 }
 
@@ -86,6 +85,7 @@ type DispatchProps = {
   getUser: (id: string) => void
   getAccount: (id: string) => void
   getCustomer: () => void
+  getSubscription: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -105,6 +105,7 @@ const MainScreen = ({
   getUser,
   getAccount,
   getCustomer,
+  getSubscription,
   user,
   account
 }: Props) => {
@@ -112,11 +113,11 @@ const MainScreen = ({
   const theme = useTheme()
 
   const getInitialScreenView = () => {
-    return Object.values(DashboardTabIds).includes(
+    return Object.values({ ...AccountTabIds }).includes(
       history.location.pathname.replace('/', '')
     )
-      ? ScreenViews.dashboard
-      : ScreenViews.account
+      ? ScreenViews.account
+      : ScreenViews.dashboard
   }
 
   const [screenView, setScreenView] = useState(getInitialScreenView())
@@ -151,26 +152,30 @@ const MainScreen = ({
       case DashboardTabIds.portfolio:
         return {
           id,
-          text: 'Portfolio',
+          text: 'Portfolios',
           icon: <PortfolioIcon className={classes.listIconStyle} />
+        }
+      // case DashboardTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      case DashboardTabIds.invoices:
+        return {
+          id,
+          text: 'Invoices',
+          icon: <InvoiceIcon className={classes.listIconStyle} />
         }
       case DashboardTabIds.settings:
         return {
           id,
           text: 'Settings',
-          icon: <SettingsIcon className={classes.listIconStyle} />
-        }
-      case DashboardTabIds.storage:
-        return {
-          id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
-        }
-      case SharedTabIds.invoices:
-        return {
-          id,
-          text: 'Invoices',
-          icon: <InvoiceIcon className={classes.listIconStyle} />
+          icon: <SettingsIcon className={classes.listIconStyle} />,
+          onPress: () => {
+            history.replace(`/manage`)
+            setScreenView(ScreenViews.account)
+          }
         }
       case SharedTabIds.security:
         return {
@@ -197,7 +202,7 @@ const MainScreen = ({
           text: 'Branding',
           icon: <BrandingIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.subscription:
+      case SharedTabIds.subscription:
         return {
           id,
           text: 'Subscription',
@@ -255,7 +260,11 @@ const MainScreen = ({
   }
 
   const handleActiveTabPress = (tab: Tab) => {
-    history.replace(`/${tab.id}`)
+    if (typeof tab.onPress === 'function') {
+      tab.onPress()
+    } else {
+      history.replace(`/${tab.id}`)
+    }
     if (tab.id !== activeTab.id) {
       setActiveTab(tab)
     }
@@ -301,6 +310,7 @@ const MainScreen = ({
     if (!customerRestored) {
       getCustomer()
     }
+    // getSubscription()
   }, [])
 
   if (!(userRestored && accountRestored)) {
@@ -389,7 +399,8 @@ const mapDispatchToProps: DispatchProps = {
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
   getAccount: (id: string) => getAccount(id),
-  getCustomer: () => getCustomer()
+  getCustomer: () => getCustomer(),
+  getSubscription: () => getSubscription()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)
