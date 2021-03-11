@@ -165,8 +165,8 @@ const SubscriptionPricingSlider = (props: any) => {
                 style={Object.assign(
                   {
                     transition: theme.transitions.create(['transform'], {
-                      easing: theme.transitions.easing.easeOut,
-                      duration: 400
+                      easing: theme.transitions.easing.easeInOut,
+                      duration: 500
                     })
                   },
                   !isWidthDown('md', props.width)
