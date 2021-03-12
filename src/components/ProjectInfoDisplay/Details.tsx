@@ -19,7 +19,6 @@ export const Details = ({ label, value, startDate, endDate }: Props) => {
       <Typography variant={'body1'}>
         {' '}
         {startDate ? `Start Date:  {startDate}` : value}
-        {value}
       </Typography>
       {endDate ? (
         <Typography style={{ marginLeft: 20 }} variant={'body1'}>

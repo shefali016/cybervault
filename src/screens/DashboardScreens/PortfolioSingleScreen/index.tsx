@@ -3,9 +3,8 @@ import { Fragment, useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { Portfolio, Project, Account, User } from 'utils/Interface'
-import { Box, Container, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
-import { RenderProjectDetails } from 'components/Common/Widget/ProjectDetailWidget'
 import { RenderCampaignDetails } from 'components/Common/Widget/CampaignDetailsWidget'
 import { AssetUploadDisplay } from 'components/Assets/UploadMedia'
 import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
@@ -15,6 +14,7 @@ import { AccountTabIds } from 'screens/MainScreen'
 import { useTheme } from '@material-ui/core/styles'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import { AppLoader } from 'components/Common/Core/AppLoader'
+import { Details } from 'components/ProjectInfoDisplay/Details'
 
 type StateProps = {
   portfolio: Portfolio
@@ -125,9 +125,15 @@ const PortfolioSingleScreen = ({
 
         <RenderCampaignDetails projectData={selectedProjectData} />
 
-        <RenderProjectDetails
-          projectData={selectedProjectData}
-          hideBorder={!hasAssets}
+        <Typography variant={'h6'}>Project Details</Typography>
+
+        <Details
+          label={'Campaign Objective:'}
+          value={selectedProjectData.campaignObjective}
+        />
+        <Details
+          label={'Project Summary:'}
+          value={selectedProjectData.description}
         />
 
         {hasAssets && (
