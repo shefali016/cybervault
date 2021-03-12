@@ -426,19 +426,6 @@ router.post('/set_payment_method_to_default', (req, res) => {
   })
 })
 
-router.post('/remove_payment_method', (req, res) => {
-  return corsHandler(req, res, async () => {
-    try {
-      const { paymentMethodId } = req.body
-      const paymentMethod = await stripe.paymentMethods.detach(paymentMethodId)
-      return res.json(paymentMethod)
-    } catch (error) {
-      console.log(error)
-      return res.status(400).send(error)
-    }
-  })
-})
-
 router.post('/stripe-webhook', (req, res) => {
   return corsHandler(req, res, async () => {
     // Retrieve the event by verifying the signature using the raw body and secret.
