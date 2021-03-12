@@ -15,6 +15,8 @@ import { useTheme } from '@material-ui/core/styles'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { Details } from 'components/ProjectInfoDisplay/Details'
+import clsx from 'clsx'
+import { AppButton } from 'components/Common/Core/AppButton'
 
 type StateProps = {
   portfolio: Portfolio
@@ -150,7 +152,7 @@ const PortfolioSingleScreen = ({
                 />
               )}
 
-              <AppDivider spacing={6} />
+              <AppDivider className={classes.assetDivider} />
 
               {!!images.length && (
                 <FeatureAssetUpload
@@ -167,28 +169,20 @@ const PortfolioSingleScreen = ({
         )}
       </Fragment>
     )
-
-    return
   }
 
-  return (
-    <div
-      className={classes.screen}
-      style={{ backgroundColor, color: textColor }}>
-      <Header
-        user={user}
-        onProfileClick={handleProfileNavigation}
-        renderAppIcon={true}
-        onLogoClick={handleBack}
-      />
+  const renderProjectsBar = () => {
+    return (
       <div
+        className={classes.projectBarContainer}
         style={{
           background: `linear-gradient(to right ,${headerGradient1}, ${headerGradient2})`
         }}>
         <ul
-          className={`${classes.portfoloTabsList} ${
+          className={clsx(
+            classes.portfoloTabsList,
             color === 'dark' ? classes.portfoloDarkTabsList : ''
-          }`}>
+          )}>
           {portfolioProjects && portfolioProjects.length
             ? portfolioProjects.map((project: Project | any, index: number) => {
                 return (
@@ -206,7 +200,25 @@ const PortfolioSingleScreen = ({
               })
             : null}
         </ul>
+        <div>
+          <AppButton>Share</AppButton>
+        </div>
       </div>
+    )
+  }
+
+  return (
+    <div
+      className={classes.screen}
+      style={{ backgroundColor, color: textColor }}>
+      <Header
+        user={user}
+        onProfileClick={handleProfileNavigation}
+        renderAppIcon={true}
+        onLogoClick={handleBack}
+      />
+
+      {renderProjectsBar()}
 
       <div
         className={classes.portfolioWrapper}

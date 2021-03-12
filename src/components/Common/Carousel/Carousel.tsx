@@ -49,15 +49,12 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flex: 1
-      }}>
+    <div className={classes.container}>
       <CarouselButton
         direction={'left'}
         onClick={prev}
         inActive={currentIndex === 0}
+        className={classes.largeSwitchButton}
       />
 
       <div className={classes.assetContainer}>
@@ -121,16 +118,51 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
         </div>
       </div>
 
+      <div className={classes.smallSwitchContainer}>
+        <CarouselButton
+          direction={'left'}
+          onClick={prev}
+          inActive={currentIndex === 0}
+          className={classes.smallSwitchButton}
+        />
+        <CarouselButton
+          direction={'right'}
+          onClick={next}
+          inActive={!assets.length || currentIndex === assets.length - 1}
+          className={classes.smallSwitchButton}
+        />
+      </div>
+
       <CarouselButton
         direction={'right'}
         onClick={next}
         inActive={!assets.length || currentIndex === assets.length - 1}
+        className={classes.largeSwitchButton}
       />
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flex: 1,
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
+  },
+  largeSwitchButton: { [theme.breakpoints.down('sm')]: { display: 'none' } },
+  smallSwitchContainer: {
+    display: 'inline-flex',
+    gap: 10,
+    paddingTop: theme.spacing(3)
+  },
+  smallSwitchButton: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      flex: 1
+    },
+    display: 'none'
+  },
   img: {
     display: 'block',
     position: 'absolute',
@@ -165,7 +197,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     position: 'relative',
     flex: 1,
-    padding: `20px 30px`
+    [theme.breakpoints.up('sm')]: { margin: `0 ${theme.spacing(2)}px` }
   },
   assetOuter: {
     display: 'flex',

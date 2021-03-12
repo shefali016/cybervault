@@ -203,9 +203,18 @@ export const FeatureAssetList = ({
                   position: 'absolute',
                   top: 0,
                   transform: `translateY(${
-                    isCurrent ? -window.innerWidth * 0.15 : 0
+                    isCurrent
+                      ? -window.innerWidth *
+                        (window.innerWidth < 768
+                          ? 0.3 * (768 / window.innerWidth)
+                          : 0.15)
+                      : 0
                   }px) scale(${
-                    isCurrent ? 4 * (window.innerWidth / 1300) : 1
+                    isCurrent
+                      ? 4 *
+                        (window.innerWidth / 1300) *
+                        (768 / window.innerWidth)
+                      : 1
                   }) translateX(${
                     isCurrent ? ((assets.length - 1) / 2 - index) * 20 : 0
                   }px)`,
@@ -240,15 +249,17 @@ export const FeatureAssetList = ({
             onClick={prev}
             direction={'left'}
             inActive={currentIndex === 0}
+            className={classes.largeSwitchButton}
           />
 
           <div className={classes.currentAssetContainer}>
             <div
               style={{
-                position: 'relative',
-                display: 'flex',
-                flexGrow: 1,
-                alignSelf: 'stretch'
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
               }}>
               {!hasAsset && (
                 <div className={classes.currentAssetOuter}>
@@ -280,6 +291,21 @@ export const FeatureAssetList = ({
             onClick={next}
             direction={'right'}
             inActive={!assets.length || currentIndex === assets.length - 1}
+            className={classes.largeSwitchButton}
+          />
+        </div>
+        <div className={classes.smallSwitchContainer}>
+          <CarouselButton
+            onClick={prev}
+            direction={'left'}
+            inActive={currentIndex === 0}
+            className={classes.smallSwitchButton}
+          />
+          <CarouselButton
+            onClick={next}
+            direction={'right'}
+            inActive={!assets.length || currentIndex === assets.length - 1}
+            className={classes.smallSwitchButton}
           />
         </div>
         {renderAssetPicker()}
@@ -292,10 +318,25 @@ const currentAssetTransitionDuration = 650
 const pickerTransitionDuration = 640
 
 const useStyles = makeStyles((theme) => ({
+  largeSwitchButton: { [theme.breakpoints.down('sm')]: { display: 'none' } },
+  smallSwitchContainer: {
+    display: 'inline-flex',
+    gap: 10,
+    paddingTop: theme.spacing(3)
+  },
+  smallSwitchButton: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      flex: 1
+    },
+    display: 'none'
+  },
+
   featureButton: {
     position: 'absolute',
-    right: 70,
-    top: 20,
+    right: '5%',
+    top: '5%',
     background: 'rgba(0,0,0,0.2)'
   },
   featureIcon: { color: 'gold' },
@@ -304,7 +345,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     position: 'relative',
     justifyContent: 'center',
-    height: 80,
     marginTop: theme.spacing(3)
   },
   assetPickerItemOuter: {
@@ -318,12 +358,20 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     marginLeft: theme.spacing(1.2),
     marginRight: theme.spacing(1.2),
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: theme.spacing(0.8),
+      marginRight: theme.spacing(0.8)
+    },
     overflow: 'hidden'
   },
   assetPickerItemInner: {
     position: 'relative',
-    width: 60,
-    height: 60,
+    width: theme.spacing(16),
+    height: theme.spacing(16),
+    [theme.breakpoints.down('sm')]: {
+      width: theme.spacing(8),
+      height: theme.spacing(8)
+    },
     display: 'inline-block',
     overflow: 'hidden',
     margin: 0
@@ -370,18 +418,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex'
   },
   currentAssetContainer: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    [theme.breakpoints.up('sm')]: { margin: `0 ${theme.spacing(2)}px` },
     position: 'relative',
-    minHeight: (props: any) =>
-      props.assetContainerMinHeight && props.assets.length
-        ? props.assetContainerMinHeight
-        : 300,
-    padding: `20px 30px`
+    width: '100%',
+    paddingTop: '50.25%'
   },
   currentAssetOuter: {
+    height: '100%',
     display: 'flex',
     flex: 1,
     alignSelf: 'stretch',
