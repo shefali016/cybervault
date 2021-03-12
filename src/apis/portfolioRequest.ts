@@ -54,17 +54,20 @@ export const getPortfolioFolderRequest = async (account: Account) => {
     const portfolios: Map<string, Portfolio> | any = []
     for (const doc of data.docs) {
       let folderData: PortfolioFolder = doc.data()
-      for (let index = 0; index < doc.data().portfolios.length; index++) {
-        const portfolioId = doc.data().portfolios[index]
-        const portfolioData = await firebase
-          .firestore()
-          .collection('AccountData')
-          .doc(account.id)
-          .collection('Portfolio')
-          .doc(portfolioId)
-          .get()
-        const portfolio = portfolioData.data()
-        portfolios.push({ ...portfolio, folderId: folderData.id })
+      console.log(folderData)
+      if (doc.data().portfolios) {
+        for (let index = 0; index < doc.data().portfolios.length; index++) {
+          const portfolioId = doc.data().portfolios[index]
+          const portfolioData = await firebase
+            .firestore()
+            .collection('AccountData')
+            .doc(account.id)
+            .collection('Portfolio')
+            .doc(portfolioId)
+            .get()
+          const portfolio = portfolioData.data()
+          portfolios.push({ ...portfolio, folderId: folderData.id })
+        }
       }
       folderList.push(folderData)
     }
@@ -74,7 +77,7 @@ export const getPortfolioFolderRequest = async (account: Account) => {
     }
     return result
   } catch (error) {
-    console.log('Errooorrrrr', error)
+    console.log('getPortfolioFolderRequest error', error)
     return error
   }
 }
@@ -95,7 +98,7 @@ export const deletePortfolioFolderRequest = async (
       .doc(folderId)
       .delete()
   } catch (error) {
-    console.log('Errooorrrrr', error)
+    console.log('deletePortfolioFolderRequest error', error)
     return error
   }
 }
@@ -127,7 +130,7 @@ export const updatePortfolioRequest = async (
       .set(portfolioData)
     return portfolioData.id
   } catch (error) {
-    console.log('Errooorrrrr', error)
+    console.log('updatePortfolioRequest error', error)
     return error
   }
 }
@@ -148,10 +151,10 @@ export const getPortfolioRequest = async (
       .doc(portfolioId)
       .get()
     const portfolio = portfolioData.data()
-    const portfolioPorijects = portfolioData.data().projects
+    const portfolioProjects = portfolioData.data().projects
     let projectDataList: Array<Project> = []
-    for (let index = 0; index < portfolioPorijects.length; index++) {
-      const projectId = portfolioPorijects[index]
+    for (let index = 0; index < portfolioProjects.length; index++) {
+      const projectId = portfolioProjects[index]
       const projects: Project | any = await getProjectDetailsRequest(
         account.id,
         projectId
@@ -164,7 +167,7 @@ export const getPortfolioRequest = async (
     }
     return result
   } catch (error) {
-    console.log('Errooorrrrr', error)
+    console.log('getPortfolioRequest error', error)
     return error
   }
 }

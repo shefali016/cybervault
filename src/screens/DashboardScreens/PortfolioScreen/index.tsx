@@ -15,7 +15,7 @@ import {
   updatePortfolioFolderRequest,
   updatePortfolioRequest
 } from 'actions/portfolioActions'
-import { useStyles } from './style'
+import { useStyles } from 'components/Portfolio/style'
 import FolderIcon from '@material-ui/icons/Folder'
 import { Typography } from '@material-ui/core'
 
@@ -209,26 +209,6 @@ const PortfoliosScreen = ({
   return (
     <div>
       <div className={classes.portfolioBoxMainWrap}>
-        <div>
-          <PortfolioFolders
-            folderList={folderList}
-            loading={loading}
-            handleEditFolderDetail={(folder: PortfolioFolder) =>
-              handleEditFolderDetail(folder)
-            }
-            deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
-            isModalOpen={state.isPortfolioModalOpen}
-            handleModalRequest={handleModalRequest}
-            handleSubmit={handlePortfolioSubmit}
-            portfolios={portfolios}
-            projectList={allProjectsData}
-            portfolioLoading={portfolioLoading}
-            handlePortfolioView={(portfolioId: string) =>
-              handlePortfolioView(portfolioId)
-            }
-            clients={clients}
-          />
-        </div>
         <div
           onClick={() => handleModalRequest({ type: 'folder' })}
           className={classes.portfolioBoxWrap}>
@@ -237,6 +217,25 @@ const PortfoliosScreen = ({
             <Typography variant='h6'>Create Folder</Typography>
           </div>
         </div>
+
+        <PortfolioFolders
+          folderList={folderList}
+          loading={loading}
+          handleEditFolderDetail={(folder: PortfolioFolder) =>
+            handleEditFolderDetail(folder)
+          }
+          deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
+          isModalOpen={state.isPortfolioModalOpen}
+          handleModalRequest={handleModalRequest}
+          handleSubmit={handlePortfolioSubmit}
+          portfolios={portfolios}
+          projectList={allProjectsData}
+          portfolioLoading={portfolioLoading}
+          handlePortfolioView={(portfolioId: string) =>
+            handlePortfolioView(portfolioId)
+          }
+          clients={clients}
+        />
       </div>
 
       {renderPortfolioFolderModal()}

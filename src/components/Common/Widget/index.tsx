@@ -7,13 +7,14 @@ import ReactLoading from 'react-loading'
 import { useTheme } from '@material-ui/core/styles'
 
 type Props = {
-  title: string
+  title?: string
   data: Array<any>
   renderItem: (item: any) => React.ReactElement
-  emptyMessage: string
+  emptyMessage?: string
   tabletColumn?: boolean
   loading?: boolean
   itemHeight?: number
+  EmptyComponent?: any
 }
 
 const Widget = ({
@@ -23,15 +24,32 @@ const Widget = ({
   emptyMessage,
   tabletColumn,
   loading,
-  itemHeight
+  itemHeight,
+  EmptyComponent
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
+
+  const renderEmpty = () => {
+    if (EmptyComponent) {
+      return EmptyComponent === 'function' ? <EmptyComponent /> : EmptyComponent
+    } else if (emptyMessage) {
+      return (
+        <Typography variant={'h6'} style={{ color: '#888888' }}>
+          {emptyMessage}
+        </Typography>
+      )
+    }
+    return null
+  }
+
   return (
     <div className={clsx(classes.root)}>
-      <Typography variant={'body1'} className={classes.title}>
-        {title}
-      </Typography>
+      {!!title && (
+        <Typography variant={'body1'} className={classes.title}>
+          {title}
+        </Typography>
+      )}
       <div
         style={itemHeight ? { minHeight: itemHeight } : {}}
         className={clsx(
@@ -50,9 +68,7 @@ const Widget = ({
             />
           </div>
         ) : (
-          <Typography variant={'h6'} style={{ color: '#888888' }}>
-            {emptyMessage}
-          </Typography>
+          renderEmpty()
         )}
       </div>
     </div>

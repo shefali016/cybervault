@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Typography } from '@material-ui/core'
+import { Box, Card, Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
 import { Client, Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
@@ -8,8 +8,11 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { useStyles } from './style'
-import { AppButton } from 'components/Common/Core/AppButton'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import Widget from '../../components/Common/Widget'
+import { useTheme } from '@material-ui/core/styles'
+import { PopoverButton } from 'components/Common/PopoverButton'
+import clsx from 'clsx'
 
 type Props = {
   folderList: Array<PortfolioFolder>
@@ -41,6 +44,7 @@ const PortfolioFolders = ({
 }: Props) => {
   const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
   const classes = useStyles()
+  const theme = useTheme()
 
   const startConfirmingDelete = (id: string) => setDeleteFolderId(id)
   const stopConfirmingDelete = () => setDeleteFolderId(null)
@@ -67,70 +71,88 @@ const PortfolioFolders = ({
       {!loading ? (
         folderList && !!folderList.length ? (
           folderList.map((folder: PortfolioFolder, index: number) => {
-            const portFolio: any = portfolios.filter(
+            const portFolios: Array<Portfolio> = portfolios.filter(
               (item: any) => item.folderId === folder.id
             )
+
+            const popoverMenuItems = [
+              {
+                title: 'Add portfolio',
+                onClick: () =>
+                  handleModalRequest({ type: 'portfolio', folder }),
+                Icon: AddIcon
+              },
+              {
+                title: 'Edit folder',
+                onClick: () => handleEditFolderDetail(folder),
+                Icon: EditIcon
+              },
+              {
+                title: 'Delete folder',
+                onClick: () => startConfirmingDelete(folder.id),
+                Icon: DeleteIcon,
+                desctructive: true
+              }
+            ]
+
             return (
               <div key={index} className={classes.portfolioFolder}>
                 <div className={classes.portfolioFolderTitle}>
                   <Typography variant='h6'>
-                    {folder.name}
+                    {folder.name}{' '}
                     <Typography
                       variant='caption'
                       className={classes.folderDescription}>
                       {folder.description}
                     </Typography>
                   </Typography>
-
-                  <span onClick={() => handleEditFolderDetail(folder)}>
-                    <EditIcon />
-                  </span>
-                  <span onClick={() => startConfirmingDelete(folder.id)}>
-                    <DeleteIcon />
-                  </span>
+                  <PopoverButton menuItems={popoverMenuItems} />
                 </div>
 
-                <Grid container spacing={2}>
-                  {!!portFolio &&
-                    !!portFolio.length &&
-                    portFolio.map((data: any, i: number) => {
-                      return (
-                        <Grid key={i} item lg={3} md={4} sm={6}>
-                          <Card
-                            onClick={() => handlePortfolioView(data.id)}
-                            className={classes.portfoliosCard}>
-                            <div className={classes.cardLogo}>
-                              <img src={data.logo} alt='' />
-                            </div>
-                            <div className={classes.logoCOntent}>
-                              <h5>{data.name}</h5>
-                              <p>{data.description}</p>
-                            </div>
-                            <Box pl={2}>
-                              <KeyboardArrowRightIcon
-                                style={{ color: '#797979' }}
-                              />
-                            </Box>
-                          </Card>
-                        </Grid>
-                      )
-                    })}
-                  <Grid item lg={3} md={4} sm={6}>
-                    <AppButton
-                      variant='contained'
-                      className={classes.createPortfolioButton}
-                      onClick={() => {
+                <Widget
+                  data={portFolios}
+                  EmptyComponent={
+                    <div
+                      onClick={() =>
                         handleModalRequest({ type: 'portfolio', folder })
-                      }}>
-                      <div className='row'>
-                        <AddIcon className={classes.buttonIcon} />
-                        <Typography style={{ fontWeight: 'bold' }}>
-                          Add Portfolio
+                      }
+                      className={clsx(
+                        classes.portfolioBoxWrap,
+                        classes.portfoliosCard
+                      )}
+                      style={{ margin: 0 }}>
+                      <AddIcon className={classes.addIcon} />
+                      <Typography variant='body1' style={{ fontSize: 18 }}>
+                        Add a portfolio
+                      </Typography>
+                    </div>
+                  }
+                  itemHeight={theme.spacing(10)}
+                  renderItem={(data: Portfolio) => (
+                    <Card
+                      key={data.id}
+                      onClick={() => handlePortfolioView(data.id)}
+                      className={classes.portfoliosCard}>
+                      <div className={classes.cardLogo}>
+                        {!!data.icon && <img src={data.icon} alt='' />}
+                      </div>
+
+                      <div className={classes.logoContent}>
+                        <Typography variant='body1' style={{ fontSize: 18 }}>
+                          {data.name}
+                        </Typography>
+                        <Typography
+                          variant='caption'
+                          style={{ margin: 0, marginTop: 0, padding: 0 }}>
+                          {data.description}
                         </Typography>
                       </div>
-                    </AppButton>
-                  </Grid>
-                </Grid>
+                      <Box pl={2}>
+                        <KeyboardArrowRightIcon style={{ color: '#797979' }} />
+                      </Box>
+                    </Card>
+                  )}
+                />
               </div>
             )
           })
@@ -139,7 +161,7 @@ const PortfolioFolders = ({
         <div className={classes.loader}>
           <ReactLoading
             type={'bubbles'}
-            color={'#fff'}
+            color={theme.palette.primary.main}
             height={100}
             width={100}
           />

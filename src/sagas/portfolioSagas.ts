@@ -86,7 +86,7 @@ function* updatePortfolio({ portfolio, folderId }: UpdateParams) {
     const folder: Types.PortfolioFolder | any = folderArray.filter(
       (item: any) => item.id === folderId
     )[0]
-   
+
     folder.portfolios.push(portfolioId)
 
     yield call(updatePortfolioFolderRequest, folder, account)
@@ -108,9 +108,7 @@ function* getPortfolio({ portfolioId }: UpdateParams) {
       portfolioId,
       account
     )
-    console.log('>>>>>>>>>>>>>>>Result', result)
 
-    console.log('>>>>>>>>>>>>>>>>>Result', result)
     yield put(getPortfolioSuccess(result.portfolio, result.projectDataList))
   } catch (error: any) {
     yield put(updatePortfolioFolderFailure(error))
