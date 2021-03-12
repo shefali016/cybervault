@@ -6,6 +6,7 @@ import { ProjectAsset } from 'utils/Interface'
 import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
 import { CarouselButton } from './CarouselButton'
+import clsx from 'clsx'
 
 export type Props = {
   isVideo?: boolean
@@ -68,11 +69,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
           {assets.length === 0 ? (
             <div className={classes.assetOuter} style={{ minHeight: 300 }}>
               <div className={classes.assetInner}>
-                <img
-                  src={ImagePreview}
-                  alt='default-asset'
-                  className={classes.img}
-                />
+                <div className={clsx(classes.img, classes.imgPlaceholder)} />
               </div>
             </div>
           ) : (
@@ -172,6 +169,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     transform: 'translate(-50%, -50%)'
   },
+  imgPlaceholder: { background: theme.palette.background.surface },
   buttonImage: {
     fontSize: 50,
     color: theme.palette.grey[500],
