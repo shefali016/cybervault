@@ -9,8 +9,15 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  portfolioList: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: 1200
+  },
+  responsivePortfolioItem: {},
+
   addIcon: {
-    fontSize: 35,
+    fontSize: 30,
     color: theme.palette.primary.light,
     opacity: 0.6,
     marginRight: theme.spacing(1),
@@ -45,13 +52,11 @@ export const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     height: theme.spacing(10),
-    marginRight: theme.spacing(3),
     minWidth: getCardHeight(theme),
-    maxWidth: getCardHeight(theme),
     boxSizing: 'border-box'
   },
   portfolioFolderTitle: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(2),
     display: 'flex',
     alignItems: 'center',
     marginLeft: theme.spacing(5)
@@ -71,11 +76,11 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: 30,
     overflow: 'hidden',
     background: theme.palette.grey[200],
-    position: "relative",
+    position: 'relative',
     '& img': {
       position: 'absolute',
-      width: "100%",
-      height: "100%",
+      width: '100%',
+      height: '100%',
       objectFit: 'cover'
     }
   },

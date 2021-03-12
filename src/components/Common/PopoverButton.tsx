@@ -29,8 +29,17 @@ export const PopoverButton = ({ menuItems }: Props) => {
 
   return (
     <div>
-      <IconButton aria-owns={id} onClick={handleClick}>
-        <MoreVertIcon style={{ color: theme.palette.grey[100] }} />
+      <IconButton
+        aria-owns={id}
+        onClick={handleClick}
+        style={{
+          color: theme.palette.background.surfaceHighlight,
+          backgroundColor: 'rgba(0,0,0,0.2)'
+        }}>
+        <MoreVertIcon
+          style={{ color: theme.palette.grey[100] }}
+          fontSize='small'
+        />
       </IconButton>
 
       <Popover

@@ -46,10 +46,11 @@ export default connect(mapState)(ToastHandler)
 
 const stripeState = (state: ReduxState) => state.stripe
 const authState = (state: ReduxState) => state.auth
+const portfolioState = (state: ReduxState) => state.portfolio
 
 const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
-  [stripeState, authState],
-  (stripe, auth) => {
+  [stripeState, authState, portfolioState],
+  (stripe, auth, portfolio) => {
     const stripeToasts = [
       {
         error:
@@ -93,6 +94,14 @@ const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
       }
     ]
 
-    return [...stripeToasts, ...authToasts]
+    const portfolioToasts = [
+      {
+        error:
+          !!portfolio.updatePortfolioError &&
+          'Failed to create porfolio. Please try again or contact support.'
+      }
+    ]
+
+    return [...stripeToasts, ...authToasts, ...portfolioToasts]
   }
 )

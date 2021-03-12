@@ -1,5 +1,6 @@
 import { StripeElementChangeEvent } from '@stripe/stripe-js'
 import { ChangeEvent } from 'react'
+import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 import {
   InvoiceStatuses,
   ProjectStatuses,
@@ -415,11 +416,20 @@ export type Client = {
 
 export type AllProjects = Array<Project>
 
+export interface PortfolioFolderCache {
+  [id: string]: PortfolioFolder
+}
+
+export interface PortfolioCache {
+  [id: string]: Portfolio
+}
+
 export interface PortfolioFolder {
   id: string
   name: string
   description?: string
   portfolios: Array<string>
+  createdAt: number
 }
 
 export interface Portfolio {
@@ -428,6 +438,8 @@ export interface Portfolio {
   description?: string
   icon?: string | null
   projects: Array<string> // project ids
+  folderId: string
+  createdAt?: number
 }
 
 export type Cell = {

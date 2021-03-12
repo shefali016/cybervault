@@ -2,9 +2,13 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    '.stretch': { alignSelf: 'stretch' },
+    '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
     '.col': { display: 'flex', flexDirection: 'column' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
+    '.wrap': { flexWrap: 'wrap' },
+    '.fullWidth': { width: '100%' },
     '.MuiButton-label': { textTransform: 'capitalize' },
     '.MuiToggleButton-label': { textTransform: 'capitalize' },
     '.Mui-selected': {
@@ -102,6 +106,19 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: theme.palette.text.background,
       alignItems: 'center',
       width: '100%'
+    },
+    '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
+    '.screenInner': {
+      width: "100%",
+      maxWidth: 1500
+    },
+    '.responsivePadding': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3)
+      }
     },
     '.centerContent': {
       display: 'flex',

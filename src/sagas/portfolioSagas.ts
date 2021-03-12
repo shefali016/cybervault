@@ -20,6 +20,7 @@ import {
   getPortfolioSuccess
 } from '../actions/portfolioActions'
 import history from 'services/history'
+import { PortfolioFolderCache } from '../utils/Interface'
 type UpdateParams = {
   type: string
   account: Account
@@ -34,9 +35,18 @@ function* getPortfolioFolders() {
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
-    const result: Object | any = yield call(getPortfolioFolderRequest, account)
+    const result = yield call(getPortfolioFolderRequest, account)
 
-    yield put(getPortfolioFolderSuccess(result.folderList, result.portfolios))
+    const { folderList, portfolios, folderCache, portfolioCache } = result
+
+    yield put(
+      getPortfolioFolderSuccess(
+        folderList,
+        portfolios,
+        folderCache,
+        portfolioCache
+      )
+    )
   } catch (error: any) {
     yield put(updatePortfolioFolderFailure(error))
   }
@@ -52,7 +62,6 @@ function* updatePortfolioFolder({ folder }: UpdateParams) {
     yield put(updatePortfolioFolderSuccess(folderId, folderData))
   } catch (error: any) {
     yield put(updatePortfolioFolderFailure(error))
-    throw (Error = error)
   }
 }
 
@@ -66,35 +75,31 @@ function* deletePortfolioFolder({ folderId }: UpdateParams) {
     yield put(deletePortfolioFolderSuccess(folderId))
   } catch (error: any) {
     yield put(deletePortfolioFolderFailure(error))
-    throw (Error = error)
   }
 }
 
-function* updatePortfolio({ portfolio, folderId }: UpdateParams) {
+function* updatePortfolio({ portfolio }: UpdateParams) {
   try {
     const account: Account = yield select(
       (state: ReduxState) => state.auth.account
     )
-    const folderArray: Array<Types.PortfolioFolder> = yield select(
-      (state: ReduxState) => state.portfolio.folders
+    const folderCache: PortfolioFolderCache = yield select(
+      (state: ReduxState) => state.portfolio.folderCache
     )
     const portfolioId: string = yield call(
       updatePortfolioRequest,
       portfolio,
       account
     )
-    const folder: Types.PortfolioFolder | any = folderArray.filter(
-      (item: any) => item.id === folderId
-    )[0]
+    const folder: Types.PortfolioFolder = folderCache[portfolio.folderId]
 
-    folder.portfolios.push(portfolioId)
+    folder.portfolios = [...folder.portfolios, portfolioId]
 
     yield call(updatePortfolioFolderRequest, folder, account)
     history.push(`/portfolio/${portfolioId}`)
-    yield put(updatePortfolioSuccess())
+    yield put(updatePortfolioSuccess(folder, portfolio))
   } catch (error: any) {
-    yield put(updatePortfolioFailure(error))
-    throw (Error = error)
+    yield put(updatePortfolioFailure(error || 'default'))
   }
 }
 

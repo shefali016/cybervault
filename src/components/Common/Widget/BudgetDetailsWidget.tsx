@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
+import { Details } from '../../ProjectInfoDisplay/Details'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
 
 export const RenderBudgetDetails = (props: any) => {
@@ -14,7 +14,7 @@ export const RenderBudgetDetails = (props: any) => {
         <Typography variant={'h6'} className={classes.title}>
           Budget & Expenses
         </Typography>
-        {props.editInfo ? (
+        {props.editInfo && (
           <Button className={classes.button} onClick={props.onEdit}>
             <img
               src={iconMaterialEdit}
@@ -22,25 +22,27 @@ export const RenderBudgetDetails = (props: any) => {
               className={classes.editIcon}
             />
           </Button>
-        ) : null}
+        )}
       </div>
-      {renderDetails(
-        'Production Budget:',
-        `$${props.projectData ? props.projectData.campaignBudget : ''}`
-      )}
-      {renderDetails(
-        'Production Expenses: ',
-        `$${props.projectData ? props.projectData.campaignExpenses : ''}`
-      )}
-      {renderDetails(
-        'Estimated Net Revenue: ',
-        `$${
+      <Details
+        label={'Production Budget:'}
+        value={props.projectData?.campaignBudget || ''}
+      />
+      <Details
+        label={'Production Expenses:'}
+        value={props.projectData?.campaignExpenses || ''}
+      />
+      <Details
+        label={'Estimated Net Revenue:'}
+        value={
           props.projectData
-            ? props.projectData.campaignBudget -
-              props.projectData.campaignExpenses
-            : 0
-        }`
-      )}
+            ? (
+                props.projectData.campaignBudget -
+                props.projectData.campaignExpenses
+              ).toString()
+            : ''
+        }
+      />
     </div>
   )
 }

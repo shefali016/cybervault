@@ -3,24 +3,27 @@ import { Typography } from '@material-ui/core'
 import { ROW, FLEX } from 'utils/constants/stringConstants'
 import { GREY_COLOR } from 'utils/constants/colorsConstants'
 
-export const renderDetails = (
-  leftLabel: string,
-  rightValue: string,
-  nextRightValue?: string
-) => {
+type Props = {
+  label: string
+  value?: string
+  startDate?: string
+  endDate?: string
+}
+
+export const Details = ({ label, value, startDate, endDate }: Props) => {
   return (
     <div style={{ display: FLEX, flexDirection: ROW, marginTop: 10 }}>
       <Typography variant={'body1'} style={{ minWidth: 250 }}>
-        {leftLabel}
+        {label}
       </Typography>
       <Typography variant={'body1'}>
         {' '}
-        {nextRightValue ? 'Start Date:  ' : ''}
-        {rightValue}
+        {startDate ? `Start Date:  {startDate}` : value}
+        {value}
       </Typography>
-      {nextRightValue ? (
+      {endDate ? (
         <Typography style={{ marginLeft: 20 }} variant={'body1'}>
-          {'End Date:  '} {nextRightValue}
+          {'End Date:  '} {endDate}
         </Typography>
       ) : null}
     </div>

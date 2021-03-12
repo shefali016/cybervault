@@ -46,6 +46,7 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 // import BankingScreen from 'screens/SharedScreens/BankingScreen'
 import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
+import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 
 import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
@@ -382,6 +383,10 @@ const MainScreen = ({
             component={InvoicesClientScreen}
           />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
+          <Route
+            path='/portfolioFolder/:id'
+            component={PortfolioFolderScreen}
+          />
           <Route path='/paymentmethods' component={PaymentMethodsScreen} />
           <Route
             path='/refresh_account_link/:id'

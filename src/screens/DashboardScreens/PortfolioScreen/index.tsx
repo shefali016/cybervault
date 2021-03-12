@@ -24,9 +24,11 @@ type StateProps = {
   loading: boolean
   updatingFolder: boolean
   allProjectsData: Array<Project>
-  portfolioLoading: boolean
   portfolios: Map<string, Portfolio> | any
   clients: Array<Client>
+  updatePortfolioLoading: boolean
+  updatePortfolioSuccess: boolean
+  updatePortfolioError: string | null
 }
 
 type PortfolioStates = {
@@ -42,7 +44,7 @@ type Props = {
   getPortfolioFolders: () => void
   deletePortfolioFolder: (folderId: string) => void
   history: any
-  updatePortfolio: (portfolio: Portfolio, folderId: string) => void
+  updatePortfolio: (portfolio: Portfolio) => void
 } & StateProps
 
 const PortfoliosScreen = ({
@@ -55,7 +57,9 @@ const PortfoliosScreen = ({
   deletePortfolioFolder,
   history,
   updatePortfolio,
-  portfolioLoading,
+  updatePortfolioLoading,
+  updatePortfolioSuccess,
+  updatePortfolioError,
   portfolios,
   clients
 }: Props) => {
@@ -73,14 +77,16 @@ const PortfoliosScreen = ({
       id: '',
       name: '',
       description: '',
-      portfolios: []
+      portfolios: [],
+      createdAt: Date.now()
     },
     portfolio: {
       id: '',
       name: '',
       description: '',
       icon: '',
-      projects: []
+      projects: [],
+      folderId: ''
     },
     isError: false,
     isPortfolioModalOpen: false
@@ -94,14 +100,16 @@ const PortfoliosScreen = ({
         id: '',
         name: '',
         description: '',
-        portfolios: []
+        portfolios: [],
+        createdAt: Date.now()
       },
       portfolio: {
         id: '',
         name: '',
         description: '',
         icon: '',
-        projects: []
+        projects: [],
+        folderId: ''
       },
       isError: false,
       isPortfolioModalOpen: false
@@ -114,21 +122,6 @@ const PortfoliosScreen = ({
         ...state,
         isModalOpen: !state.isModalOpen,
         isError: false
-      })
-    } else {
-      setState({
-        ...state,
-        folder: folder,
-        isPortfolioModalOpen: !state.isPortfolioModalOpen,
-        isChooseProject: false,
-        isError: false,
-        portfolio: {
-          id: '',
-          name: '',
-          description: '',
-          icon: '',
-          projects: []
-        }
       })
     }
   }
@@ -176,8 +169,7 @@ const PortfoliosScreen = ({
   }
 
   const handlePortfolioSubmit = (portfolio: Portfolio) => {
-    const { folder } = state
-    updatePortfolio(portfolio, folder.id)
+    updatePortfolio(portfolio)
   }
 
   const handleDeleteFolder = (folderId: string) => {
@@ -206,6 +198,12 @@ const PortfoliosScreen = ({
     )
   }
 
+  const goToFolderScreen = (folder: PortfolioFolder) =>
+    history.push({
+      pathname: `/portfolioFolder/${folder.id}`,
+      state: { params: { folder } }
+    })
+
   return (
     <div>
       <div className={classes.portfolioBoxMainWrap}>
@@ -219,18 +217,20 @@ const PortfoliosScreen = ({
         </div>
 
         <PortfolioFolders
+          goToFolder={goToFolderScreen}
           folderList={folderList}
           loading={loading}
+          updatePortfolioLoading={updatePortfolioLoading}
+          updatePortfolioSuccess={updatePortfolioSuccess}
+          updatePortfolioError={updatePortfolioError}
           handleEditFolderDetail={(folder: PortfolioFolder) =>
             handleEditFolderDetail(folder)
           }
           deletefolder={(folderId: string) => handleDeleteFolder(folderId)}
-          isModalOpen={state.isPortfolioModalOpen}
           handleModalRequest={handleModalRequest}
           handleSubmit={handlePortfolioSubmit}
           portfolios={portfolios}
           projectList={allProjectsData}
-          portfolioLoading={portfolioLoading}
           handlePortfolioView={(portfolioId: string) =>
             handlePortfolioView(portfolioId)
           }
@@ -246,11 +246,13 @@ const PortfoliosScreen = ({
 const mapStateToProps = (state: ReduxState): StateProps => ({
   folderList: state.portfolio.folders as Array<PortfolioFolder>,
   loading: state.portfolio.getFoldersLoading as boolean,
-  portfolioLoading: state.portfolio.getPortfolioLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
   allProjectsData: state.project.allProjectsData as Array<Project>,
   portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any,
-  clients: state.clients.clientsData
+  clients: state.clients.clientsData,
+  updatePortfolioLoading: state.portfolio.updatePortfolioLoading,
+  updatePortfolioSuccess: state.portfolio.updatePortfolioSuccess,
+  updatePortfolioError: state.portfolio.updatePortfolioError
 })
 const mapDispatchToProps = (dispatch: any) => ({
   updatePortfolioFolder: (folder: PortfolioFolder) => {
@@ -262,8 +264,8 @@ const mapDispatchToProps = (dispatch: any) => ({
   deletePortfolioFolder: (folderId: string) => {
     return dispatch(deletePortfolioFolderRequest(folderId))
   },
-  updatePortfolio: (portfolio: Portfolio, folderId: string) => {
-    return dispatch(updatePortfolioRequest(portfolio, folderId))
+  updatePortfolio: (portfolio: Portfolio) => {
+    return dispatch(updatePortfolioRequest(portfolio))
   }
 })
 

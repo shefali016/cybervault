@@ -13,38 +13,51 @@ import Widget from '../../components/Common/Widget'
 import { useTheme } from '@material-ui/core/styles'
 import { PopoverButton } from 'components/Common/PopoverButton'
 import clsx from 'clsx'
+import { AppButton } from 'components/Common/Core/AppButton'
+import { useModalState } from 'utils/hooks'
+import { PortfolioItem } from 'components/Portfolio/PortfolioItem'
+import FolderIcon from '@material-ui/icons/Folder'
 
 type Props = {
   folderList: Array<PortfolioFolder>
   loading: boolean
   handleEditFolderDetail: (folder: PortfolioFolder) => void
   deletefolder: (folderId: string) => void
-  isModalOpen: boolean
   handleModalRequest: ({ type, folder }: any) => void
   handleSubmit: (portfolio: Portfolio) => void
   projectList: Array<Project>
-  portfolioLoading: boolean
   portfolios: Map<string, Portfolio> | any
   handlePortfolioView: (portfolioId: string) => void
   clients: Array<Client>
+  updatePortfolioLoading: boolean
+  updatePortfolioError: string | null
+  updatePortfolioSuccess: boolean
+  goToFolder: (folder: PortfolioFolder) => void
 }
 const PortfolioFolders = ({
   folderList,
   loading,
   handleEditFolderDetail,
   deletefolder,
-  isModalOpen,
   handleModalRequest,
   handleSubmit,
   projectList,
-  portfolioLoading,
+  updatePortfolioLoading,
+  updatePortfolioError,
+  updatePortfolioSuccess,
   portfolios,
   handlePortfolioView,
-  clients
+  clients,
+  goToFolder
 }: Props) => {
   const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null)
   const classes = useStyles()
   const theme = useTheme()
+
+  const [
+    creatingPortfolioForFolder,
+    createPortfolioForFolder
+  ] = useState<PortfolioFolder | null>(null)
 
   const startConfirmingDelete = (id: string) => setDeleteFolderId(id)
   const stopConfirmingDelete = () => setDeleteFolderId(null)
@@ -56,11 +69,14 @@ const PortfolioFolders = ({
   const renderPortfolioModal = () => {
     return (
       <PortfolioModal
-        open={isModalOpen}
-        onRequestClose={() => handleModalRequest({ type: 'portfolio' })}
+        folderId={creatingPortfolioForFolder?.id}
+        open={!!creatingPortfolioForFolder}
+        onRequestClose={() => createPortfolioForFolder(null)}
         onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
         projectList={projectList}
-        portfolioLoading={portfolioLoading}
+        loading={updatePortfolioLoading}
+        error={updatePortfolioError}
+        success={updatePortfolioSuccess}
         clients={clients}
       />
     )
@@ -78,8 +94,7 @@ const PortfolioFolders = ({
             const popoverMenuItems = [
               {
                 title: 'Add portfolio',
-                onClick: () =>
-                  handleModalRequest({ type: 'portfolio', folder }),
+                onClick: () => createPortfolioForFolder(folder),
                 Icon: AddIcon
               },
               {
@@ -98,7 +113,17 @@ const PortfolioFolders = ({
             return (
               <div key={index} className={classes.portfolioFolder}>
                 <div className={classes.portfolioFolderTitle}>
-                  <Typography variant='h6'>
+                  <FolderIcon
+                    className={classes.uploadFolderIcon}
+                    style={{
+                      marginRight: theme.spacing(1),
+                      fontSize: 40,
+                      marginBottom: 5
+                    }}
+                  />
+                  <Typography
+                    variant='h5'
+                    style={{ marginRight: theme.spacing(2.5) }}>
                     {folder.name}{' '}
                     <Typography
                       variant='caption'
@@ -107,15 +132,34 @@ const PortfolioFolders = ({
                     </Typography>
                   </Typography>
                   <PopoverButton menuItems={popoverMenuItems} />
+                  {portFolios.length > 4 && (
+                    <AppButton
+                      style={{
+                        color: theme.palette.primary.light,
+                        marginLeft: theme.spacing(1)
+                      }}
+                      onClick={() => goToFolder(folder)}>
+                      <div className='row'>
+                        <Typography
+                          variant='body1'
+                          style={{ marginLeft: theme.spacing(1) }}>
+                          See all
+                        </Typography>
+                        <KeyboardArrowRightIcon
+                          style={{
+                            marginLeft: theme.spacing(0.5)
+                          }}
+                        />
+                      </div>
+                    </AppButton>
+                  )}
                 </div>
 
                 <Widget
-                  data={portFolios}
+                  data={portFolios.slice(0, 5)}
                   EmptyComponent={
                     <div
-                      onClick={() =>
-                        handleModalRequest({ type: 'portfolio', folder })
-                      }
+                      onClick={() => createPortfolioForFolder(folder)}
                       className={clsx(
                         classes.portfolioBoxWrap,
                         classes.portfoliosCard
@@ -129,28 +173,15 @@ const PortfolioFolders = ({
                   }
                   itemHeight={theme.spacing(10)}
                   renderItem={(data: Portfolio) => (
-                    <Card
-                      key={data.id}
-                      onClick={() => handlePortfolioView(data.id)}
-                      className={classes.portfoliosCard}>
-                      <div className={classes.cardLogo}>
-                        {!!data.icon && <img src={data.icon} alt='' />}
-                      </div>
-
-                      <div className={classes.logoContent}>
-                        <Typography variant='body1' style={{ fontSize: 18 }}>
-                          {data.name}
-                        </Typography>
-                        <Typography
-                          variant='caption'
-                          style={{ margin: 0, marginTop: 0, padding: 0 }}>
-                          {data.description}
-                        </Typography>
-                      </div>
-                      <Box pl={2}>
-                        <KeyboardArrowRightIcon style={{ color: '#797979' }} />
-                      </Box>
-                    </Card>
+                    <div style={{ paddingRight: theme.spacing(3) }}>
+                      <PortfolioItem
+                        responsiveWidth={false}
+                        portfolio={data}
+                        onClick={(portfolio: Portfolio) =>
+                          handlePortfolioView(portfolio.id)
+                        }
+                      />
+                    </div>
                   )}
                 />
               </div>

@@ -1,8 +1,14 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Portfolio, PortfolioFolder, Project } from 'utils/Interface'
-import { generateUid } from 'utils'
+import {
+  Portfolio,
+  PortfolioCache,
+  PortfolioFolder,
+  PortfolioFolderCache,
+  Project
+} from 'utils/Interface'
+import { generateUid, sortByCreatedAt } from 'utils'
 import { getProjectDetailsRequest } from './projectRequest'
 
 /**
@@ -13,15 +19,9 @@ export const updatePortfolioFolderRequest = async (
   account: Account
 ) => {
   try {
-    let id: string
-    if (!folder.id) {
-      id = generateUid()
-    } else {
-      id = folder.id
-    }
     const folderData: PortfolioFolder = {
       ...folder,
-      id
+      id: folder.id || generateUid()
     }
     await firebase
       .firestore()
@@ -40,10 +40,15 @@ export const updatePortfolioFolderRequest = async (
 /**
  * @getAllPortfoliFolder
  */
-export const getPortfolioFolderRequest = async (account: Account) => {
+export const getPortfolioFolderRequest = async (
+  account: Account
+): Promise<{
+  folderList: Array<PortfolioFolder>
+  portfolios: Array<Portfolio>
+  portfolioCache: PortfolioCache
+  folderCache: PortfolioFolderCache
+}> => {
   try {
-    let folderList: Array<PortfolioFolder> = []
-    let portfolioData: Map<string, Portfolio> | any
     const data: Document | any = await firebase
       .firestore()
       .collection('AccountData')
@@ -51,13 +56,19 @@ export const getPortfolioFolderRequest = async (account: Account) => {
       .collection('PortfolioFolders')
       .get()
 
-    const portfolios: Map<string, Portfolio> | any = []
+    const folderList: Array<PortfolioFolder> = []
+    const portfolioList: Array<Portfolio> = []
+    const portfolioCache: PortfolioCache = {}
+    const folderCache: PortfolioFolderCache = {}
+
     for (const doc of data.docs) {
-      let folderData: PortfolioFolder = doc.data()
-      console.log(folderData)
-      if (doc.data().portfolios) {
-        for (let index = 0; index < doc.data().portfolios.length; index++) {
-          const portfolioId = doc.data().portfolios[index]
+      let folderData = doc.data() as PortfolioFolder
+
+      let portfolios: Array<Portfolio> = []
+
+      if (folderData.portfolios) {
+        for (let index = 0; index < folderData.portfolios.length; index++) {
+          const portfolioId = folderData.portfolios[index]
           const portfolioData = await firebase
             .firestore()
             .collection('AccountData')
@@ -65,15 +76,23 @@ export const getPortfolioFolderRequest = async (account: Account) => {
             .collection('Portfolio')
             .doc(portfolioId)
             .get()
-          const portfolio = portfolioData.data()
-          portfolios.push({ ...portfolio, folderId: folderData.id })
+          const portfolio = portfolioData.data() as Portfolio
+          portfolios.push(portfolio)
+          portfolioCache[portfolio.id] = portfolio
         }
       }
+
+      portfolios = sortByCreatedAt(portfolios)
+
+      folderCache[folderData.id] = folderData
       folderList.push(folderData)
+      portfolioList.push(...portfolios)
     }
     const result = {
-      folderList: folderList,
-      portfolios: portfolios
+      folderList: sortByCreatedAt(folderList),
+      portfolios: portfolioList,
+      portfolioCache,
+      folderCache
     }
     return result
   } catch (error) {
@@ -111,15 +130,9 @@ export const updatePortfolioRequest = async (
   account: Account
 ) => {
   try {
-    let id: string
-    if (!portfolio.id) {
-      id = generateUid()
-    } else {
-      id = portfolio.id
-    }
     const portfolioData: Portfolio = {
       ...portfolio,
-      id
+      id: portfolio.id || generateUid()
     }
     await firebase
       .firestore()
