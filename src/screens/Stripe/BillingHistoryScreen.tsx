@@ -7,38 +7,35 @@ import { Invoice } from 'utils/Interface'
 
 type StateProps = {
   billingHistory: Array<Invoice>
+  billingHistoryLoading: boolean
 }
 
 type Props = {
-  getCustomerInvoices: () => void
+  history: any
 } & StateProps
 
 const BillingHistoryScreen = ({
-  getCustomerInvoices,
-  billingHistory
+  billingHistory,
+  billingHistoryLoading,
+  history
 }: Props) => {
-  useEffect(() => {
-    getCustomerInvoices()
-  }, [])
   return (
     <div className={'dashboardScreen'}>
       <InvoicesTable
         invoices={billingHistory}
         tableContainerClassName={''}
-        history={'history'}
+        history={history}
         accountId={'account.id'}
         isBilling={true}
+        billingHistoryLoading={billingHistoryLoading}
       />
     </div>
   )
 }
 
 const mapState = (state: ReduxState): StateProps => ({
-  billingHistory: state.stripe.billingHistory as Array<Invoice>
+  billingHistory: state.stripe.billingHistory as Array<Invoice>,
+  billingHistoryLoading: state.stripe.billingHistoryLoading as boolean
 })
 
-const mapDispatch = (dispatch: any): any => ({
-  getCustomerInvoices: () => dispatch(getCustomerInvoices())
-})
-
-export default connect(mapState, mapDispatch)(BillingHistoryScreen)
+export default connect(mapState)(BillingHistoryScreen)

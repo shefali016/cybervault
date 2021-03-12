@@ -399,7 +399,6 @@ router.post('/get_customer_invoices', (req, res) => {
       const { customerId } = req.body
       const invoices = await stripe.invoices.list({
         customer: customerId,
-        limit: 10
       })
       return res.json(invoices)
     } catch (error) {
@@ -419,19 +418,6 @@ router.post('/set_payment_method_to_default', (req, res) => {
         }
       })
       return res.json(customer)
-    } catch (error) {
-      console.log(error)
-      return res.status(400).send(error)
-    }
-  })
-})
-
-router.post('/remove_payment_method', (req, res) => {
-  return corsHandler(req, res, async () => {
-    try {
-      const { paymentMethodId } = req.body
-      const paymentMethod = await stripe.paymentMethods.detach(paymentMethodId)
-      return res.json(paymentMethod)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)

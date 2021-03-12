@@ -1,6 +1,6 @@
 import * as ActionTypes from './actionTypes'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { Subscription, SubscriptionType } from 'utils/Interface'
+import { StripeCustomer, Subscription, SubscriptionType } from 'utils/Interface'
 
 export const requestPaymentMethods = (customerId: string) => ({
   type: ActionTypes.GET_PAYMENT_METHODS,
@@ -148,9 +148,13 @@ export const setDefultPaymentMethod = (paymentMethodId: string) => ({
   type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD,
   paymentMethodId
 })
-export const setDefultPaymentMethodSuccess = (paymentMethodId: string) => ({
+export const setDefultPaymentMethodSuccess = (
+  paymentMethodId: string,
+  customer: StripeCustomer
+) => ({
   type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS,
-  paymentMethodId
+  paymentMethodId,
+  customer
 })
 export const setDefultPaymentMethodFailure = (error: any) => ({
   type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE,

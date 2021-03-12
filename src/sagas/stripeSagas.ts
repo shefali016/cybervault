@@ -177,12 +177,14 @@ function* getSubscription() {
 function* setDefultPaymentMethod({ paymentMethodId }: Params) {
   try {
     const customerId = yield select((state) => state.auth.user.customerId)
-    yield call(
+    const customer: any = yield call(
       StripeApis.attachDefultPaymentMethod,
       paymentMethodId,
       customerId
     )
-    yield put(StripeActions.setDefultPaymentMethodSuccess(paymentMethodId))
+    yield put(
+      StripeActions.setDefultPaymentMethodSuccess(paymentMethodId, customer)
+    )
   } catch (error: any) {
     yield put(
       StripeActions.setDefultPaymentMethodFailure(error?.message || 'default')

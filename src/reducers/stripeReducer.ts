@@ -14,6 +14,9 @@ export type State = {
   attachError: null | string
   attachSuccess: boolean
 
+  setAsDefaultError: null | string
+  setAsDefaultSuccess: boolean
+
   accountSubscription: null | Object | any
   storageSubscription: null | Object | any
   subscriptionLoading: boolean
@@ -52,6 +55,7 @@ export type Action = {
   plans: Array<StripePlans>
   storageSubscription: Subscription
   billingHistory: Array<Invoice>
+  paymentMethodId: string
 }
 
 const initialState = {
@@ -60,6 +64,9 @@ const initialState = {
   paymentMethods: [],
   detachError: null,
   detachSuccess: false,
+
+  setAsDefaultError: null,
+  setAsDefaultSuccess: false,
 
   attachError: null,
   attachSuccess: false,
@@ -246,6 +253,30 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         storagePurchaseLoading: false,
         storagePurchaseError: action.error
+      }
+    case ActionTypes.SET_DEFAULT_PAYMENT_METHOD:
+      return {
+        ...state,
+        billingHistoryLoading: true
+      }
+    case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS:
+      const paymentMethods = state.paymentMethods
+      const index = state.paymentMethods.findIndex(
+        (item: any) => item.id === action.paymentMethodId
+      )
+      const defultPaymentMethod = paymentMethods[index]
+      paymentMethods.splice(index, 1)
+      paymentMethods.push(defultPaymentMethod)
+
+      return {
+        ...state,
+        customer: action.customer,
+        setAsDefaultSuccess: true
+      }
+    case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE:
+      return {
+        ...state,
+        setAsDefaultError: action.error
       }
     case ActionTypes.GET_CUSTOMER_INVOICE:
       return {

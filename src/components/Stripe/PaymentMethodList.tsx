@@ -34,15 +34,26 @@ export const PaymentMethodList = ({
     detachError,
     detachSuccess,
     attachError,
-    attachSuccess
+    attachSuccess,
+    setAsDefaultError,
+    setAsDefaultSuccess
   } = useSelector((state: ReduxState) => {
     const {
       detachError,
       detachSuccess,
       attachError,
-      attachSuccess
+      attachSuccess,
+      setAsDefaultError,
+      setAsDefaultSuccess
     } = state.stripe
-    return { detachError, detachSuccess, attachError, attachSuccess }
+    return {
+      detachError,
+      detachSuccess,
+      attachError,
+      attachSuccess,
+      setAsDefaultError,
+      setAsDefaultSuccess
+    }
   })
 
   // Toast handling
@@ -52,6 +63,23 @@ export const PaymentMethodList = ({
     if (error) {
       toastContext.showToast({
         title: 'Failed to remove card. Please try again.'
+      })
+    }
+  })
+
+  useOnChange(setAsDefaultSuccess, (success: boolean) => {
+    if (success) {
+      toastContext.showToast({
+        title: 'Card set as Default',
+        type: ToastTypes.success
+      })
+    }
+  })
+
+  useOnChange(setAsDefaultError, (error: string | null) => {
+    if (error) {
+      toastContext.showToast({
+        title: 'Failed to set card as default. Please try again.'
       })
     }
   })
@@ -154,8 +182,8 @@ export const PaymentMethodList = ({
             onClick={toggleconfirmingAttachDefaultPayment(paymentMethod)}>
             <Typography className={classes.buttonText}>
               {defaultPaymentMethod === paymentMethod.id
-                ? 'Default Method'
-                : 'Set as default'}
+                ? 'Primary Method'
+                : 'Set as primary'}
             </Typography>
           </AppButton>
         </div>
@@ -181,9 +209,10 @@ export const PaymentMethodList = ({
   return (
     <div className={classes.container}>
       <div className={classes.innerContainer}>
-        {paymentMethods.map((paymentMethod: PaymentMethod) =>
-          renderCard(paymentMethod)
-        )}
+        {paymentMethods
+          .slice()
+          .reverse()
+          .map((paymentMethod: PaymentMethod) => renderCard(paymentMethod))}
         {renderAddCard()}
         {renderSpacer()}
       </div>
