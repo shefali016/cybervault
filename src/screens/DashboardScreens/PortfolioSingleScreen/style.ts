@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme) => ({
   screen: { minHeight: '100vh', display: 'flex', flexDirection: 'column' },
   loader: { alignSelf: 'center' },
 
-  projectBarContainer: { display: 'flex' },
+  projectBarContainer: { display: 'flex', alignItems: 'center' },
   portfoloTabsList: {
     overflowX: 'scroll',
     flex: 1,
@@ -23,6 +23,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     margin: 0,
     '& li': {
+      fontSize: 18,
       margin: 0,
       marginTop: 0,
       minWidth: 130,
@@ -32,6 +33,21 @@ export const useStyles = makeStyles((theme) => ({
       '&:hover': { background: 'rgba(0, 0, 0, 0.1)' },
       cursor: 'pointer'
     }
+  },
+  shareButton: {
+    fontSize: 20,
+    margin: 10,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    borderRadius: 100
+  },
+  shareButtonLight: {
+    color: theme.palette.text.paper,
+    backgroundColor: '#FFFFFF !important'
+  },
+  shareButtonDark: {
+    color: theme.palette.text.background,
+    background: '#000000 !important'
   },
 
   portfoloDarkTabsList: {
@@ -68,7 +84,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%'
   },
   assetDivider: {
-    background: 'rgba(0,0,0,0.2)',
+    background: 'rgba(0,0,0,0.2) !important',
     marginTop: `${theme.spacing(10)}px !important`,
     marginBottom: `${theme.spacing(10)}px !important`,
     [theme.breakpoints.down('sm')]: {

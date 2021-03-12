@@ -192,7 +192,7 @@ const PortfolioSingleScreen = ({
                     className={
                       state.selectedProjectId === project.id ? 'active' : ''
                     }>
-                    <Typography variant={'subtitle2'}>
+                    <Typography variant={'inherit'}>
                       {project.campaignName}
                     </Typography>
                   </li>
@@ -201,7 +201,15 @@ const PortfolioSingleScreen = ({
             : null}
         </ul>
         <div>
-          <AppButton>Share</AppButton>
+          <AppButton
+            className={clsx(
+              classes.shareButton,
+              color === 'dark'
+                ? classes.shareButtonDark
+                : classes.shareButtonLight
+            )}>
+            Share
+          </AppButton>
         </div>
       </div>
     )
