@@ -316,10 +316,12 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 100,
     position: 'relative',
     height: theme.spacing(pickerHeightLg),
+    marginLeft: theme.spacing(11),
     [theme.breakpoints.down('md')]: {
       height: theme.spacing(pickerHeightMd),
       [theme.breakpoints.down('sm')]: {
-        height: theme.spacing(pickerHeightSm)
+        height: theme.spacing(pickerHeightSm),
+        marginLeft: 0
       }
     },
     marginTop: theme.spacing(3)

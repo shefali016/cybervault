@@ -10,6 +10,8 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  activeDot: { position: 'absolute', left: '50%', bottom: 3 },
+
   screen: { minHeight: '100vh', display: 'flex', flexDirection: 'column' },
   loader: { alignSelf: 'center' },
 
@@ -23,6 +25,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     margin: 0,
     '& li': {
+      borderRadius: theme.shape.borderRadius,
       fontWeight: 'bold',
       fontSize: 18,
       margin: 0,
@@ -41,15 +44,10 @@ export const useStyles = makeStyles((theme) => ({
     margin: 10,
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
-    borderRadius: 100
-  },
-  shareButtonLight: {
-    color: theme.palette.text.paper,
-    backgroundColor: '#FFFFFF !important'
-  },
-  shareButtonDark: {
+    borderRadius: 100,
+    background: theme.palette.background.default,
     color: theme.palette.text.background,
-    background: '#000000 !important'
+    '&:hover': { background: theme.palette.background.surfaceHighlight }
   },
 
   portfoloDarkTabsList: {

@@ -17,6 +17,7 @@ import { AppLoader } from 'components/Common/Core/AppLoader'
 import { Details } from 'components/ProjectInfoDisplay/Details'
 import clsx from 'clsx'
 import { AppButton } from 'components/Common/Core/AppButton'
+import { Dot } from 'components/Common/Dot'
 
 type StateProps = {
   portfolio: Portfolio
@@ -120,14 +121,14 @@ const PortfolioSingleScreen = ({
     return (
       <Fragment>
         <div style={{ marginBottom: theme.spacing(4) }}>
-          <Typography variant={'h5'}>
+          <Typography variant={'h4'} className='bold'>
             {selectedProjectData?.campaignName}
           </Typography>
         </div>
 
         <RenderCampaignDetails projectData={selectedProjectData} />
 
-        <Typography variant={'h6'}>Project Details</Typography>
+        <Typography variant={'h5'}>Project Details</Typography>
 
         <Details
           label={'Campaign Objective:'}
@@ -185,6 +186,7 @@ const PortfolioSingleScreen = ({
           )}>
           {portfolioProjects && portfolioProjects.length
             ? portfolioProjects.map((project: Project | any, index: number) => {
+                const isSelected = state.selectedProjectId === project.id
                 return (
                   <li
                     onClick={() => setProjectId(project)}
@@ -195,21 +197,21 @@ const PortfolioSingleScreen = ({
                     <Typography variant={'inherit'}>
                       {project.campaignName}
                     </Typography>
+
+                    {isSelected && (
+                      <Dot
+                        className={classes.activeDot}
+                        size={7}
+                        color={color === 'dark' ? '#fff' : '#000'}
+                      />
+                    )}
                   </li>
                 )
               })
             : null}
         </ul>
         <div>
-          <AppButton
-            className={clsx(
-              classes.shareButton,
-              color === 'dark'
-                ? classes.shareButtonDark
-                : classes.shareButtonLight
-            )}>
-            Share
-          </AppButton>
+          <AppButton className={classes.shareButton}>Share</AppButton>
         </div>
       </div>
     )
