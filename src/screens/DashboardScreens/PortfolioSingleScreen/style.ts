@@ -60,16 +60,18 @@ export const useStyles = makeStyles((theme) => ({
     flex: 1,
     flexGrow: 1,
     flexDirection: COLUMN,
+    maxWidth: 1400,
+    alignSelf: 'center',
     borderRadius: 20,
     marginLeft: theme.spacing(5),
     marginRight: theme.spacing(5),
-    padding: `${theme.spacing(6)}px ${theme.spacing(6)}px`,
+    padding: `${theme.spacing(7)}px ${theme.spacing(6)}px`,
     marginBottom: theme.spacing(5),
     marginTop: theme.spacing(5),
     [theme.breakpoints.down('md')]: {
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
-      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+      padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
       marginBottom: theme.spacing(3),
       marginTop: theme.spacing(3)
     }

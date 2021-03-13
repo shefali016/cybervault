@@ -393,7 +393,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    maxHeight: '100%',
+    objectFit: 'cover',
+    minHeight: '100%',
     maxWidth: '100%',
     transform: 'translate(-50%, -50%)',
     borderRadius: 10
@@ -418,10 +419,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex'
   },
   currentAssetContainer: {
-    [theme.breakpoints.up('sm')]: { margin: `0 ${theme.spacing(2)}px` },
     position: 'relative',
     width: '100%',
-    paddingTop: '50.25%'
+    margin: `0 ${theme.spacing(6)}px`,
+    paddingTop: '46.25%',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: '56.25%',
+      margin: 0
+    }
   },
   currentAssetOuter: {
     height: '100%',

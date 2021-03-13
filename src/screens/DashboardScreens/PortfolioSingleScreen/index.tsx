@@ -120,7 +120,7 @@ const PortfolioSingleScreen = ({
     return (
       <Fragment>
         <div style={{ marginBottom: theme.spacing(4) }}>
-          <Typography variant={'h4'}>
+          <Typography variant={'h5'}>
             {selectedProjectData?.campaignName}
           </Typography>
         </div>

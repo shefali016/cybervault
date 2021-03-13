@@ -1,5 +1,6 @@
 import React from 'react'
 import { Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import { ROW, FLEX } from 'utils/constants/stringConstants'
 import { GREY_COLOR } from 'utils/constants/colorsConstants'
 
@@ -11,9 +12,10 @@ type Props = {
 }
 
 export const Details = ({ label, value, startDate, endDate }: Props) => {
+  const classes = useStyles()
   return (
-    <div style={{ display: FLEX, flexDirection: ROW, marginTop: 10 }}>
-      <Typography variant={'body1'} style={{ minWidth: 250 }}>
+    <div className={classes.container}>
+      <Typography variant={'body1'} className={classes.label}>
         {label}
       </Typography>
       <Typography variant={'body1'}>
@@ -29,15 +31,13 @@ export const Details = ({ label, value, startDate, endDate }: Props) => {
   )
 }
 
-export const renderDevider = (props?: any) => {
-  return (
-    <div
-      style={{
-        height: 1,
-        backgroundColor: GREY_COLOR,
-        width: props && props.editInfo ? '90%' : '100%',
-        marginTop: 20
-      }}
-    />
-  )
-}
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: FLEX,
+    marginTop: 10,
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column'
+    }
+  },
+  label: { fontWeight: 'bold', minWidth: 220 }
+}))
