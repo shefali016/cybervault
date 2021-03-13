@@ -23,6 +23,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     margin: 0,
     '& li': {
+      fontWeight: 'bold',
       fontSize: 18,
       margin: 0,
       marginTop: 0,
@@ -30,7 +31,8 @@ export const useStyles = makeStyles((theme) => ({
       padding: '15px',
       position: POSITION_RELATIVE,
       textAlign: CENTER,
-      '&:hover': { background: 'rgba(0, 0, 0, 0.1)' },
+      color: 'black',
+      '&:hover': { background: 'rgba(0, 0, 0, 0.05)' },
       cursor: 'pointer'
     }
   },
