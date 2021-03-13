@@ -117,8 +117,12 @@ const BrandingScreen = ({
       <div className={classes.brandingDisplaySection}>
         <div className={classes.emailHeader}>
           <img
-            src={accountUpdate.settings.watermark}
-            height='60px'
+            src={
+              watermarkFile
+                ? URL.createObjectURL(watermarkFile)
+                : accountUpdate.settings?.watermark
+            }
+            className={classes.emailLogo}
             alt={'acc img'}
           />
         </div>
@@ -541,8 +545,10 @@ const useStyles = makeStyles((theme) => ({
   emailHeader: {
     display: 'flex',
     justifyContent: 'center',
-    padding: theme.spacing(1)
+    paddingTop: 10,
+    paddingBottom: 5
   },
+  emailLogo: { height: 40, width: 'auto' },
   emailContent: {
     borderRadius: theme.shape.borderRadius,
     flex: 1,

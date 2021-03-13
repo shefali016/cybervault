@@ -442,6 +442,15 @@ export interface Portfolio {
   createdAt?: number
 }
 
+export interface PortfolioShare {
+  id: string
+  title: string
+  description: string | undefined
+  createdAt: number
+  portfolioId: string
+  isViewed: boolean
+}
+
 export type Cell = {
   cellProps?: any
   renderer?: () => React.ReactElement
