@@ -74,7 +74,7 @@ export const useStyles = makeStyles((theme) => ({
     flex: 1,
     flexGrow: 1,
     flexDirection: COLUMN,
-    maxWidth: 1400,
+    maxWidth: 1500,
     alignSelf: 'center',
     borderRadius: 20,
     marginLeft: theme.spacing(5),
