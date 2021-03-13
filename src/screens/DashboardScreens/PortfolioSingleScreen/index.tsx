@@ -2,7 +2,7 @@ import { getPortfolioRequest } from 'actions/portfolioActions'
 import { Fragment, useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
-import { Portfolio, Project, Account, User } from 'utils/Interface'
+import { Portfolio, Project, Account, User, Client } from 'utils/Interface'
 import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
 import { RenderCampaignDetails } from 'components/Common/Widget/CampaignDetailsWidget'
@@ -26,22 +26,35 @@ import { MenuItem, PopoverButton } from 'components/Common/PopoverButton'
 import ProjectIcon from '@material-ui/icons/Collections'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
+import { updatePortfolioRequest } from 'actions/portfolioActions'
 
 type StateProps = {
   portfolio: Portfolio
   portfolioProjects: Array<Project>
   account: Account
   user: User
+  updatePortfolioLoading: boolean
+  updatePortfolioError: null | string
+  updatePortfolioSuccess: boolean
+  clients: Array<Client>
+  projects: Array<Project>
 }
+
+type DispatchProps = {
+  updatePortfolio: (portfolio: Portfolio) => void
+  getPortfolio: (portfolioId: string) => void
+}
+
 type initialState = {
   selectedProjectId: string | null
 }
 type Props = {
   match: any
   history: any
-  getPortfolio: (portfolioId: string) => void
   width: string
-} & StateProps
+} & StateProps &
+  DispatchProps
 
 const PortfolioSingleScreen = ({
   getPortfolio,
@@ -51,7 +64,13 @@ const PortfolioSingleScreen = ({
   history,
   match,
   portfolio,
-  width
+  width,
+  clients,
+  projects,
+  updatePortfolioLoading,
+  updatePortfolioError,
+  updatePortfolioSuccess,
+  updatePortfolio
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -72,14 +91,27 @@ const PortfolioSingleScreen = ({
       portfolio?.id === match.params.id ? portfolio.projects[0] : null
   })
 
-  const handleAddProject = () => {}
+  const [modalState, setModalState] = useState({
+    open: false,
+    editingProjects: false
+  })
 
-  const handleEdit = () => {}
+  const handleChangeProjects = () => {
+    setModalState({ open: true, editingProjects: true })
+  }
+
+  const handleEdit = () => {
+    setModalState({ open: true, editingProjects: false })
+  }
 
   const handleDelete = () => {}
 
   const popoverMenuItems: Array<MenuItem> = [
-    { title: 'Add project', Icon: ProjectIcon, onClick: handleAddProject },
+    {
+      title: 'Change projects',
+      Icon: ProjectIcon,
+      onClick: handleChangeProjects
+    },
     { title: 'Edit portfolio', Icon: EditIcon, onClick: handleEdit },
     {
       title: 'Delete portfolio',
@@ -95,7 +127,11 @@ const PortfolioSingleScreen = ({
   }, [match])
 
   useEffect(() => {
-    if (!state.selectedProjectId && portfolio?.id === match.params.id) {
+    if (
+      portfolio?.id === match.params.id &&
+      (!state.selectedProjectId ||
+        !portfolio.projects.includes(state.selectedProjectId))
+    ) {
       setState((state) => ({
         ...state,
         selectedProjectId: portfolio.projects[0]
@@ -129,7 +165,7 @@ const PortfolioSingleScreen = ({
   const handleProfileNavigation = () =>
     history.replace(`/${AccountTabIds.profile}`)
 
-  const handleBack = () => history.goBack()
+  const handleBack = () => history.push('/portfolio')
 
   const renderLoading = () => {
     if (selectedProjectData) return null
@@ -199,6 +235,30 @@ const PortfolioSingleScreen = ({
     )
   }
 
+  const renderHeaderContent = () => {
+    const iconSize = 35
+    return (
+      <div className='row'>
+        <div
+          className='circleImage'
+          style={{
+            height: iconSize,
+            minWidth: iconSize,
+            borderRadius: iconSize / 2,
+            marginRight: theme.spacing(1.5),
+            marginLeft: theme.spacing(3)
+          }}>
+          {!!portfolio.icon && (
+            <img src={portfolio.icon} alt='portfolio-icon' />
+          )}
+        </div>
+        <Typography variant='h6' className='backgroundText'>
+          {portfolio.name}
+        </Typography>
+      </div>
+    )
+  }
+
   return (
     <div
       className={classes.screen}
@@ -208,6 +268,7 @@ const PortfolioSingleScreen = ({
         onProfileClick={handleProfileNavigation}
         renderAppIcon={true}
         onLogoClick={handleBack}
+        renderHeaderContent={renderHeaderContent}
       />
 
       <ProjectSelectBar
@@ -230,19 +291,52 @@ const PortfolioSingleScreen = ({
 
         {renderProjectDetails()}
       </div>
+
+      <PortfolioModal
+        folderId={portfolio?.folderId}
+        open={!!modalState.open}
+        onRequestClose={() =>
+          setModalState({ open: false, editingProjects: false })
+        }
+        onSubmit={(portfolio: Portfolio) => updatePortfolio(portfolio)}
+        projectList={projects}
+        loading={updatePortfolioLoading}
+        error={updatePortfolioError}
+        success={updatePortfolioSuccess}
+        clients={clients}
+        portfolio={portfolio}
+        isEditingProject={modalState.editingProjects}
+      />
     </div>
   )
 }
-const mapStateToProps = (state: ReduxState): StateProps => ({
-  portfolio: state.portfolio.portfolio as Portfolio,
-  portfolioProjects: state.portfolio.portfolioProjects as Array<Project>,
-  account: state.auth.account as Account,
-  user: state.auth.user as User
-})
-const mapDispatchToProps = (dispatch: any) => ({
+const mapStateToProps = (state: ReduxState): StateProps => {
+  const {
+    updatePortfolioLoading,
+    updatePortfolioError,
+    updatePortfolioSuccess,
+    portfolioProjects,
+    portfolio
+  } = state.portfolio
+
+  return {
+    portfolio: portfolio as Portfolio,
+    portfolioProjects: portfolioProjects as Array<Project>,
+    account: state.auth.account as Account,
+    user: state.auth.user as User,
+    updatePortfolioLoading,
+    updatePortfolioError,
+    updatePortfolioSuccess,
+    projects: state.project.allProjectsData,
+    clients: state.clients.clientsData
+  }
+}
+const mapDispatchToProps = (dispatch: any): DispatchProps => ({
   getPortfolio: (portfolioId: string) => {
     return dispatch(getPortfolioRequest(portfolioId))
-  }
+  },
+  updatePortfolio: (portfolio: Portfolio) =>
+    dispatch(updatePortfolioRequest(portfolio))
 })
 
 export default connect(

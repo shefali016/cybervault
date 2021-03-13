@@ -44,6 +44,8 @@ type AddPortfolioProps = {
   error: string | null
   success: boolean
   clients: Array<Client>
+  portfolio?: Portfolio | {}
+  isEditingProject?: boolean
 }
 
 export const AddPortfolio = ({
@@ -53,27 +55,33 @@ export const AddPortfolio = ({
   error,
   success,
   clients,
-  folderId
+  folderId,
+  portfolio = {},
+  isEditingProject
 }: AddPortfolioProps) => {
   let imageInputRef: any = useRef()
   const classes = useStyles()
-
   const toastContent = useContext(ToastContext)
 
   const [state, setState] = useState<State>({
-    portfolio: {
-      id: '',
-      name: '',
-      description: '',
-      icon: '',
-      projects: [],
-      folderId: folderId || ''
-    },
+    portfolio: Object.assign(
+      {
+        id: '',
+        name: '',
+        description: '',
+        icon: '',
+        projects: [],
+        folderId: folderId || ''
+      },
+      portfolio
+    ),
     iconFile: '',
-    isChooseProject: false,
+    isChooseProject: !!isEditingProject,
     isError: false,
     uploadingIcon: false
   })
+
+  const isEditing = isEditingProject || !!portfolio
 
   useOnChange(error, (error) => {
     if (error && state.uploadingIcon) {
@@ -82,7 +90,7 @@ export const AddPortfolio = ({
   })
 
   const handleSubmit = async () => {
-    let icon: string = ''
+    let icon = state.portfolio.icon
 
     try {
       if (!state.portfolio.projects.length) {
@@ -106,7 +114,7 @@ export const AddPortfolio = ({
 
       onSubmit({
         ...state.portfolio,
-        id: generateUid(),
+        id: state.portfolio.id || generateUid(),
         icon,
         folderId,
         createdAt: Date.now()
@@ -295,22 +303,49 @@ export const AddPortfolio = ({
     )
   }
 
+  const getTitle = () => {
+    if (state.isChooseProject) {
+      return 'Choose Projects'
+    }
+    if (!isEditing) {
+      return 'New Portfolio'
+    }
+    return 'Edit Portfolio'
+  }
+
+  const getSubTitle = () => {
+    if (state.isChooseProject) {
+      return 'Display your work'
+    }
+    if (!isEditing) {
+      return 'Get Started'
+    }
+    return 'Update details'
+  }
+
+  const handleButtonClick = () => {
+    if (state.isChooseProject || isEditing) {
+      handleSubmit()
+    } else {
+      handleProjectSection()
+    }
+  }
+
   return (
     <React.Fragment>
-      <ModalTitle
-        title={!state.isChooseProject ? 'New Portfolio' : 'Choose Projects'}
-        subtitle={!state.isChooseProject ? 'Get Started' : 'Display your work'}
-      />
+      <ModalTitle title={getTitle()} subtitle={getSubTitle()} />
       {!state.isChooseProject ? renderPortfolioLogoView() : null}
       {!state.isChooseProject ? renderDetails() : renderProjectList()}
       <GradiantButton
-        onClick={() => {
-          !state.isChooseProject ? handleProjectSection() : handleSubmit()
-        }}
+        onClick={handleButtonClick}
         className={classes.portfolioModalBtn}
         loading={loading || state.uploadingIcon}>
         <Typography variant={'button'}>
-          {!state.isChooseProject ? 'Continue' : 'Create portfolio'}
+          {isEditing
+            ? 'Save '
+            : !state.isChooseProject
+            ? 'Continue'
+            : 'Create portfolio'}
         </Typography>
       </GradiantButton>
     </React.Fragment>
@@ -331,7 +366,9 @@ export const PortfolioModal = ({
   error,
   success,
   clients,
-  folderId
+  folderId,
+  portfolio,
+  isEditingProject
 }: PortfolioModalProps) => {
   useOnChange(success, (success) => {
     if (success) {
@@ -347,6 +384,8 @@ export const PortfolioModal = ({
         />
         <AddPortfolio
           {...{
+            isEditingProject,
+            portfolio,
             onSubmit,
             projectList,
             loading,

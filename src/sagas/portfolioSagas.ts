@@ -93,9 +93,13 @@ function* updatePortfolio({ portfolio }: UpdateParams) {
     )
     const folder: Types.PortfolioFolder = folderCache[portfolio.folderId]
 
-    folder.portfolios = [...folder.portfolios, portfolioId]
+    if (!folder.portfolios.includes(portfolioId)) {
+      // Portfolio has not been added to folder
+      // Add to folder and save to firestore
+      folder.portfolios = [...folder.portfolios, portfolioId]
+      yield call(updatePortfolioFolderRequest, folder, account)
+    }
 
-    yield call(updatePortfolioFolderRequest, folder, account)
     history.push(`/portfolio/${portfolioId}`)
     yield put(updatePortfolioSuccess(folder, portfolio))
   } catch (error: any) {

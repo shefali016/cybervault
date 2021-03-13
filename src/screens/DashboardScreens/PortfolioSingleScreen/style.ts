@@ -74,6 +74,7 @@ export const useStyles = makeStyles((theme) => ({
     flex: 1,
     flexGrow: 1,
     flexDirection: COLUMN,
+    width: "100%",
     maxWidth: 1400,
     alignSelf: 'center',
     borderRadius: 20,

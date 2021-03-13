@@ -187,8 +187,24 @@ export const useGlobalStyles = makeStyles((theme) => ({
     // Text
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },
+    '.backgroundText': { color: theme.palette.text.background },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
-    '.blackIconLg': { fontSize: 40, color: theme.palette.common.black }
+    '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
+    // img
+    '.circleImage': {
+      minWidth: 60,
+      height: 60,
+      borderRadius: 30,
+      overflow: 'hidden',
+      background: theme.palette.grey[200],
+      position: 'relative',
+      '& img': {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover'
+      }
+    }
   }
 }))

@@ -1,4 +1,4 @@
-import { Box, Card, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { Fragment, useState } from 'react'
 import { Client, Portfolio, PortfolioFolder, Project } from 'utils/Interface'
 import ReactLoading from 'react-loading'
@@ -14,10 +14,8 @@ import { useTheme } from '@material-ui/core/styles'
 import { PopoverButton } from 'components/Common/PopoverButton'
 import clsx from 'clsx'
 import { AppButton } from 'components/Common/Core/AppButton'
-import { useModalState } from 'utils/hooks'
 import { PortfolioItem } from 'components/Portfolio/PortfolioItem'
 import FolderIcon from '@material-ui/icons/Folder'
-import { PortfolioList } from './PortfolioList'
 
 type Props = {
   folderList: Array<PortfolioFolder>
@@ -40,7 +38,6 @@ const PortfolioFolders = ({
   loading,
   handleEditFolderDetail,
   deletefolder,
-  handleModalRequest,
   handleSubmit,
   projectList,
   updatePortfolioLoading,
