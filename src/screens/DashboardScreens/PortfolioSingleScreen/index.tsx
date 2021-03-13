@@ -20,9 +20,12 @@ import { AppButton } from 'components/Common/Core/AppButton'
 import { Dot } from 'components/Common/Dot'
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import { useOnChange } from 'utils/hooks'
-import Arrow from '@material-ui/icons/ArrowDropDown'
 import { IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
+import { MenuItem, PopoverButton } from 'components/Common/PopoverButton'
+import ProjectIcon from '@material-ui/icons/Collections'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 type StateProps = {
   portfolio: Portfolio
@@ -69,7 +72,22 @@ const PortfolioSingleScreen = ({
       portfolio?.id === match.params.id ? portfolio.projects[0] : null
   })
 
-  const [projectsOpen, setProjectsOpen] = useState(false)
+  const handleAddProject = () => {}
+
+  const handleEdit = () => {}
+
+  const handleDelete = () => {}
+
+  const popoverMenuItems: Array<MenuItem> = [
+    { title: 'Add project', Icon: ProjectIcon, onClick: handleAddProject },
+    { title: 'Edit portfolio', Icon: EditIcon, onClick: handleEdit },
+    {
+      title: 'Delete portfolio',
+      Icon: DeleteIcon,
+      onClick: handleDelete,
+      desctructive: true
+    }
+  ]
 
   useEffect(() => {
     const id = match.params.id
@@ -197,10 +215,11 @@ const PortfolioSingleScreen = ({
           projects: portfolioProjects,
           onSelect: setProjectId,
           selectedProject: selectedProjectData,
-          theme: color,
+          barStyle: color,
           gradiant1: headerGradient1,
           gradiant2: headerGradient2,
-          width
+          width,
+          popoverMenuItems
         }}
       />
 
@@ -235,23 +254,25 @@ type ProjectSelectBarProps = {
   projects: Array<Project>
   onSelect: (project: Project) => void
   selectedProject: Project | undefined
-  theme: 'light' | 'dark'
+  barStyle: 'light' | 'dark'
   gradiant1: string
   gradiant2: string
   width: any
+  popoverMenuItems?: Array<MenuItem>
 }
 
 const ProjectSelectBar = ({
   projects,
   onSelect,
   selectedProject,
-  theme,
+  barStyle,
   gradiant1,
   gradiant2,
-  width
+  width,
+  popoverMenuItems
 }: ProjectSelectBarProps) => {
   const classes = useStyles()
-  const materialTheme = useTheme()
+  const theme = useTheme()
   const [open, setOpen] = useState(false)
 
   useOnChange(width, (width: any) => {
@@ -261,9 +282,11 @@ const ProjectSelectBar = ({
   })
 
   const renderProjectButtons = ({
-    showActive = true
+    showActive = true,
+    style = {}
   }: {
     showActive?: boolean
+    style?: {}
   }) => {
     if (!(projects && projects.length)) {
       return null
@@ -280,19 +303,37 @@ const ProjectSelectBar = ({
             onSelect(project)
           }}
           key={index}
-          className={classes.projectButton}>
+          className={classes.projectButton}
+          style={style}>
           <Typography variant={'inherit'}>{project.campaignName}</Typography>
 
           {isSelected && showActive && (
             <Dot
               className={classes.activeDot}
               size={7}
-              color={theme === 'dark' ? '#ffffff55' : '#00000055'}
+              color={barStyle === 'dark' ? '#ffffff55' : '#00000055'}
             />
           )}
         </AppButton>
       )
     })
+  }
+
+  const renderPopover = ({ style = {} }: { style?: {} }) => {
+    return (
+      !!popoverMenuItems &&
+      !!popoverMenuItems.length && (
+        <PopoverButton
+          menuItems={popoverMenuItems}
+          style={style}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+        />
+      )
+    )
   }
 
   return (
@@ -305,7 +346,7 @@ const ProjectSelectBar = ({
         <div
           className={clsx(
             classes.portfoloTabsList,
-            theme === 'dark' ? classes.portfoloDarkTabsList : '',
+            barStyle === 'dark' ? classes.portfoloDarkTabsList : '',
             'hiddenSmDown'
           )}>
           {renderProjectButtons({ showActive: true })}
@@ -313,7 +354,7 @@ const ProjectSelectBar = ({
         <div
           className={clsx(
             classes.portfoloTabsList,
-            theme === 'dark' ? classes.portfoloDarkTabsList : '',
+            barStyle === 'dark' ? classes.portfoloDarkTabsList : '',
             'hiddenMdUp'
           )}>
           {!!selectedProject && (
@@ -331,11 +372,12 @@ const ProjectSelectBar = ({
 
         <IconButton className={'hiddenMdUp'} onClick={() => setOpen(!open)}>
           <MenuIcon
-            className={theme === 'dark' ? 'whiteIconLg' : 'blackIconLg'}
+            className={barStyle === 'dark' ? 'whiteIconLg' : 'blackIconLg'}
           />
         </IconButton>
 
         <div className={clsx('row', 'hiddenSmDown')}>
+          {renderPopover({ style: { marginRight: theme.spacing(2) } })}
           <AppButton className={classes.shareButton}>Share</AppButton>
         </div>
       </div>
@@ -343,11 +385,27 @@ const ProjectSelectBar = ({
       <div
         className={clsx(classes.projectBarCollapsed)}
         style={{
-          height: open ? projects.length * 65 : 0,
+          height: open ? projects.length * 75 + 50 : 0,
           paddingTop: open ? undefined : 0,
           background: `linear-gradient(to right ,${gradiant1}, ${gradiant2})`
         }}>
-        {renderProjectButtons({ showActive: false })}
+        {renderProjectButtons({
+          showActive: false,
+          style: { marginBottom: theme.spacing(1) }
+        })}
+        <div
+          className='row'
+          style={{
+            position: 'relative',
+            width: '100%',
+            justifyContent: 'center',
+            marginTop: theme.spacing(2)
+          }}>
+          <AppButton className={classes.shareButton}>Share</AppButton>
+          {renderPopover({
+            style: { position: 'absolute', right: theme.spacing(2) }
+          })}
+        </div>
       </div>
     </div>
   )

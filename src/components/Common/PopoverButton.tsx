@@ -3,15 +3,27 @@ import React from 'react'
 import { useTheme } from '@material-ui/core/styles'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
-type MenuItem = {
+export type MenuItem = {
   title: string
   onClick: () => void
   Icon?: any
   desctructive?: boolean
 }
-type Props = { menuItems: Array<MenuItem> }
+type Props = {
+  menuItems: Array<MenuItem>
+  className?: string
+  style?: {}
+  anchorOrigin?: any
+  transformOrigin?: any
+}
 
-export const PopoverButton = ({ menuItems }: Props) => {
+export const PopoverButton = ({
+  menuItems,
+  className,
+  style,
+  anchorOrigin,
+  transformOrigin
+}: Props) => {
   const theme = useTheme()
 
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -28,7 +40,7 @@ export const PopoverButton = ({ menuItems }: Props) => {
   const id = open ? 'simple-popover' : undefined
 
   return (
-    <div>
+    <div className={className} style={style}>
       <IconButton
         aria-owns={id}
         onClick={handleClick}
@@ -47,14 +59,18 @@ export const PopoverButton = ({ menuItems }: Props) => {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}>
+        anchorOrigin={
+          anchorOrigin || {
+            vertical: 'top',
+            horizontal: 'right'
+          }
+        }
+        transformOrigin={
+          transformOrigin || {
+            vertical: 'bottom',
+            horizontal: 'left'
+          }
+        }>
         {menuItems.map(({ title, onClick, Icon, desctructive }: MenuItem) => {
           return (
             <MenuItem

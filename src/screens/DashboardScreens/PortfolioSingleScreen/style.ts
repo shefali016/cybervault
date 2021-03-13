@@ -86,8 +86,8 @@ export const useStyles = makeStyles((theme) => ({
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
       padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-      marginBottom: theme.spacing(3),
-      marginTop: theme.spacing(3)
+      marginBottom: theme.spacing(4),
+      marginTop: theme.spacing(4)
     }
   },
   assetsOuter: {
