@@ -2,6 +2,22 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    '.hiddenSmDown': {
+      [theme.breakpoints.down('sm')]: {
+        display: 'none !important'
+      }
+    },
+    '.hiddenMdUp': {
+      display: 'none !important',
+      [theme.breakpoints.down('sm')]: {
+        display: 'block !important'
+      }
+    },
+    '.rotate180': { transform: 'rotate(180deg)' },
+    '.alignLeftButton': {
+      justifyContent: 'flex-start',
+      paddingLeft: theme.spacing(2)
+    },
     '.stretch': { alignSelf: 'stretch' },
     '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
@@ -109,7 +125,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
     '.screenInner': {
-      width: "100%",
+      width: '100%',
       maxWidth: 1500
     },
     '.responsivePadding': {
@@ -170,6 +186,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     // Text
     '.metaText': { color: theme.palette.text.meta },
-    '.whiteText': { color: 'white' }
+    '.whiteText': { color: 'white' },
+    // Icons
+    '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
+    '.blackIconLg': { fontSize: 40, color: theme.palette.common.black }
   }
 }))

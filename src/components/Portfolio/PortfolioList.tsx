@@ -10,14 +10,15 @@ import clsx from 'clsx'
 type Props = {
   portfolios: Array<Portfolio>
   onClick: (portfolio: Portfolio) => void
+  className?: string
 }
 
-export const PortfolioList = ({ portfolios, onClick }: Props) => {
+export const PortfolioList = ({ portfolios, onClick, className }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   return (
-    <div className='responsivePadding'>
+    <div className={className}>
       <div
         style={{
           display: 'grid',

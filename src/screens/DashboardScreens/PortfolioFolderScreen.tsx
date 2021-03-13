@@ -8,6 +8,7 @@ import FolderIcon from '@material-ui/icons/Folder'
 import { Typography } from '@material-ui/core'
 import clsx from 'clsx'
 import { useTheme } from '@material-ui/core/styles'
+import { sortByCreatedAt } from 'utils'
 
 type StateProps = {
   portfolioCache: PortfolioCache
@@ -25,7 +26,8 @@ const PortfolioFolderScreen = ({
   const theme = useTheme()
 
   const portfolios = useMemo(() => {
-    return folder.portfolios.map((id: string) => portfolioCache[id])
+    const portfolios = folder.portfolios.map((id: string) => portfolioCache[id])
+    return sortByCreatedAt(portfolios)
   }, [])
 
   const goToPortfolio = (portfolio: Portfolio) => {
@@ -55,7 +57,11 @@ const PortfolioFolderScreen = ({
         </div>
       </div>
       <div className={'screenInner'}>
-        <PortfolioList portfolios={portfolios} onClick={goToPortfolio} />
+        <PortfolioList
+          portfolios={portfolios}
+          onClick={goToPortfolio}
+          className='responsivePadding'
+        />
       </div>
     </div>
   )

@@ -17,6 +17,7 @@ import { AppButton } from 'components/Common/Core/AppButton'
 import { useModalState } from 'utils/hooks'
 import { PortfolioItem } from 'components/Portfolio/PortfolioItem'
 import FolderIcon from '@material-ui/icons/Folder'
+import { PortfolioList } from './PortfolioList'
 
 type Props = {
   folderList: Array<PortfolioFolder>
