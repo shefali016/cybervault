@@ -74,7 +74,6 @@ export const useStyles = makeStyles((theme) => ({
     flex: 1,
     flexGrow: 1,
     flexDirection: COLUMN,
-    width: "100%",
     maxWidth: 1400,
     alignSelf: 'center',
     borderRadius: 20,
@@ -88,7 +87,7 @@ export const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(2),
       padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
       marginBottom: theme.spacing(4),
-      marginTop: theme.spacing(4)
+      marginTop: theme.spacing(3)
     }
   },
   assetsOuter: {

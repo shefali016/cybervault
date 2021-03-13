@@ -235,10 +235,11 @@ const PortfolioSingleScreen = ({
     )
   }
 
+  const iconSize = 35
+
   const renderHeaderContent = () => {
-    const iconSize = 35
     return (
-      <div className='row'>
+      <div className={clsx('row', 'hiddenSmDown')}>
         <div
           className='circleImage'
           style={{
@@ -283,6 +284,27 @@ const PortfolioSingleScreen = ({
           popoverMenuItems
         }}
       />
+
+      <div
+        className={clsx('row', 'hiddenMdUp')}
+        style={{ marginTop: theme.spacing(3) }}>
+        <div
+          className='circleImage'
+          style={{
+            height: iconSize,
+            minWidth: iconSize,
+            borderRadius: iconSize / 2,
+            marginRight: theme.spacing(1.5),
+            marginLeft: theme.spacing(3)
+          }}>
+          {!!portfolio.icon && (
+            <img src={portfolio.icon} alt='portfolio-icon' />
+          )}
+        </div>
+        <Typography variant='h6' color='inherit'>
+          {portfolio.name}
+        </Typography>
+      </div>
 
       <div
         className={classes.portfolioWrapper}

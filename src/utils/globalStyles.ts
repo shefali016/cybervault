@@ -8,9 +8,8 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     '.hiddenMdUp': {
-      display: 'none !important',
-      [theme.breakpoints.down('sm')]: {
-        display: 'block !important'
+      [theme.breakpoints.up('md')]: {
+        display: 'none !important'
       }
     },
     '.rotate180': { transform: 'rotate(180deg)' },
