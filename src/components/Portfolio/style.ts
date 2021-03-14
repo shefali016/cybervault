@@ -15,11 +15,11 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     marginLeft: theme.spacing(5),
     marginRight: theme.spacing(5),
-    padding: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
+    padding: `${theme.spacing(2)}px ${theme.spacing(0)}px`,
     [theme.breakpoints.down('md')]: {
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
-      padding: `${theme.spacing(2)}px ${theme.spacing(1)}px`
+      padding: `${theme.spacing(2)}px ${theme.spacing(0)}px`
     }
   },
   contentHeaderLogo: {

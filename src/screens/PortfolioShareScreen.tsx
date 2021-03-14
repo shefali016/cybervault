@@ -7,7 +7,7 @@ import {
   User,
   PortfolioShare
 } from 'utils/Interface'
-import withWidth from '@material-ui/core/withWidth'
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import { connect } from 'react-redux'
 import { PortfolioProjectDetails } from 'components/Portfolio/PortfolioDetails'
 import { ProjectSelectBar } from 'components/Portfolio/ProjectSelectBar'
@@ -230,7 +230,7 @@ const PortfolioShareScreen = ({
         <PortfolioTitle
           className={classes.portfolioTitle}
           portfolio={portfolio}
-          size={50}
+          size={isWidthDown('sm', width) ? 38 : 50}
         />
 
         {!!senderAccount.settings.watermark && (

@@ -1,4 +1,5 @@
 import { Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import { useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import React from 'react'
@@ -12,6 +13,7 @@ type Props = {
 
 export const PortfolioTitle = ({ portfolio, size = 35, className }: Props) => {
   const theme = useTheme()
+  const classes = useStyles()
 
   if (!portfolio) {
     return null
@@ -29,9 +31,13 @@ export const PortfolioTitle = ({ portfolio, size = 35, className }: Props) => {
         }}>
         {!!portfolio.icon && <img src={portfolio.icon} alt='portfolio-icon' />}
       </div>
-      <Typography variant='h5' color='inherit'>
+      <Typography variant='h5' color='inherit' className={classes.title}>
         {portfolio.name}
       </Typography>
     </div>
   )
 }
+
+const useStyles = makeStyles((theme) => ({
+  title: { [theme.breakpoints.down('sm')]: { fontSize: 20 } }
+}))

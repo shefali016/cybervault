@@ -12,7 +12,7 @@ import Header from '../../../components/Common/Header/header'
 import { AccountTabIds } from 'screens/MainScreen'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import clsx from 'clsx'
-import withWidth from '@material-ui/core/withWidth'
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import { MenuItem } from 'components/Common/PopoverButton'
 import ProjectIcon from '@material-ui/icons/Collections'
 import EditIcon from '@material-ui/icons/Edit'
@@ -54,7 +54,7 @@ type initialState = {
 type Props = {
   match: any
   history: any
-  width: string
+  width: any
 } & StateProps &
   DispatchProps
 
@@ -218,7 +218,7 @@ const PortfolioSingleScreen = ({
         <PortfolioTitle
           className={classes.portfolioTitle}
           portfolio={portfolio}
-          size={50}
+          size={isWidthDown('sm', width) ? 38 : 50}
         />
 
         {!!account.settings.watermark && (
