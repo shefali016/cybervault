@@ -1,5 +1,3 @@
-'use strict'
-
 import { StripeElementChangeEvent } from '@stripe/stripe-js'
 
 export type Region = {

@@ -17,7 +17,8 @@ import { generateUid, sortByCreatedAt } from 'utils'
 import { getProjectDetailsRequest } from './projectRequest'
 import { sendMail } from 'apis/mails'
 
-const { domain, template_ids } = require('../config.json')
+const { domain } = require('../config.json')
+const { portfolio_share } = require('sendGridTemplates.json')
 
 export const updatePortfolioFolderRequest = async (
   folder: PortfolioFolder,
@@ -163,6 +164,14 @@ export const sharePortfolio = async (
   branding: Branding,
   email: string
 ) => {
+  const {
+    foregroundColor,
+    backgroundColor,
+    text: textColor,
+    buttonBackgroundColor,
+    buttonTextColor
+  } = branding.email
+
   const portfolioShare: PortfolioShare = {
     id: generateUid(),
     accountId: account.id,
@@ -173,17 +182,10 @@ export const sharePortfolio = async (
     isViewed: false
   }
 
-  const {
-    foregroundColor,
-    backgroundColor,
-    text: textColor,
-    buttonBackgroundColor,
-    buttonTextColor
-  } = branding.email
-
   const link = `${domain}/portfolioShare/${portfolioShare.id}`
   const sender = account.name
   const logo = account.settings.watermark || ''
+  const portfolioName = portfolio.name
 
   const emailData: PortfolioShareMailData = {
     link,
@@ -194,13 +196,14 @@ export const sharePortfolio = async (
     buttonTextColor,
     sender,
     contentDesc,
-    logo
+    logo,
+    portfolioName
   }
 
   const emailPayload: Mail = {
     type: 'portfolioShare',
     to: email,
-    templateId: template_ids.portfolio_share,
+    templateId: portfolio_share,
     data: emailData
   }
 
@@ -209,9 +212,7 @@ export const sharePortfolio = async (
   return updatePortfolioShare(portfolioShare)
 }
 
-export const loadPortfolioShareData = async () => {
-
-}
+export const loadPortfolioShareData = async () => {}
 
 export const getPortfolioShare = async (id: string) => {
   const doc = await firebase

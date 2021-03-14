@@ -5,6 +5,7 @@ import * as admin from 'firebase-admin'
 import { generateUid } from './utils'
 import { Mail } from './utils/Interfaces'
 import templates from './sendGridTemplates.json'
+import config from './config.json'
 
 const sgMail = require('@sendgrid/mail')
 
@@ -151,7 +152,11 @@ export const handleNotificationCreated = functions.firestore
 
         const mail: Mail = {
           to,
-          data: { title },
+          data: {
+            title,
+            link: `${config.domain}/dashboard`,
+            logo: `${config.domain}/logo.png`
+          },
           type: 'notification',
           templateId: templates.notification
         }

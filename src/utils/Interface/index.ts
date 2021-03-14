@@ -482,6 +482,7 @@ export type PortfolioShareMailData = {
   sender: string
   contentDesc: string
   logo: string
+  portfolioName: string
 }
 
 export type Row = {
@@ -504,4 +505,12 @@ export type Branding = {
     headerGradient1: string
     headerGradient2: string
   }
+}
+
+export interface Notification {
+  id: string
+  type: 'portfolioViewed'
+  createdAt: number
+  title: string
+  isRead: boolean
 }
