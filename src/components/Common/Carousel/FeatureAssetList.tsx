@@ -147,13 +147,10 @@ export const FeatureAssetList = ({
               className={clsx(classes.img, innerImageClassName)}
             />
           )}
-          {!!asset && (
+          {!!asset && typeof onFeatureSelect === 'function' && (
             <IconButton
               className={classes.featureButton}
-              onClick={() =>
-                typeof onFeatureSelect === 'function' &&
-                onFeatureSelect(asset.id)
-              }>
+              onClick={() => onFeatureSelect(asset.id)}>
               {asset.id === featuredAsset ? (
                 <Star className={classes.featureIcon} />
               ) : (
