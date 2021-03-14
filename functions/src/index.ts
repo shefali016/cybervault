@@ -2,6 +2,10 @@ import * as functions from 'firebase-functions'
 import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
+import { generateUid } from './utils'
+import { Mail } from './utils/Interfaces'
+import templates from './sendGridTemplates.json'
+
 const sgMail = require('@sendgrid/mail')
 
 const app = express()
@@ -89,5 +93,74 @@ export const sendEmail = functions.firestore
       }
     } catch (error) {
       console.log(error, 'error occurs')
+    }
+  })
+
+export const handlePortfolioShareViewed = functions.firestore
+  .document(`PortfolioShares/{id}`)
+  .onWrite((change) => {
+    try {
+      let newShare = change.after.data()
+      let oldShare = change.before.data()
+      if (oldShare && newShare && !oldShare.isViewed && newShare.isViewed) {
+        const id = generateUid()
+        const notification = {
+          id,
+          type: 'portfolioViewed',
+          createdAt: Date.now(),
+          title: `Your ${newShare.title} portfolio has been viewed.`,
+          isRead: false
+        }
+        return admin
+          .firestore()
+          .collection('AccountData')
+          .doc(newShare.accountId)
+          .collection('Notifications')
+          .doc(id)
+          .set(notification)
+      }
+      return true
+    } catch (error) {
+      console.log(error, 'error occurs')
+      return false
+    }
+  })
+
+export const handleNotificationCreated = functions.firestore
+  .document(`AccountData/{accountId}/Notifications/{id}`)
+  .onCreate(async (snapshot, context) => {
+    try {
+      let notification = snapshot.data()
+      const { accountId } = context.params
+
+      if (notification) {
+        const accountSnapshot = await admin
+          .firestore()
+          .collection('Accounts')
+          .doc(accountId)
+          .get()
+        const account = accountSnapshot.data()
+
+        if (!account) {
+          return false
+        }
+
+        const { title } = notification
+
+        const to = account.email
+
+        const mail: Mail = {
+          to,
+          data: { title },
+          type: 'notification',
+          templateId: templates.notification
+        }
+
+        return admin.firestore().collection('Mails').doc().set(mail)
+      }
+      return true
+    } catch (error) {
+      console.log(error, 'error occurs')
+      return false
     }
   })
