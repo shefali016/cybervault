@@ -231,11 +231,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
     marginBottom: 5,
+    position: 'relative',
     overflow: 'hidden'
   },
   clientLogoImg: {
-    height: 80,
-    borderRadius: 40,
+    minHeight: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+    objectFit: 'cover',
     position: POSITION_ABSOLUTE
   },
   addLogoText: {

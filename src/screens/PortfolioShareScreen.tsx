@@ -99,7 +99,7 @@ const PortfolioShareScreen = ({
 
       const senderAccount = await getAccount(accountId)
 
-      if (!account) {
+      if (!senderAccount) {
         throw Error('Account does not exist')
       }
 
@@ -233,9 +233,9 @@ const PortfolioShareScreen = ({
           size={50}
         />
 
-        {!!account.settings.watermark && (
+        {!!senderAccount.settings.watermark && (
           <img
-            src={account.settings.watermark}
+            src={senderAccount.settings.watermark}
             alt='company-logo'
             className={classes.contentHeaderLogo}
           />
@@ -251,7 +251,7 @@ const PortfolioShareScreen = ({
 
         <PortfolioProjectDetails
           project={selectedProjectData}
-          account={account}
+          account={senderAccount}
         />
       </div>
     </div>

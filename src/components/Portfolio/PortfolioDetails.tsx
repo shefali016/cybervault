@@ -59,7 +59,7 @@ export const PortfolioProjectDetails = ({ project, account }: Props) => {
               />
             )}
 
-            <AppDivider className={classes.assetDivider} />
+            {!!videos.length && <AppDivider className={classes.assetDivider} />}
 
             {!!images.length && (
               <FeatureAssetUpload

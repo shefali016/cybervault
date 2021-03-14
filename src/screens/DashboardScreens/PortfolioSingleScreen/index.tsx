@@ -173,6 +173,22 @@ const PortfolioSingleScreen = ({
 
   const handleBack = () => history.push('/portfolio')
 
+  const getDefaultMessage = () => {
+    let imageCount = 0
+    let videoCount = 0
+
+    portfolioProjects.map((p: Project) => {
+      videoCount = videoCount + p.videos.length
+      imageCount = imageCount + p.images.length
+    })
+
+    return `${portfolioProjects.length} project${
+      portfolioProjects.length > 1 ? 's' : ''
+    } with ${!!imageCount ? imageCount + ' Images' : ''}${
+      !!imageCount && !!videoCount && ' and '
+    }${!!videoCount ? videoCount + ' Videos' : ''}`
+  }
+
   return (
     <div
       className={classes.screen}
@@ -249,6 +265,7 @@ const PortfolioSingleScreen = ({
         onShare={handleShare}
         success={sharePortfolioSuccess}
         loading={sharePortfolioLoading}
+        defaultMessage={getDefaultMessage()}
       />
     </div>
   )

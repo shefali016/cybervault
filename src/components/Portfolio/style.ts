@@ -45,7 +45,7 @@ export const useStyles = makeStyles((theme) => ({
     overflowX: 'scroll',
     flex: 1,
     display: 'inline-flex',
-    gap: 10,
+    gap: 20,
     listStyle: 'none'
   },
 
@@ -62,13 +62,21 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   projectButton: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     fontWeight: 'bold',
     fontSize: 18,
     margin: 0,
     marginTop: 0,
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
     minWidth: 200,
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: 270
+    },
     color: 'black'
   },
 

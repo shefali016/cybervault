@@ -68,7 +68,9 @@ export const ProjectSelectBar = ({
           key={index}
           className={classes.projectButton}
           style={style}>
-          <Typography variant={'inherit'}>{project.campaignName}</Typography>
+          <Typography variant={'inherit'} noWrap={true}>
+            {project.campaignName}
+          </Typography>
 
           {isSelected && showActive && (
             <Dot
@@ -127,11 +129,9 @@ export const ProjectSelectBar = ({
             <AppButton
               onClick={() => setOpen(!open)}
               className={clsx(classes.projectButton, 'alignLeftButton')}>
-              <div className='row'>
-                <Typography variant={'inherit'}>
-                  {selectedProject.campaignName}
-                </Typography>
-              </div>
+              <Typography variant={'inherit'} noWrap={true}>
+                {selectedProject.campaignName}
+              </Typography>
             </AppButton>
           )}
         </div>

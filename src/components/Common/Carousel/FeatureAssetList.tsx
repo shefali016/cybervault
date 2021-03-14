@@ -226,10 +226,11 @@ export const FeatureAssetList = ({
               {!hasAsset && (
                 <div className={classes.currentAssetOuter}>
                   <div className={classes.currentAssetInner}>
-                    <img
-                      src={ImagePreview}
-                      alt='image-default'
-                      className={classes.coverImage}
+                    <div
+                      className={clsx(
+                        classes.coverImage,
+                        classes.imgPlaceholder
+                      )}
                     />
                   </div>
                 </div>
@@ -300,6 +301,8 @@ const useStyles = makeStyles((theme) => ({
     },
     display: 'none'
   },
+
+  imgPlaceholder: { background: theme.palette.background.surface },
 
   featureButton: {
     position: 'absolute',
