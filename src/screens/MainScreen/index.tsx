@@ -58,6 +58,7 @@ import { getCustomer, getSubscription } from 'actions/stripeActions'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import { findProjectLimit } from 'utils/helpers'
 import { SubscriptionItem } from 'components/Subscription/SubscriptionItem'
+import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -324,12 +325,6 @@ const MainScreen = ({
     }
   }
 
-  const renderLoading = () => (
-    <div className={classes.splashScreen}>
-      <AppLoader color={theme.palette.primary.main} />
-    </div>
-  )
-
   useEffect(() => {
     if (!userRestored) {
       getUser(user.id)
@@ -344,7 +339,7 @@ const MainScreen = ({
   }, [])
 
   if (!(userRestored && accountRestored)) {
-    return renderLoading()
+    return <FullScreenLoader />
   }
 
   const handleUpgradeSubscription = () => {
@@ -400,14 +395,6 @@ const MainScreen = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  splashScreen: {
-    display: 'flex',
-    height: '100vh',
-    width: '100vw',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: theme.palette.background.default
-  },
   listIconStyle: {
     marginRight: theme.spacing(5),
     color: theme.palette.primary.light,

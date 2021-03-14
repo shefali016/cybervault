@@ -121,7 +121,7 @@ function* getPortfolio({ portfolioId }: Params) {
     const result: Object | any = yield call(
       getPortfolioRequest,
       portfolioId,
-      account
+      account.id
     )
 
     yield put(getPortfolioSuccess(result.portfolio, result.projectDataList))

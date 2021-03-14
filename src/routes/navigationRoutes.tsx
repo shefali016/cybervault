@@ -9,6 +9,7 @@ import InvoicesClientScreen from '../screens/SharedScreens/InvoicesClientScreen'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 import LandingScreen from 'screens/LandingScreens/HomeScreen'
 import PricingScreen from 'screens/LandingScreens/PricingScreen'
+import PortfolioShareScreen from 'screens/PortfolioShareScreen'
 
 type Props = { isLoggedIn?: boolean }
 
@@ -21,6 +22,11 @@ const Routes = (props: Props): JSX.Element => {
     <Switch>
       <Route path='/' exact component={LandingScreen} />
       <Route path='/pricing' exact component={PricingScreen} />
+      <Route
+        path='/clientInvoices/:accId/:id'
+        component={InvoicesClientScreen}
+      />
+      <Route path='/portfolioShare/:id' component={PortfolioShareScreen} />
       {AuthSwitch}
     </Switch>
   )
@@ -36,7 +42,6 @@ const MainRoutes = () => (
 const AuthRoutes = () => (
   <Switch>
     <Route path='/signup' component={SignUpScreen} />
-    <Route path='/clientInvoices/:accId/:id' component={InvoicesClientScreen} />
     <Route path='/' component={LoginScreen} />
   </Switch>
 )

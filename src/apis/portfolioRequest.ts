@@ -126,12 +126,15 @@ export const updatePortfolioRequest = async (
 
 export const getPortfolioRequest = async (
   portfolioId: string,
-  account: Account
-) => {
+  accountId: string
+): Promise<{
+  portfolio: Portfolio
+  projectDataList: Array<Project>
+}> => {
   const portfolioData: Document | any = await firebase
     .firestore()
     .collection('AccountData')
-    .doc(account.id)
+    .doc(accountId)
     .collection('Portfolio')
     .doc(portfolioId)
     .get()
@@ -141,7 +144,7 @@ export const getPortfolioRequest = async (
   for (let index = 0; index < portfolioProjects.length; index++) {
     const projectId = portfolioProjects[index]
     const projects: Project | any = await getProjectDetailsRequest(
-      account.id,
+      accountId,
       projectId
     )
     projectDataList.push(projects)
@@ -162,6 +165,7 @@ export const sharePortfolio = async (
 ) => {
   const portfolioShare: PortfolioShare = {
     id: generateUid(),
+    accountId: account.id,
     title: portfolio.name,
     description: portfolio.description,
     createdAt: Date.now(),
@@ -202,10 +206,25 @@ export const sharePortfolio = async (
 
   await sendMail(emailPayload)
 
+  return updatePortfolioShare(portfolioShare)
+}
+
+export const loadPortfolioShareData = async () => {
+
+}
+
+export const getPortfolioShare = async (id: string) => {
+  const doc = await firebase
+    .firestore()
+    .collection('PortfolioShares')
+    .doc(id)
+    .get()
+  return doc.data() as PortfolioShare | undefined
+}
+
+export const updatePortfolioShare = async (portfolioShare: PortfolioShare) => {
   return firebase
     .firestore()
-    .collection('AccountData')
-    .doc(account.id)
     .collection('PortfolioShares')
     .doc(portfolioShare.id)
     .set(portfolioShare)

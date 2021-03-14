@@ -187,7 +187,7 @@ const PortfolioFolders = ({
           })
         ) : null
       ) : (
-        <div className={classes.loader}>
+        <div className={classes.screenloader}>
           <ReactLoading
             type={'bubbles'}
             color={theme.palette.primary.main}

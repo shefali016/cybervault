@@ -2,6 +2,14 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    '.splashScreen': {
+      display: 'flex',
+      height: '100vh',
+      width: '100vw',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: theme.palette.background.default
+    },
     '.hiddenSmDown': {
       [theme.breakpoints.down('sm')]: {
         display: 'none !important'

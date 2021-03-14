@@ -348,8 +348,8 @@ export type Project = {
   createdAt?: Date | string
   updatedAt?: Date | string
   id: string
-  videos: Array<MediaObject>
-  images: Array<MediaObject>
+  videos: Array<string>
+  images: Array<string>
   canInvoice: Boolean
   status: ProjectStatus
   featuredImage?: string
@@ -445,10 +445,11 @@ export interface Portfolio {
 
 export interface PortfolioShare {
   id: string
+  accountId: string
+  portfolioId: string
   title: string
   description: string | undefined
   createdAt: number
-  portfolioId: string
   isViewed: boolean
 }
 
