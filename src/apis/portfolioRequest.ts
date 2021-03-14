@@ -8,14 +8,17 @@ import {
   PortfolioFolder,
   PortfolioFolderCache,
   PortfolioShare,
-  Project
+  Project,
+  Account,
+  PortfolioShareMailData,
+  Branding
 } from 'utils/Interface'
 import { generateUid, sortByCreatedAt } from 'utils'
 import { getProjectDetailsRequest } from './projectRequest'
+import { sendMail } from 'apis/mails'
 
-/**
- * @updatePortfoliFolder
- */
+const { domain, template_ids } = require('../config.json')
+
 export const updatePortfolioFolderRequest = async (
   folder: PortfolioFolder,
   account: Account
@@ -34,9 +37,6 @@ export const updatePortfolioFolderRequest = async (
   return folderData
 }
 
-/**
- * @getAllPortfoliFolder
- */
 export const getPortfolioFolderRequest = async (
   account: Account
 ): Promise<{
@@ -93,9 +93,6 @@ export const getPortfolioFolderRequest = async (
   return result
 }
 
-/**
- * @deletePortfoliFolder
- */
 export const deletePortfolioFolderRequest = async (
   folderId: string,
   account: Account
@@ -109,9 +106,6 @@ export const deletePortfolioFolderRequest = async (
     .delete()
 }
 
-/**
- * @updatePortfoli
- */
 export const updatePortfolioRequest = async (
   portfolio: Portfolio,
   account: Account
@@ -130,9 +124,6 @@ export const updatePortfolioRequest = async (
   return portfolioData.id
 }
 
-/**
- * @getPortfolio
- */
 export const getPortfolioRequest = async (
   portfolioId: string,
   account: Account
@@ -162,7 +153,13 @@ export const getPortfolioRequest = async (
   return result
 }
 
-export const sharePortfolio = async (portfolio: Portfolio, email: string) => {
+export const sharePortfolio = async (
+  portfolio: Portfolio,
+  contentDesc: string,
+  account: Account,
+  branding: Branding,
+  email: string
+) => {
   const portfolioShare: PortfolioShare = {
     id: generateUid(),
     title: portfolio.name,
@@ -172,8 +169,44 @@ export const sharePortfolio = async (portfolio: Portfolio, email: string) => {
     isViewed: false
   }
 
-  // const emailPayload: Mail = { to: email, templateId: "" }
+  const {
+    foregroundColor,
+    backgroundColor,
+    text: textColor,
+    buttonBackgroundColor,
+    buttonTextColor
+  } = branding.email
 
+  const link = `${domain}/portfolioShare/${portfolioShare.id}`
+  const sender = account.name
+  const logo = account.settings.watermark || ''
 
+  const emailData: PortfolioShareMailData = {
+    link,
+    foregroundColor,
+    backgroundColor,
+    textColor,
+    buttonBackgroundColor,
+    buttonTextColor,
+    sender,
+    contentDesc,
+    logo
+  }
 
+  const emailPayload: Mail = {
+    type: 'portfolioShare',
+    to: email,
+    templateId: template_ids.portfolio_share,
+    data: emailData
+  }
+
+  await sendMail(emailPayload)
+
+  return firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('PortfolioShares')
+    .doc(portfolioShare.id)
+    .set(portfolioShare)
 }

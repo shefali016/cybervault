@@ -129,6 +129,7 @@ export const createAccount = (
     owner: authUser.uid,
     type: 'creator',
     email: authUser.email,
+    name: '',
     security: {
       twoFactorEnabled: false,
       textMessageVerification: false,
@@ -146,6 +147,7 @@ export const createAccount = (
     },
     branding: {
       email: {
+        foregroundColor: '#fff',
         backgroundColor: '#EFEFEF',
         text: '#000',
         buttonBackgroundColor: '#0f77ff',

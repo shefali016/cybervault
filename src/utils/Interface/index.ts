@@ -241,7 +241,7 @@ export type Account = {
   email: string | null
   type: 'creator' | 'client'
   region?: Region
-  name?: string
+  name: string
   security: {
     twoFactorEnabled: boolean
     textMessageVerification: boolean
@@ -260,6 +260,7 @@ export type Account = {
   }
   branding: {
     email: {
+      foregroundColor: string
       backgroundColor: string
       text: string
       buttonBackgroundColor: string
@@ -470,7 +471,36 @@ export type MailTemplate = {
   type: string
 }
 
+export type PortfolioShareMailData = {
+  foregroundColor: string
+  backgroundColor: string
+  textColor: string
+  buttonBackgroundColor: string
+  buttonTextColor: string
+  link: string
+  sender: string
+  contentDesc: string
+  logo: string
+}
+
 export type Row = {
   key: string
   row: Array<Cell>
+}
+
+export type Branding = {
+  email: {
+    foregroundColor: string
+    backgroundColor: string
+    text: string
+    buttonBackgroundColor: string
+    buttonTextColor: string
+  }
+  portfolio: {
+    backgroundColor: string
+    foregroundColor: string
+    text: string
+    headerGradient1: string
+    headerGradient2: string
+  }
 }

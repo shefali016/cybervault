@@ -125,3 +125,18 @@ export function getPortfolioFailure(error: string) {
     error
   }
 }
+
+export const requestSharePortfolio = (
+  portfolio: Types.Portfolio,
+  contentDesc: string,
+  email: string
+) => ({ type: ActionTypes.SHARE_PORTFOLIO, portfolio, contentDesc, email })
+
+export const sharePortfolioSuccess = () => ({
+  type: ActionTypes.SHARE_PORTFOLIO_SUCCESS
+})
+
+export const sharePortfolioFailure = (error: string) => ({
+  type: ActionTypes.SHARE_PORTFOLIO_FAILURE,
+  error
+})

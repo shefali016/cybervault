@@ -5,6 +5,9 @@ import {
   GET_PORTFOLIO_FOLDER_SUCCESS,
   GET_PORTFOLIO_REQUEST,
   GET_PORTFOLIO_SUCCESS,
+  SHARE_PORTFOLIO,
+  SHARE_PORTFOLIO_FAILURE,
+  SHARE_PORTFOLIO_SUCCESS,
   UPDATE_PORTFOLIO,
   UPDATE_PORTFOLIO_FAILURE,
   UPDATE_PORTFOLIO_FOLDER,
@@ -27,9 +30,14 @@ export type State = {
   getFoldersError: string | null
   portfolio: Types.Portfolio | any
   portfolioProjects: Array<Types.Project>
+
   updatePortfolioLoading: boolean
   updatePortfolioSuccess: boolean
   updatePortfolioError: string | null
+
+  sharePortfolioFailure: null | string
+  sharePortfolioSuccess: boolean
+  sharePortfolioLoading: boolean
 }
 
 export type Action = {
@@ -61,7 +69,11 @@ const initialState = {
 
   updatePortfolioLoading: false,
   updatePortfolioSuccess: false,
-  updatePortfolioError: null
+  updatePortfolioError: null,
+
+  sharePortfolioLoading: false,
+  sharePortfolioFailure: null,
+  sharePortfolioSuccess: false
 }
 
 const getPortfolioFolders = (state: State, action: Action) => ({
@@ -185,6 +197,27 @@ const portfoliosReducer = (state = initialState, action: Action) => {
       return getPrortfolio(state, action)
     case GET_PORTFOLIO_SUCCESS:
       return getPrortfolioSuccess(state, action)
+
+    case SHARE_PORTFOLIO:
+      return {
+        ...state,
+        sharePortfolioLoading: true,
+        sharePortfolioSuccess: false,
+        sharePortfolioFailure: null
+      }
+    case SHARE_PORTFOLIO_SUCCESS:
+      return {
+        ...state,
+        sharePortfolioSuccess: true,
+        sharePortfolioLoading: false
+      }
+    case SHARE_PORTFOLIO_FAILURE:
+      return {
+        ...state,
+        sharePortfolioFailure: action.error,
+        sharePortfolioLoading: false
+      }
+
     default:
       return state
   }

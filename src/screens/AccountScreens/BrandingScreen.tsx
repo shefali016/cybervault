@@ -115,7 +115,11 @@ const BrandingScreen = ({
   const renderEmail = () => (
     <div className={classes.brandingDisplayContainer}>
       <div className={classes.brandingDisplaySection}>
-        <div className={classes.emailHeader}>
+        <div
+          className={classes.emailHeader}
+          style={{
+            backgroundColor: accountUpdate.branding.email.backgroundColor
+          }}>
           <img
             src={
               watermarkFile
@@ -129,32 +133,38 @@ const BrandingScreen = ({
         <div
           className={classes.emailContent}
           style={{
-            backgroundColor: accountUpdate.branding.email.backgroundColor,
-            color: accountUpdate.branding.email.text
+            backgroundColor: accountUpdate.branding.email.backgroundColor
           }}>
-          <Typography variant='body1'>
-            {accountUpdate.name} has shared a portfolio
-          </Typography>
-          <Typography variant='caption'>
-            2 campaigns with video and photo assets
-          </Typography>
-          <div className={classes.emailContentAssets}></div>
-          <div className={classes.emailFooter}>
-            <div
-              className={classes.emailButton}
-              style={{
-                backgroundColor:
-                  accountUpdate.branding.email.buttonBackgroundColor
-              }}>
-              <Typography
-                color={'inherit'}
-                variant='caption'
-                className={classes.emailButtonText}
+          <div
+            className={classes.emailForeground}
+            style={{
+              backgroundColor: accountUpdate.branding.email.foregroundColor,
+              color: accountUpdate.branding.email.text
+            }}>
+            <Typography variant='body1' className='bold'>
+              {accountUpdate.name} has shared a portfolio
+            </Typography>
+            <Typography variant='caption'>
+              2 campaigns with video and photo assets
+            </Typography>
+            <div className={classes.emailContentAssets}></div>
+            <div className={classes.emailFooter}>
+              <div
+                className={classes.emailButton}
                 style={{
-                  color: accountUpdate.branding.email.buttonTextColor
+                  backgroundColor:
+                    accountUpdate.branding.email.buttonBackgroundColor
                 }}>
-                View Portfolio
-              </Typography>
+                <Typography
+                  color={'inherit'}
+                  variant='caption'
+                  className={classes.emailButtonText}
+                  style={{
+                    color: accountUpdate.branding.email.buttonTextColor
+                  }}>
+                  View Portfolio
+                </Typography>
+              </div>
             </div>
           </div>
         </div>
@@ -438,6 +448,14 @@ const BrandingScreen = ({
                   className={classes.colorPicker}
                 />
                 <ColorPicker
+                  color={accountUpdate.branding.email.foregroundColor}
+                  onChange={(color: string) =>
+                    updateAccountEmailBranding('foregroundColor')(color)
+                  }
+                  label={'Foreground color'}
+                  className={classes.colorPicker}
+                />
+                <ColorPicker
                   color={accountUpdate.branding.email.text}
                   onChange={(color: string) =>
                     updateAccountEmailBranding('text')(color)
@@ -537,7 +555,8 @@ const useStyles = makeStyles((theme) => ({
   arrowIcon: { color: theme.palette.grey[300] },
   emailButton: {
     borderRadius: '100px',
-    padding: `${theme.spacing(1.5)}px ${theme.spacing(2)}px`
+    padding: `${theme.spacing(1.5)}px ${theme.spacing(2)}px`,
+    marginTop: theme.spacing(3)
   },
   emailButtonText: { fontWeight: 'bold' },
   emailContentAssets: { display: 'flex', flexDirection: 'column', flex: 1 },
@@ -545,18 +564,20 @@ const useStyles = makeStyles((theme) => ({
   emailHeader: {
     display: 'flex',
     justifyContent: 'center',
-    paddingTop: 10,
-    paddingBottom: 5
+    paddingTop: 10
   },
   emailLogo: { height: 40, width: 'auto' },
   emailContent: {
-    borderRadius: theme.shape.borderRadius,
     flex: 1,
-    margin: theme.spacing(4),
-    marginTop: theme.spacing(1),
     padding: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     display: 'flex',
     flexDirection: 'column'
+  },
+  emailForeground: {
+    padding: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    flex: 1
   },
   emailHeaderLogo: {},
 

@@ -99,6 +99,14 @@ const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
         error:
           !!portfolio.updatePortfolioError &&
           'Failed to create porfolio. Please try again or contact support.'
+      },
+      {
+        error:
+          !!portfolio.sharePortfolioError &&
+          'Failed to share portfolio. Please try again or contact support',
+        success:
+          !!portfolio.sharePortfolioSuccess &&
+          "Your portfolio has been shared. You will be notified when it's viewed"
       }
     ]
 

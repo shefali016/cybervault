@@ -7,7 +7,8 @@ import {
   getPortfolioFolderRequest,
   deletePortfolioFolderRequest,
   updatePortfolioRequest,
-  getPortfolioRequest
+  getPortfolioRequest,
+  sharePortfolio
 } from '../apis/portfolioRequest'
 import {
   deletePortfolioFolderFailure,
@@ -17,22 +18,27 @@ import {
   deletePortfolioFolderSuccess,
   updatePortfolioSuccess,
   updatePortfolioFailure,
-  getPortfolioSuccess
+  getPortfolioSuccess,
+  sharePortfolioFailure,
+  sharePortfolioSuccess
 } from '../actions/portfolioActions'
 import history from 'services/history'
 import { PortfolioFolderCache } from '../utils/Interface'
-type UpdateParams = {
+
+type Params = {
   type: string
   account: Account
   folder: Types.PortfolioFolder
   folderId: string
   portfolio: Types.Portfolio
   portfolioId: string
+  contentDesc: string
+  email: string
 }
 
 function* getPortfolioFolders() {
   try {
-    const account: Account = yield select(
+    const account: Types.Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     const result = yield call(getPortfolioFolderRequest, account)
@@ -52,9 +58,9 @@ function* getPortfolioFolders() {
   }
 }
 
-function* updatePortfolioFolder({ folder }: UpdateParams) {
+function* updatePortfolioFolder({ folder }: Params) {
   try {
-    const account: Account = yield select(
+    const account: Types.Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     const folderData = yield call(updatePortfolioFolderRequest, folder, account)
@@ -65,9 +71,9 @@ function* updatePortfolioFolder({ folder }: UpdateParams) {
   }
 }
 
-function* deletePortfolioFolder({ folderId }: UpdateParams) {
+function* deletePortfolioFolder({ folderId }: Params) {
   try {
-    const account: Account = yield select(
+    const account: Types.Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     yield call(deletePortfolioFolderRequest, folderId, account)
@@ -78,9 +84,9 @@ function* deletePortfolioFolder({ folderId }: UpdateParams) {
   }
 }
 
-function* updatePortfolio({ portfolio }: UpdateParams) {
+function* updatePortfolio({ portfolio }: Params) {
   try {
-    const account: Account = yield select(
+    const account: Types.Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     const folderCache: PortfolioFolderCache = yield select(
@@ -107,9 +113,9 @@ function* updatePortfolio({ portfolio }: UpdateParams) {
   }
 }
 
-function* getPortfolio({ portfolioId }: UpdateParams) {
+function* getPortfolio({ portfolioId }: Params) {
   try {
-    const account: Account = yield select(
+    const account: Types.Account = yield select(
       (state: ReduxState) => state.auth.account
     )
     const result: Object | any = yield call(
@@ -124,6 +130,25 @@ function* getPortfolio({ portfolioId }: UpdateParams) {
   }
 }
 
+function* sharePortfolioSaga({ portfolio, contentDesc, email }: Params) {
+  try {
+    const account: Types.Account = yield select(
+      (state: ReduxState) => state.auth.account
+    )
+    yield call(
+      sharePortfolio,
+      portfolio,
+      contentDesc,
+      account,
+      account.branding,
+      email
+    )
+    yield put(sharePortfolioSuccess())
+  } catch (error) {
+    yield put(sharePortfolioFailure(error || 'default'))
+  }
+}
+
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.UPDATE_PORTFOLIO_FOLDER, updatePortfolioFolder)
   yield takeLatest(ActionTypes.DELETE_PORTFOLIO_FOLDER, deletePortfolioFolder)
@@ -133,6 +158,7 @@ function* watchGetRequest() {
   )
   yield takeLatest(ActionTypes.UPDATE_PORTFOLIO, updatePortfolio)
   yield takeLatest(ActionTypes.GET_PORTFOLIO_REQUEST, getPortfolio)
+  yield takeLatest(ActionTypes.SHARE_PORTFOLIO, sharePortfolioSaga)
 }
 
 export default function* sagas() {

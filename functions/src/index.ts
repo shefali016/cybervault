@@ -70,7 +70,7 @@ export const sendEmail = functions.firestore
     try {
       let newData = change.after.data()
       let oldData = change.before.data()
-      if (!oldData && newData?.to && newData?.templateId) {
+      if (!oldData && newData && newData.to && newData.templateId) {
         const msg = {
           to: newData.to,
           from: functions.config().from_email.key,

@@ -1,5 +1,8 @@
-import { getPortfolioRequest } from 'actions/portfolioActions'
-import { Fragment, useEffect, useState, useMemo } from 'react'
+import {
+  getPortfolioRequest,
+  requestSharePortfolio
+} from 'actions/portfolioActions'
+import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { Portfolio, Project, Account, User, Client } from 'utils/Interface'
@@ -28,6 +31,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { PortfolioModal } from 'components/Portfolio/PortfolioModal'
 import { updatePortfolioRequest } from 'actions/portfolioActions'
+import { sharePortfolio } from 'apis/portfolioRequest'
+import { PortfolioShareModal } from 'components/Portfolio/PortfolioShareModal'
 
 type StateProps = {
   portfolio: Portfolio
@@ -39,11 +44,18 @@ type StateProps = {
   updatePortfolioSuccess: boolean
   clients: Array<Client>
   projects: Array<Project>
+  sharePortfolioSuccess: boolean
+  sharePortfolioLoading: boolean
 }
 
 type DispatchProps = {
   updatePortfolio: (portfolio: Portfolio) => void
   getPortfolio: (portfolioId: string) => void
+  sharePortfolio: (
+    portfolio: Portfolio,
+    contentDesc: string,
+    email: string
+  ) => void
 }
 
 type initialState = {
@@ -70,7 +82,10 @@ const PortfolioSingleScreen = ({
   updatePortfolioLoading,
   updatePortfolioError,
   updatePortfolioSuccess,
-  updatePortfolio
+  updatePortfolio,
+  sharePortfolio,
+  sharePortfolioSuccess,
+  sharePortfolioLoading
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -96,6 +111,8 @@ const PortfolioSingleScreen = ({
     editingProjects: false
   })
 
+  const [shareModalOpen, setShareModalOpen] = useState(false)
+
   const handleChangeProjects = () => {
     setModalState({ open: true, editingProjects: true })
   }
@@ -105,6 +122,14 @@ const PortfolioSingleScreen = ({
   }
 
   const handleDelete = () => {}
+
+  const prepareShare = () => {
+    setShareModalOpen(true)
+  }
+
+  const handleShare = (email: string, contentDesc: string) => {
+    sharePortfolio(portfolio, contentDesc, email)
+  }
 
   const popoverMenuItems: Array<MenuItem> = [
     {
@@ -281,7 +306,8 @@ const PortfolioSingleScreen = ({
           gradiant1: headerGradient1,
           gradiant2: headerGradient2,
           width,
-          popoverMenuItems
+          popoverMenuItems,
+          onShare: prepareShare
         }}
       />
 
@@ -329,6 +355,14 @@ const PortfolioSingleScreen = ({
         portfolio={portfolio}
         isEditingProject={modalState.editingProjects}
       />
+
+      <PortfolioShareModal
+        open={shareModalOpen}
+        onRequestClose={() => setShareModalOpen(false)}
+        onShare={handleShare}
+        success={sharePortfolioSuccess}
+        loading={sharePortfolioLoading}
+      />
     </div>
   )
 }
@@ -338,7 +372,9 @@ const mapStateToProps = (state: ReduxState): StateProps => {
     updatePortfolioError,
     updatePortfolioSuccess,
     portfolioProjects,
-    portfolio
+    portfolio,
+    sharePortfolioSuccess,
+    sharePortfolioLoading
   } = state.portfolio
 
   return {
@@ -350,7 +386,9 @@ const mapStateToProps = (state: ReduxState): StateProps => {
     updatePortfolioError,
     updatePortfolioSuccess,
     projects: state.project.allProjectsData,
-    clients: state.clients.clientsData
+    clients: state.clients.clientsData,
+    sharePortfolioSuccess,
+    sharePortfolioLoading
   }
 }
 const mapDispatchToProps = (dispatch: any): DispatchProps => ({
@@ -358,7 +396,9 @@ const mapDispatchToProps = (dispatch: any): DispatchProps => ({
     return dispatch(getPortfolioRequest(portfolioId))
   },
   updatePortfolio: (portfolio: Portfolio) =>
-    dispatch(updatePortfolioRequest(portfolio))
+    dispatch(updatePortfolioRequest(portfolio)),
+  sharePortfolio: (portfolio: Portfolio, contentDesc: string, email: string) =>
+    dispatch(requestSharePortfolio(portfolio, contentDesc, email))
 })
 
 export default connect(
@@ -375,6 +415,7 @@ type ProjectSelectBarProps = {
   gradiant2: string
   width: any
   popoverMenuItems?: Array<MenuItem>
+  onShare: () => void
 }
 
 const ProjectSelectBar = ({
@@ -385,7 +426,8 @@ const ProjectSelectBar = ({
   gradiant1,
   gradiant2,
   width,
-  popoverMenuItems
+  popoverMenuItems,
+  onShare
 }: ProjectSelectBarProps) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -494,7 +536,9 @@ const ProjectSelectBar = ({
 
         <div className={clsx('row', 'hiddenSmDown')}>
           {renderPopover({ style: { marginRight: theme.spacing(2) } })}
-          <AppButton className={classes.shareButton}>Share</AppButton>
+          <AppButton onClick={onShare} className={classes.shareButton}>
+            Share
+          </AppButton>
         </div>
       </div>
 
@@ -517,7 +561,9 @@ const ProjectSelectBar = ({
             justifyContent: 'center',
             marginTop: theme.spacing(2)
           }}>
-          <AppButton className={classes.shareButton}>Share</AppButton>
+          <AppButton className={classes.shareButton} onClick={onShare}>
+            Share
+          </AppButton>
           {renderPopover({
             style: { position: 'absolute', right: theme.spacing(2) }
           })}
