@@ -36,7 +36,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     transition: theme.transitions.create(['height', 'padding'], {
       duration: 400,
       easing: theme.transitions.easing.easeOut

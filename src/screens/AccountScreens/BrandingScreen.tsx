@@ -20,6 +20,7 @@ import LeftArrowIcon from '@material-ui/icons/ArrowBackIos'
 import RightArrowIcon from '@material-ui/icons/ArrowForwardIos'
 import defaultProfileIcon from '../../assets/default_user.png'
 import { Dot } from '../../components/Common/Dot'
+import { getTextColor } from 'utils/helpers'
 
 type StateProps = {
   account: Account
@@ -239,151 +240,166 @@ const BrandingScreen = ({
     )
   }
 
-  const renderPortfolio = () => (
-    <div className={classes.brandingDisplayContainer}>
-      <div
-        className={classes.brandingDisplaySection}
-        style={{
-          backgroundColor: accountUpdate.branding.portfolio.backgroundColor
-        }}>
-        <div className={classes.portfolioHeader}>
-          <CreatorCloudIcon className={classes.portfolioHeaderIcon} />
-          <div className={classes.portfolioHeaderTitleContainer}>
-            <div className={classes.portfolioHeaderImageWrapper}>
+  const renderPortfolio = () => {
+    const headerTextColor =
+      getTextColor(accountUpdate.branding.portfolio.headerGradient1) === 'dark'
+        ? '#fff'
+        : '#000'
+    return (
+      <div className={classes.brandingDisplayContainer}>
+        <div
+          className={classes.brandingDisplaySection}
+          style={{
+            backgroundColor: accountUpdate.branding.portfolio.backgroundColor
+          }}>
+          <div className={classes.portfolioHeader}>
+            <CreatorCloudIcon className={classes.portfolioHeaderIcon} />
+            <div className={classes.portfolioHeaderTitleContainer}>
+              <div className={classes.portfolioHeaderImageWrapper}>
+                <img
+                  src={
+                    'https://www.kinaxis.com/sites/default/files/blog/2015/09/iStock_000049353450_Small.jpg'
+                  }
+                  height='25px'
+                  width='auto'
+                  className={classes.portfolioHeaderImage}
+                  alt={'portfolioHeaderImage'}
+                />
+              </div>
+              <Typography className={classes.portfolioHeaderTitle}>
+                Technology Portfolio - {accountUpdate.name} - 2021
+              </Typography>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                paddingRight: theme.spacing(1)
+              }}>
+              <NotificationIcon className={classes.notificationIcon} />
               <img
-                src={
-                  'https://www.kinaxis.com/sites/default/files/blog/2015/09/iStock_000049353450_Small.jpg'
-                }
-                height='25px'
-                width='auto'
-                className={classes.portfolioHeaderImage}
-                alt={'portfolioHeaderImage'}
+                src={user.avatar ? user.avatar : defaultProfileIcon}
+                style={{ borderRadius: 20, height: 25, width: 25 }}
+                alt={'defaultProfileIcon'}
               />
             </div>
-            <Typography className={classes.portfolioHeaderTitle}>
-              Technology Portfolio - {accountUpdate.name} - 2021
+          </div>
+          <div
+            className={classes.portfolioBanner}
+            style={{
+              display: 'flex',
+              background: `linear-gradient(90deg, ${accountUpdate.branding.portfolio.headerGradient1},  ${accountUpdate.branding.portfolio.headerGradient2})`,
+              minHeight: 35,
+              width: '100%',
+              paddingLeft: theme.spacing(4),
+              alignItems: 'center',
+              color: headerTextColor
+            }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                position: 'relative',
+                paddingLeft: 15,
+                paddingRight: 15
+              }}>
+              <Typography
+                className={classes.portfolioBannerText}
+                color='inherit'>
+                Apple iPhone 12 Promo
+              </Typography>
+              <Dot
+                color={headerTextColor}
+                style={{ position: 'absolute', bottom: -5 }}
+              />
+            </div>
+            <Typography
+              className={classes.portfolioBannerText}
+              style={{ paddingLeft: 15, paddingRight: 15 }}
+              color='inherit'>
+              iPad Air Commercial '16
             </Typography>
           </div>
           <div
+            className={classes.portfolioContent}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              paddingRight: theme.spacing(1)
+              backgroundColor: accountUpdate.branding.portfolio.foregroundColor,
+              color: accountUpdate.branding.portfolio.text
             }}>
-            <NotificationIcon className={classes.notificationIcon} />
-            <img
-              src={user.avatar ? user.avatar : defaultProfileIcon}
-              style={{ borderRadius: 20, height: 25, width: 25 }}
-              alt={'defaultProfileIcon'}
-            />
-          </div>
-        </div>
-        <div
-          className={classes.portfolioBanner}
-          style={{
-            display: 'flex',
-            background: `linear-gradient(90deg, ${accountUpdate.branding.portfolio.headerGradient1},  ${accountUpdate.branding.portfolio.headerGradient2})`,
-            minHeight: 35,
-            width: '100%',
-            paddingLeft: theme.spacing(4),
-            alignItems: 'center'
-          }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              position: 'relative',
-              paddingLeft: 15,
-              paddingRight: 15
-            }}>
-            <Typography className={classes.portfolioBannerText}>
-              Apple iPhone 12 Promo
+            <Typography variant='h6' className={classes.portfolioHeaderText}>
+              iPhone 12 Promo Campaign
             </Typography>
-            <Dot color='#fff' style={{ position: 'absolute', bottom: -5 }} />
-          </div>
-          <Typography
-            className={classes.portfolioBannerText}
-            style={{ paddingLeft: 15, paddingRight: 15 }}>
-            iPad Air Commercial '16
-          </Typography>
-        </div>
-        <div
-          className={classes.portfolioContent}
-          style={{
-            backgroundColor: accountUpdate.branding.portfolio.foregroundColor,
-            color: accountUpdate.branding.portfolio.text
-          }}>
-          <Typography variant='h6' className={classes.portfolioHeaderText}>
-            iPhone 12 Promo Campaign
-          </Typography>
-          <Typography
-            variant='subtitle1'
-            className={classes.portfolioSubheaderText}>
-            Apple Inc.
-          </Typography>
+            <Typography
+              variant='subtitle1'
+              className={classes.portfolioSubheaderText}>
+              Apple Inc.
+            </Typography>
 
-          <div
-            style={{
-              marginBottom: theme.spacing(2),
-              marginTop: theme.spacing(2)
-            }}>
+            <div
+              style={{
+                marginBottom: theme.spacing(2),
+                marginTop: theme.spacing(2)
+              }}>
+              <Typography
+                variant='body1'
+                className={classes.portfolioTitleText}>
+                Campaign Description
+              </Typography>
+              <Typography variant='body1' className={classes.portfolioBodyText}>
+                Create briefs and documents used by designers, writers, artists,
+                and agencies in the production of everything from graphic design
+                and copy to websites and commercials.
+              </Typography>
+            </div>
+
             <Typography variant='body1' className={classes.portfolioTitleText}>
-              Campaign Description
+              Project Details
             </Typography>
-            <Typography variant='body1' className={classes.portfolioBodyText}>
-              Create briefs and documents used by designers, writers, artists,
-              and agencies in the production of everything from graphic design
-              and copy to websites and commercials.
-            </Typography>
-          </div>
 
-          <Typography variant='body1' className={classes.portfolioTitleText}>
-            Project Details
-          </Typography>
-
-          <div
-            style={{
-              display: 'flex',
-              marginBottom: theme.spacing(0.5)
-            }}>
-            <div style={{ minWidth: 120 }}>
-              <Typography
-                variant='body1'
-                style={{ marginRight: 10 }}
-                className={classes.portfolioBodyText}>
-                Campaign Objective:
+            <div
+              style={{
+                display: 'flex',
+                marginBottom: theme.spacing(0.5)
+              }}>
+              <div style={{ minWidth: 120 }}>
+                <Typography
+                  variant='body1'
+                  style={{ marginRight: 10 }}
+                  className={classes.portfolioBodyText}>
+                  Campaign Objective:
+                </Typography>
+              </div>
+              <Typography variant='body1' className={classes.portfolioBodyText}>
+                Brand awareness for new product releases
               </Typography>
             </div>
-            <Typography variant='body1' className={classes.portfolioBodyText}>
-              Brand awareness for new product releases
-            </Typography>
-          </div>
 
-          <div style={{ display: 'flex' }}>
-            <div style={{ minWidth: 120 }}>
-              <Typography
-                variant='body1'
-                style={{ marginRight: 10 }}
-                className={classes.portfolioBodyText}
-                noWrap={true}>
-                Product Summary:
+            <div style={{ display: 'flex' }}>
+              <div style={{ minWidth: 120 }}>
+                <Typography
+                  variant='body1'
+                  style={{ marginRight: 10 }}
+                  className={classes.portfolioBodyText}
+                  noWrap={true}>
+                  Product Summary:
+                </Typography>
+              </div>
+              <Typography variant='body1' className={classes.portfolioBodyText}>
+                Create briefs and documents used by designers, writers, artists,
+                and agencies in the production of everything from graphic design
+                and copy to websites and commercials.
               </Typography>
             </div>
-            <Typography variant='body1' className={classes.portfolioBodyText}>
-              Create briefs and documents used by designers, writers, artists,
-              and agencies in the production of everything from graphic design
-              and copy to websites and commercials.
-            </Typography>
-          </div>
 
-          <div className={classes.portfolioSwiperContainer}>
-            {renderPortfolioSwiper()}
+            <div className={classes.portfolioSwiperContainer}>
+              {renderPortfolioSwiper()}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <div className={clsx('container', classes.container)}>
@@ -629,7 +645,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10
   },
   portfolioBanner: {},
-  portfolioBannerText: { color: '#fff', fontSize: 10 },
+  portfolioBannerText: { fontSize: 10 },
   portfolioHeaderText: {
     fontSize: 16,
     fontWeight: 'bold'
