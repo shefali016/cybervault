@@ -46,157 +46,165 @@ const SecurityScreen = ({ account }: Props) => {
 
   return (
     <div className={'screenContainer'}>
-      {accounthasPassword && (
-        <Section
-          title='Password Reset'
-          style={{ marginBottom: theme.spacing(4) }}>
-          <div className={'sectionInner'}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>
-                    Change your login password
-                  </Typography>
-                  <Typography variant='caption'>
-                    Reset or change your existing password
-                  </Typography>
-                </div>,
-                <GradiantButton onClick={() => setPasswordModalOpen(true)}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      Change Password
-                    </Typography>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          {accounthasPassword && (
+            <Section
+              title='Password Reset'
+              style={{ marginBottom: theme.spacing(4) }}>
+              <div className={'sectionInner'}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>
+                        Change your login password
+                      </Typography>
+                      <Typography variant='caption'>
+                        Reset or change your existing password
+                      </Typography>
+                    </div>,
+                    <GradiantButton onClick={() => setPasswordModalOpen(true)}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          Change Password
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+                <Modal
+                  open={passwordModalOpen}
+                  onRequestClose={closePasswordModal}>
+                  <div className='modalContent'>
+                    <CloseButton
+                      onClick={closePasswordModal}
+                      style={{
+                        position: POSITION_ABSOLUTE,
+                        top: 10,
+                        right: 10
+                      }}
+                    />
+                    <ResetPassword loading={authData.changePasswordLoading} />
                   </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-            <Modal open={passwordModalOpen} onRequestClose={closePasswordModal}>
-              <div className='modalContent'>
-                <CloseButton
-                  onClick={closePasswordModal}
-                  style={{
-                    position: POSITION_ABSOLUTE,
-                    top: 10,
-                    right: 10
-                  }}
-                />
-                <ResetPassword loading={authData.changePasswordLoading} />
+                </Modal>
               </div>
-            </Modal>
-          </div>
-        </Section>
-      )}
+            </Section>
+          )}
 
-      <Section
-        title={'Two Factor Verification'}
-        style={{ marginBottom: theme.spacing(4) }}>
-        <div>
-          <div
-            className={'sectionInner'}
+          <Section
+            title={'Two Factor Verification'}
             style={{ marginBottom: theme.spacing(4) }}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>
-                    Authenticator Verification
-                  </Typography>
-                  <Typography variant='caption'>
-                    Enter a code provided by your authentication app along with
-                    your password.
-                  </Typography>
-                </div>,
-                <GradiantButton
-                  onClick={handleToggleTwoFactor}
-                  inActive={!security?.twoFactorEnabled}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      {!!security?.twoFactorEnabled ? 'Enabled' : 'Enable'}
-                    </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
+            <div>
+              <div
+                className={'sectionInner'}
+                style={{ marginBottom: theme.spacing(4) }}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>
+                        Authenticator Verification
+                      </Typography>
+                      <Typography variant='caption'>
+                        Enter a code provided by your authentication app along
+                        with your password.
+                      </Typography>
+                    </div>,
+                    <GradiantButton
+                      onClick={handleToggleTwoFactor}
+                      inActive={!security?.twoFactorEnabled}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          {!!security?.twoFactorEnabled ? 'Enabled' : 'Enable'}
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
 
-          <div
-            className={'sectionInner'}
+              <div
+                className={'sectionInner'}
+                style={{ marginBottom: theme.spacing(4) }}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>
+                        Text Message Verification
+                      </Typography>
+                      <Typography variant='caption'>
+                        Receive a six digit code by text message to enter along
+                        with your password.
+                      </Typography>
+                    </div>,
+                    <GradiantButton
+                      onClick={handleToggleTwoFactor}
+                      inActive={!security?.textMessageVerification}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          {!!security?.textMessageVerification
+                            ? 'Enabled'
+                            : 'Enable'}
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
+
+              <div className={'sectionInner'}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>
+                        Security Question
+                      </Typography>
+                      <Typography variant='caption'>
+                        Confirm your identity with a question only you know
+                        answer to.
+                      </Typography>
+                    </div>,
+                    <GradiantButton
+                      onClick={handleToggleTwoFactor}
+                      inActive={!security?.securityQuestion?.question}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          {!!security?.securityQuestion?.question
+                            ? 'Enabled'
+                            : 'Enable'}
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section
+            title='Set Up Recovery Email'
             style={{ marginBottom: theme.spacing(4) }}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>
-                    Text Message Verification
-                  </Typography>
-                  <Typography variant='caption'>
-                    Receive a six digit code by text message to enter along with
-                    your password.
-                  </Typography>
-                </div>,
-                <GradiantButton
-                  onClick={handleToggleTwoFactor}
-                  inActive={!security?.textMessageVerification}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      {!!security?.textMessageVerification
-                        ? 'Enabled'
-                        : 'Enable'}
+            <div className={'sectionInner'}>
+              <ResponsiveRow>
+                {[
+                  <div style={{ flex: 1 }}>
+                    <Typography variant='subtitle1'>
+                      Second Email Address
                     </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-
-          <div className={'sectionInner'}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>Security Question</Typography>
-                  <Typography variant='caption'>
-                    Confirm your identity with a question only you know answer
-                    to.
-                  </Typography>
-                </div>,
-                <GradiantButton
-                  onClick={handleToggleTwoFactor}
-                  inActive={!security?.securityQuestion?.question}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      {!!security?.securityQuestion?.question
-                        ? 'Enabled'
-                        : 'Enable'}
+                    <Typography variant='caption'>
+                      Use a recovery email to reset forgotten passwords.
                     </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
+                  </div>,
+                  <GradiantButton>
+                    <div className={'row'}>
+                      <Typography style={{ marginRight: 5 }}>Set Up</Typography>
+                    </div>
+                  </GradiantButton>
+                ]}
+              </ResponsiveRow>
+            </div>
+          </Section>
         </div>
-      </Section>
-
-      <Section
-        title='Set Up Recovery Email'
-        style={{ marginBottom: theme.spacing(4) }}>
-        <div className={'sectionInner'}>
-          <ResponsiveRow>
-            {[
-              <div style={{ flex: 1 }}>
-                <Typography variant='subtitle1'>
-                  Second Email Address
-                </Typography>
-                <Typography variant='caption'>
-                  Use a recovery email to reset forgotten passwords.
-                </Typography>
-              </div>,
-              <GradiantButton>
-                <div className={'row'}>
-                  <Typography style={{ marginRight: 5 }}>Set Up</Typography>
-                </div>
-              </GradiantButton>
-            ]}
-          </ResponsiveRow>
-        </div>
-      </Section>
+      </div>
     </div>
   )
 }

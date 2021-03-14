@@ -105,106 +105,116 @@ const ManageAccountScreen = ({
   }
 
   return (
-    <div className={clsx('container', classes.container)}>
-      <Section title={'Invoicing Currency'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <Typography variant='subtitle1'>
-              Choose the currency in which you are invoicing clients
-            </Typography>
-            <Typography variant='caption'>
-              It is recommended to choose the currency from the region you
-              reside.
-            </Typography>
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className={'responsivePadding'}>
+          <div className={'col'}>
+            <Section title={'Invoicing Currency'} className={classes.section}>
+              <div className={classes.sectionInner}>
+                <div className={classes.sectionTextArea}>
+                  <Typography variant='subtitle1'>
+                    Choose the currency in which you are invoicing clients
+                  </Typography>
+                  <Typography variant='caption'>
+                    It is recommended to choose the currency from the region you
+                    reside.
+                  </Typography>
+                </div>
+                <RegionSelect
+                  showCurrency={true}
+                  onChange={(region: Region) => updateAccountRegion(region)}
+                  regionCode={accountUpdate.region?.code}
+                />
+              </div>
+            </Section>
+
+            <Section title={'Sharing Permissions'} className={classes.section}>
+              <div className={classes.sectionInner}>
+                <div className={classes.sectionTextArea}>
+                  <Typography variant='subtitle1'>
+                    Clients can share project preview links with others
+                  </Typography>
+                  <Typography variant='caption'>
+                    Viewers can also download a previewed watermarked version
+                  </Typography>
+                </div>
+                <SharingPrivacySelect
+                  onChange={(sharingPrivacy: SharingPrivacy) =>
+                    updateAccountSettings('sharingPrivacy')(sharingPrivacy)
+                  }
+                  privacy={accountUpdate.settings?.sharingPrivacy}
+                />
+              </div>
+            </Section>
+
+            <Section title={'Watermark Settings'}>
+              <div>
+                <div className={classes.watermarkPickerContainer}>
+                  <WatermarkPicker
+                    url={
+                      watermarkFile
+                        ? URL.createObjectURL(watermarkFile)
+                        : accountUpdate.settings?.watermark
+                    }
+                    onChange={handleWatermarkChange}
+                    className={classes.watermarkPicker}
+                  />
+                  <Typography
+                    variant={'body1'}
+                    className={classes.watermarkPickerTitle}>
+                    Change logo
+                  </Typography>
+                </div>
+
+                <div
+                  className={classes.sectionInner}
+                  style={{ marginBottom: theme.spacing(4) }}>
+                  <div className={classes.sectionTextArea}>
+                    <Typography variant='subtitle1'>
+                      Watermark appearance
+                    </Typography>
+                    <Typography variant='caption'>
+                      Choose the style in which assets are watermaked
+                    </Typography>
+                  </div>
+                  <WatermarkStyleSelect
+                    onChange={(watermarkStyle: WatermarkStyle) =>
+                      updateAccountSettings('watermarkStyle')(watermarkStyle)
+                    }
+                    watermarkStyle={accountUpdate.settings?.watermarkStyle}
+                  />
+                </div>
+
+                <div className={classes.sectionInner}>
+                  <div className={classes.sectionTextArea}>
+                    <Typography variant='subtitle1'>
+                      Require watermark on all external links
+                    </Typography>
+                    <Typography variant='caption'>
+                      Visible on project previews and portfolio sharing
+                    </Typography>
+                  </div>
+                  <WatermarkControlSelect
+                    onChange={(watermarkControl: WatermarkControl) =>
+                      updateAccountSettings('watermarkControl')(
+                        watermarkControl
+                      )
+                    }
+                    watermarkControl={accountUpdate.settings?.watermarkControl}
+                  />
+                </div>
+              </div>
+            </Section>
+
+            <GradiantButton
+              className={classes.saveButton}
+              onClick={handleSave}
+              loading={loading}>
+              <Typography variant='button'>Save</Typography>
+            </GradiantButton>
           </div>
-          <RegionSelect
-            showCurrency={true}
-            onChange={(region: Region) => updateAccountRegion(region)}
-            regionCode={accountUpdate.region?.code}
-          />
         </div>
-      </Section>
-
-      <Section title={'Sharing Permissions'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <Typography variant='subtitle1'>
-              Clients can share project preview links with others
-            </Typography>
-            <Typography variant='caption'>
-              Viewers can also download a previewed watermarked version
-            </Typography>
-          </div>
-          <SharingPrivacySelect
-            onChange={(sharingPrivacy: SharingPrivacy) =>
-              updateAccountSettings('sharingPrivacy')(sharingPrivacy)
-            }
-            privacy={accountUpdate.settings?.sharingPrivacy}
-          />
-        </div>
-      </Section>
-
-      <Section title={'Watermark Settings'}>
-        <div>
-          <div className={classes.watermarkPickerContainer}>
-            <WatermarkPicker
-              url={
-                watermarkFile
-                  ? URL.createObjectURL(watermarkFile)
-                  : accountUpdate.settings?.watermark
-              }
-              onChange={handleWatermarkChange}
-              className={classes.watermarkPicker}
-            />
-            <Typography
-              variant={'body1'}
-              className={classes.watermarkPickerTitle}>
-              Change logo
-            </Typography>
-          </div>
-
-          <div
-            className={classes.sectionInner}
-            style={{ marginBottom: theme.spacing(4) }}>
-            <div className={classes.sectionTextArea}>
-              <Typography variant='subtitle1'>Watermark appearance</Typography>
-              <Typography variant='caption'>
-                Choose the style in which assets are watermaked
-              </Typography>
-            </div>
-            <WatermarkStyleSelect
-              onChange={(watermarkStyle: WatermarkStyle) =>
-                updateAccountSettings('watermarkStyle')(watermarkStyle)
-              }
-              watermarkStyle={accountUpdate.settings?.watermarkStyle}
-            />
-          </div>
-
-          <div className={classes.sectionInner}>
-            <div className={classes.sectionTextArea}>
-              <Typography variant='subtitle1'>
-                Require watermark on all external links
-              </Typography>
-              <Typography variant='caption'>
-                Visible on project previews and portfolio sharing
-              </Typography>
-            </div>
-            <WatermarkControlSelect
-              onChange={(watermarkControl: WatermarkControl) =>
-                updateAccountSettings('watermarkControl')(watermarkControl)
-              }
-              watermarkControl={accountUpdate.settings?.watermarkControl}
-            />
-          </div>
-        </div>
-      </Section>
-
-      <GradiantButton
-        className={classes.saveButton}
-        onClick={handleSave}
-        loading={loading}>
-        <Typography variant='button'>Save</Typography>
-      </GradiantButton>
+      </div>
     </div>
   )
 }
@@ -248,6 +258,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4)
   },
   saveButton: {
+    alignSelf: 'center',
     marginTop: theme.spacing(5),
     paddingTop: 10,
     paddingBottom: 10,

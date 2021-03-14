@@ -402,167 +402,188 @@ const BrandingScreen = ({
   }
 
   return (
-    <div className={clsx('container', classes.container)}>
-      <Section title={'Account Appearance'} className={classes.section}>
-        <div className={classes.watermarkPickerOuter}>
-          <div className={classes.watermarkPickerContainer}>
-            <div className={classes.watermarkPickerInner}>
-              <WatermarkPicker
-                url={
-                  watermarkFile
-                    ? URL.createObjectURL(watermarkFile)
-                    : accountUpdate.settings?.watermark
-                }
-                onChange={handleWatermarkChange}
-                className={classes.watermarkPicker}
-              />
-              <Typography
-                variant={'body1'}
-                className={classes.watermarkPickerTitle}>
-                Change logo
-              </Typography>
-            </div>
-            <EditModal
-              onSave={(val: any) => {
-                setAccountUpdate((account) => ({ ...account, ...val }))
-                handleSave({ ...account, ...val })
-              }}
-              className={classes.accountNameEditor}
-              editItems={[
-                {
-                  title: 'Account Name',
-                  value: accountUpdate.name,
-                  key: 'name',
-                  placeholder: 'Enter account name'
-                }
-              ]}
-            />
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <div className={'col'}>
+            <Section title={'Account Appearance'} className={classes.section}>
+              <div className={classes.watermarkPickerOuter}>
+                <div className={classes.watermarkPickerContainer}>
+                  <div className={classes.watermarkPickerInner}>
+                    <WatermarkPicker
+                      url={
+                        watermarkFile
+                          ? URL.createObjectURL(watermarkFile)
+                          : accountUpdate.settings?.watermark
+                      }
+                      onChange={handleWatermarkChange}
+                      className={classes.watermarkPicker}
+                    />
+                    <Typography
+                      variant={'body1'}
+                      className={classes.watermarkPickerTitle}>
+                      Change logo
+                    </Typography>
+                  </div>
+                  <EditModal
+                    onSave={(val: any) => {
+                      setAccountUpdate((account) => ({ ...account, ...val }))
+                      handleSave({ ...account, ...val })
+                    }}
+                    className={classes.accountNameEditor}
+                    editItems={[
+                      {
+                        title: 'Account Name',
+                        value: accountUpdate.name,
+                        key: 'name',
+                        placeholder: 'Enter account name'
+                      }
+                    ]}
+                  />
+                </div>
+              </div>
+            </Section>
+
+            <Section title={'Branding Appearance'}>
+              <div>
+                <div
+                  className={clsx(
+                    classes.emailNotifications,
+                    classes.sectionInner
+                  )}>
+                  <Typography variant={'h6'}>
+                    Customize your email notifications
+                  </Typography>
+                  <Typography
+                    variant={'caption'}
+                    style={{ marginBottom: theme.spacing(2) }}>
+                    Customize your email notifications
+                  </Typography>
+                  <div className={classes.colorPickerContainer}>
+                    <div>
+                      <ColorPicker
+                        color={accountUpdate.branding.email.backgroundColor}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('backgroundColor')(color)
+                        }
+                        label={'Background color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.email.foregroundColor}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('foregroundColor')(color)
+                        }
+                        label={'Foreground color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.email.text}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('text')(color)
+                        }
+                        label={'Text color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={
+                          accountUpdate.branding.email.buttonBackgroundColor
+                        }
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('buttonBackgroundColor')(
+                            color
+                          )
+                        }
+                        label={'Button background'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.email.buttonTextColor}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('buttonTextColor')(color)
+                        }
+                        label={'Button text'}
+                        className={classes.colorPicker}
+                      />
+                    </div>
+                    {renderEmail()}
+                  </div>
+                </div>
+                <div className={clsx(classes.sectionInner)}>
+                  <Typography variant={'h6'}>
+                    Customize your portfolio page
+                  </Typography>
+                  <Typography
+                    variant={'caption'}
+                    style={{ marginBottom: theme.spacing(2) }}>
+                    Displayed through the portfolio sharing link
+                  </Typography>
+                  <div className={classes.colorPickerContainer}>
+                    <div>
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.backgroundColor}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('backgroundColor')(
+                            color
+                          )
+                        }
+                        label={'Background color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.foregroundColor}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('foregroundColor')(
+                            color
+                          )
+                        }
+                        label={'Foreground color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.text}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('text')(color)
+                        }
+                        label={'Text color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.headerGradient1}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('headerGradient1')(
+                            color
+                          )
+                        }
+                        label={'Header gradient 1'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.headerGradient2}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('headerGradient2')(
+                            color
+                          )
+                        }
+                        label={'Header gradient 2'}
+                        className={classes.colorPicker}
+                      />
+                    </div>
+                    {renderPortfolio()}
+                  </div>
+                </div>
+              </div>
+            </Section>
+
+            <GradiantButton
+              className={classes.saveButton}
+              onClick={() => handleSave(accountUpdate)}
+              loading={loading}>
+              <Typography variant='button'>Save</Typography>
+            </GradiantButton>
           </div>
         </div>
-      </Section>
-
-      <Section title={'Branding Appearance'}>
-        <div>
-          <div
-            className={clsx(classes.emailNotifications, classes.sectionInner)}>
-            <Typography variant={'h6'}>
-              Customize your email notifications
-            </Typography>
-            <Typography
-              variant={'caption'}
-              style={{ marginBottom: theme.spacing(2) }}>
-              Customize your email notifications
-            </Typography>
-            <div className={classes.colorPickerContainer}>
-              <div>
-                <ColorPicker
-                  color={accountUpdate.branding.email.backgroundColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('backgroundColor')(color)
-                  }
-                  label={'Background color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.foregroundColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('foregroundColor')(color)
-                  }
-                  label={'Foreground color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.text}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('text')(color)
-                  }
-                  label={'Text color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.buttonBackgroundColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('buttonBackgroundColor')(color)
-                  }
-                  label={'Button background'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.buttonTextColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('buttonTextColor')(color)
-                  }
-                  label={'Button text'}
-                  className={classes.colorPicker}
-                />
-              </div>
-              {renderEmail()}
-            </div>
-          </div>
-          <div className={clsx(classes.sectionInner)}>
-            <Typography variant={'h6'}>
-              Customize your portfolio page
-            </Typography>
-            <Typography
-              variant={'caption'}
-              style={{ marginBottom: theme.spacing(2) }}>
-              Displayed through the portfolio sharing link
-            </Typography>
-            <div className={classes.colorPickerContainer}>
-              <div>
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.backgroundColor}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('backgroundColor')(color)
-                  }
-                  label={'Background color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.foregroundColor}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('foregroundColor')(color)
-                  }
-                  label={'Foreground color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.text}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('text')(color)
-                  }
-                  label={'Text color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.headerGradient1}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('headerGradient1')(color)
-                  }
-                  label={'Header gradient 1'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.headerGradient2}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('headerGradient2')(color)
-                  }
-                  label={'Header gradient 2'}
-                  className={classes.colorPicker}
-                />
-              </div>
-              {renderPortfolio()}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <GradiantButton
-        className={classes.saveButton}
-        onClick={() => handleSave(accountUpdate)}
-        loading={loading}>
-        <Typography variant='button'>Save</Typography>
-      </GradiantButton>
+      </div>
     </div>
   )
 }
@@ -729,10 +750,8 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     color: theme.palette.text.background,
-    alignItems: 'center',
-    paddingBottom: theme.spacing(6),
-    justifyContent: 'center',
-    width: '100%'
+    padding: `0 ${theme.spacing(3)}px`,
+    paddingBottom: theme.spacing(6)
   },
   sectionInner: {
     background: theme.palette.common.white,
@@ -758,7 +777,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
-    minWidth: 150
+    minWidth: 150,
+    alignSelf: 'center'
   }
 }))
 

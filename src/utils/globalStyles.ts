@@ -127,20 +127,25 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flex: 1,
       flexDirection: 'column',
       color: theme.palette.text.background,
-      alignItems: 'center',
-      width: '100%'
+      alignItems: 'center'
     },
     '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
     '.screenInner': {
       width: '100%',
       maxWidth: 1500
     },
+    '.screenInnerMd': {
+      width: '100%',
+      maxWidth: 1000
+    },
     '.responsivePadding': {
       paddingLeft: theme.spacing(5),
       paddingRight: theme.spacing(5),
+      paddingBottom: theme.spacing(6),
       [theme.breakpoints.down('sm')]: {
         paddingLeft: theme.spacing(3),
-        paddingRight: theme.spacing(3)
+        paddingRight: theme.spacing(3),
+        paddingBottom: theme.spacing(4)
       }
     },
     '.centerContent': {

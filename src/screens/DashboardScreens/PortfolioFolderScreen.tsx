@@ -37,7 +37,7 @@ const PortfolioFolderScreen = ({
   return (
     <div className='screenContainer'>
       <div
-        className={clsx('screenInner')}
+        className={'screenInner'}
         style={{
           marginBottom: theme.spacing(2)
         }}>

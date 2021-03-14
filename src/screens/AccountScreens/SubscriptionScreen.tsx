@@ -112,179 +112,185 @@ const SubscriptionScreen = ({
   const navigateToPaymentMethodsScreen = () => history.push('paymentmethods')
 
   return (
-    <div className={clsx('container', classes.container)}>
-      <SubscriptionModal
-        loading={subscriptionLoading}
-        open={subscriptionModalOpen}
-        onRequestClose={closeSubscriptionModal}
-        activeSubscriptionType={
-          accountSubscription
-            ? accountSubscription.metadata.type
-            : SubscriptionTypes.CREATOR
-        }
-        customerId={customerId}
-        paymentMethods={paymentMethods}
-        planSubscription={planSubscription}
-        setStorageProduct={setStorageProduct}
-        subscription={accountSubscription}
-        planList={subscriptionPlans}
-        cancelSubscription={cancelSubscription}
-        updateSubscription={updateSubscription}
-      />
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <SubscriptionModal
+            loading={subscriptionLoading}
+            open={subscriptionModalOpen}
+            onRequestClose={closeSubscriptionModal}
+            activeSubscriptionType={
+              accountSubscription
+                ? accountSubscription.metadata.type
+                : SubscriptionTypes.CREATOR
+            }
+            customerId={customerId}
+            paymentMethods={paymentMethods}
+            planSubscription={planSubscription}
+            setStorageProduct={setStorageProduct}
+            subscription={accountSubscription}
+            planList={subscriptionPlans}
+            cancelSubscription={cancelSubscription}
+            updateSubscription={updateSubscription}
+          />
 
-      <StorageModal
-        open={storageModalOpen}
-        onRequestClose={closeStorageModal}
-        account={account}
-        storageSubscription={storageSubscription}
-        accountSubscription={accountSubscription}
-        paymentMethods={paymentMethods}
-        customerId={customerId}
-        createAmountSubscription={createAmountSubscription}
-        storageProduct={storageProduct}
-        storagePurchaseLoading={storagePurchaseLoading}
-      />
+          <StorageModal
+            open={storageModalOpen}
+            onRequestClose={closeStorageModal}
+            account={account}
+            storageSubscription={storageSubscription}
+            accountSubscription={accountSubscription}
+            paymentMethods={paymentMethods}
+            customerId={customerId}
+            createAmountSubscription={createAmountSubscription}
+            storageProduct={storageProduct}
+            storagePurchaseLoading={storagePurchaseLoading}
+          />
 
-      <CardModal
-        open={cardModalOpen}
-        onRequestClose={toggleCardModal(false)}
-        customerId={user.customerId}
-      />
+          <CardModal
+            open={cardModalOpen}
+            onRequestClose={toggleCardModal(false)}
+            customerId={user.customerId}
+          />
 
-      <Section title={'Your Plan'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>
-                    {!!accountSubscription
-                      ? `${
-                          getSubscriptionDetails(
-                            getSubscriptionType(accountSubscription)
-                          ).name
-                        } Plan`
-                      : 'Unsubscribed'}
-                  </Typography>
-                  <Typography variant='caption'>
-                    {!!accountSubscription
-                      ? accountSubscription.cancel_at_period_end
-                        ? `Your subscription ends ${moment(
-                            accountSubscription.cancel_at * 1000
-                          ).format('YYYY-MM-DD')}`
-                        : `Your subscription renews on ${moment(
-                            accountSubscription.current_period_end * 1000
-                          ).format('YYYY-MM-DD')}` // @todo connect to real renewal date
-                      : 'Subscribe to benefit from the full features of Creator Cloud'}
-                  </Typography>
-                </div>,
-                <GradiantButton onClick={openSubscriptionModal}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      Manage Plan
-                    </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-        </div>
-      </Section>
-
-      <Section title={'Storage'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>Your Storage</Typography>
-                  <Typography variant='caption'>
-                    Add storage to account to upload more content
-                  </Typography>
-                </div>,
-                <GradiantButton onClick={openStorageModal}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      Manage Storage
-                    </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-        </div>
-      </Section>
-
-      <Section title={'Payment Details'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  {paymentMethods && !!paymentMethods.length ? (
-                    <div className={'row'}>
-                      <PaymentMethodInline paymentMethod={paymentMethods[0]} />
-                    </div>
-                  ) : (
-                    <Typography variant='subtitle1'>
-                      You haven't added a payment method
-                    </Typography>
-                  )}
-                </div>,
-                <div className={'row'}>
-                  <GradiantButton onClick={toggleCardModal(true)}>
-                    <div className={'row'}>
-                      <Typography style={{ marginRight: 5 }}>
-                        Add Method
+          <Section title={'Your Plan'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>
+                        {!!accountSubscription
+                          ? `${
+                              getSubscriptionDetails(
+                                getSubscriptionType(accountSubscription)
+                              ).name
+                            } Plan`
+                          : 'Unsubscribed'}
                       </Typography>
-                    </div>
-                  </GradiantButton>
-                  {paymentMethods && !!paymentMethods.length && (
-                    <GradiantButton
-                      onClick={navigateToPaymentMethodsScreen}
-                      style={{ marginLeft: 15 }}>
+                      <Typography variant='caption'>
+                        {!!accountSubscription
+                          ? accountSubscription.cancel_at_period_end
+                            ? `Your subscription ends ${moment(
+                                accountSubscription.cancel_at * 1000
+                              ).format('YYYY-MM-DD')}`
+                            : `Your subscription renews on ${moment(
+                                accountSubscription.current_period_end * 1000
+                              ).format('YYYY-MM-DD')}` // @todo connect to real renewal date
+                          : 'Subscribe to benefit from the full features of Creator Cloud'}
+                      </Typography>
+                    </div>,
+                    <GradiantButton onClick={openSubscriptionModal}>
                       <div className={'row'}>
                         <Typography style={{ marginRight: 5 }}>
-                          Manage Cards
+                          Manage Plan
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section title={'Storage'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>Your Storage</Typography>
+                      <Typography variant='caption'>
+                        Add storage to account to upload more content
+                      </Typography>
+                    </div>,
+                    <GradiantButton onClick={openStorageModal}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          Manage Storage
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section title={'Payment Details'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      {paymentMethods && !!paymentMethods.length ? (
+                        <div className={'row'}>
+                          <PaymentMethodInline
+                            paymentMethod={paymentMethods[0]}
+                          />
+                        </div>
+                      ) : (
+                        <Typography variant='subtitle1'>
+                          You haven't added a payment method
+                        </Typography>
+                      )}
+                    </div>,
+                    <div className={'responsiveRow'}>
+                      <GradiantButton onClick={toggleCardModal(true)}>
+                        <div className={'row'}>
+                          <Typography style={{ marginRight: 5 }}>
+                            Add Method
+                          </Typography>
+                        </div>
+                      </GradiantButton>
+                      {paymentMethods && !!paymentMethods.length && (
+                        <GradiantButton
+                          onClick={navigateToPaymentMethodsScreen}
+                          className={classes.manageCardsButton}>
+                          <div className={'row'}>
+                            <Typography style={{ marginRight: 5 }}>
+                              Manage Cards
+                            </Typography>
+                            <RightArrow style={{ fontSize: 15 }} />
+                          </div>
+                        </GradiantButton>
+                      )}
+                    </div>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section title={'Billing History'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      {false ? (
+                        <div></div> // @todo fetch most recent billing history item
+                      ) : (
+                        <Typography variant='subtitle1'>
+                          You are not subscribed
+                        </Typography>
+                      )}
+                    </div>,
+                    <GradiantButton>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          View History
                         </Typography>
                         <RightArrow style={{ fontSize: 15 }} />
                       </div>
                     </GradiantButton>
-                  )}
-                </div>
-              ]}
-            </ResponsiveRow>
-          </div>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
         </div>
-      </Section>
-
-      <Section title={'Billing History'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  {false ? (
-                    <div></div> // @todo fetch most recent billing history item
-                  ) : (
-                    <Typography variant='subtitle1'>
-                      You are not subscribed
-                    </Typography>
-                  )}
-                </div>,
-                <GradiantButton>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      View History
-                    </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-        </div>
-      </Section>
+      </div>
     </div>
   )
 }
@@ -319,6 +325,13 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 10,
     paddingBottom: 10,
     minWidth: 150
+  },
+  manageCardsButton: {
+    marginLeft: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 0,
+      marginTop: theme.spacing(2)
+    }
   }
 }))
 
