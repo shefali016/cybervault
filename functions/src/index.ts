@@ -83,17 +83,10 @@ export const sendEmail = functions.firestore
           dynamic_template_data: newData.data
         }
         sgMail.setApiKey(`${functions.config().sendgrid.key}`)
-        sgMail
-          .send(msg)
-          .then((res: any) => {
-            console.log('success')
-          })
-          .catch((error: any) => {
-            console.log(error, 'error Occurs')
-          })
+        return sgMail.send(msg)
       }
     } catch (error) {
-      console.log(error, 'error occurs')
+      console.log('sendEmail error', error)
     }
   })
 
@@ -146,9 +139,20 @@ export const handleNotificationCreated = functions.firestore
           return false
         }
 
+        const accountOwnerSnapshot = await admin
+          .firestore()
+          .collection('Users')
+          .doc(account.owner)
+          .get()
+        const accountOwner = accountOwnerSnapshot.data()
+
+        if (!accountOwner) {
+          return false
+        }
+
         const { title } = notification
 
-        const to = account.email
+        const to = accountOwner.email
 
         const mail: Mail = {
           to,

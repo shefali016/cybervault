@@ -1,7 +1,12 @@
 import Section from 'components/Common/Section'
 import React, { useState, useEffect, useContext } from 'react'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { Account, StripeAccount, StripeLoginLink } from '../../utils/Interface'
+import {
+  Account,
+  StripeAccount,
+  StripeLoginLink,
+  User
+} from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -22,7 +27,7 @@ import InvoiceIcon from '@material-ui/icons/Receipt'
 import ErrorIcon from '@material-ui/icons/Error'
 
 type DispatchProps = { updateAccount: (account: Account) => void }
-type StateProps = { account: Account }
+type StateProps = { account: Account; user: User }
 type Props = { history: any } & StateProps & DispatchProps
 type State = {
   monthBalance: number
@@ -34,7 +39,7 @@ type State = {
   stripeLoginLink: StripeLoginLink | null
 }
 
-const StripeScreen = ({ account, updateAccount }: Props) => {
+const StripeScreen = ({ account, updateAccount, user }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
@@ -71,7 +76,6 @@ const StripeScreen = ({ account, updateAccount }: Props) => {
   const verifyStripeAccount = async (stripeAccountId: string) => {
     try {
       const stripeAccount = await getStripeAccount(stripeAccountId)
-      console.log('STRIPE_ACCOUNT', stripeAccount)
       setState((state) => ({ ...state, stripeAccount }))
       const { details_submitted, payouts_enabled } = stripeAccount
       const { detailsSubmitted, payoutsEnabled } = account.stripe
@@ -99,7 +103,7 @@ const StripeScreen = ({ account, updateAccount }: Props) => {
       let stripeAccountId = account.stripe.accountId
 
       if (!stripeAccountId) {
-        const stripeAccount = await createStripeAccount(account)
+        const stripeAccount = await createStripeAccount(account, user)
         stripeAccountId = stripeAccount.id
       }
 
@@ -203,6 +207,47 @@ const StripeScreen = ({ account, updateAccount }: Props) => {
   }
   const handleRowClick = () => {}
 
+  const renderConnect = () => {
+    if (user.id !== account.owner) {
+      return (
+        <div className={classes.buttonContainer}>
+          <Typography variant='h5'>
+            You must be an account owner to connect a stripe account
+          </Typography>
+        </div>
+      )
+    }
+
+    if (account.stripe.detailsSubmitted) {
+      return null
+    }
+
+    return (
+      <div className={classes.buttonContainer}>
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+          <GradiantButton onClick={handleConnectStripeAccount}>
+            <div className='row'>
+              <Typography variant='body1'>Connect with</Typography>
+              <img src={stripeLogo} height={40} />
+            </div>
+          </GradiantButton>
+          {creatingAccount && (
+            <AppLoader
+              color={theme.palette.primary.light}
+              className={classes.loader}
+            />
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={clsx('screenContainer', 'centerContent')}>
       <Section className={classes.balanceSection}>
@@ -257,30 +302,7 @@ const StripeScreen = ({ account, updateAccount }: Props) => {
 
           {!!account.stripe.detailsSubmitted && renderInvoiceTable()}
 
-          {!account.stripe.detailsSubmitted && (
-            <div className={classes.buttonContainer}>
-              <div
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center'
-                }}>
-                <GradiantButton onClick={handleConnectStripeAccount}>
-                  <div className='row'>
-                    <Typography variant='body1'>Connect with</Typography>
-                    <img src={stripeLogo} height={40} />
-                  </div>
-                </GradiantButton>
-                {creatingAccount && (
-                  <AppLoader
-                    color={theme.palette.primary.light}
-                    className={classes.loader}
-                  />
-                )}
-              </div>
-            </div>
-          )}
+          {renderConnect()}
         </div>
       </Section>
     </div>
@@ -404,7 +426,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const mapState = (state: ReduxState): StateProps => ({
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  user: state.auth.user as User
 })
 
 const mapDispatch: DispatchProps = { updateAccount }

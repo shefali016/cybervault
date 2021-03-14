@@ -190,7 +190,7 @@ const InvoiceData = ({
         clientEmail: clientData.email.trim() || '',
         projectName: projectData.campaignName || '',
         invoiceId: invoiceId.trim() || '',
-        userEmail: account.email || '',
+        userEmail: userInfo.email || '',
         amount:
           invoiceType === 'fullAmount'
             ? getFullAmount()

@@ -238,7 +238,6 @@ export interface Subscription {
 export type Account = {
   id: string
   owner: string // id of user
-  email: string | null
   type: 'creator' | 'client'
   region?: Region
   name: string

@@ -128,7 +128,6 @@ export const createAccount = (
     id: generateUid(),
     owner: authUser.uid,
     type: 'creator',
-    email: authUser.email,
     name: '',
     security: {
       twoFactorEnabled: false,
