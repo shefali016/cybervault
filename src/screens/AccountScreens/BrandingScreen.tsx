@@ -580,18 +580,19 @@ const useStyles = makeStyles((theme) => ({
   emailHeader: {
     display: 'flex',
     justifyContent: 'center',
-    paddingTop: 10
+    paddingTop: 20
   },
   emailLogo: { height: 40, width: 'auto' },
   emailContent: {
     flex: 1,
-    padding: theme.spacing(3),
-    paddingTop: theme.spacing(1.5),
+    padding: 30,
+    paddingTop: 20,
+    paddingBottom: 50,
     display: 'flex',
     flexDirection: 'column'
   },
   emailForeground: {
-    padding: theme.spacing(2),
+    padding: 30,
     borderRadius: theme.shape.borderRadius,
     flex: 1
   },
@@ -671,6 +672,7 @@ const useStyles = makeStyles((theme) => ({
 
   colorPickerContainer: {
     display: 'flex',
+    alignItems: 'flex-start',
     [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
   },
   brandingDisplayContainer: {
