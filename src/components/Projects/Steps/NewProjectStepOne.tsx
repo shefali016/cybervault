@@ -269,11 +269,11 @@ const useStyles = makeStyles((theme) => ({
   },
   textSecondary: {
     color: theme.palette.text.meta,
-    marginTop: theme.spacing(0.5),
-    marginBottom: theme.spacing(3)
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(0.5)
   },
   selectContainer: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     width: '100%',
     display: 'flex',
     alignItems: 'center',
@@ -299,27 +299,25 @@ const useStyles = makeStyles((theme) => ({
     '&:before': {
       content: 'close-quote',
       position: 'absolute',
-      width: '50%',
+      width: '70%',
       height: '1px',
       backgroundColor: GREY_COLOR,
       top: '50%',
-      left: '-40px',
+      left: '-50%',
       [theme.breakpoints.down('sm')]: {
-        left: '0',
-        width: '45%'
+        width: '60%'
       }
     },
     '&:after': {
       content: 'close-quote',
       position: 'absolute',
-      width: '50%',
+      width: '70%',
       height: '1px',
       backgroundColor: GREY_COLOR,
       top: '50%',
-      right: '-40px',
+      right: '-50%',
       [theme.breakpoints.down('sm')]: {
-        right: '0',
-        width: '45%'
+        width: '60%'
       }
     }
   },

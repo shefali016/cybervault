@@ -3,7 +3,11 @@ import { Router } from 'react-router-dom'
 import Routes from './routes/navigationRoutes'
 import history from './services/history'
 import React from 'react'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider
+} from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
 import { StripeProvider } from 'react-stripe-elements'
 import { stripe_public_key } from 'config.json'
@@ -31,7 +35,7 @@ const theme = createMuiTheme({
     },
     text: {
       primary: '#24262b',
-      secondary: '#e6e6e6',
+      secondary: '#e3e3e3',
       background: '#ffffff',
       paper: '#24262b',
       meta: '#999999'
@@ -43,8 +47,13 @@ const theme = createMuiTheme({
       archived: '#f44336'
     }
   },
-  shape: { borderRadius: 12 }
+  shape: { borderRadius: 12 },
+  typography: {
+    body1: { fontSize: 18 }
+  }
 })
+
+const responsiveTheme = responsiveFontSizes(theme)
 
 initFirebase()
 
@@ -52,7 +61,7 @@ function App() {
   return (
     <Router history={history}>
       <StripeProvider apiKey={stripe_public_key}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={responsiveTheme}>
           <ToastProvider>
             <React.Fragment>
               <Routes />

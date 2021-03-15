@@ -71,7 +71,9 @@ export const PortfolioProjectDetails = ({ project, account }: Props) => {
       <RenderCampaignDetails projectData={project} />
 
       {!!(project.campaignObjective || project.description) && (
-        <Typography variant={'h5'}>Project Details</Typography>
+        <Typography variant={'h5'} style={{ marginBottom: 15 }}>
+          Project Details
+        </Typography>
       )}
       <Details
         label={'Campaign Objective:'}

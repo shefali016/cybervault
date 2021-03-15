@@ -183,7 +183,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius,
       padding: `${theme.spacing(7)}px ${theme.spacing(6)}px`,
       [theme.breakpoints.down('md')]: {
-        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`
+        padding: `${theme.spacing(5.5)}px ${theme.spacing(4.5)}px`,
+        [theme.breakpoints.down('sm')]: {
+          padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`
+        }
       }
     },
     '.centerContent': {
@@ -246,11 +249,15 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },
     '.backgroundText': { color: theme.palette.text.background },
-    '.h4': { [theme.breakpoints.down('sm')]: { fontSize: 25 } },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
     '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
+    '.backIcon': {
+      color: theme.palette.grey[500],
+      fontSize: 25,
+      marginLeft: 10
+    },
     // img
     '.circleImage': {
       minWidth: 60,
@@ -269,7 +276,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     // Buttons
     '.iconButton': {
       color: theme.palette.background.surfaceHighlight,
-      backgroundColor: theme.palette.background.surface
+      backgroundColor: '#00000040'
     },
     '.MuiIconButton-root': {
       transition: theme.transitions.create(

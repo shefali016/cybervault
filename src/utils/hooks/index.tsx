@@ -20,13 +20,11 @@ export const useOnChange = (value: any, onChange: (value: any) => void) => {
 }
 
 export const useGetClient = (clients: Array<Client>, project: Project) =>
-  useMemo(
-    () =>
-      clients && project
-        ? clients.find((client) => client.id === project.clientId)
-        : undefined,
-    [clients, project?.clientId]
-  )
+  useMemo(() => {
+    return clients && project
+      ? clients.find((client) => client.id === project.clientId)
+      : undefined
+  }, [clients, project])
 
 export const useModalState = (
   initialOpen: boolean

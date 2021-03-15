@@ -8,6 +8,10 @@ import { EditButton } from '../Button/EditButton'
 export const RenderTaskDetails = (props: any) => {
   const classes = useStyles()
 
+  if (!(props.projectData && props.projectData.tasks)) {
+    return null
+  }
+
   const renderTasks = () => {
     if (!props.projectData.tasks.length) {
       return (

@@ -7,6 +7,8 @@ import NotificationIcon from '@material-ui/icons/Notifications'
 import { User } from 'utils/Interface'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { AccountTabIds } from 'routes/DashboardSwitch'
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
@@ -38,10 +40,10 @@ function Toolbar(props: Props) {
   return (
     <div className={classes.Toolbar}>
       {props.renderAppIcon && (
-        <PolymerSharpIcon
-          className={classes.appIcon}
-          onClick={props.onLogoClick}
-        />
+        <div className={classes.backIconContainer} onClick={props.onLogoClick}>
+          <ArrowBackIosIcon className={'backIcon'} />
+          <PolymerSharpIcon className={classes.appIcon} />
+        </div>
       )}
 
       <div style={{ marginLeft: 25, display: FLEX, flex: 1 }}>
@@ -81,6 +83,11 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 14
     }
   },
+  backIconContainer: {
+    display: 'flex',
+    cursor: 'pointer',
+    alignItems: 'center'
+  },
   notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
     alignSelf: 'stetch',
@@ -97,7 +104,6 @@ const useStyles = makeStyles((theme) => ({
   appIcon: {
     color: theme.palette.primary.light,
     fontSize: 43,
-    marginLeft: theme.spacing(2),
     cursor: 'pointer'
   },
   portfolioHeader: {

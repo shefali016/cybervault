@@ -14,7 +14,7 @@ export const CostItem = ({ value, title }: Props) => {
       <Typography variant='body1' className={classes.label}>
         ${value}
       </Typography>
-      <Typography variant='body1'>${title}</Typography>
+      <Typography variant='body1'>{title}</Typography>
     </div>
   )
 }
@@ -22,10 +22,19 @@ export const CostItem = ({ value, title }: Props) => {
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
+    alignItems: 'center',
     marginBottom: theme.spacing(1.2),
+    padding: '2px 0',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column'
     }
   },
-  label: { fontWeight: 'bold', marginRight: 25 }
+  label: {
+    fontWeight: 'bold',
+    marginRight: 25,
+    color: '#fff',
+    backgroundColor: theme.palette.primary.dark,
+    padding: `2px 10px`,
+    borderRadius: 40
+  }
 }))

@@ -9,7 +9,7 @@ export const replaceOrAdd = (
 ) => {
   const index = arr.findIndex((item: any) => compare(item))
 
-  if (item > -1) {
+  if (index > -1) {
     const newArr = [...arr]
     newArr[index] = item
     return newArr
