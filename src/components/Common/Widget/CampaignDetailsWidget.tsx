@@ -6,6 +6,11 @@ import clsx from 'clsx'
 
 export const RenderCampaignDetails = (props: any) => {
   const classes = useStyles()
+
+  if (!(props.projectData && props.projectData.description)) {
+    return null
+  }
+
   return (
     <div
       className={clsx(classes.clientDetailsContainer, props.className || '')}>

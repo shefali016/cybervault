@@ -29,21 +29,11 @@ export const PortfolioProjectDetails = ({ project, account }: Props) => {
 
   return (
     <Fragment>
-      <div style={{ marginBottom: theme.spacing(4) }}>
+      <div style={{ marginBottom: theme.spacing(6) }}>
         <Typography variant={'h4'} className='bold'>
           {project.campaignName}
         </Typography>
       </div>
-
-      <RenderCampaignDetails projectData={project} />
-
-      <Typography variant={'h5'}>Project Details</Typography>
-
-      <Details
-        label={'Campaign Objective:'}
-        value={project.campaignObjective}
-      />
-      <Details label={'Project Summary:'} value={project.description} />
 
       {hasAssets && (
         <div className={classes.assetsOuter}>
@@ -74,6 +64,17 @@ export const PortfolioProjectDetails = ({ project, account }: Props) => {
           </div>
         </div>
       )}
+
+      <RenderCampaignDetails projectData={project} />
+
+      {!!(project.campaignObjective || project.description) && (
+        <Typography variant={'h5'}>Project Details</Typography>
+      )}
+      <Details
+        label={'Campaign Objective:'}
+        value={project.campaignObjective}
+      />
+      <Details label={'Project Summary:'} value={project.description} />
     </Fragment>
   )
 }

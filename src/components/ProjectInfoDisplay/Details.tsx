@@ -13,6 +13,11 @@ type Props = {
 
 export const Details = ({ label, value, startDate, endDate }: Props) => {
   const classes = useStyles()
+
+  if (!(value || (startDate && endDate))) {
+    return null
+  }
+
   return (
     <div className={classes.container}>
       <Typography variant={'body1'} className={classes.label}>

@@ -100,7 +100,6 @@ export const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     flexDirection: 'column',
     maxWidth: 1500,
-    alignSelf: 'center',
     borderRadius: 20,
     marginLeft: theme.spacing(5),
     marginRight: theme.spacing(5),
@@ -116,7 +115,7 @@ export const useStyles = makeStyles((theme) => ({
   assetsOuter: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: theme.spacing(14)
+    marginBottom: theme.spacing(10)
   },
   assetsInner: {
     alignSelf: 'center',
@@ -295,6 +294,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   loader: {
     textAlign: CENTER,
+    alignSelf: 'center',
     margin: theme.spacing(5)
   },
   image: {},
