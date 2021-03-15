@@ -16,6 +16,7 @@ import InvoiceModal from '../../../components/Invoices/InvoiceModal'
 import { ReduxState } from 'reducers/rootReducer'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import { PopoverButton } from 'components/Common/PopoverButton'
 
 const ITEM_HEIGHT = 48
 
@@ -75,6 +76,28 @@ const ProjectCard = ({
   const clientLogo = client?.logo
 
   const classes = useStyles()
+
+  const popoverMenuItems = [
+    {
+      title: 'View Project',
+      icon: AddBoxIcon,
+      onClick: () => editProject(project.id)
+    },
+    {
+      title: 'Send Invoice',
+      icon: ReceiptIcon,
+      onClick: () => sendInvoice(project.id),
+      disabled:
+        project.canInvoice === false ||
+        (account.stripe && !account.stripe.payoutsEnabled)
+    },
+    {
+      title: 'Delete Project',
+      icon: DeleteSharpIcon,
+      onClick: startConfirmingDelete
+    }
+  ]
+
   return (
     <div style={style}>
       <InvoiceModal
@@ -86,7 +109,9 @@ const ProjectCard = ({
         userInfo={userInfo}
       />
       <Card className={classes.card} elevation={5}>
-        <div className={classes.imageWrapper}>
+        <div
+          className={classes.imageWrapper}
+          onClick={() => editProject(project.id)}>
           {!!clientLogo && (
             <img src={clientLogo} alt='client-logo' className={classes.image} />
           )}
@@ -109,7 +134,7 @@ const ProjectCard = ({
 
         {isPopover ? (
           <Grid
-            style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
+            style={{ position: 'absolute', top: 5, right: 5, display: 'flex' }}>
             {deletingId === project.id && (
               <AppLoader
                 color={theme.palette.grey[800]}
@@ -119,84 +144,7 @@ const ProjectCard = ({
               />
             )}
 
-            <PopupState variant='popover'>
-              {(popupState) => (
-                <div>
-                  <IconButton {...bindTrigger(popupState)}>
-                    <MoreVertIcon style={{ color: theme.palette.grey[800] }} />
-                  </IconButton>
-                  <Popover
-                    id={'long-menu'}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right'
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left'
-                    }}
-                    PaperProps={{
-                      style: {
-                        maxHeight: ITEM_HEIGHT * 2.5,
-                        borderRadius: 15,
-                        border: 1,
-                        fontSize: 12,
-                        borderColor: 'black',
-                        paddingTop: 8,
-                        paddingBottom: 8,
-                        color: '#000'
-                      }
-                    }}
-                    style={{ marginLeft: -20, marginTop: -20 }}
-                    {...bindPopover(popupState)}>
-                    <MenuItem
-                      style={{ fontSize: 12 }}
-                      onClick={() => editProject(project.id)}>
-                      <div style={{ display: FLEX }}>
-                        <AddBoxIcon
-                          style={{ marginRight: 5 }}
-                          fontSize='small'
-                        />
-                        View Project
-                      </div>
-                    </MenuItem>
-
-                    <MenuItem
-                      style={{ fontSize: 12 }}
-                      onClick={() => sendInvoice(project.id)}
-                      disabled={
-                        project.canInvoice === false ||
-                        (account.stripe && !account.stripe.payoutsEnabled)
-                      }>
-                      <div style={{ display: FLEX }}>
-                        <ReceiptIcon
-                          style={{ marginRight: 5 }}
-                          fontSize='small'
-                        />
-                        Send Invoice
-                      </div>
-                    </MenuItem>
-                    <MenuItem
-                      style={{ fontSize: 12 }}
-                      onClick={startConfirmingDelete}>
-                      <div>
-                        <div
-                          style={{
-                            display: FLEX,
-                            color: theme.palette.error.main
-                          }}>
-                          <DeleteSharpIcon
-                            style={{ marginRight: 5 }}
-                            fontSize='small'
-                          />
-                          Delete Project
-                        </div>
-                      </div>
-                    </MenuItem>
-                  </Popover>
-                </div>
-              )}
-            </PopupState>
+            <PopoverButton menuItems={popoverMenuItems} />
           </Grid>
         ) : null}
       </Card>
@@ -249,7 +197,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
     borderBottomColor: theme.palette.grey[300],
-    overflow: 'hidden'
+    overflow: 'hidden',
+    cursor: 'pointer'
   },
   image: {
     minHeight: '100%',
