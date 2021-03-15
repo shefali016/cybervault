@@ -11,7 +11,7 @@ import {
 import AppTextField from '../Common/Core/AppTextField'
 import { useTabletLayout } from '../../utils/hooks'
 import { Client, Account } from '../../utils/Interface'
-import NewProjectTitle from '../Projects/NewProjectTitle'
+import NewProjectTitle from '../Common/Modal/ModalTitle'
 import NewProjectFooter from '../Projects/NewProjectFooter'
 import { generateUid, getClientData } from '../../utils'
 import { addClientRequest } from '../../actions/clientActions'
@@ -231,11 +231,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
     marginBottom: 5,
+    position: 'relative',
     overflow: 'hidden'
   },
   clientLogoImg: {
-    height: 80,
-    borderRadius: 40,
+    minHeight: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+    objectFit: 'cover',
     position: POSITION_ABSOLUTE
   },
   addLogoText: {

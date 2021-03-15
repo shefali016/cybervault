@@ -83,111 +83,117 @@ const ProfileScreen = ({
   }
 
   return (
-    <div className={clsx('container', classes.container)}>
-      <AvatarPicker
-        url={avatarFile ? URL.createObjectURL(avatarFile) : user.avatar}
-        onChange={(file: File) => handleAvatarChange(file)}
-        size={120}
-        className={classes.avatarPicker}
-      />
+    <div className={'screenContainer'}>
+      <div className={'screenInnerMd'}>
+        <div className={'responsivePadding'}>
+          <div className={'col'}>
+            <AvatarPicker
+              url={avatarFile ? URL.createObjectURL(avatarFile) : user.avatar}
+              onChange={(file: File) => handleAvatarChange(file)}
+              size={120}
+              className={classes.avatarPicker}
+            />
 
-      <div
-        className={classes.section}
-        style={{ marginBottom: theme.spacing(4) }}>
-        <Typography variant='h6' className={classes.sectionTitle}>
-          Profile Info
-        </Typography>
-        <div className={classes.inputRow}>
-          <AppTextField
-            label='Full Name'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('firstName')(event.target.value)
-            }
-            value={profileChanges.name}
-            style={textInputStyle}
-            darkStyle={true}
-          />
-          <AppTextField
-            label='Birthday'
-            type='date'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('birthday')(event.target.value)
-            }
-            value={profileChanges.birthday}
-            darkStyle={true}
-          />
-        </div>
-        <div className={classes.inputRow}>
-          <AppTextField
-            label='Company'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('company')(event.target.value)
-            }
-            value={profileChanges.company}
-            style={textInputStyle}
-            darkStyle={true}
-          />
-          <AppTextField
-            label='Email Addresss'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('email')(event.target.value)
-            }
-            value={profileChanges.email}
-            darkStyle={true}
-          />
+            <div
+              className={classes.section}
+              style={{ marginBottom: theme.spacing(4) }}>
+              <Typography variant='h6' className={classes.sectionTitle}>
+                Profile Info
+              </Typography>
+              <div className={classes.inputRow}>
+                <AppTextField
+                  label='Full Name'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('firstName')(event.target.value)
+                  }
+                  value={profileChanges.name}
+                  style={textInputStyle}
+                  darkStyle={true}
+                />
+                <AppTextField
+                  label='Birthday'
+                  type='date'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('birthday')(event.target.value)
+                  }
+                  value={profileChanges.birthday}
+                  darkStyle={true}
+                />
+              </div>
+              <div className={classes.inputRow}>
+                <AppTextField
+                  label='Company'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('company')(event.target.value)
+                  }
+                  value={profileChanges.company}
+                  style={textInputStyle}
+                  darkStyle={true}
+                />
+                <AppTextField
+                  label='Email Addresss'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('email')(event.target.value)
+                  }
+                  value={profileChanges.email}
+                  darkStyle={true}
+                />
+              </div>
+            </div>
+
+            <div className={classes.section}>
+              <Typography variant='h6' className={classes.sectionTitle}>
+                Social Links
+              </Typography>
+              <div className={classes.inputRow}>
+                <AppTextField
+                  label='Instagram'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('instagram')(event.target.value)
+                  }
+                  value={profileChanges.instagram}
+                  style={textInputStyle}
+                  darkStyle={true}
+                />
+                <AppTextField
+                  label='Twitter'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('twitter')(event.target.value)
+                  }
+                  value={profileChanges.twitter}
+                  darkStyle={true}
+                />
+              </div>
+              <div className={classes.inputRow}>
+                <AppTextField
+                  label='Facebook'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('facebook')(event.target.value)
+                  }
+                  value={profileChanges.facebook}
+                  style={textInputStyle}
+                  darkStyle={true}
+                />
+                <AppTextField
+                  label='LinkedIn'
+                  onChange={(event: InputChangeEvent) =>
+                    updateProfile('linkedIn')(event.target.value)
+                  }
+                  value={profileChanges.linkedIn}
+                  darkStyle={true}
+                />
+              </div>
+            </div>
+
+            <GradiantButton
+              className={classes.saveButton}
+              onClick={handleSave}
+              loading={loading}>
+              <Typography variant='button'>Save</Typography>
+            </GradiantButton>
+          </div>
         </div>
       </div>
-
-      <div className={classes.section}>
-        <Typography variant='h6' className={classes.sectionTitle}>
-          Social Links
-        </Typography>
-        <div className={classes.inputRow}>
-          <AppTextField
-            label='Instagram'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('instagram')(event.target.value)
-            }
-            value={profileChanges.instagram}
-            style={textInputStyle}
-            darkStyle={true}
-          />
-          <AppTextField
-            label='Twitter'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('twitter')(event.target.value)
-            }
-            value={profileChanges.twitter}
-            darkStyle={true}
-          />
-        </div>
-        <div className={classes.inputRow}>
-          <AppTextField
-            label='Facebook'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('facebook')(event.target.value)
-            }
-            value={profileChanges.facebook}
-            style={textInputStyle}
-            darkStyle={true}
-          />
-          <AppTextField
-            label='LinkedIn'
-            onChange={(event: InputChangeEvent) =>
-              updateProfile('linkedIn')(event.target.value)
-            }
-            value={profileChanges.linkedIn}
-            darkStyle={true}
-          />
-        </div>
-      </div>
-
-      <GradiantButton
-        className={classes.saveButton}
-        onClick={handleSave}
-        loading={loading}>
-        <Typography variant='button'>Save</Typography>
-      </GradiantButton>
     </div>
   )
 }
@@ -197,8 +203,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.background,
     alignItems: 'center',
     paddingBottom: theme.spacing(6),
-    justifyContent: 'center',
-    width: '100%'
+    justifyContent: 'center'
   },
   sectionTitle: {
     marginBottom: theme.spacing(1),
@@ -211,17 +216,12 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
     borderRadius: theme.shape.borderRadius,
-    [theme.breakpoints.up('sm')]: {
-      width: '100%',
-      maxWidth: 800
-    },
     [theme.breakpoints.down('sm')]: {
-      width: '90%',
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2)
     }
   },
-  avatarPicker: { marginBottom: theme.spacing(5) },
+  avatarPicker: { marginBottom: theme.spacing(5), alignSelf: 'center' },
   inputRow: {
     display: 'flex',
     [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
@@ -230,7 +230,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     paddingTop: 10,
     paddingBottom: 10,
-    minWidth: 150
+    minWidth: 150,
+    alignSelf: 'center'
   }
 }))
 

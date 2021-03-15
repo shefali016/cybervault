@@ -25,6 +25,8 @@ import { Link } from 'react-router-dom'
 import { Tab, ButtonConfig } from 'utils/Interface'
 import LogoutIcon from '@material-ui/icons/ExitToApp'
 
+const SHARED_TABS_LENTH = 2
+
 type Props = {
   actionButtonConfig: ButtonConfig
   onLogout?: () => void
@@ -48,7 +50,10 @@ const SideBarComponent = (props: Props) => {
   const classes = useStyles()
 
   const [topTabs, bottomTabs] = useMemo(() => {
-    return [tabs.slice(0, tabs.length - 2), tabs.slice(tabs.length - 2)]
+    return [
+      tabs.slice(0, tabs.length - SHARED_TABS_LENTH),
+      tabs.slice(tabs.length - SHARED_TABS_LENTH)
+    ]
   }, [tabs])
 
   const handleLogout = () => {

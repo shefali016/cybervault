@@ -1,4 +1,6 @@
+import { StripeElementChangeEvent } from '@stripe/stripe-js'
 import { ChangeEvent } from 'react'
+import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 import {
   InvoiceStatuses,
   ProjectStatuses,
@@ -10,14 +12,15 @@ import {
 } from 'utils/enums'
 
 export type SubscriptionType =
-  | SubscriptionTypes.creator
-  | SubscriptionTypes.pro
-  | SubscriptionTypes.team
-  | SubscriptionTypes.business
+  | SubscriptionTypes.CREATOR
+  | SubscriptionTypes.PRO
+  | SubscriptionTypes.TEAM
+  | SubscriptionTypes.BUSINESS
+  | SubscriptionTypes.STORAGE
 
 export type SubscriptionDuration =
-  | SubscriptionDurations.yearly
-  | SubscriptionDurations.monthly
+  | SubscriptionDurations.YEARLY
+  | SubscriptionDurations.MONTHLY
 
 export type WatermarkControl =
   | WatermarkControls.none
@@ -45,7 +48,7 @@ export type ButtonConfig = {
   icon?: any
 }
 
-export type Tab = { id: string; icon?: any; text: string }
+export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
 
 export type Asset = {
   id: string
@@ -107,6 +110,22 @@ export type StripeAccountLink = {
   created: number
   expires_at: number
 }
+export interface Product {
+  id: string
+  object: 'product'
+  active: boolean
+  created: number
+  description: string | null
+  images: Array<string>
+  livemode: boolean
+  metadata: {
+    type: SubscriptionType
+  }
+  name: string
+  statement_descriptor: string | null
+  unit_label: string | null
+  updated: number
+}
 export interface StripePlans {
   id: string
   object: string
@@ -120,7 +139,7 @@ export interface StripePlans {
   interval: string
   interval_count: number
   livemode: boolean
-  metadata: Object
+  metadata: { type: SubscriptionType }
   nickname: any | null
   product: string
   tiers_mode: any | null
@@ -129,13 +148,99 @@ export interface StripePlans {
   usage_type: string
 }
 
+export interface SubscriptionDetails {
+  name: string
+  description: string
+  features: Array<string>
+  extraFeatures?: Array<string>
+  storage: number
+  numProjects: number
+  transactionFee: string
+}
+
+export interface Subscription {
+  id: string
+  object: 'subscription'
+  application_fee_percent: null
+  billing_cycle_anchor: number
+  billing_thresholds: null
+  cancel_at: null
+  cancel_at_period_end: boolean
+  canceled_at: null
+  collection_method: 'charge_automatically'
+  created: number
+  current_period_end: number
+  current_period_start: number
+  customer: string
+  days_until_due: null
+  default_payment_method: null
+  default_source: null
+  default_tax_rates: []
+  discount: null
+  ended_at: null
+  items: {
+    object: 'list'
+    data: [
+      {
+        id: string
+        object: 'subscription_item'
+        billing_thresholds: null
+        created: number
+        metadata: {}
+        price: {
+          id: StripeElementChangeEvent
+          object: 'price'
+          active: boolean
+          billing_scheme: 'per_unit'
+          created: number
+          currency: 'cad'
+          livemode: false
+          lookup_key: null
+          metadata: {}
+          nickname: null
+          product: string
+          recurring: {
+            aggregate_usage: null
+            interval: 'month'
+            interval_count: number
+            usage_type: 'licensed'
+          }
+          tiers_mode: null
+          transform_quantity: null
+          type: 'recurring'
+          unit_amount: number
+          unit_amount_decimal: string
+        }
+        quantity: number
+        subscription: string
+        tax_rates: []
+      }
+    ]
+    has_more: boolean
+    url: string
+  }
+  latest_invoice: null
+  livemode: boolean
+  metadata: { type: SubscriptionType; extraStorage?: string }
+  next_pending_invoice_item_invoice: null
+  pause_collection: null
+  pending_invoice_item_interval: null
+  pending_setup_intent: null
+  pending_update: null
+  schedule: null
+  start_date: number
+  status: 'active'
+  transfer_data: null
+  trial_end: null
+  trial_start: null
+}
+
 export type Account = {
   id: string
   owner: string // id of user
-  email: string | null
   type: 'creator' | 'client'
   region?: Region
-  name?: string
+  name: string
   security: {
     twoFactorEnabled: boolean
     textMessageVerification: boolean
@@ -146,10 +251,6 @@ export type Account = {
     detailsSubmitted: boolean
     payoutsEnabled: boolean
   }
-  subscription: {
-    type: SubscriptionType
-    extraStorage?: number
-  }
   settings: {
     sharingPrivacy: SharingPrivacy
     watermarkStyle: WatermarkStyle
@@ -158,6 +259,7 @@ export type Account = {
   }
   branding: {
     email: {
+      foregroundColor: string
       backgroundColor: string
       text: string
       buttonBackgroundColor: string
@@ -242,29 +344,29 @@ export type Project = {
   campaignExpenses: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt?: Date
-  updatedAt?: Date
+  createdAt?: Date | string
+  updatedAt?: Date | string
   id: string
-  videos: Array<MediaObject>
-  images: Array<MediaObject>
+  videos: Array<string>
+  images: Array<string>
   canInvoice: Boolean
   status: ProjectStatus
   featuredImage?: string
 }
 
-export type InvoiceConversation={
-  name:string
-  sendersEmail:string
-  message:string
-  date:Date|string
-  id:string,
-  receiversEmail:string
+export type InvoiceConversation = {
+  name: string
+  sendersEmail: string
+  message: string
+  date: Date | string
+  id: string
+  receiversEmail: string
 }
 
-export type InvoiceUserInfo={
-  name:string,
-  id:string,
-  email:string
+export type InvoiceUserInfo = {
+  name: string
+  id: string
+  email: string
 }
 
 export type Invoice = {
@@ -280,8 +382,8 @@ export type Invoice = {
   projectName: string
   campaignDeadLine: string
   featuredImage?: string
-  conversation?:Array<InvoiceConversation>
-  userDetails:InvoiceUserInfo
+  conversation?: Array<InvoiceConversation>
+  userDetails: InvoiceUserInfo
 }
 
 export type ProjectStatus =
@@ -314,11 +416,20 @@ export type Client = {
 
 export type AllProjects = Array<Project>
 
+export interface PortfolioFolderCache {
+  [id: string]: PortfolioFolder
+}
+
+export interface PortfolioCache {
+  [id: string]: Portfolio
+}
+
 export interface PortfolioFolder {
   id: string
   name: string
   description?: string
   portfolios: Array<string>
+  createdAt: number
 }
 
 export interface Portfolio {
@@ -327,6 +438,18 @@ export interface Portfolio {
   description?: string
   icon?: string | null
   projects: Array<string> // project ids
+  folderId: string
+  createdAt?: number
+}
+
+export interface PortfolioShare {
+  id: string
+  accountId: string
+  portfolioId: string
+  title: string
+  description: string | undefined
+  createdAt: number
+  isViewed: boolean
 }
 
 export type Cell = {
@@ -336,19 +459,57 @@ export type Cell = {
   key: string
 }
 
-export type Mail={
-  to:string
-  data:Object
-  templateId:string,
-  type:string
+export type Mail = {
+  to: string
+  data: Object
+  templateId: string
+  type: string
 }
 
-export type MailTemplate={
-  id:string,
-  type:string
+export type MailTemplate = {
+  id: string
+  type: string
+}
+
+export type PortfolioShareMailData = {
+  foregroundColor: string
+  backgroundColor: string
+  textColor: string
+  buttonBackgroundColor: string
+  buttonTextColor: string
+  link: string
+  sender: string
+  contentDesc: string
+  logo: string
+  portfolioName: string
 }
 
 export type Row = {
-  key:string
-  row:Array<Cell>
+  key: string
+  row: Array<Cell>
+}
+
+export type Branding = {
+  email: {
+    foregroundColor: string
+    backgroundColor: string
+    text: string
+    buttonBackgroundColor: string
+    buttonTextColor: string
+  }
+  portfolio: {
+    backgroundColor: string
+    foregroundColor: string
+    text: string
+    headerGradient1: string
+    headerGradient2: string
+  }
+}
+
+export interface Notification {
+  id: string
+  type: 'portfolioViewed'
+  createdAt: number
+  title: string
+  isRead: boolean
 }

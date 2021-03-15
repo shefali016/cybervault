@@ -18,7 +18,10 @@ import {
   GET_ACCOUNT_SUCCESS,
   GET_USER_FAILURE,
   GET_USER_SUCCESS,
-  GET_ACCOUNT_FAILURE
+  GET_ACCOUNT_FAILURE,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_ERROR
 } from 'actions/actionTypes'
 import { User, Account } from 'utils/Interface'
 import { createTransform } from 'redux-persist'
@@ -32,12 +35,18 @@ export type State = {
   accountRestored: boolean
   getAccountError: string | null
   error: string | null
+  signUpError: string | null
   userUpdating: boolean
   userUpdateSuccess: boolean
   userUpdateError: string | null
   accountUpdating: boolean
   accountUpdateSuccess: boolean
   accountUpdateError: string | null
+  changePasswordLoading: boolean
+  changePasswordSuccess: boolean
+  changePasswordError: boolean
+  changePasswordData: string
+  signUpLoading: boolean
 }
 
 export type Action = {
@@ -55,6 +64,7 @@ const initialState = {
   accountRestored: false,
   isLoggedIn: false,
   error: null,
+  signUpError: null,
   userUpdating: false,
   userUpdateSuccess: false,
   userUpdateError: null,
@@ -62,14 +72,24 @@ const initialState = {
   accountUpdateSuccess: false,
   accountUpdateError: null,
   getAccountError: null,
-  getUserError: null
+  getUserError: null,
+  changePasswordLoading: false,
+  changePasswordSuccess: false,
+  changePasswordError: false,
+  changePasswordData: '',
+  signUpLoading: false
 }
 
-const signUp = (state: State, action: Action) => ({ ...state, error: null })
+const signUp = (state: State, action: Action) => ({
+  ...state,
+  signUpError: null,
+  signUpLoading: true
+})
 
 const signUpFailure = (state: State, action: Action) => ({
   ...state,
-  error: action.error
+  signUpError: action.error,
+  signUpLoading: false
 })
 
 const signUpSuccess = (state: State, action: Action) => {
@@ -79,7 +99,8 @@ const signUpSuccess = (state: State, action: Action) => {
     user: action.user,
     account: action.account,
     userRestored: true,
-    accountRestored: true
+    accountRestored: true,
+    signUpLoading: false
   }
 }
 
@@ -100,6 +121,34 @@ const loginSuccess = (state: State, action: Action) => {
     account: action.account,
     userRestored: true,
     accountRestored: true
+  }
+}
+
+const resetPasswordRequest = (state: State, action: Action) => {
+  return {
+    ...state,
+    changePasswordLoading: true,
+    changePasswordSuccess: false,
+    changePasswordError: false
+  }
+}
+const resetPasswordSuccess = (state: State, action: Action) => {
+  return {
+    ...state,
+    changePasswordLoading: false,
+    changePasswordSuccess: true,
+    changePasswordError: false,
+    changePasswordData: action.payload
+  }
+}
+
+const resetPasswordError = (state: State, action: Action) => {
+  return {
+    ...state,
+    changePasswordLoading: false,
+    changePasswordSuccess: false,
+    changePasswordError: true,
+    changePasswordData: action.error
   }
 }
 
@@ -144,8 +193,13 @@ const authReducer = (state = initialState, action: Action) => {
     case LOGIN_SUCCESS:
       return loginSuccess(state, action)
     case LOGIN_FAILURE:
-      console.log(action)
       return loginFailure(state, action)
+    case RESET_PASSWORD_REQUEST:
+      return resetPasswordRequest(state, action)
+    case RESET_PASSWORD_SUCCESS:
+      return resetPasswordSuccess(state, action)
+    case RESET_PASSWORD_ERROR:
+      return resetPasswordError(state, action)
     case LOGOUT_SUCCESS:
       return logoutSuccess(state, action)
     case LOGOUT_FAILURE:
@@ -199,6 +253,7 @@ const authReducer = (state = initialState, action: Action) => {
         accountUpdating: false,
         accountUpdateError: action.error
       }
+
     default:
       return state
   }

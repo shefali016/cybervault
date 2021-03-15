@@ -8,7 +8,13 @@ import CloseButton from '../Common/Button/CloseButton'
 import { ReduxState } from 'reducers/rootReducer'
 import { ToastContext } from 'context/Toast'
 import { generateNewInvoiceRequest } from '../../actions/invoiceActions'
-import { Project, Account, Client, MailTemplate } from '../../utils/Interface'
+import {
+  Project,
+  Account,
+  Client,
+  MailTemplate,
+  Mail
+} from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjectsRequest } from '../../actions/projectActions'
@@ -176,7 +182,7 @@ const InvoiceData = ({
 
   const handleSendMail = () => {
     const invoiceId = generateUid()
-    const mailPayload = {
+    const mailPayload: Mail = {
       to: clientData.email.trim() || '',
       templateId: templateId.trim() || '',
       type: 'invoice',
@@ -184,7 +190,7 @@ const InvoiceData = ({
         clientEmail: clientData.email.trim() || '',
         projectName: projectData.campaignName || '',
         invoiceId: invoiceId.trim() || '',
-        userEmail: account.email || '',
+        userEmail: userInfo.email || '',
         amount:
           invoiceType === 'fullAmount'
             ? getFullAmount()

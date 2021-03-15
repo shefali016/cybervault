@@ -34,12 +34,16 @@ export function getPortfolioFolderRequest() {
 
 export function getPortfolioFolderSuccess(
   folderList: Array<Types.PortfolioFolder>,
-  portfolios: Map<string, Types.Portfolio>
+  portfolios: Map<string, Types.Portfolio>,
+  folderCache: Types.PortfolioFolderCache,
+  portfolioCache: Types.PortfolioCache
 ) {
   return {
     type: ActionTypes.GET_PORTFOLIO_FOLDER_SUCCESS,
     payload: folderList,
-    portfolios
+    portfolios,
+    folderCache,
+    portfolioCache
   }
 }
 
@@ -72,20 +76,21 @@ export function deletePortfolioFolderFailure(error: string) {
 }
 
 /* Portfolio Requests Action */
-export function updatePortfolioRequest(
-  portfolio: Types.Portfolio,
-  folderId: string
-) {
+export function updatePortfolioRequest(portfolio: Types.Portfolio) {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO,
-    portfolio,
-    folderId
+    portfolio
   }
 }
 
-export function updatePortfolioSuccess() {
+export function updatePortfolioSuccess(
+  folder: Types.PortfolioFolder,
+  portfolio: Types.Portfolio
+) {
   return {
     type: ActionTypes.UPDATE_PORTFOLIO_SUCCESS,
+    folder,
+    portfolio
   }
 }
 
@@ -120,3 +125,18 @@ export function getPortfolioFailure(error: string) {
     error
   }
 }
+
+export const requestSharePortfolio = (
+  portfolio: Types.Portfolio,
+  contentDesc: string,
+  email: string
+) => ({ type: ActionTypes.SHARE_PORTFOLIO, portfolio, contentDesc, email })
+
+export const sharePortfolioSuccess = () => ({
+  type: ActionTypes.SHARE_PORTFOLIO_SUCCESS
+})
+
+export const sharePortfolioFailure = (error: string) => ({
+  type: ActionTypes.SHARE_PORTFOLIO_FAILURE,
+  error
+})

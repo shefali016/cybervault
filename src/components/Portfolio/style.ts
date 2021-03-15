@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core'
+import { getCardHeight } from 'utils'
 import { GREY_COLOR, TRANSPARENT } from 'utils/constants/colorsConstants'
 import {
   CENTER,
@@ -8,6 +9,145 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  contentHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(5),
+    padding: `${theme.spacing(2)}px ${theme.spacing(0)}px`,
+    [theme.breakpoints.down('md')]: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      padding: `${theme.spacing(2)}px ${theme.spacing(0)}px`
+    }
+  },
+  contentHeaderLogo: {
+    height: 60,
+    width: 'auto'
+  },
+  portfolioTitle: {},
+
+  activeDot: { position: 'absolute', left: '50%', bottom: 6 },
+
+  screen: { minHeight: '100vh', display: 'flex', flexDirection: 'column' },
+  screenloader: { alignSelf: 'center' },
+
+  projectBarContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
+    [theme.breakpoints.down('sm')]: {
+      padding: `${theme.spacing(1)}px ${theme.spacing(1)}px`
+    }
+  },
+  portfoloTabsList: {
+    overflowX: 'scroll',
+    flex: 1,
+    display: 'inline-flex',
+    gap: 20,
+    listStyle: 'none'
+  },
+
+  projectBarCollapsed: {
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: theme.spacing(1),
+    transition: theme.transitions.create(['height', 'padding'], {
+      duration: 400,
+      easing: theme.transitions.easing.easeOut
+    })
+  },
+
+  projectButton: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontWeight: 'bold',
+    fontSize: 18,
+    margin: 0,
+    marginTop: 0,
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: 270
+    },
+    color: 'black'
+  },
+
+  shareButton: {
+    fontSize: 20,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    borderRadius: 100,
+    background: theme.palette.background.default,
+    color: theme.palette.text.background,
+    '&:hover': { background: theme.palette.background.surfaceHighlight }
+  },
+
+  portfoloDarkTabsList: {
+    '& $projectButton': {
+      color: '#fff'
+    }
+  },
+  portfolioWrapper: {
+    display: 'flex',
+    flex: 1,
+    flexGrow: 1,
+    flexDirection: 'column',
+    maxWidth: 1500,
+    alignSelf: 'center',
+    borderRadius: 20,
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(5),
+    padding: `${theme.spacing(7)}px ${theme.spacing(6)}px`,
+    marginBottom: theme.spacing(5),
+    [theme.breakpoints.down('md')]: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+      marginBottom: theme.spacing(4)
+    }
+  },
+  assetsOuter: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: theme.spacing(14)
+  },
+  assetsInner: {
+    alignSelf: 'center',
+    width: '100%'
+  },
+  assetDivider: {
+    background: 'rgba(0,0,0,0.2) !important',
+    marginTop: `${theme.spacing(10)}px !important`,
+    marginBottom: `${theme.spacing(10)}px !important`,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: `${theme.spacing(5)}px !important`,
+      marginBottom: `${theme.spacing(5)}px !important`
+    }
+  },
+
+  portfolioList: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: 1200
+  },
+  responsivePortfolioItem: {},
+
+  addIcon: {
+    fontSize: 30,
+    color: theme.palette.primary.light,
+    opacity: 0.6,
+    marginRight: theme.spacing(1),
+    transition: theme.transitions.create(['opacity'], {
+      duration: 500
+    })
+  },
   uploadFolderIcon: {
     fontSize: 60,
     color: theme.palette.primary.light,
@@ -30,24 +170,19 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: '15px',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#5ea5fc',
     fontWeight: 600,
     cursor: 'pointer',
-    padding: '15px 4px 15px 15px',
-    height: '100%',
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    height: theme.spacing(10),
+    minWidth: getCardHeight(theme),
     boxSizing: 'border-box'
   },
   portfolioFolderTitle: {
-    marginBottom: '10px',
+    marginBottom: theme.spacing(2),
     display: 'flex',
     alignItems: 'center',
-    '& span': {
-      marginLeft: 10,
-      cursor: 'pointer',
-      '& svg': {
-        width: 18
-      }
-    }
+    marginLeft: theme.spacing(5)
   },
   portfolioLogo: {
     height: 80,
@@ -57,30 +192,19 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: 5,
     overflow: 'hidden'
   },
-  logoCOntent: {
-    width: 'calc(100% - 108px)',
-    padding: '0 0px 0 15px',
-
-    '& h5': {
-      color: '#353535',
-      fontSize: '14px',
-      margin: '0 0 5px 0',
-      fontWeight: 500,
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
-    },
-    '& p ': {
-      fontSize: '10px',
-      color: '#000',
-      fontWeight: 300,
-      margin: 0
-    }
-  },
+  logoContent: { flex: 1, padding: theme.spacing(2) },
   cardLogo: {
-    width: 60,
+    minWidth: 60,
+    height: 60,
+    borderRadius: 30,
+    overflow: 'hidden',
+    background: theme.palette.grey[200],
+    position: 'relative',
     '& img': {
-      maxWidth: '100%'
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover'
     }
   },
   listItemText: {
@@ -140,10 +264,12 @@ export const useStyles = makeStyles((theme) => ({
     maxWidth: '500px'
   },
   portfolioBoxWrap: {
+    marginBottom: theme.spacing(6),
+    margin: `0 ${theme.spacing(5)}px`,
+    padding: theme.spacing(3),
     borderRadius: '18px',
     border: '2px dashed #9ea0a28c',
     textAlign: 'center',
-    padding: '40px',
     cursor: 'pointer',
     color: theme.palette.text.meta,
     transition: theme.transitions.create(
@@ -158,6 +284,9 @@ export const useStyles = makeStyles((theme) => ({
       background: 'rgba(0,0,0,0.1)',
       '& $uploadFolderIcon': {
         opacity: 1
+      },
+      '& $addIcon': {
+        opacity: 1
       }
     }
   },
@@ -166,7 +295,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   loader: {
     textAlign: CENTER,
-    margin: '0 auto'
+    margin: theme.spacing(5)
   },
   image: {},
   listProject: {

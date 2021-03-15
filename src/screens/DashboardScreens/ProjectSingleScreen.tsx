@@ -40,8 +40,8 @@ type EditProjectStates = {
   isCampaignEdit: boolean | undefined
   isTaskEdit: boolean | undefined
   isBudgetEdit: boolean | undefined
-  isImageLoading: boolean | undefined
-  isVideoLoading: boolean | undefined
+  imagesLoading: string[]
+  videosLoading: string[]
   showTostify: boolean
   account: Types.Account
 }
@@ -60,8 +60,8 @@ const EditProjectScreen = (props: any) => {
     isCampaignEdit: false,
     isTaskEdit: false,
     isBudgetEdit: false,
-    isImageLoading: false,
-    isVideoLoading: false,
+    imagesLoading: [],
+    videosLoading: [],
     showTostify: false,
     account: props.account
   })
@@ -119,27 +119,32 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
-  const onAssetUpload = (type: 'image' | 'video') => async (file: File) => {
+  const uploadFiles = (type: 'image' | 'video') => async (files: File[]) => {
+    files.map((file: File) => handleAssetUpload(file, type))
+  }
+
+  const handleAssetUpload = async (file: File, type: 'image' | 'video') => {
+    const { account } = props
+
+    const asset: ProjectAsset = {
+      type,
+      files: [],
+      fileName: file.name,
+      id: generateUid()
+    }
+
+    setState(
+      Object.assign(
+        state,
+        'image' ? { videosLoading: [...state.videosLoading, asset.id] } : {},
+        'video' ? { imagesLoading: [...state.imagesLoading, asset.id] } : {}
+      )
+    )
+
     try {
-      const { account } = props
-
-      setState({
-        ...state,
-        [type === 'image' ? 'isImageLoading' : 'isVideoLoading']: true
-      })
-
-      const asset: ProjectAsset = {
-        type,
-        files: [],
-        fileName: file.name,
-        id: generateUid()
-      }
-      var form = new FormData()
-      form.append('file',file)
-      form.append('name',file.name)
-      form.append('id',asset.id)
-
+      console.log("--------------------------------")
       const downloadUrl = await setMedia(asset.id, file)
+      console.log(downloadUrl,"jjjjjjjjjjjjjjjjjjjjjjj")
 
       if (typeof downloadUrl === 'string') {
         asset.files.push(getImageObject(file, downloadUrl, asset.id))
@@ -152,17 +157,47 @@ const EditProjectScreen = (props: any) => {
             : { videos: [...state.projectData.videos, asset.id] }
         )
 
-        setState({
-          ...state,
-          projectData: project,
-          isVideoLoading: false
-        })
+        setState((state) =>
+          Object.assign(
+            state,
+            { projectData: project },
+            'image'
+              ? {
+                  videosLoading: state.videosLoading.filter(
+                    (a) => a !== asset.id
+                  )
+                }
+              : {},
+            'video'
+              ? {
+                  imagesLoading: state.imagesLoading.filter(
+                    (a) => a !== asset.id
+                  )
+                }
+              : {}
+          )
+        )
 
         props.updateProjectDetails(project)
       } else {
         throw Error('Download url is not a string')
       }
     } catch (error) {
+      setState((state) =>
+        Object.assign(
+          state,
+          'image'
+            ? {
+                videosLoading: state.videosLoading.filter((a) => a !== asset.id)
+              }
+            : {},
+          'video'
+            ? {
+                imagesLoading: state.imagesLoading.filter((a) => a !== asset.id)
+              }
+            : {}
+        )
+      )
       console.log('Asset upload failed.', error)
       toastContext.showToast({ title: `Failed to upload ${type}` })
     }
@@ -247,6 +282,7 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  console.log(state.projectData.videos,"videosssss")
   const renderBody = () => {
     return (
       <div className={classes.detailsWrapper}>
@@ -256,10 +292,10 @@ const EditProjectScreen = (props: any) => {
           <AssetUploadDisplay
             {...{
               containerClassName: classes.uploadVideoContainer,
-              onUpload: onAssetUpload('video'),
+              onUpload: uploadFiles('video'),
               assetIds: state.projectData.videos,
               accountId: props.account.id,
-              isLoading: state.isVideoLoading,
+              isLoading: !!state.videosLoading.length,
               title: 'Upload Video Content',
               isVideo: true
             }}
@@ -268,10 +304,10 @@ const EditProjectScreen = (props: any) => {
           <FeatureAssetUpload
             {...{
               containerClassName: classes.uploadImageContainer,
-              onUpload: onAssetUpload('image'),
+              onUpload: uploadFiles('image'),
               assetIds: state.projectData.images,
               accountId: props.account.id,
-              isLoading: state.isImageLoading,
+              isLoading: !!state.imagesLoading.length,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
               featuredAsset: state.projectData.featuredImage

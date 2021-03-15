@@ -10,7 +10,7 @@ export const RenderCampaignDetails = (props: any) => {
     <div
       className={clsx(classes.clientDetailsContainer, props.className || '')}>
       <div className={classes.innerDiv}>
-        <Typography variant={'h6'} className={classes.title}>
+        <Typography variant={'h5'} className={classes.title}>
           Campaign Description
         </Typography>
       </div>

@@ -22,7 +22,10 @@ import {
   Tab,
   User,
   Account,
-  Portfolio
+  Portfolio,
+  Subscription,
+  SubscriptionType,
+  SubscriptionDetails
 } from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
@@ -43,6 +46,7 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 // import BankingScreen from 'screens/SharedScreens/BankingScreen'
 import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
+import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 
 import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
@@ -50,21 +54,24 @@ import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
-import { getCustomer } from 'actions/stripeActions'
+import { getCustomer, getSubscription } from 'actions/stripeActions'
+import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
+import { findProjectLimit } from 'utils/helpers'
+import { SubscriptionItem } from 'components/Subscription/SubscriptionItem'
+import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
   projects: 'projects',
   portfolio: 'portfolio',
-  settings: 'settings',
-  storage: 'storage'
+  invoices: 'invoices',
+  settings: 'settings'
 }
 
 export const AccountTabIds = {
-  profile: 'profile',
   manage: 'manage',
-  branding: 'branding',
-  subscription: 'subscription'
+  profile: 'profile',
+  branding: 'branding'
 }
 
 export const ChildTabs = {
@@ -72,7 +79,7 @@ export const ChildTabs = {
 }
 
 export const SharedTabIds = {
-  invoices: 'invoices',
+  subscription: 'subscription',
   security: 'security'
 }
 
@@ -86,6 +93,7 @@ type DispatchProps = {
   getUser: (id: string) => void
   getAccount: (id: string) => void
   getCustomer: () => void
+  getSubscription: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -93,6 +101,8 @@ type StateProps = {
   customerRestored: boolean
   user: User
   account: Account
+  allProjectsData: Array<Project>
+  accountSubscription: Subscription
 }
 type Props = { history: any; location: any } & StateProps & DispatchProps
 
@@ -105,23 +115,45 @@ const MainScreen = ({
   getUser,
   getAccount,
   getCustomer,
+  getSubscription,
   user,
-  account
+  account,
+  allProjectsData,
+  accountSubscription
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   const getInitialScreenView = () => {
-    return Object.values(DashboardTabIds).includes(
+    return Object.values({ ...AccountTabIds }).includes(
       history.location.pathname.replace('/', '')
     )
-      ? ScreenViews.dashboard
-      : ScreenViews.account
+      ? ScreenViews.account
+      : ScreenViews.dashboard
   }
 
   const [screenView, setScreenView] = useState(getInitialScreenView())
 
+  const isBeyondProjectLimit = useMemo(() => {
+    const subscriptionType: SubscriptionType = getSubscriptionType(
+      accountSubscription
+    )
+    const subscriptionDetails: SubscriptionDetails = getSubscriptionDetails(
+      subscriptionType
+    )
+    const allowedProjects = subscriptionDetails.numProjects
+    const currentMonthProjects = allProjectsData
+      ? findProjectLimit(allProjectsData)
+      : 0
+
+    return currentMonthProjects >= allowedProjects
+  }, [accountSubscription, allProjectsData])
+
   const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+
+  const handleProjectModalShow = () => {
+    openNewProjectModal()
+  }
 
   const openNewProjectModal = useCallback(
     () => setNewProjectModalOpen(true),
@@ -151,26 +183,30 @@ const MainScreen = ({
       case DashboardTabIds.portfolio:
         return {
           id,
-          text: 'Portfolio',
+          text: 'Portfolios',
           icon: <PortfolioIcon className={classes.listIconStyle} />
+        }
+      // case DashboardTabIds.storage:
+      //   return {
+      //     id,
+      //     text: 'Storage',
+      //     icon: <StorageIcon className={classes.listIconStyle} />
+      //   }
+      case DashboardTabIds.invoices:
+        return {
+          id,
+          text: 'Invoices',
+          icon: <InvoiceIcon className={classes.listIconStyle} />
         }
       case DashboardTabIds.settings:
         return {
           id,
           text: 'Settings',
-          icon: <SettingsIcon className={classes.listIconStyle} />
-        }
-      case DashboardTabIds.storage:
-        return {
-          id,
-          text: 'Storage',
-          icon: <StorageIcon className={classes.listIconStyle} />
-        }
-      case SharedTabIds.invoices:
-        return {
-          id,
-          text: 'Invoices',
-          icon: <InvoiceIcon className={classes.listIconStyle} />
+          icon: <SettingsIcon className={classes.listIconStyle} />,
+          onPress: () => {
+            history.replace(`/manage`)
+            setScreenView(ScreenViews.account)
+          }
         }
       case SharedTabIds.security:
         return {
@@ -197,7 +233,7 @@ const MainScreen = ({
           text: 'Branding',
           icon: <BrandingIcon className={classes.listIconStyle} />
         }
-      case AccountTabIds.subscription:
+      case SharedTabIds.subscription:
         return {
           id,
           text: 'Subscription',
@@ -248,14 +284,18 @@ const MainScreen = ({
       default:
         return {
           title: 'New Project',
-          onClick: openNewProjectModal,
+          onClick: handleProjectModalShow,
           icon: <AddIcon className={classes.buttonIcon} />
         }
     }
   }
 
   const handleActiveTabPress = (tab: Tab) => {
-    history.replace(`/${tab.id}`)
+    if (typeof tab.onPress === 'function') {
+      tab.onPress()
+    } else {
+      history.replace(`/${tab.id}`)
+    }
     if (tab.id !== activeTab.id) {
       setActiveTab(tab)
     }
@@ -285,12 +325,6 @@ const MainScreen = ({
     }
   }
 
-  const renderLoading = () => (
-    <div className={classes.splashScreen}>
-      <AppLoader color={theme.palette.primary.main} />
-    </div>
-  )
-
   useEffect(() => {
     if (!userRestored) {
       getUser(user.id)
@@ -301,18 +335,33 @@ const MainScreen = ({
     if (!customerRestored) {
       getCustomer()
     }
+    // getSubscription()
   }, [])
 
   if (!(userRestored && accountRestored)) {
-    return renderLoading()
+    return <FullScreenLoader />
+  }
+
+  const handleUpgradeSubscription = () => {
+    closeNewProjectModal()
+    setTimeout(
+      () =>
+        history.push({
+          pathname: '/subscription',
+          state: { params: { isSubscribing: true } }
+        }),
+      1
+    )
   }
 
   return (
     <Layout {...getLayoutProps()}>
       <NewProjectModal
+        onUpgradeSubscription={handleUpgradeSubscription}
         open={newProjectModalOpen}
         onRequestClose={closeNewProjectModal}
         onSubmitClicked={createNewProject}
+        isBeyondLimit={isBeyondProjectLimit}
       />
       <div className={classes.screen}>
         <Switch>
@@ -329,6 +378,10 @@ const MainScreen = ({
             component={InvoicesClientScreen}
           />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
+          <Route
+            path='/portfolioFolder/:id'
+            component={PortfolioFolderScreen}
+          />
           <Route path='/paymentmethods' component={PaymentMethodsScreen} />
           <Route
             path='/refresh_account_link/:id'
@@ -342,14 +395,6 @@ const MainScreen = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  splashScreen: {
-    display: 'flex',
-    height: '100vh',
-    width: '100vw',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: theme.palette.background.default
-  },
   listIconStyle: {
     marginRight: theme.spacing(5),
     color: theme.palette.primary.light,
@@ -381,7 +426,9 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   userRestored: state.auth.userRestored,
   customerRestored: state.stripe.customerRestored,
   user: state.auth.user as User,
-  account: state.auth.account as Account
+  account: state.auth.account as Account,
+  allProjectsData: state.project.allProjectsData as Array<Project>,
+  accountSubscription: state.stripe.accountSubscription as Subscription
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -389,7 +436,8 @@ const mapDispatchToProps: DispatchProps = {
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
   getAccount: (id: string) => getAccount(id),
-  getCustomer: () => getCustomer()
+  getCustomer: () => getCustomer(),
+  getSubscription: () => getSubscription()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

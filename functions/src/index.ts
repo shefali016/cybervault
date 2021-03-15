@@ -2,11 +2,13 @@ import * as functions from 'firebase-functions'
 import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
+import { generateUid } from './utils'
+import { Mail } from './utils/interfaces'
+import templates from './sendGridTemplates.json'
+import config from './config.json'
+
 const sgMail = require('@sendgrid/mail')
 
-// import firebaseAccountCredentials from "./cybervault-8cfe9-firebase-adminsdk-kpppk-d07b59a821.json";
-
-// const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 const app = express()
 
 export const corsHandler = cors({ origin: true })
@@ -73,7 +75,7 @@ export const sendEmail = functions.firestore
     try {
       let newData = change.after.data()
       let oldData = change.before.data()
-      if (!oldData && newData?.to && newData?.templateId) {
+      if (!oldData && newData && newData.to && newData.templateId) {
         const msg = {
           to: newData.to,
           from: functions.config().from_email.key,
@@ -81,16 +83,93 @@ export const sendEmail = functions.firestore
           dynamic_template_data: newData.data
         }
         sgMail.setApiKey(`${functions.config().sendgrid.key}`)
-        sgMail
-          .send(msg)
-          .then((res: any) => {
-            console.log('success')
-          })
-          .catch((error: any) => {
-            console.log(error, 'error Occurs')
-          })
+        return sgMail.send(msg)
       }
     } catch (error) {
+      console.log('sendEmail error', error)
+    }
+  })
+
+export const handlePortfolioShareViewed = functions.firestore
+  .document(`PortfolioShares/{id}`)
+  .onWrite((change) => {
+    try {
+      let newShare = change.after.data()
+      let oldShare = change.before.data()
+      if (oldShare && newShare && !oldShare.isViewed && newShare.isViewed) {
+        const id = generateUid()
+        const notification = {
+          id,
+          type: 'portfolioViewed',
+          createdAt: Date.now(),
+          title: `Your ${newShare.title} portfolio has been viewed.`,
+          isRead: false
+        }
+        return admin
+          .firestore()
+          .collection('AccountData')
+          .doc(newShare.accountId)
+          .collection('Notifications')
+          .doc(id)
+          .set(notification)
+      }
+      return true
+    } catch (error) {
       console.log(error, 'error occurs')
+      return false
+    }
+  })
+
+export const handleNotificationCreated = functions.firestore
+  .document(`AccountData/{accountId}/Notifications/{id}`)
+  .onCreate(async (snapshot, context) => {
+    try {
+      let notification = snapshot.data()
+      const { accountId } = context.params
+
+      if (notification) {
+        const accountSnapshot = await admin
+          .firestore()
+          .collection('Accounts')
+          .doc(accountId)
+          .get()
+        const account = accountSnapshot.data()
+
+        if (!account) {
+          return false
+        }
+
+        const accountOwnerSnapshot = await admin
+          .firestore()
+          .collection('Users')
+          .doc(account.owner)
+          .get()
+        const accountOwner = accountOwnerSnapshot.data()
+
+        if (!accountOwner) {
+          return false
+        }
+
+        const { title } = notification
+
+        const to = accountOwner.email
+
+        const mail: Mail = {
+          to,
+          data: {
+            title,
+            link: `${config.domain}/dashboard`,
+            logo: `${config.domain}/logo.png`
+          },
+          type: 'notification',
+          templateId: templates.notification
+        }
+
+        return admin.firestore().collection('Mails').doc().set(mail)
+      }
+      return true
+    } catch (error) {
+      console.log(error, 'error occurs')
+      return false
     }
   })

@@ -1,17 +1,21 @@
-export default function validate(step: number, projectData: any,clientData:any) {
+import { Project } from 'utils/Interface'
+import moment from 'moment'
 
+export default function validate(
+  step: number,
+  projectData: any,
+  clientData: any
+) {
   switch (step) {
     case 1:
-      if (
-        clientData.id.trim() === '' 
-      ) {
+      if (clientData.id.trim() === '') {
         return true
       }
       break
     case 2:
       if (
         projectData.campaignName.trim() === '' ||
-        projectData.campaignDate.trim() === ''|| 
+        projectData.campaignDate.trim() === '' ||
         projectData.campaignObjective.trim() === '' ||
         projectData.campaignDeadLine.trim() === ''
       ) {
@@ -75,16 +79,60 @@ export const getTextColor = (color: any) => {
   }
 }
 
-export const validateAddClient=(clientData:any)=>{
+export const validateAddClient = (clientData: any) => {
   if (
     clientData.name.trim() === '' ||
     clientData.email.trim() === '' ||
     clientData.address.trim() === '' ||
     clientData.city.trim() === '' ||
     clientData.state.trim() === '' ||
-    clientData.address.trim() === ''||
+    clientData.address.trim() === '' ||
     clientData.country.trim() === ''
   ) {
     return true
   }
+}
+
+type PasswordType = {
+  newPassword: string
+  confirmPassword: string
+  currentPassword: string
+}
+
+export const validatePassword = (data: PasswordType) => {
+  let errors: any
+  errors = {}
+  if (data.hasOwnProperty('newPassword')) {
+    if (data.newPassword == '') {
+      errors.newPassword = 'Enter a password'
+    } else if (data.newPassword && data.newPassword.length < 6) {
+      errors.newPassword = 'Password should not be less than 6 characters'
+    }
+  }
+  if (data.hasOwnProperty('confirmPassword')) {
+    if (data.confirmPassword == '') {
+      errors.confirmPassword = 'Confirm your password'
+    } else if (data.confirmPassword !== data.newPassword) {
+      errors.confirmPassword = 'Passwords do not match'
+    }
+  }
+  if (data.hasOwnProperty('currentPassword')) {
+    if (data.currentPassword == '') {
+      errors.currentPassword = 'Enter current password'
+    } else if (data.currentPassword && data.currentPassword.length < 6) {
+      errors.currentPassword = 'Password should not be less than 6 characters'
+    }
+  }
+  return errors
+}
+
+export const findProjectLimit = (allProjectsData: Array<Project>) => {
+  let curentMonthProjects = []
+  for (let index = 0; index < allProjectsData.length; index++) {
+    const element = allProjectsData[index]
+    if (moment().isSame(element.createdAt, 'month')) {
+      curentMonthProjects.push(element)
+    }
+  }
+  return curentMonthProjects.length
 }

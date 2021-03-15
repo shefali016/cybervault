@@ -2,7 +2,12 @@ import Section from 'components/Common/Section'
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { Account, StripeAccount, StripeLoginLink } from '../../utils/Interface'
+import {
+  Account,
+  StripeAccount,
+  StripeLoginLink,
+  User
+} from '../../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { connect } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -25,7 +30,7 @@ import { Invoice } from '../../utils/Interface'
 import { InvoicesTable } from 'components/Invoices/InvoicesTable'
 
 type DispatchProps = { updateAccount: (account: Account) => void }
-type StateProps = { account: Account; invoices: Array<Invoice> }
+type StateProps = { account: Account; invoices: Array<Invoice>; user: User }
 type Props = { history: any } & StateProps & DispatchProps
 type State = {
   monthBalance: number
@@ -41,7 +46,8 @@ const InvoicesScreen = ({
   account,
   updateAccount,
   invoices,
-  history
+  history,
+  user
 }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
@@ -101,7 +107,7 @@ const InvoicesScreen = ({
       let stripeAccountId = account.stripe.accountId
 
       if (!stripeAccountId) {
-        const stripeAccount = await createStripeAccount(account)
+        const stripeAccount = await createStripeAccount(account, user)
         stripeAccountId = stripeAccount.id
       }
 
@@ -188,95 +194,117 @@ const InvoicesScreen = ({
     </div>
   )
 
-  return (
-    <div className={clsx('screenContainer', 'centerContent')}>
-      <Section className={classes.balanceSection}>
-        <div className={classes.balanceSectionInner}>
-          <div></div>
-          <div className={classes.balanceItemsContainer}>
-            <div className={classes.balanceItem}>
-              <Typography variant={'body1'}>This month</Typography>
-              <Typography variant={'h4'}>
-                {getCurrencySymbol()}
-                {monthBalance.toFixed(2)}
-              </Typography>
-              <Typography variant={'caption'} className={'metaText'}>
-                {numberOfInvoicesThisMonth} invoices
-              </Typography>
-            </div>
-            <div className={classes.balanceItem}>
-              <Typography variant={'body1'}>Your balance</Typography>
-              <Typography variant={'h4'}>
-                {getCurrencySymbol()}
-                {totalBalance.toFixed(2)}
-              </Typography>
-              <Typography variant={'caption'} className={'metaText'}>
-                {getCurrencySymbol()}
-                {availableBalance.toFixed(2)} available
-              </Typography>
-            </div>
-          </div>
-
-          <div className={classes.payOutContainer}>
-            <GradiantButton
-              className={classes.payOutButton}
-              inActive={!stripeAccount || availableBalance === 0}>
-              <Typography variant='body1'>Pay out now</Typography>
-            </GradiantButton>
-            <div
-              className={classes.viewPayouts}
-              onClick={() => navigateStripeDashboard()}>
-              <Typography
-                variant={'caption'}
-                style={{ color: theme.palette.primary.light }}>
-                View payouts
-              </Typography>
-            </div>
-          </div>
+  const renderConnect = () => {
+    if (user.id !== account.owner) {
+      return (
+        <div className={classes.buttonContainer}>
+          <Typography variant='h5'>
+            You must be an account owner to connect a stripe account
+          </Typography>
         </div>
-      </Section>
+      )
+    }
 
-      <Section className={classes.section}>
-        <div className={classes.sectionInner}>
-          {renderHeader()}
+    if (account.stripe.detailsSubmitted) {
+      return null
+    }
 
-          {!!account?.stripe?.detailsSubmitted && (
-            <div className={classes.tableContainer}>
-              <InvoicesTable
-                invoices={invoices}
-                tableContainerClassName={classes.table}
-                history={history}
-                accountId={account.id}
-              />
+    return (
+      <div className={classes.buttonContainer}>
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+          <GradiantButton onClick={handleConnectStripeAccount}>
+            <div className='row'>
+              <Typography variant='body1'>Connect with</Typography>
+              <img src={stripeLogo} height={40} />
             </div>
+          </GradiantButton>
+          {creatingAccount && (
+            <AppLoader
+              color={theme.palette.primary.light}
+              className={classes.loader}
+            />
           )}
+        </div>
+      </div>
+    )
+  }
 
-          {!account?.stripe?.detailsSubmitted && (
-            <div className={classes.buttonContainer}>
-              <div
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center'
-                }}>
-                <GradiantButton onClick={handleConnectStripeAccount}>
-                  <div className='row'>
-                    <Typography variant='body1'>Connect with</Typography>
-                    <img src={stripeLogo} height={40} />
-                  </div>
+  return (
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <Section className={classes.balanceSection}>
+            <div className={classes.balanceSectionInner}>
+              <div></div>
+              <div className={classes.balanceItemsContainer}>
+                <div className={classes.balanceItem}>
+                  <Typography variant={'body1'}>This month</Typography>
+                  <Typography variant={'h4'}>
+                    {getCurrencySymbol()}
+                    {monthBalance.toFixed(2)}
+                  </Typography>
+                  <Typography variant={'caption'} className={'metaText'}>
+                    {numberOfInvoicesThisMonth} invoices
+                  </Typography>
+                </div>
+                <div className={classes.balanceItem}>
+                  <Typography variant={'body1'}>Your balance</Typography>
+                  <Typography variant={'h4'}>
+                    {getCurrencySymbol()}
+                    {totalBalance.toFixed(2)}
+                  </Typography>
+                  <Typography variant={'caption'} className={'metaText'}>
+                    {getCurrencySymbol()}
+                    {availableBalance.toFixed(2)} available
+                  </Typography>
+                </div>
+              </div>
+
+              <div className={classes.payOutContainer}>
+                <GradiantButton
+                  className={classes.payOutButton}
+                  inActive={!stripeAccount || availableBalance === 0}>
+                  <Typography variant='body1'>Pay out now</Typography>
                 </GradiantButton>
-                {creatingAccount && (
-                  <AppLoader
-                    color={theme.palette.primary.light}
-                    className={classes.loader}
-                  />
-                )}
+                <div
+                  className={classes.viewPayouts}
+                  onClick={() => navigateStripeDashboard()}>
+                  <Typography
+                    variant={'caption'}
+                    style={{ color: theme.palette.primary.light }}>
+                    View payouts
+                  </Typography>
+                </div>
               </div>
             </div>
-          )}
+          </Section>
+
+          <Section className={classes.section}>
+            <div className={classes.sectionInner}>
+              {renderHeader()}
+
+              {!!account?.stripe?.detailsSubmitted && (
+                <div className={classes.tableContainer}>
+                  <InvoicesTable
+                    invoices={invoices}
+                    tableContainerClassName={classes.table}
+                    history={history}
+                    accountId={account.id}
+                  />
+                </div>
+              )}
+
+              {renderConnect()}
+            </div>
+          </Section>
         </div>
-      </Section>
+      </div>
     </div>
   )
 }
@@ -351,7 +379,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     marginTop: theme.spacing(2),
     borderRadius: theme.shape.borderRadius,
-    background: theme.palette.background.surface
+    background: theme.palette.background.surface,
+    padding: theme.spacing(2),
+    textAlign: 'center'
   },
   loader: { position: 'absolute', bottom: -80 },
   balanceSection: {
@@ -398,7 +428,8 @@ const useStyles = makeStyles((theme) => ({
 
 const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
-  invoices: state.invoice.allInvoicesData
+  invoices: state.invoice.allInvoicesData,
+  user: state.auth.user as User
 })
 
 const mapDispatch: DispatchProps = { updateAccount }

@@ -1,4 +1,10 @@
-import React, { ChangeEvent, Fragment, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  Fragment,
+  useContext,
+  useRef,
+  useState
+} from 'react'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { Client, Portfolio, Project } from 'utils/Interface'
 import AppTextField from 'components/Common/Core/AppTextField'
@@ -8,80 +14,124 @@ import {
   Button,
   Typography,
   List,
-  ListItemIcon,
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar
 } from '@material-ui/core'
-import CheckIcon from '@material-ui/icons/Check'
 import { useStyles } from './style'
 import { useOnChange } from 'utils/hooks'
-import ModalTitle from 'components/Projects/NewProjectTitle'
+import ModalTitle from 'components/Common/Modal/ModalTitle'
 import clsx from 'clsx'
+import { setMedia } from 'apis/assets'
+import { generateUid } from 'utils'
+import { ToastContext, ToastTypes } from 'context/Toast'
 
 type State = {
   portfolio: Portfolio
   isChooseProject: boolean
   isError: boolean
+  iconFile: string
+  uploadingIcon: boolean
 }
 
-type Props = {
-  open: boolean
-  onRequestClose: () => void
+type AddPortfolioProps = {
+  folderId: string | undefined
   onSubmit: (portfolio: Portfolio) => void
   updatingFolder?: boolean
   projectList: Array<Project>
-  portfolioLoading: boolean
+  loading: boolean
+  error: string | null
+  success: boolean
   clients: Array<Client>
+  portfolio?: Portfolio | {}
+  isEditingProject?: boolean
 }
 
-export const PortfolioModal = ({
-  open,
-  onRequestClose,
+export const AddPortfolio = ({
   onSubmit,
   projectList,
-  portfolioLoading,
-  clients
-}: Props) => {
+  loading,
+  error,
+  success,
+  clients,
+  folderId,
+  portfolio = {},
+  isEditingProject
+}: AddPortfolioProps) => {
   let imageInputRef: any = useRef()
   const classes = useStyles()
+  const toastContent = useContext(ToastContext)
 
   const [state, setState] = useState<State>({
-    portfolio: {
-      id: '',
-      name: '',
-      description: '',
-      icon: '',
-      projects: []
-    },
-    isChooseProject: false,
-    isError: false
+    portfolio: Object.assign(
+      {
+        id: '',
+        name: '',
+        description: '',
+        icon: '',
+        projects: [],
+        folderId: folderId || ''
+      },
+      portfolio
+    ),
+    iconFile: '',
+    isChooseProject: !!isEditingProject,
+    isError: false,
+    uploadingIcon: false
   })
 
-  useOnChange(open, (open: boolean | null) => {
-    if (open) {
-      setState({
-        portfolio: {
-          id: '',
-          name: '',
-          description: '',
-          icon: '',
-          projects: []
-        },
-        isChooseProject: false,
-        isError: false
-      })
+  const isEditing = isEditingProject || !!portfolio
+
+  useOnChange(error, (error) => {
+    if (error && state.uploadingIcon) {
+      setState((state) => ({ ...state, uploadingIcon: false }))
     }
   })
+
+  const handleSubmit = async () => {
+    let icon = state.portfolio.icon
+
+    try {
+      if (!state.portfolio.projects.length) {
+        throw Error('Select a project first.')
+      }
+
+      if (state.iconFile) {
+        setState((state) => ({ ...state, uploadingIcon: true }))
+        const iconId = generateUid()
+        const iconUrl = await setMedia(iconId, state.iconFile)
+        if (typeof iconUrl === 'string') {
+          icon = iconUrl
+        } else {
+          throw Error('Failed to upload icon')
+        }
+      }
+
+      if (typeof folderId !== 'string') {
+        throw Error('Missing folder')
+      }
+
+      onSubmit({
+        ...state.portfolio,
+        id: state.portfolio.id || generateUid(),
+        icon,
+        folderId,
+        createdAt: Date.now()
+      })
+    } catch (error) {
+      setState((state) => ({ ...state, uploadingIcon: true }))
+      toastContent.showToast({ title: error.message, type: ToastTypes.error })
+    }
+  }
 
   const handleImageChange = async (event: any) => {
     if (event.target && event.target.files && event.target.files.length > 0) {
       setState({
         ...state,
+        iconFile: event.target.files[0],
         portfolio: {
-          ...state.portfolio,
-          icon: URL.createObjectURL(event.target.files[0])
+          ...state.portfolio
         }
       })
     }
@@ -151,9 +201,13 @@ export const PortfolioModal = ({
             onChange={handleImageChange}
             style={{ display: 'none' }}
           />
-          {state.portfolio && !!state.portfolio.icon && (
+          {(!!state.iconFile || !!state.portfolio.icon) && (
             <img
-              src={state.portfolio.icon}
+              src={
+                state.iconFile
+                  ? URL.createObjectURL(state.iconFile)
+                  : state.portfolio.icon || ''
+              }
               className={classes.portfolioLogoImg}
               alt={'portfolio-logo'}
             />
@@ -249,36 +303,98 @@ export const PortfolioModal = ({
     )
   }
 
+  const getTitle = () => {
+    if (state.isChooseProject) {
+      return 'Choose Projects'
+    }
+    if (!isEditing) {
+      return 'New Portfolio'
+    }
+    return 'Edit Portfolio'
+  }
+
+  const getSubTitle = () => {
+    if (state.isChooseProject) {
+      return 'Display your work'
+    }
+    if (!isEditing) {
+      return 'Get Started'
+    }
+    return 'Update details'
+  }
+
+  const handleButtonClick = () => {
+    if (state.isChooseProject || isEditing) {
+      handleSubmit()
+    } else {
+      handleProjectSection()
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <ModalTitle title={getTitle()} subtitle={getSubTitle()} />
+      {!state.isChooseProject ? renderPortfolioLogoView() : null}
+      {!state.isChooseProject ? renderDetails() : renderProjectList()}
+      <GradiantButton
+        onClick={handleButtonClick}
+        className={classes.portfolioModalBtn}
+        loading={loading || state.uploadingIcon}>
+        <Typography variant={'button'}>
+          {isEditing
+            ? 'Save '
+            : !state.isChooseProject
+            ? 'Continue'
+            : 'Create portfolio'}
+        </Typography>
+      </GradiantButton>
+    </React.Fragment>
+  )
+}
+
+type PortfolioModalProps = {
+  open: boolean
+  onRequestClose: () => void
+} & AddPortfolioProps
+
+export const PortfolioModal = ({
+  open,
+  onRequestClose,
+  onSubmit,
+  projectList,
+  loading,
+  error,
+  success,
+  clients,
+  folderId,
+  portfolio,
+  isEditingProject
+}: PortfolioModalProps) => {
+  useOnChange(success, (success) => {
+    if (success) {
+      onRequestClose()
+    }
+  })
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
       <div className={'modalContent'}>
-        <div>
-          <ModalTitle
-            title={!state.isChooseProject ? 'New Portfolio' : 'Choose Projects'}
-            subtitle={
-              !state.isChooseProject ? 'Get Started' : 'Display your work'
-            }
-          />
-
-          <CloseButton
-            onClick={onRequestClose}
-            style={{ position: 'absolute', top: 10, right: 10 }}
-          />
-        </div>
-        {!state.isChooseProject ? renderPortfolioLogoView() : null}
-        {!state.isChooseProject ? renderDetails() : renderProjectList()}
-        <GradiantButton
-          onClick={() => {
-            !state.isChooseProject
-              ? handleProjectSection()
-              : onSubmit(state.portfolio)
+        <CloseButton
+          onClick={onRequestClose}
+          style={{ position: 'absolute', top: 10, right: 10 }}
+        />
+        <AddPortfolio
+          {...{
+            isEditingProject,
+            portfolio,
+            onSubmit,
+            projectList,
+            loading,
+            error,
+            success,
+            clients,
+            folderId
           }}
-          className={classes.portfolioModalBtn}
-          loading={portfolioLoading}>
-          <Typography variant={'button'}>
-            {!state.isChooseProject ? 'Continue' : 'Create portfolio'}
-          </Typography>
-        </GradiantButton>
+        />
       </div>
     </AppModal>
   )

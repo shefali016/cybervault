@@ -1,14 +1,10 @@
 import { Typography } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import clsx from 'clsx'
-import { AppDivider } from 'components/Common/Core/AppDivider'
+import { useTheme } from '@material-ui/core/styles'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
+import { findProductWithType } from 'utils/subscription'
 import {
-  getSubscriptionDetails,
-  getSubscriptionPlanType
-} from 'utils/subscription'
-import {
+  Product,
   StripePlans,
   SubscriptionDuration,
   SubscriptionType
@@ -18,102 +14,156 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import CloseButton from 'components/Common/Button/CloseButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import businessSubBg from '../../assets/business-sub-bg.png'
-import {
-  createStripePlanSubcription,
-  getStripePlansList
-} from '../../apis/stripe'
+import { getProductsWithPlans } from '../../apis/stripe'
 import { PaymentMethod } from '@stripe/stripe-js'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import { useStyles } from './style'
+import { SubscriptionItem } from './SubscriptionItem'
+import { SubscriptionDurationSwitch } from './SubscriptionDurationSwitch'
+
+type SubscriptionParams = { planId: string; type: SubscriptionType }
+
 type Props = {
   open: boolean
   onRequestClose: () => void
   activeSubscriptionType: SubscriptionType | undefined
   customerId: string
   paymentMethods: Array<PaymentMethod>
+  planSubscription: (
+    planId: string,
+    paymentMethodId: string,
+    type: SubscriptionType
+  ) => void
+  subscription: any
+  cancelSubscription: (subscriptionId: string) => void
+  updateSubscription: (
+    subscriptionId: string,
+    planId: string,
+    type: SubscriptionType
+  ) => void
+  loading: boolean
+  planList: Array<StripePlans> | null
+  setStorageProduct: (storageProduct: any) => void
 }
 
 export const SubscriptionModal = ({
   open,
   onRequestClose,
   activeSubscriptionType,
-  customerId,
-  paymentMethods
+  paymentMethods,
+  planSubscription,
+  subscription,
+  cancelSubscription,
+  updateSubscription,
+  setStorageProduct,
+  loading
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
-  const [duration, setDuration] = useState(SubscriptionDurations.monthly)
-  const [planList, setPlanList] = useState<Array<StripePlans> | any>({})
+  const [duration, setDuration] = useState(
+    subscription?.plan?.interval || SubscriptionDurations.MONTHLY
+  )
+  const [products, setProducts] = useState<Array<Product>>([])
+  const [productPlans, setProductPlans] = useState<{
+    [productId: string]: Array<StripePlans>
+  }>({})
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
-  const [selectedPlan, setSelectedPlan] = useState<string>('')
+  const [
+    subscriptionParams,
+    setSubscriptionParams
+  ] = useState<SubscriptionParams | null>(null)
+  const [openDialog, setOpenDialog] = useState<any>({
+    value: false,
+    for: ''
+  })
 
   const [
     selectedSubscription,
     setSelectedSubscription
   ] = useState<null | SubscriptionType>(
-    activeSubscriptionType || SubscriptionTypes.pro
+    activeSubscriptionType || SubscriptionTypes.PRO
   )
 
   useEffect(() => {
     stripePlanList()
   }, [])
   const stripePlanList = async () => {
-    const plans: any = await getStripePlansList()
-    setPlanList(plans.data)
+    try {
+      const { products, plans } = await getProductsWithPlans()
+      setProducts(products)
+      const storageProduct = products.filter(
+        (item: any) => item.name === 'Storage Subscription'
+      )[0]
+      setStorageProduct(storageProduct)
+      setProductPlans(plans)
+    } catch (error) {
+      console.log(error.message)
+    }
   }
 
-  const handleChoosePlan = (type: SubscriptionType, planId: string) => {
-    setPaymentModal(!paymentModal)
-    setSelectedPlan(planId)
+  const handleChoosePlan = (planId: string, type: SubscriptionType) => {
+    if (subscription) {
+      setOpenDialog({ value: true, for: 'Update' })
+      setSubscriptionParams({ planId, type })
+    } else {
+      setPaymentModal(true)
+      setSubscriptionParams({ planId, type })
+    }
   }
+  const handleCancelSubscription = () => {
+    setOpenDialog({ value: false, for: '' })
+    cancelSubscription(subscription.id)
+  }
+  const handelUpdateSubscription = () => {
+    setOpenDialog({ value: false, for: '' })
+    if (subscriptionParams) {
+      const { planId, type } = subscriptionParams
+      updateSubscription(subscription.id, planId, type)
+    }
+  }
+
+  const handleSubscription = async (paymentMethod: PaymentMethod) => {
+    if (subscriptionParams) {
+      const { planId, type } = subscriptionParams
+      planSubscription(planId, paymentMethod.id, type)
+    }
+    setPaymentModal(false)
+  }
+
   const handleChatWithSales = () => {}
 
-  const renderCreatorSubscription = () => {
-    const {
-      name,
-      description,
-      features,
-      extraFeatures,
-      prices
-    } = getSubscriptionDetails(SubscriptionTypes.creator)
-    const price = prices[duration]
-    return (
-      <SubscriptionItem
-        onClick={() => setSelectedSubscription(SubscriptionTypes.creator)}
-        name={name}
-        description={description}
-        price={price}
-        features={features}
-        extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === SubscriptionTypes.creator}
-        duration={duration}
-        onChoosePlan={() => handleChoosePlan(SubscriptionTypes.creator, '')}
-      />
-    )
-  }
+  const renderSubscriptionPlan = (type: SubscriptionType) => {
+    const product: Product | undefined = findProductWithType(products, type)
 
-  const renderSubscriptionPlans = (planId: string) => {
-    const plan: SubscriptionType = getSubscriptionPlanType(planId)
-    const {
-      name,
-      description,
-      features,
-      extraFeatures,
-      prices
-    } = getSubscriptionDetails(plan)
-    const price = prices[duration]
+    const plans =
+      product && productPlans[product.id] ? productPlans[product.id] : []
+    const plan = plans.find((plan) => plan.interval === duration)
+
+    const isSubscribed =
+      subscription && plan && subscription.plan.id === plan.id
+
+    const cancelDate =
+      isSubscribed &&
+      subscription.cancel_at_period_end &&
+      subscription.cancel_at * 1000
+
     return (
       <SubscriptionItem
-        onClick={() => setSelectedSubscription(plan)}
-        name={name}
-        description={description}
-        price={price}
-        features={features}
-        extraFeatures={extraFeatures}
-        isSelected={selectedSubscription === plan}
+        onClick={() => setSelectedSubscription(type)}
+        type={type}
+        plan={plan}
+        isSelected={selectedSubscription === type}
+        isSubscribed={isSubscribed}
+        cancelDate={cancelDate}
         duration={duration}
-        onChoosePlan={() => handleChoosePlan(plan, planId)}
+        onChoosePlan={(plan: StripePlans) => {
+          handleChoosePlan(plan.id, type)
+        }}
+        onCancelSubscription={() =>
+          setOpenDialog({ value: true, for: 'Cancel' })
+        }
       />
     )
   }
@@ -147,14 +197,6 @@ export const SubscriptionModal = ({
     setDuration(duration)
   }
 
-  const handleSubscription = async (paymentMethod: PaymentMethod) => {
-    const planSubscription = await createStripePlanSubcription(
-      customerId,
-      selectedPlan,
-      paymentMethod.id
-    )
-    setPaymentModal(!paymentModal)
-  }
   const renderDurationSwitch = () => {
     return (
       <ToggleButtonGroup
@@ -166,10 +208,10 @@ export const SubscriptionModal = ({
           }
         }}
         style={{ marginBottom: theme.spacing(3) }}>
-        <ToggleButton value={SubscriptionDurations.monthly}>
+        <ToggleButton value={SubscriptionDurations.MONTHLY}>
           <Typography variant='inherit'>Monthly</Typography>
         </ToggleButton>
-        <ToggleButton value={SubscriptionDurations.yearly}>
+        <ToggleButton value={SubscriptionDurations.YEARLY}>
           <Typography variant='inherit'>Annualy</Typography>
         </ToggleButton>
       </ToggleButtonGroup>
@@ -178,7 +220,11 @@ export const SubscriptionModal = ({
 
   return (
     <Fragment>
-      <Modal open={open} onRequestClose={onRequestClose} clickToClose={true}>
+      <Modal
+        open={open}
+        onRequestClose={onRequestClose}
+        clickToClose={true}
+        showLoadingOverlay={loading}>
         <div className={'modalContent'}>
           <CloseButton
             onClick={onRequestClose}
@@ -196,24 +242,23 @@ export const SubscriptionModal = ({
                 ? 'Upgrade your subscription to benefit from extra features'
                 : 'Subscribe to keep using premium Creator Cloud features'}
             </Typography>
-            {renderDurationSwitch()}
+
+            <SubscriptionDurationSwitch
+              value={duration}
+              onChange={(duration: SubscriptionDuration) =>
+                setDuration(duration)
+              }
+            />
           </div>
 
-          <div style={{ display: 'flex' }}>
-            {renderCreatorSubscription()}
-            {planList && planList.length
-              ? planList
-                  .slice(0)
-                  .reverse()
-                  .map((planData: StripePlans, index: number) => {
-                    let planId: string = planData.id
-                    return (
-                      <Fragment key={index}>
-                        {renderSubscriptionPlans(planId)}
-                      </Fragment>
-                    )
-                  })
-              : null}
+          <div className={classes.subscriptionContainer}>
+            {[
+              SubscriptionTypes.CREATOR,
+              SubscriptionTypes.PRO,
+              SubscriptionTypes.TEAM
+            ].map((type: SubscriptionType) => (
+              <Fragment key={type}>{renderSubscriptionPlan(type)}</Fragment>
+            ))}
           </div>
 
           <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
@@ -225,189 +270,18 @@ export const SubscriptionModal = ({
         paymentMethods={paymentMethods}
         handleSubscription={handleSubscription}
       />
+      <ConfirmationDialog
+        isOpen={!!openDialog.value}
+        onClose={() => setOpenDialog({ value: false, for: '' })}
+        title={`${openDialog.for} Subscription`}
+        message={`Are you sure you want to ${openDialog.for} this subscription? This cannot be undone.`}
+        onYes={() =>
+          openDialog.for === 'Update'
+            ? handelUpdateSubscription()
+            : handleCancelSubscription()
+        }
+        onNo={() => setOpenDialog({ value: false, for: '' })}
+      />
     </Fragment>
   )
 }
-
-type SubscriptionItemProps = {
-  name: string
-  description: string
-  price: string
-  duration: SubscriptionDuration
-  features?: Array<string>
-  extraFeatures?: Array<string>
-  isSelected: boolean
-  onClick: () => void
-  onChoosePlan: () => void
-}
-
-const SubscriptionItem = ({
-  name,
-  description,
-  price,
-  duration,
-  features,
-  extraFeatures,
-  isSelected,
-  onClick,
-  onChoosePlan
-}: SubscriptionItemProps) => {
-  const classes = useStyles()
-  return (
-    <div
-      className={clsx(
-        classes.subscriptionItemContainer,
-        isSelected ? classes.selected : ''
-      )}
-      onClick={onClick}>
-      <Typography variant={'h4'}>{name}</Typography>
-      <Typography variant={'caption'} className={classes.descriptionText}>
-        {description}
-      </Typography>
-      <div className={classes.priceContainer}>
-        <Typography variant={'h5'} className={classes.priceText}>
-          ${price}
-        </Typography>
-        <Typography variant={'h6'} className={classes.durationText}>
-          /{duration === SubscriptionDurations.monthly ? 'month' : 'year'}
-        </Typography>
-      </div>
-
-      {features ? (
-        <div>
-          <AppDivider className={classes.divider} />
-          <Typography className={classes.featureTitle}>Features</Typography>
-          <ul>
-            {features.map((feature: string) => (
-              <li>
-                <Typography>{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-      {extraFeatures ? (
-        <div>
-          <AppDivider className={classes.divider} />
-          <Typography className={classes.featureTitle}>and...</Typography>
-          <ul>
-            {extraFeatures.map((feature: string, index: number) => (
-              <li key={index}>
-                <Typography>{feature}</Typography>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-      <div className={classes.choosePlanContainer}>
-        <GradiantButton onClick={onChoosePlan}>
-          <Typography>Choose Plan</Typography>
-        </GradiantButton>
-      </div>
-    </div>
-  )
-}
-
-const useStyles = makeStyles((theme) => ({
-  choosePlanContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingTop: theme.spacing(5)
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    flex: 1,
-    paddingBottom: theme.spacing(3)
-  },
-  subscriptionItemContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: '0 5px 10px #999999',
-    padding: theme.spacing(3),
-    minWidth: 250,
-    maxWidth: 250,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'transparent',
-    cursor: 'pointer',
-    transition: theme.transitions.create(
-      ['transform', 'border-color', 'box-shadow'],
-      {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.standard
-      }
-    )
-  },
-  selected: {
-    borderColor: theme.palette.primary.main,
-    boxShadow: `0 5px 20px ${theme.palette.primary.light}`,
-    transition: theme.transitions.create(
-      ['transform', 'border-color', 'box-shadow'],
-      {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.standard
-      }
-    ),
-    transform: `translateY(-10px)`
-  },
-  businessSubscription: {
-    borderRadius: theme.shape.borderRadius,
-    background: `url(${businessSubBg})`,
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    minHeight: theme.spacing(12),
-    minWidth: 250,
-
-    overflow: 'hidden',
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(4),
-    flex: 1,
-    boxShadow: '0 5px 10px #999999',
-    padding: `${theme.spacing(3)}px ${theme.spacing(5)}px`,
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    transition: theme.transitions.create(
-      ['transform', 'border-color', 'box-shadow'],
-      {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.standard
-      }
-    ),
-    [theme.breakpoints.down('sm')]: { flexDirection: 'column', maxWidth: 250 },
-    '&:hover': {
-      boxShadow: `0 5px 30px ${theme.palette.primary.light}`
-    }
-  },
-  businessSubscriptionText: {
-    textShadow: '0 5px 5px #000'
-  },
-  businessSubscriptionButton: {
-    [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(3),
-      alignSelf: 'stretch'
-    }
-  },
-  divider: { margin: `${theme.spacing(3)}px 0` },
-  featureTitle: {
-    color: theme.palette.primary.main,
-    fontSize: 16
-  },
-  descriptionText: {},
-  priceContainer: {
-    marginTop: theme.spacing(1),
-    display: 'flex',
-    alignItems: 'center'
-  },
-  priceText: { color: theme.palette.grey[600] },
-  durationText: { color: theme.palette.grey[600], fontSize: 12, marginTop: 8 }
-}))

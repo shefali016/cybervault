@@ -16,15 +16,16 @@ export enum WatermarkControls {
 }
 
 export enum SubscriptionTypes {
-  creator,
-  pro,
-  team,
-  business
+  CREATOR = 'creator',
+  PRO = 'pro',
+  TEAM = 'team',
+  BUSINESS = 'business',
+  STORAGE = 'storage'
 }
 
 export enum SubscriptionDurations {
-  yearly,
-  monthly
+  YEARLY = 'year',
+  MONTHLY = 'month'
 }
 
 export enum InvoiceStatuses {
