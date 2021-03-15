@@ -58,7 +58,13 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
         className={classes.largeSwitchButton}
       />
 
-      <div className={classes.assetContainer}>
+      <div
+        className={classes.assetContainer}
+        style={{
+          marginRight: `${
+            assets && assets.length ? Math.min(3, assets.length - 1) * 1 : 0
+          }%`
+        }}>
         <div
           style={{
             position: 'relative',
@@ -200,7 +206,6 @@ const useStyles = makeStyles((theme) => ({
   },
   assetOuter: {
     display: 'flex',
-    flex: 1,
     transition: theme.transitions.create(['transform', 'opacity'], {
       duration: 600
     }),
@@ -209,13 +214,15 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '56.25%'
   },
   assetInner: {
-    flex: 1,
     position: 'absolute',
     top: 0,
     right: 0,
     left: 0,
     bottom: 0,
-    display: 'inline-block',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
     margin: 0,
     borderRadius: 10

@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    '*': { outline: 'none' },
     body: {
       background: theme.palette.background.default
     },
