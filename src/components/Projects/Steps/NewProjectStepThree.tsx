@@ -29,7 +29,15 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepThree = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, haveError, currentStep } = props
+  const {
+    projectData,
+    setProjectData,
+    haveError,
+    currentStep,
+    isEdit,
+    editExpenses,
+    editBudget
+  } = props
 
   const handleInputChange = (event: InputChangeEvent, key: string) => {
     const value = event.target.value
@@ -74,6 +82,10 @@ const NewProjectStepThree = (props: any) => {
         <CloseButton onClick={() => deleteExpense(data.id)} />
       </div>
     )
+
+    const title = projectData.expenses[index].title
+    const cost = projectData.expenses[index].cost
+
     return (
       <div className={'task-row'} key={`expense-${data.id}`}>
         {isTablet && closeButton}
@@ -81,20 +93,22 @@ const NewProjectStepThree = (props: any) => {
           <AppTextField
             type={''}
             label={`Expense ${index + 1}`}
-            value={projectData.expenses[index].title}
+            value={title}
             onChange={(e: InputChangeEvent) =>
               handleExpenseChange(e, 'title', index)
             }
+            error={haveError && !title}
           />
         </div>
         <div style={{ flex: 1 }}>
           <AppTextField
             type={'number'}
             label={`Estimated Cost $`}
-            value={projectData.expenses[index].cost}
+            value={cost}
             onChange={(e: InputChangeEvent) =>
               handleExpenseChange(e, 'cost', index)
             }
+            error={haveError && !cost}
           />
         </div>
         {!isTablet && closeButton}
@@ -106,7 +120,7 @@ const NewProjectStepThree = (props: any) => {
     const leftInputMargin = !isTablet ? 15 : 0
     return (
       <div className={classes.middleView}>
-        <div>
+        {(!isEdit || editBudget) && (
           <div className={'input-row'} style={{ marginBottom: 30 }}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
@@ -137,19 +151,25 @@ const NewProjectStepThree = (props: any) => {
               />
             </div>
           </div>
-        </div>
+        )}
 
-        <Typography variant={'caption'} className={classes.estimatedCostLabel}>
-          Add your estimated cost of expenses:
-        </Typography>
+        {(!isEdit || editExpenses) && (
+          <React.Fragment>
+            <Typography
+              variant={'caption'}
+              className={classes.estimatedCostLabel}>
+              Add your estimated cost of expenses:
+            </Typography>
 
-        {projectData.expenses && projectData.expenses.length > 0
-          ? projectData.expenses.map((data: Expense, index: number) => {
-              return renderTasksView(data, index)
-            })
-          : null}
+            {projectData.expenses && projectData.expenses.length > 0
+              ? projectData.expenses.map((data: Expense, index: number) => {
+                  return renderTasksView(data, index)
+                })
+              : null}
 
-        <AddMoreButton onClick={addExpense} title={'Add Expense'} />
+            <AddMoreButton onClick={addExpense} title={'Add Expense'} />
+          </React.Fragment>
+        )}
       </div>
     )
   }

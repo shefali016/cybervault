@@ -21,11 +21,11 @@ export const Details = ({ label, value, startDate, endDate }: Props) => {
       </Typography>
       <Typography variant={'body1'}>
         {' '}
-        {startDate ? `Start Date:  {startDate}` : value}
+        {startDate ? `Start Date:  ${startDate}` : value}
       </Typography>
       {endDate ? (
-        <Typography style={{ marginLeft: 20 }} variant={'body1'}>
-          {'End Date:  '} {endDate}
+        <Typography className={classes.endDate} variant={'body1'}>
+          {`End Date:  ${endDate}`}
         </Typography>
       ) : null}
     </div>
@@ -35,10 +35,18 @@ export const Details = ({ label, value, startDate, endDate }: Props) => {
 const useStyles = makeStyles((theme) => ({
   container: {
     display: FLEX,
-    marginTop: 10,
+    marginBottom: theme.spacing(1.2),
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column'
     }
   },
-  label: { fontWeight: 'bold', minWidth: 220 }
+  label: {
+    fontWeight: 'bold',
+    minWidth: 190,
+    marginRight: 30
+  },
+  endDate: {
+    marginLeft: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: { marginLeft: 0 }
+  }
 }))

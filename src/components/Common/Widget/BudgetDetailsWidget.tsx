@@ -16,21 +16,22 @@ export const RenderBudgetDetails = (props: any) => {
       </div>
       <Details
         label={'Production Budget:'}
-        value={props.projectData?.campaignBudget || ''}
+        value={'$' + props.projectData?.campaignBudget || ''}
       />
       <Details
         label={'Production Expenses:'}
-        value={props.projectData?.campaignExpenses || ''}
+        value={'$' + props.projectData?.campaignExpenses || ''}
       />
       <Details
         label={'Estimated Net Revenue:'}
         value={
-          props.projectData
+          '$' +
+          (props.projectData
             ? (
                 props.projectData.campaignBudget -
                 props.projectData.campaignExpenses
               ).toString()
-            : ''
+            : '')
         }
       />
     </div>

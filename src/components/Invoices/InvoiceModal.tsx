@@ -37,7 +37,6 @@ type InvoiceProps = {
 type MilestoneProps = {
   id: string
   title: string
-  cost: number
   payment: number
   check: boolean
 }

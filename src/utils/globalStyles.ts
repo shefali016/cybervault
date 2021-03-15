@@ -222,7 +222,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
-    '.headerContainer': { paddingBottom: theme.spacing(2) },
+    '.headerContainer': { paddingBottom: theme.spacing(3) },
     // Section
     '.sectionInner': {
       background: theme.palette.common.white,
@@ -242,6 +242,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
+    '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
     // img
     '.circleImage': {
       minWidth: 60,

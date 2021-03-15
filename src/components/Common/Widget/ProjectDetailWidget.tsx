@@ -4,8 +4,16 @@ import { useStyles } from './styles'
 import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
 import { EditButton } from '../Button/EditButton'
+import { Project } from 'utils/Interface'
 
-export const RenderProjectDetails = (props: any) => {
+type Props = {
+  projectData: Project
+  editInfo?: boolean
+  onEdit?: () => void
+  hideBorder?: boolean
+}
+
+export const RenderProjectDetails = (props: Props) => {
   const classes = useStyles()
   return (
     <div className={classes.clientDetailsContainer}>
@@ -17,9 +25,14 @@ export const RenderProjectDetails = (props: any) => {
       </div>
 
       <Details
+        label={'Campaign Name:'}
+        value={props.projectData?.campaignName}
+      />
+      <Details
         label={'Campaign Objective:'}
         value={props.projectData?.campaignObjective}
       />
+      <Details label={'Start Date:'} value={props.projectData?.campaignDate} />
       <Details
         label={'Deadline:'}
         value={props.projectData?.campaignDeadLine}

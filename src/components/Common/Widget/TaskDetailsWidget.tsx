@@ -18,7 +18,12 @@ export const RenderTaskDetails = (props: any) => {
     }
     return props.projectData.tasks.map((item: any, index: number) => {
       return (
-        <Details key={item.title} label={item.title} value={item.payment} />
+        <Details
+          key={item.title}
+          label={item.title}
+          startDate={item.startDate}
+          endDate={item.endDate}
+        />
       )
     })
   }

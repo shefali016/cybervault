@@ -319,7 +319,6 @@ export type Expense = {
 export type Milestone = {
   id: string
   title: string
-  cost: number
   payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 

@@ -9,7 +9,7 @@ type Props = {
 export const EditButton = ({ onClick }: Props) => {
   return (
     <IconButton className={'iconButton'} onClick={onClick}>
-      <EditIcon className={'lightGrey'} fontSize='small' />
+      <EditIcon className={'editIcon'} fontSize='small' />
     </IconButton>
   )
 }

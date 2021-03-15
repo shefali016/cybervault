@@ -29,7 +29,7 @@ import CloseButton from '../../Common/Button/CloseButton'
 const NewProjectStepFour = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, currentStep } = props
+  const { projectData, setProjectData, currentStep, haveError } = props
 
   const addMilestone = () => {
     const milestones: Array<Milestone> = [
@@ -57,7 +57,7 @@ const NewProjectStepFour = (props: any) => {
     setProjectData({ ...projectData, milestones })
   }
 
-  const renderTasksView = (data: Milestone, index: number) => {
+  const renderMilstone = (data: Milestone, index: number) => {
     const leftInputMargin = !isTablet ? 15 : 0
     const closeButton = (
       <div
@@ -69,6 +69,10 @@ const NewProjectStepFour = (props: any) => {
         <CloseButton onClick={() => deleteMilestone(data.id)} />
       </div>
     )
+
+    const title = projectData.milestones[index].title
+    const payment = projectData.milestones[index].payment
+
     return (
       <div className={'task-row'} key={`milestone-${data.id}`}>
         {isTablet && closeButton}
@@ -80,16 +84,18 @@ const NewProjectStepFour = (props: any) => {
             onChange={(e: InputChangeEvent) =>
               onMilestoneChange(e, 'title', index)
             }
+            error={haveError && !title}
           />
         </div>
         <div style={{ flex: 1 }}>
           <AppTextField
             type={'number'}
             label={`Payment`}
-            value={projectData.milestones[index].payment}
+            value={payment}
             onChange={(e: InputChangeEvent) =>
               onMilestoneChange(e, 'payment', index)
             }
+            error={haveError && !payment}
           />
         </div>
         {!isTablet && closeButton}
@@ -102,7 +108,7 @@ const NewProjectStepFour = (props: any) => {
       <div className={classes.middleView}>
         {projectData.milestones && projectData.milestones.length > 0
           ? projectData.milestones.map((data: Milestone, index: number) => {
-              return renderTasksView(data, index)
+              return renderMilstone(data, index)
             })
           : null}
         <AddMoreButton onClick={addMilestone} title={'Add Milestone'} />

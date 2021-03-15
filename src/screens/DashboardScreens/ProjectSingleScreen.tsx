@@ -209,7 +209,6 @@ const EditProjectScreen = (props: any) => {
 
   //submit project details update
   const handleUpdateProject = async (projectData: Project) => {
-    console.log('IU')
     setState({
       ...state,
       projectData,

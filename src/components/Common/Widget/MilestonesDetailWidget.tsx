@@ -4,6 +4,7 @@ import { useStyles } from './styles'
 import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
 import { EditButton } from '../Button/EditButton'
+import { CostItem } from 'components/Projects/CostItem'
 
 export const RenderMilestonesDetails = (props: any) => {
   const classes = useStyles()
@@ -17,9 +18,8 @@ export const RenderMilestonesDetails = (props: any) => {
       )
     }
     return props.projectData.milestones.map((item: any, index: number) => {
-      return (
-        <Details key={item.title} label={item.title} value={item.payment} />
-      )
+      const { title, payment } = item
+      return <CostItem key={title} title={title} value={payment} />
     })
   }
 

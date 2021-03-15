@@ -1,4 +1,4 @@
-import { Project, Task } from 'utils/Interface'
+import { Expense, Milestone, Project, Task } from 'utils/Interface'
 import moment from 'moment'
 
 export default function validate(
@@ -33,7 +33,21 @@ export default function validate(
     case 3:
       if (
         invalidString(projectData.campaignBudget.toString()) ||
-        invalidString(projectData.campaignExpenses.toString())
+        invalidString(projectData.campaignExpenses.toString()) ||
+        !!projectData.expenses.find(
+          ({ title, cost }: Expense) =>
+            invalidString(title) || invalidString(cost.toString())
+        )
+      ) {
+        return true
+      }
+      break
+    case 4:
+      if (
+        !!projectData.milestones.find(
+          ({ title, payment }: Milestone) =>
+            invalidString(title) || invalidString(payment.toString())
+        )
       ) {
         return true
       }

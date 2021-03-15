@@ -43,7 +43,7 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
     <div className={clsx(classes.container, containerClassName)}>
       {!!title && (
         <Typography
-          variant='h6'
+          variant='h5'
           className={clsx(classes.title, titleClassName)}>
           {title}
         </Typography>
@@ -105,5 +105,5 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: theme.spacing(3)
     }
   },
-  title: { fontWeight: 'bold', marginBottom: theme.spacing(3) }
+  title: { marginBottom: theme.spacing(3) }
 }))

@@ -4,6 +4,7 @@ import { useStyles } from './styles'
 import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
 import { EditButton } from '../Button/EditButton'
+import { CostItem } from 'components/Projects/CostItem'
 
 export const RenderExpenseDetails = (props: any) => {
   const classes = useStyles()
@@ -17,7 +18,8 @@ export const RenderExpenseDetails = (props: any) => {
       )
     }
     return props.projectData.expenses.map((item: any, index: number) => {
-      return <Details key={item.title} label={item.title} value={item.cost} />
+      const { title, cost } = item
+      return <CostItem key={title} title={title} value={cost} />
     })
   }
 
