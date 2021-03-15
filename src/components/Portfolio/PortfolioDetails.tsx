@@ -68,7 +68,10 @@ export const PortfolioProjectDetails = ({ project, account }: Props) => {
         </div>
       )}
 
-      <RenderCampaignDetails projectData={project} />
+      <RenderCampaignDetails
+        projectData={project}
+        titleClassName={classes.campaignTitle}
+      />
 
       {!!(project.campaignObjective || project.description) && (
         <Typography variant={'h5'} style={{ marginBottom: 15 }}>

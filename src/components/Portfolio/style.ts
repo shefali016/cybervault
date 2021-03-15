@@ -9,6 +9,8 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  campaignTitle: { color: 'inherit' },
+
   contentHeader: {
     display: 'flex',
     alignItems: 'center',
