@@ -44,6 +44,8 @@ const InvoicesClientScreen = (props: any) => {
   const clientDetails = useSelector(
     (state: any) => state.clients.clientDetailData
   )
+
+  const [selectedAsset,selectAsset]=useState('')
   useEffect(() => {
     dispatch(getInvoiceRequest(accId, props.match.params.id))
     dispatch(getAllInvoiceConversationRequest(accId, props.match.params.id))
@@ -148,6 +150,8 @@ const InvoicesClientScreen = (props: any) => {
 
   console.log(projectDetails,"vvvvvvvvvvvvvvvvvvvvvvvvv")
 
+console.log(selectedAsset,"selectedd")
+
   return (
     <div className={`${!accountData.isLoggedIn && classes.root}`}>
       <Grid container justify='center'>
@@ -188,6 +192,7 @@ const InvoicesClientScreen = (props: any) => {
                         assetIds={projectDetails.videos}
                         accountId={accId}
                         isVideo={true}
+                        selectAsset={selectAsset}
                       />
                     </div>
                   </div>
@@ -204,7 +209,11 @@ const InvoicesClientScreen = (props: any) => {
 
               <Grid container>
                 <Grid item sm={2}></Grid>
-                <Grid item sm={10}><MediaConvert mediaConvert={mediaConvert} assetIds={projectDetails.videos} accountId={accId}
+                <Grid item sm={10}><MediaConvert 
+                mediaConvert={mediaConvert} 
+                assetIds={projectDetails.videos} 
+                accountId={accId}
+                selectedAsset={selectedAsset}
 />
                 </Grid>
               </Grid>

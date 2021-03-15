@@ -12,9 +12,10 @@ export type Props = {
   assetIds: Array<string>
   isAssetLoading?: boolean | undefined
   accountId: string
+  selectAsset?:(id:string)=>void
 }
 
-export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
+export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Props) => {
   const classes = useStyles()
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -30,18 +31,25 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   const loadAssets = async (ids: Array<string>) => {
     const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
     setAssets(assets)
+    assets.length && selectAsset&& selectAsset(assets[0].id)
   }
 
   const next = () => {
-    setCurrentIndex(Math.min(currentIndex + 1, Math.max(assets.length - 1, 0)))
+    const selectedIndex=Math.min(currentIndex + 1, Math.max(assets.length - 1, 0))
+    setCurrentIndex(selectedIndex)
+    selectAsset && selectAsset(assets[selectedIndex].id)
   }
 
   const prev = () => {
-    setCurrentIndex(Math.max(currentIndex - 1, 0))
+    const selectedIndex = Math.max(currentIndex - 1, 0)
+    setCurrentIndex(selectedIndex)
+    selectAsset && selectAsset(assets[selectedIndex].id)
+
   }
 
-  const handleAssetClick = (index: number) => {
+  const handleAssetClick = (index: number,assetId:string) => {
     setCurrentIndex(index)
+    selectAsset && selectAsset(assetId)
   }
 
   const getAssetScale = (position: number) => {
@@ -84,7 +92,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
               const position = index - currentIndex
               return (
                 <div
-                  onClick={() => handleAssetClick(index)}
+                  onClick={() => handleAssetClick(index,asset.id)}
                   key={index.toString()}
                   className={classes.assetOuter}
                   style={{

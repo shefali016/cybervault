@@ -113,14 +113,13 @@ const newRatio = ratio.w/ratio.h      // 0.5625
 
 // original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
 const cropWidth=originalRatio>newRatio?newRatio*fileHeight:ratio.w
-const cropHeight=originalRatio<newRatio?newRatio*fileWidth:ratio.h
 
 // //That gives us `width` and `height` for cropping params
 
 // // Now we have crop frame but we need to center it.
 // // Since we are cropping width we will be centering with X.
 const croppedWidth = originalRatio>newRatio?Math.ceil((fileWidth - cropWidth)/2)*2:2 ;// This is amount of px being cut
-const croppedHeight=originalRatio<newRatio?Math.ceil((fileHeight - cropHeight)/2)*2:2
+const croppedHeight=2
 const X = originalRatio>newRatio?croppedWidth / 2:0 ;// Even spacing on both sides of video
 const Y = originalRatio<newRatio?croppedWidth / 2:0 ;
 

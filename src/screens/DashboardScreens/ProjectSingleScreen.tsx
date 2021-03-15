@@ -135,6 +135,11 @@ const EditProjectScreen = (props: any) => {
         fileName: file.name,
         id: id
       }
+      var form = new FormData()
+      form.append('file',file)
+      form.append('name',file.name)
+      form.append('id',asset.id)
+
       const downloadUrl = await setMedia(asset.id, file)
 
       if (typeof downloadUrl === 'string') {
