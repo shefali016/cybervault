@@ -27,7 +27,10 @@ export const PortfolioTitle = ({ portfolio, size = 35, className }: Props) => {
           height: size,
           minWidth: size,
           borderRadius: size / 2,
-          marginRight: theme.spacing(1.5)
+          marginRight: theme.spacing(1.5),
+          borderWidth: 1,
+          borderStyle: 'solid',
+          borderColor: '#00000010'
         }}>
         {!!portfolio.icon && <img src={portfolio.icon} alt='portfolio-icon' />}
       </div>

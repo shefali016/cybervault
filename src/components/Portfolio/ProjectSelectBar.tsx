@@ -66,7 +66,7 @@ export const ProjectSelectBar = ({
             onSelect(project)
           }}
           key={index}
-          className={classes.projectButton}
+          className={clsx(classes.projectButton, 'alignLeftButton')}
           style={style}>
           <Typography variant={'inherit'} noWrap={true}>
             {project.campaignName}

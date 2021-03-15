@@ -236,71 +236,75 @@ const InvoicesScreen = ({
   }
 
   return (
-    <div className={clsx('screenContainer', 'centerContent')}>
-      <Section className={classes.balanceSection}>
-        <div className={classes.balanceSectionInner}>
-          <div></div>
-          <div className={classes.balanceItemsContainer}>
-            <div className={classes.balanceItem}>
-              <Typography variant={'body1'}>This month</Typography>
-              <Typography variant={'h4'}>
-                {getCurrencySymbol()}
-                {monthBalance.toFixed(2)}
-              </Typography>
-              <Typography variant={'caption'} className={'metaText'}>
-                {numberOfInvoicesThisMonth} invoices
-              </Typography>
-            </div>
-            <div className={classes.balanceItem}>
-              <Typography variant={'body1'}>Your balance</Typography>
-              <Typography variant={'h4'}>
-                {getCurrencySymbol()}
-                {totalBalance.toFixed(2)}
-              </Typography>
-              <Typography variant={'caption'} className={'metaText'}>
-                {getCurrencySymbol()}
-                {availableBalance.toFixed(2)} available
-              </Typography>
-            </div>
-          </div>
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <Section className={classes.balanceSection}>
+            <div className={classes.balanceSectionInner}>
+              <div></div>
+              <div className={classes.balanceItemsContainer}>
+                <div className={classes.balanceItem}>
+                  <Typography variant={'body1'}>This month</Typography>
+                  <Typography variant={'h4'}>
+                    {getCurrencySymbol()}
+                    {monthBalance.toFixed(2)}
+                  </Typography>
+                  <Typography variant={'caption'} className={'metaText'}>
+                    {numberOfInvoicesThisMonth} invoices
+                  </Typography>
+                </div>
+                <div className={classes.balanceItem}>
+                  <Typography variant={'body1'}>Your balance</Typography>
+                  <Typography variant={'h4'}>
+                    {getCurrencySymbol()}
+                    {totalBalance.toFixed(2)}
+                  </Typography>
+                  <Typography variant={'caption'} className={'metaText'}>
+                    {getCurrencySymbol()}
+                    {availableBalance.toFixed(2)} available
+                  </Typography>
+                </div>
+              </div>
 
-          <div className={classes.payOutContainer}>
-            <GradiantButton
-              className={classes.payOutButton}
-              inActive={!stripeAccount || availableBalance === 0}>
-              <Typography variant='body1'>Pay out now</Typography>
-            </GradiantButton>
-            <div
-              className={classes.viewPayouts}
-              onClick={() => navigateStripeDashboard()}>
-              <Typography
-                variant={'caption'}
-                style={{ color: theme.palette.primary.light }}>
-                View payouts
-              </Typography>
+              <div className={classes.payOutContainer}>
+                <GradiantButton
+                  className={classes.payOutButton}
+                  inActive={!stripeAccount || availableBalance === 0}>
+                  <Typography variant='body1'>Pay out now</Typography>
+                </GradiantButton>
+                <div
+                  className={classes.viewPayouts}
+                  onClick={() => navigateStripeDashboard()}>
+                  <Typography
+                    variant={'caption'}
+                    style={{ color: theme.palette.primary.light }}>
+                    View payouts
+                  </Typography>
+                </div>
+              </div>
             </div>
-          </div>
+          </Section>
+
+          <Section className={classes.section}>
+            <div className={classes.sectionInner}>
+              {renderHeader()}
+
+              {!!account?.stripe?.detailsSubmitted && (
+                <div className={classes.tableContainer}>
+                  <InvoicesTable
+                    invoices={invoices}
+                    tableContainerClassName={classes.table}
+                    history={history}
+                    accountId={account.id}
+                  />
+                </div>
+              )}
+
+              {renderConnect()}
+            </div>
+          </Section>
         </div>
-      </Section>
-
-      <Section className={classes.section}>
-        <div className={classes.sectionInner}>
-          {renderHeader()}
-
-          {!!account?.stripe?.detailsSubmitted && (
-            <div className={classes.tableContainer}>
-              <InvoicesTable
-                invoices={invoices}
-                tableContainerClassName={classes.table}
-                history={history}
-                accountId={account.id}
-              />
-            </div>
-          )}
-
-          {renderConnect()}
-        </div>
-      </Section>
+      </div>
     </div>
   )
 }
