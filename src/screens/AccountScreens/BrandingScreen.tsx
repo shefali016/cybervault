@@ -115,7 +115,7 @@ const BrandingScreen = ({
 
   const renderEmail = () => (
     <div className={classes.brandingDisplayContainer}>
-      <div className={classes.brandingDisplaySection}>
+      <div className={classes.brandingDisplaySection} style={{ marginTop: 40 }}>
         <div
           className={classes.emailHeader}
           style={{

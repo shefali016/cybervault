@@ -2,6 +2,9 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    body: {
+      background: theme.palette.background.default
+    },
     '.splashScreen': {
       display: 'flex',
       height: '100vh',
@@ -25,6 +28,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       justifyContent: 'flex-start',
       paddingLeft: theme.spacing(2)
     },
+    '.fullHeight': { minHeight: '100vh' },
     '.stretch': { alignSelf: 'stretch' },
     '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
@@ -122,30 +126,63 @@ export const useGlobalStyles = makeStyles((theme) => ({
       },
       color: theme.palette.text.background
     },
+    '.screenTopPadding': {
+      paddingTop: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        paddingTop: theme.spacing(3)
+      }
+    },
     '.screenContainer': {
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
       color: theme.palette.text.background,
-      alignItems: 'center'
+      background: theme.palette.background
     },
     '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
     '.screenInner': {
       width: '100%',
-      maxWidth: 1500
+      maxWidth: 1600,
+      alignSelf: 'center'
     },
     '.screenInnerMd': {
       width: '100%',
-      maxWidth: 1000
+      maxWidth: 1100,
+      alignSelf: 'center'
     },
     '.responsivePadding': {
       paddingLeft: theme.spacing(5),
       paddingRight: theme.spacing(5),
       paddingBottom: theme.spacing(6),
       [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+        paddingBottom: theme.spacing(3)
+      }
+    },
+    '.responsiveHorizontalPadding': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
         paddingLeft: theme.spacing(3),
-        paddingRight: theme.spacing(3),
-        paddingBottom: theme.spacing(4)
+        paddingRight: theme.spacing(3)
+      }
+    },
+    '.sectionContainer': {
+      paddingBottom: theme.spacing(6),
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3)
+      }
+    },
+    '.screenChild': {
+      background: theme.palette.background.secondary,
+      borderRadius: theme.shape.borderRadius,
+      padding: `${theme.spacing(7)}px ${theme.spacing(6)}px`,
+      [theme.breakpoints.down('md')]: {
+        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`
       }
     },
     '.centerContent': {

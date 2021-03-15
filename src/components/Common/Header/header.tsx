@@ -6,6 +6,7 @@ import { FLEX } from 'utils/constants/stringConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
 import { User } from 'utils/Interface'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
+import { AccountTabIds } from 'routes/DashboardSwitch'
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
@@ -18,10 +19,21 @@ type Props = {
   renderAppIcon?: boolean
   onLogoClick?: () => void
   renderHeaderContent?: () => React.ReactElement
+  history?: any
 }
 
 function Toolbar(props: Props) {
   const classes = useStyles()
+
+  const handleProfileClick = () => {
+    if (props.onProfileClick) {
+      return props.onProfileClick()
+    }
+
+    if (props.history) {
+      props.history.replace(`/${AccountTabIds.profile}`)
+    }
+  }
 
   return (
     <div className={classes.Toolbar}>
@@ -49,7 +61,7 @@ function Toolbar(props: Props) {
         ) : null}
         <IconButton
           style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-          onClick={props.onProfileClick}>
+          onClick={handleProfileClick}>
           <img
             src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
             style={{ borderRadius: 20, height: 33, width: 33 }}
@@ -71,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
   notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
+    alignSelf: 'stetch',
     height: theme.spacing(7),
     background: theme.palette.background.secondary,
     display: 'flex',

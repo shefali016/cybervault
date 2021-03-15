@@ -31,6 +31,9 @@ import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
 import * as Types from '../../utils/Interface'
+import Header from 'components/Common/Header/header'
+import { AccountTabIds } from 'routes/DashboardSwitch'
+import clsx from 'clsx'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -42,8 +45,6 @@ type EditProjectStates = {
   isBudgetEdit: boolean | undefined
   imagesLoading: string[]
   videosLoading: string[]
-  showTostify: boolean
-  account: Types.Account
 }
 
 const EditProjectScreen = (props: any) => {
@@ -61,9 +62,7 @@ const EditProjectScreen = (props: any) => {
     isTaskEdit: false,
     isBudgetEdit: false,
     imagesLoading: [],
-    videosLoading: [],
-    showTostify: false,
-    account: props.account
+    videosLoading: []
   })
 
   const openEditProjectModal = (
@@ -331,13 +330,24 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  const handleBack = () => props.history.push('/dashboard')
+
   return (
-    <div>
-      {renderEditProjectModel()}
-      <div className={classes.dashboardContainer}>
-        <div className={classes.wrapper}>
-          {renderHeader()}
-          {renderBody()}
+    <div className={clsx('screenContainer', 'fullHeight')}>
+      <Header
+        user={props.user}
+        renderAppIcon={true}
+        onLogoClick={handleBack}
+        history={props.history}
+      />
+
+      <div className={'screenInner'}>
+        <div className={clsx('responsivePadding', 'screenTopPadding')}>
+          <div className={'screenChild'}>
+            {renderHeader()}
+            {renderBody()}
+            {renderEditProjectModel()}
+          </div>
         </div>
       </div>
     </div>
@@ -345,6 +355,7 @@ const EditProjectScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
+  user: state.auth.user as Types.User,
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,

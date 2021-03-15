@@ -8,6 +8,7 @@ import { AssetUploadDisplay } from 'components/Assets/UploadMedia'
 import { FeatureAssetUpload } from 'components/Assets/FeatureAssetUpload'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import { useStyles } from './style'
+import clsx from 'clsx'
 
 type Props = {
   project: Project | null | undefined
@@ -30,7 +31,9 @@ export const PortfolioProjectDetails = ({ project, account }: Props) => {
   return (
     <Fragment>
       <div style={{ marginBottom: theme.spacing(6) }}>
-        <Typography variant={'h4'} className='bold'>
+        <Typography
+          variant={'h4'}
+          className={clsx('bold', classes.projectName)}>
           {project.campaignName}
         </Typography>
       </div>

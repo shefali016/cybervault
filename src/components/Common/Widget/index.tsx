@@ -46,7 +46,9 @@ const Widget = ({
   return (
     <div className={clsx(classes.root)}>
       {!!title && (
-        <Typography variant={'body1'} className={classes.title}>
+        <Typography
+          variant={'body1'}
+          className={clsx(classes.title, 'responsiveHorizontalPadding')}>
           {title}
         </Typography>
       )}
@@ -54,7 +56,8 @@ const Widget = ({
         style={itemHeight ? { minHeight: itemHeight } : {}}
         className={clsx(
           classes.wrapper,
-          tabletColumn ? classes.tabletColumn : undefined
+          tabletColumn ? classes.tabletColumn : undefined,
+          'responsiveHorizontalPadding'
         )}>
         {data && data.length > 0 ? (
           data.map(renderItem)
@@ -84,8 +87,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flexWrap: 'nowrap',
     overflowX: 'auto',
-    whiteSpace: 'nowrap',
-    paddingLeft: theme.spacing(5)
+    whiteSpace: 'nowrap'
   },
   tabletColumn: {
     [theme.breakpoints.down('sm')]: {
@@ -95,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(4),
     color: theme.palette.text.background
   },
   loader: {}
