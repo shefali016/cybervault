@@ -1,19 +1,14 @@
 import React, { useState, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Card, Grid, MenuItem, IconButton, Typography } from '@material-ui/core'
+import { Card, Grid, Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
-import Popover from '@material-ui/core/Popover'
 import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import { Project, Client, Account } from '../../../utils/Interface'
 import { Dot } from '../../Common/Dot'
 import { getWidgetCardHeight } from '../../../utils'
 import InvoiceModal from '../../../components/Invoices/InvoiceModal'
-import { ReduxState } from 'reducers/rootReducer'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { PopoverButton } from 'components/Common/PopoverButton'
@@ -80,12 +75,12 @@ const ProjectCard = ({
   const popoverMenuItems = [
     {
       title: 'View Project',
-      icon: AddBoxIcon,
+      Icon: AddBoxIcon,
       onClick: () => editProject(project.id)
     },
     {
       title: 'Send Invoice',
-      icon: ReceiptIcon,
+      Icon: ReceiptIcon,
       onClick: () => sendInvoice(project.id),
       disabled:
         project.canInvoice === false ||
@@ -93,8 +88,9 @@ const ProjectCard = ({
     },
     {
       title: 'Delete Project',
-      icon: DeleteSharpIcon,
-      onClick: startConfirmingDelete
+      Icon: DeleteSharpIcon,
+      onClick: startConfirmingDelete,
+      desctructive: true
     }
   ]
 
