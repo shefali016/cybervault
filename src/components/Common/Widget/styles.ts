@@ -6,6 +6,7 @@ export const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: COLUMN
   },
+  clientDetails: { marginTop: 15 },
   innerDiv: {
     display: 'flex',
     marginBottom: 15,

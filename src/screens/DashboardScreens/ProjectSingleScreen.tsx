@@ -8,12 +8,12 @@ import React, {
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { COLUMN, FLEX, FLEX_END } from '../../utils/constants/stringConstants'
+import { COLUMN, FLEX } from '../../utils/constants/stringConstants'
 import {
   requestGetProjectDetails,
   requestUpdateProjectDetails
 } from '../../actions/projectActions'
-import { RenderClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
+import { ClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../../components/Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../../components/Common/Widget/ProjectDetailWidget'
 import { RenderExpenseDetails } from '../../components/Common/Widget/ExpenseDetailsWidget'
@@ -32,7 +32,6 @@ import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
 import * as Types from '../../utils/Interface'
 import Header from 'components/Common/Header/header'
-import { AccountTabIds } from 'routes/DashboardSwitch'
 import clsx from 'clsx'
 
 type EditProjectStates = {
@@ -193,7 +192,7 @@ const EditProjectScreen = (props: any) => {
         </Typography>
         <div className={classes.projectStatus}>
           <Typography>Status: {state.projectData.status}</Typography>
-          <ProjectStatusIndicator status={'In progress'} />
+          <ProjectStatusIndicator status={state.projectData.status} />
         </div>
       </div>
     )
@@ -222,10 +221,11 @@ const EditProjectScreen = (props: any) => {
   const renderProjectDetails = () => {
     return (
       <div>
-        <RenderClientDetails
+        <ClientDetails
           clientData={client}
           editInfo
           onEdit={() => openEditProjectModal(1)}
+          hideInfo={true}
         />
 
         <RenderProjectDetails
@@ -359,7 +359,7 @@ const useStyles = makeStyles((theme) => ({
   projectStatus: {
     display: 'flex',
     [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(2)
+      marginTop: theme.spacing(1)
     }
   },
   divider: {

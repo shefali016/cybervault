@@ -1,5 +1,4 @@
 import React from 'react'
-import { Typography } from '@material-ui/core'
 import { useStyles } from './styles'
 import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
@@ -11,11 +10,13 @@ type Props = {
   clientData: Client | undefined
   editInfo?: boolean
   onEdit?: () => void
+  hideInfo?: boolean
 }
 
-export const RenderClientDetails = ({
+export const ClientDetails = ({
   clientData,
   editInfo,
+  hideInfo,
   onEdit
 }: Props) => {
   const classes = useStyles()
@@ -32,6 +33,17 @@ export const RenderClientDetails = ({
         />
         {editInfo ? <EditButton onClick={onEdit} /> : null}
       </div>
+
+      {!hideInfo && (
+        <div className={classes.clientDetails}>
+          <Details label={'Email'} value={clientData.email} />
+          <Details label={'Address'} value={clientData.address} />
+          <Details label={'City'} value={clientData.city} />
+          <Details label={'State'} value={clientData.state} />
+          <Details label={'County'} value={clientData.country} />
+        </div>
+      )}
+
       <AppDivider />
     </div>
   )

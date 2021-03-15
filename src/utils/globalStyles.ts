@@ -225,6 +225,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.headerContainer': {
       paddingBottom: theme.spacing(3),
       [theme.breakpoints.down('sm')]: {
+        paddingBottom: theme.spacing(2),
         flexDirection: 'column',
         alignItems: 'flex-start'
       }
