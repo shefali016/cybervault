@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     marginRight: 20,
     color: '#fff',
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: theme.palette.background.default,
     padding: `2px 10px`,
     borderRadius: 40
   }
