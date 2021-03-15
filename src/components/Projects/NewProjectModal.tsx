@@ -38,6 +38,7 @@ type NewProjectProps = {
   onUpdate?: (project: Types.Project) => void
   isBeyondLimit?: boolean
   onUpgradeSubscription?: () => void
+  onClientAdded?: () => void
 }
 
 const NewProject = ({
@@ -57,7 +58,8 @@ const NewProject = ({
   initialStep = 1,
   onUpdate,
   isBeyondLimit,
-  onUpgradeSubscription
+  onUpgradeSubscription,
+  onClientAdded
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -132,6 +134,7 @@ const NewProject = ({
 
   const renderStepsView = () => {
     const props = {
+      onClientAdded,
       isLoading,
       projectData,
       haveError,
@@ -251,6 +254,7 @@ type NewProjectModalProps = {
   onUpdate?: (project: Types.Project) => void
   isBeyondLimit?: boolean
   onUpgradeSubscription?: () => void
+  onClientAdded?: () => void
 }
 
 const NewProjectModal = ({
@@ -269,7 +273,8 @@ const NewProjectModal = ({
   initialStep,
   onUpdate,
   isBeyondLimit,
-  onUpgradeSubscription
+  onUpgradeSubscription,
+  onClientAdded
 }: NewProjectModalProps & StateProps) => {
   const newClientSuccess = useSelector(
     (state: any) => state.clients.newClientSuccess
@@ -279,6 +284,7 @@ const NewProjectModal = ({
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
+        onClientAdded={onClientAdded}
         onUpgradeSubscription={onUpgradeSubscription}
         initialStep={initialStep}
         onRequestClose={onRequestClose}

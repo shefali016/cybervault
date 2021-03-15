@@ -2,6 +2,22 @@ import { Theme } from '@material-ui/core/styles'
 import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
 
+export const replaceOrAdd = (
+  arr: any[],
+  item: any,
+  compare: (item: any) => boolean
+) => {
+  const index = arr.findIndex((item: any) => compare(item))
+
+  if (item > -1) {
+    const newArr = [...arr]
+    newArr[index] = item
+    return newArr
+  } else {
+    return [...arr, item]
+  }
+}
+
 export const sortByCreatedAt = (arr: Array<any>) => {
   return arr.sort((a, b) =>
     b.createdAt && a.createdAt ? b.createdAt - a.createdAt : 0

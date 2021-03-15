@@ -1,5 +1,5 @@
 import '../Projects.css'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { makeStyles, Typography, Grid, IconButton } from '@material-ui/core'
 import {
@@ -37,7 +37,8 @@ const NewProjectStepOne = (props: any) => {
     currentStep,
     account,
     setClientData,
-    clientData
+    clientData,
+    onClientAdded
   } = props
 
   const dispatch = useDispatch()
@@ -46,7 +47,6 @@ const NewProjectStepOne = (props: any) => {
   }, [])
 
   useEffect(() => {
-    console.log(clients, clientData)
     if (clients && !clientData) {
       setClientData(
         projectData.clientId
@@ -71,6 +71,12 @@ const NewProjectStepOne = (props: any) => {
     setAddClient(true)
   }
 
+  const clientSelectItems = useMemo(() => {
+    return clients.map((cl: Client) => {
+      return { value: cl.id, title: cl.name }
+    })
+  }, [clients])
+
   const renderClientSelect = () => {
     if (addClient) return null
 
@@ -88,9 +94,7 @@ const NewProjectStepOne = (props: any) => {
           <div className={clsx(classes.selectContainer)}>
             <AppSelect
               className={classes.select}
-              items={clients.map((cl: Client) => {
-                return { value: cl.id, title: cl.name }
-              })}
+              items={clientSelectItems}
               value={clientData ? clientData.id : null}
               onChange={(event: any) => {
                 handleChooseClient(event)
@@ -118,18 +122,26 @@ const NewProjectStepOne = (props: any) => {
     )
   }
 
+  const handleBack = () => {
+    setAddClient(false)
+    setEditClient(false)
+  }
+
+  const handleClientSuccess = (client: Client) => {
+    setClientData(client)
+    setTimeout(handleBack, 0)
+  }
+
   const renderAddClient = () => {
     if (!addClient) return null
 
     return (
       <AddClient
-        onBack={() => {
-          setAddClient(false)
-          setEditClient(false)
-        }}
+        onBack={handleBack}
         account={account}
         isEdit={editClient}
         client={clientData}
+        onSuccess={handleClientSuccess}
       />
     )
   }
