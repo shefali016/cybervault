@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   label: {
     fontWeight: 'bold',
-    marginRight: 25,
+    marginRight: 20,
     color: '#fff',
     backgroundColor: theme.palette.primary.dark,
     padding: `2px 10px`,
