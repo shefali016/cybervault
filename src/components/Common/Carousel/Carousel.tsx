@@ -60,11 +60,13 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
 
       <div
         className={classes.assetContainer}
-        style={{
-          marginRight: `${
-            assets && assets.length ? Math.min(3, assets.length - 1) * 1 : 0
-          }%`
-        }}>
+        style={
+          assets && assets.length
+            ? {
+                marginRight: `${Math.min(3, assets.length - 1) * 1}%`
+              }
+            : {}
+        }>
         <div
           style={{
             position: 'relative',
