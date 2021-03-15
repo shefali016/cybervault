@@ -191,8 +191,10 @@ const EditProjectScreen = (props: any) => {
         <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
           {state.projectData.campaignName}
         </Typography>
-        <Typography>Status: {state.projectData.status}</Typography>
-        <ProjectStatusIndicator status={'In progress'} />
+        <div className={classes.projectStatus}>
+          <Typography>Status: {state.projectData.status}</Typography>
+          <ProjectStatusIndicator status={'In progress'} />
+        </div>
       </div>
     )
   }
@@ -354,6 +356,12 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  projectStatus: {
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(2)
+    }
+  },
   divider: {
     backgroundColor: theme.palette.background.surfaceHighlight,
     marginTop: theme.spacing(6),

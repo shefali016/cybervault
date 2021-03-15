@@ -222,7 +222,13 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
-    '.headerContainer': { paddingBottom: theme.spacing(3) },
+    '.headerContainer': {
+      paddingBottom: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        alignItems: 'flex-start'
+      }
+    },
     // Section
     '.sectionInner': {
       background: theme.palette.common.white,
@@ -239,6 +245,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },
     '.backgroundText': { color: theme.palette.text.background },
+    '.h4': { [theme.breakpoints.down('sm')]: { fontSize: 25 } },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },

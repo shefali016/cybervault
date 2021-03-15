@@ -23,5 +23,8 @@ export const useStyles = makeStyles((theme) => ({
   },
   bgNone: {
     backgroundColor: 'unset !important'
+  },
+  clientAvatarTitle: {
+    marginRight: theme.spacing(2)
   }
 }))
