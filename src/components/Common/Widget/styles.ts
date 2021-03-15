@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: 15,
     alignItems: 'center'
   },
-  title: {},
+  title: { marginRight: theme.spacing(2) },
   button: {
     padding: 5,
     height: 15,

@@ -88,23 +88,6 @@ const EditProjectScreen = (props: any) => {
     []
   )
 
-  useOnChange(props.isUpdatedSuccess, (success) => {
-    if (success) {
-      toastContext.showToast({
-        title: 'Project updated',
-        type: 'success'
-      })
-    }
-  })
-
-  useOnChange(props.projectUpdateError, (error) => {
-    if (error) {
-      toastContext.showToast({
-        title: 'Failed to update project'
-      })
-    }
-  })
-
   useOnChange(props.projectDetails, (projectData: Project | null) => {
     if (projectData) {
       setState({ ...state, projectData })
@@ -196,14 +179,19 @@ const EditProjectScreen = (props: any) => {
         )
       )
       console.log('Asset upload failed.', error)
-      toastContext.showToast({ title: `Failed to upload ${type}` })
+      toastContext.showToast({
+        title: `Failed to upload ${type === 'image' ? 'Image' : 'Video'}`
+      })
     }
   }
 
   const renderHeader = () => {
     return (
-      <div className={classes.headText}>
-        <Typography> Status : {'In Progress'}</Typography>
+      <div className={clsx('row', 'headerContainer')}>
+        <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
+          {state.projectData.campaignName}
+        </Typography>
+        <Typography>Status: {state.projectData.status}</Typography>
         <ProjectStatusIndicator status={'In progress'} />
       </div>
     )
@@ -238,38 +226,31 @@ const EditProjectScreen = (props: any) => {
           editInfo
           onEdit={() => openEditProjectModal(1)}
         />
+
         <RenderProjectDetails
           projectData={state.projectData}
           editInfo
           onEdit={() => openEditProjectModal(2, false, true, false, false)}
         />
-        {state.projectData &&
-        state.projectData.tasks &&
-        state.projectData.tasks.length > 0 ? (
-          <RenderTaskDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(2, true, false, false, false)}
-          />
-        ) : null}
-        {state.projectData &&
-        state.projectData.expenses &&
-        state.projectData.expenses.length > 0 ? (
-          <RenderExpenseDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(3, false, false, true, false)}
-          />
-        ) : null}
-        {state.projectData &&
-        state.projectData.milestones &&
-        state.projectData.milestones.length > 0 ? (
-          <RenderMilestonesDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(4)}
-          />
-        ) : null}
+
+        <RenderTaskDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(2, true, false, false, false)}
+        />
+
+        <RenderExpenseDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(3, false, false, true, false)}
+        />
+
+        <RenderMilestonesDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(4)}
+        />
+
         <RenderBudgetDetails
           projectData={state.projectData}
           editInfo
@@ -359,9 +340,7 @@ const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
-  isUpdatedSuccess: state.project.isUpdatedSuccess,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
-  projectUpdateError: state.project.projectUpdateError,
   account: state.auth.account,
   clients: state.clients.clientsData
 })
@@ -394,11 +373,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(6),
     marginBottom: theme.spacing(5)
   },
-  headText: {
-    display: FLEX,
-    justifyContent: FLEX_END,
-    color: 'white'
-  },
+  header: {},
   detailsWrapper: {
     color: theme.palette.text.background,
     marginTop: 30

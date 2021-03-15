@@ -42,13 +42,7 @@ export const PopoverButton = ({
 
   return (
     <div className={className} style={style}>
-      <IconButton
-        aria-owns={id}
-        onClick={handleClick}
-        style={{
-          color: theme.palette.background.surfaceHighlight,
-          backgroundColor: 'rgba(0,0,0,0.2)'
-        }}>
+      <IconButton aria-owns={id} onClick={handleClick} className={'iconButton'}>
         <MoreVertIcon
           style={{ color: theme.palette.grey[100] }}
           fontSize='small'

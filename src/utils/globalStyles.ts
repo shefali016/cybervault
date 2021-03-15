@@ -222,6 +222,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
+    '.headerContainer': { paddingBottom: theme.spacing(2) },
     // Section
     '.sectionInner': {
       background: theme.palette.common.white,
@@ -255,6 +256,21 @@ export const useGlobalStyles = makeStyles((theme) => ({
         height: '100%',
         objectFit: 'cover'
       }
-    }
+    },
+    // Buttons
+    '.iconButton': {
+      color: theme.palette.background.surfaceHighlight,
+      backgroundColor: theme.palette.background.surface
+    },
+    '.MuiIconButton-root': {
+      transition: theme.transitions.create(
+        ['background-color', 'box-shadow', 'border'],
+        {
+          duration: theme.transitions.duration.standard
+        }
+      )
+    },
+    // Color
+    '.lightGrey': { color: theme.palette.grey[100] }
   }
 }))

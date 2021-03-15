@@ -16,6 +16,16 @@ import { Client } from '../utils/Interface'
 
 export type State = {
   clientsData: Array<Types.Client>
+  loading: false
+  success: false
+  error: false
+  newClientSuccess: null | Types.Client
+  newClientError: boolean
+  newClientLoading: boolean
+  clientDetailLoading: boolean
+  clientDetailSuccess: boolean
+  clientDetailError: boolean
+  clientDetailData: Types.Client | {}
 }
 
 export type Action = {
@@ -25,12 +35,12 @@ export type Action = {
   error: string
 }
 
-const initialState = {
+const initialState: State = {
   loading: false,
   success: false,
   error: false,
   clientsData: [],
-  newClientSuccess: false,
+  newClientSuccess: null,
   newClientError: false,
   newClientLoading: false,
   clientDetailLoading: false,
@@ -141,21 +151,15 @@ const clientReducer = (state = initialState, action: Action) => {
   }
 }
 
-export const projectClient = createTransform(
+export const clientTransform = createTransform(
   (inboundState: State) => {
-    return {
-      ...inboundState,
-      loading: false,
-      success: false,
-      error: false,
-      clientsData: [],
-      newClientSuccess: false,
-      newClientError: false,
-      newClientLoading: false
-    }
+    return inboundState
   },
-  (outboundState: State) => outboundState,
-  { whitelist: ['client'] }
+  (outboundState: State) => ({
+    ...initialState,
+    clientsData: outboundState.clientsData
+  }),
+  { whitelist: ['clients'] }
 )
 
 export default clientReducer

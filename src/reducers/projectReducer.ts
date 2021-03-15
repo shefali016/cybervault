@@ -15,6 +15,7 @@ import {
   DELETE_PROJECT_SUCCESS,
   DELETE_PROJECT_FAILURE
 } from 'actions/actionTypes'
+import { FaLessThanEqual } from 'react-icons/fa'
 import { createTransform } from 'redux-persist'
 import { getProductData } from 'utils'
 import * as Types from '../utils/Interface'
@@ -31,7 +32,7 @@ export type State = {
   updateSuccess: boolean
   projectDetails: Object
   isProjectDetailsLoading: boolean
-  isUpdatedSuccess: boolean
+  updateProjectSuccess: boolean
 }
 
 export type Action = {
@@ -56,8 +57,8 @@ const initialState = {
   updateError: null,
   projectDetails: getProductData(),
   isProjectDetailsLoading: false,
-  isUpdatedSuccess: false,
-  projectUpdateError: null
+  updateProjectSuccess: false,
+  updateProjectFailure: null
 }
 
 const createNewProject = (state: State, action: Action) => ({
@@ -116,9 +117,7 @@ const getProjectDetailsSuccess = (state: State, action: Action) => {
     ...state,
     isProjectDetailsLoading: false,
     projectDetails: action.payload,
-    allProjectsData: replaceProject(action.payload, state),
-    isUpdatedSuccess: false,
-    projectUpdateError: null
+    allProjectsData: replaceProject(action.payload, state)
   }
 }
 
@@ -130,7 +129,8 @@ const getProjectDetailsFailure = (state: State, action: Action) => ({
 
 const updateProjectDetailsRequest = (state: State, action: Action) => ({
   ...state,
-  isUpdatedSuccess: true,
+  updateProjectSuccess: false,
+  updateProjectFailure: null,
   isProjectDetailsLoading: true
 })
 
@@ -138,14 +138,14 @@ const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
   projectDetails: action.projectData,
   allProjectsData: replaceProject(action.projectData, state),
-  isUpdatedSuccess: false,
-  projectUpdateError: null,
+  updateProjectSuccess: true,
+  updateProjectFailure: null,
   isProjectDetailsLoading: false
 })
 const updateProjectDetailsFailure = (state: State, action: Action) => ({
   ...state,
-  isUpdatedSuccess: false,
-  projectUpdateError: 'Error in updating project details',
+  updateProjectSuccess: false,
+  updateProjectFailure: 'Error in updating project details',
   isProjectDetailsLoading: false
 })
 
@@ -217,13 +217,8 @@ const projectReducer = (state = initialState, action: Action) => {
 export const projectTransform = createTransform(
   (inboundState: State) => {
     return {
-      ...inboundState,
-      error: null,
-      success: false,
-      isLoading: false,
-      updateLoading: false,
-      newProjectData: null,
-      isUpdatedSuccess: false
+      ...initialState,
+      allProjectsData: inboundState.allProjectsData
     }
   },
   (outboundState: State) => outboundState,

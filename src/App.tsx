@@ -20,6 +20,7 @@ const theme = createMuiTheme({
     }
   },
   palette: {
+    // action: { hoverOpacity: 0.3 },
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
     background: {
       default: '#181818',

@@ -1,31 +1,39 @@
-import { Project } from 'utils/Interface'
+import { Project, Task } from 'utils/Interface'
 import moment from 'moment'
 
 export default function validate(
   step: number,
-  projectData: any,
+  projectData: Project,
   clientData: any
 ) {
+  const invalidString = (str: string) => str.trim() === ''
+
   switch (step) {
     case 1:
-      if (clientData.id.trim() === '') {
+      if (invalidString(clientData.id)) {
         return true
       }
       break
     case 2:
       if (
-        projectData.campaignName.trim() === '' ||
-        projectData.campaignDate.trim() === '' ||
-        projectData.campaignObjective.trim() === '' ||
-        projectData.campaignDeadLine.trim() === ''
+        invalidString(projectData.campaignName) ||
+        invalidString(projectData.campaignDate) ||
+        invalidString(projectData.campaignObjective) ||
+        invalidString(projectData.campaignDeadLine) ||
+        !!projectData.tasks.find(
+          ({ title, startDate, endDate }: Task) =>
+            invalidString(title) ||
+            invalidString(startDate) ||
+            invalidString(endDate)
+        )
       ) {
         return true
       }
       break
     case 3:
       if (
-        projectData.campaignBudget.trim() === '' ||
-        projectData.campaignExpenses.trim() === ''
+        invalidString(projectData.campaignBudget.toString()) ||
+        invalidString(projectData.campaignExpenses.toString())
       ) {
         return true
       }

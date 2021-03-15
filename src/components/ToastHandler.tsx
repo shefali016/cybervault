@@ -48,10 +48,11 @@ const stripeState = (state: ReduxState) => state.stripe
 const authState = (state: ReduxState) => state.auth
 const portfolioState = (state: ReduxState) => state.portfolio
 const clientsState = (state: ReduxState) => state.clients
+const projectState = (state: ReduxState) => state.project
 
 const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
-  [stripeState, authState, portfolioState, clientsState],
-  (stripe, auth, portfolio, clients) => {
+  [stripeState, authState, portfolioState, clientsState, projectState],
+  (stripe, auth, portfolio, clients, projects) => {
     const stripeToasts = [
       {
         error:
@@ -120,11 +121,24 @@ const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
       }
     ]
 
+    console.log(projects)
+
+    const projectToasts = [
+      {
+        error:
+          !!projects.updateProjectFailure &&
+          'Failed to update project. Please try again or contact support.',
+        success:
+          !!projects.updateProjectSuccess && 'Your project has beed updated.'
+      }
+    ]
+
     return [
       ...stripeToasts,
       ...authToasts,
       ...portfolioToasts,
-      ...clientsToasts
+      ...clientsToasts,
+      ...projectToasts
     ]
   }
 )

@@ -102,13 +102,21 @@ const NewProject = ({
     if (typeof onUpdate !== 'function') {
       return
     }
-    const projectUpdate = { ...projectData }
 
-    if (clientData) {
-      projectUpdate.clientId = clientData.id
+    const isError = validate(currentStep, projectData, clientData)
+    if (isError) {
+      setHaveError(true)
+    } else {
+      setHaveError(false)
+
+      const projectUpdate = { ...projectData }
+
+      if (clientData) {
+        projectUpdate.clientId = clientData.id
+      }
+
+      onUpdate(projectUpdate)
     }
-
-    onUpdate(projectUpdate)
   }
 
   const onSubmitData = async () => {
