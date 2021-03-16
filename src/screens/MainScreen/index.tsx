@@ -81,7 +81,8 @@ export const ChildTabs = {
 
 export const SharedTabIds = {
   subscription: 'subscription',
-  security: 'security'
+  security: 'security',
+  billing: 'billing'
 }
 
 export const ScreenViews = {
@@ -120,7 +121,8 @@ const MainScreen = ({
   user,
   account,
   allProjectsData,
-  accountSubscription
+  accountSubscription,
+  location
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -384,7 +386,7 @@ const MainScreen = ({
             component={PortfolioFolderScreen}
           />
           <Route path='/paymentmethods' component={PaymentMethodsScreen} />
-          <Route path='/billings' component={BillingHistoryScreen} />
+          <Route path='/billing' component={BillingHistoryScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}

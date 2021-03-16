@@ -16,6 +16,7 @@ export type State = {
 
   setAsDefaultError: null | string
   setAsDefaultSuccess: boolean
+  setAsDefaultLoading: boolean
 
   accountSubscription: null | Object | any
   storageSubscription: null | Object | any
@@ -67,6 +68,7 @@ const initialState = {
 
   setAsDefaultError: null,
   setAsDefaultSuccess: false,
+  setAsDefaultLoading: false,
 
   attachError: null,
   attachSuccess: false,
@@ -257,38 +259,44 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.SET_DEFAULT_PAYMENT_METHOD:
       return {
         ...state,
-        billingHistoryLoading: true
+        setAsDefaultLoading: true
       }
     case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS:
-      const paymentMethods = state.paymentMethods
-      const index = state.paymentMethods.findIndex(
+      const paymentMethodsData = [...state.paymentMethods]
+      const index = paymentMethodsData.findIndex(
         (item: any) => item.id === action.paymentMethodId
       )
-      const defultPaymentMethod = paymentMethods[index]
-      paymentMethods.splice(index, 1)
-      paymentMethods.push(defultPaymentMethod)
+      const defultPaymentMethod = paymentMethodsData[index]
+      paymentMethodsData.splice(index, 1)
+      paymentMethodsData.push(defultPaymentMethod)
 
       return {
         ...state,
         customer: action.customer,
-        setAsDefaultSuccess: true
+        setAsDefaultSuccess: true,
+        setAsDefaultLoading: false,
+        paymentMethods: paymentMethodsData
       }
     case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE:
       return {
         ...state,
-        setAsDefaultError: action.error
+        setAsDefaultError: action.error,
+        setAsDefaultLoading: false
       }
     case ActionTypes.GET_CUSTOMER_INVOICE:
       return {
         ...state,
-        billingHistoryLoading: true
+        billingHistoryLoading: true,
+        billingHistorySuccess: false,
+        billingHistoryError: null
       }
     case ActionTypes.GET_CUSTOMER_INVOICE_SUCCESS:
       return {
         ...state,
         billingHistory: action.billingHistory,
         billingHistoryLoading: false,
-        billingHistorySuccess: true
+        billingHistorySuccess: true,
+        billingHistoryError: null
       }
     case ActionTypes.GET_CUSTOMER_INVOICE_FAILURE:
       return {

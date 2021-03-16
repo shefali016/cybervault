@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
 import { generateUid } from './utils'
-import { Mail } from './utils/Interfaces'
+import { Mail } from './utils/interfaces'
 import templates from './sendGridTemplates.json'
 import config from './config.json'
 

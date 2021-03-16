@@ -235,6 +235,132 @@ export interface Subscription {
   trial_start: null
 }
 
+export interface StripeInvoice {
+  id: string
+  object: Object
+  account_country: string
+  account_name: string
+  account_tax_ids: null
+  amount_due: number
+  amount_paid: number
+  amount_remaining: number
+  application_fee_amount: null
+  attempt_count: number
+  attempted: boolean
+  auto_advance: boolean
+  billing_reason: string
+  charge: string
+  collection_method: string
+  created: number
+  currency: string
+  custom_fields: null
+  customer: string
+  customer_address: null
+  customer_email: string
+  customer_name: string
+  customer_phone: null
+  customer_shipping: null
+  customer_tax_exempt: null
+  customer_tax_ids: Array<string>
+  default_payment_method: null
+  default_source: null
+  default_tax_rates: Array<string>
+  description: null
+  discount: null
+  discounts: Array<string>
+  due_date: null
+  ending_balance: number
+  footer: null
+  hosted_invoice_url: string
+  lines: {
+    data: [
+      {
+        id: string
+        object: string
+        amount: number
+        currency: number
+        description: number
+        discount_amounts: Array<string>
+        discountable: boolean
+        discounts: Array<string>
+        livemode: boolean
+        metadata: Object
+        period: {
+          end: number
+          start: number
+        }
+        price: {
+          id: string
+          object: Object
+          active: boolean
+          billing_scheme: string
+          created: number
+          currency: string
+          livemode: boolean
+          lookup_key: null
+          metadata: Object
+          nickname: null
+          product: string
+          recurring: {
+            aggregate_usage: null
+            interval: string
+            interval_count: number
+            usage_type: string
+          }
+          tiers_mode: null
+          transform_quantity: null
+          type: string
+          unit_amount: number
+          unit_amount_decimal: number
+        }
+        proration: boolean
+        quantity: number
+        subscription: string
+        subscription_item: string
+        tax_amounts: Array<string>
+        tax_rates: Array<string>
+        type: string
+      }
+    ]
+    has_more: boolean
+    object: string
+    url: string
+  }
+  livemode: boolean
+  metadata: object
+  next_payment_attempt: null
+  number: number
+  on_behalf_of: null
+  paid: boolean
+  payment_intent: string
+  payment_settings: {
+    payment_method_options: null
+    payment_method_types: null
+  }
+  period_end: number
+  period_start: number
+  post_payment_credit_notes_amount: number
+  pre_payment_credit_notes_amount: number
+  receipt_number: null
+  starting_balance: number
+  statement_descriptor: null
+  status: string
+  status_transitions: {
+    finalized_at: number
+    marked_uncollectible_at: null
+    paid_at: number
+    voided_at: null
+  }
+  subscription: string
+  subtotal: number
+  tax: null
+  total: number
+  total_discount_amounts: Array<string>
+  total_tax_amounts: Array<string>
+  transfer_data: null
+  webhooks_delivered_at: null
+}
+
 export type Account = {
   id: string
   owner: string // id of user

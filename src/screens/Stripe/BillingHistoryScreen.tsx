@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
-import { getCustomerInvoices } from 'actions/stripeActions'
-import { InvoicesTable } from 'components/Invoices/InvoicesTable'
-import { Invoice } from 'utils/Interface'
+import { StripeInvoice } from 'utils/Interface'
+import { BillingHistory } from 'components/Billing'
 
 type StateProps = {
-  billingHistory: Array<Invoice>
+  billingHistory: Array<StripeInvoice> | null
   billingHistoryLoading: boolean
 }
 
@@ -16,16 +15,14 @@ type Props = {
 
 const BillingHistoryScreen = ({
   billingHistory,
-  billingHistoryLoading,
-  history
+  billingHistoryLoading
 }: Props) => {
+  console.log('################')
+
   return (
     <div className={'dashboardScreen'}>
-      <InvoicesTable
+      <BillingHistory
         invoices={billingHistory}
-        tableContainerClassName={''}
-        history={history}
-        accountId={'account.id'}
         isBilling={true}
         billingHistoryLoading={billingHistoryLoading}
       />
@@ -34,7 +31,7 @@ const BillingHistoryScreen = ({
 }
 
 const mapState = (state: ReduxState): StateProps => ({
-  billingHistory: state.stripe.billingHistory as Array<Invoice>,
+  billingHistory: state.stripe.billingHistory as Array<StripeInvoice> | null,
   billingHistoryLoading: state.stripe.billingHistoryLoading as boolean
 })
 

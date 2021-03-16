@@ -12,6 +12,7 @@ import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
 import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
+import BillingHistoryScreen from 'screens/Stripe/BillingHistoryScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -321,6 +322,7 @@ const MainScreen = ({
             component={PortfolioFolderScreen}
           />
           <Route path='/paymentmethods' component={PaymentMethodsScreen} />
+          <Route path='/billing' component={BillingHistoryScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}

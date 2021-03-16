@@ -117,7 +117,7 @@ const SubscriptionScreen = ({
   const toggleCardModal = (open: boolean) => () => setCardModalOpen(open)
 
   const navigateToPaymentMethodsScreen = () => history.push('paymentmethods')
-  const navigateToBillingHistoryScreen = () => history.push('billings')
+  const navigateToBillingHistoryScreen = () => history.push('billing')
 
   return (
     <div className={'screenContainer'}>
@@ -311,7 +311,7 @@ const SubscriptionScreen = ({
                         </Typography>
                       )}
                     </div>,
-                    <GradiantButton>
+                    <GradiantButton onClick={navigateToBillingHistoryScreen}>
                       <div className={'row'}>
                         <Typography style={{ marginRight: 5 }}>
                           View History
