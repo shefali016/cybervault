@@ -19,7 +19,7 @@ import { ReduxState } from 'reducers/rootReducer'
 type Props = {
   paymentMethods: Array<PaymentMethod>
   customerId: string
-  defaultPaymentMethod: string
+  defaultPaymentMethod: string | undefined
 }
 
 export const PaymentMethodList = ({
