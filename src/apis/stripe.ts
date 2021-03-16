@@ -128,9 +128,11 @@ export const createStripeCustomer = async (
 }
 
 export const createStripeAccount = async (
-  account: Account
+  account: Account,
+  accountOwner: User
 ): Promise<StripeAccount> => {
-  const { email, region } = account
+  const { region } = account
+  const { email } = accountOwner
   const res = await axios.post<StripeAccount>(
     `${server_url}/api/v1/stripe/create_account`,
     { email, country: region?.code }

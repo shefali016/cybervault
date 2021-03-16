@@ -2,6 +2,28 @@ import { Theme } from '@material-ui/core/styles'
 import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
 
+export const replaceOrAdd = (
+  arr: any[],
+  item: any,
+  compare: (item: any) => boolean
+) => {
+  const index = arr.findIndex((item: any) => compare(item))
+
+  if (index > -1) {
+    const newArr = [...arr]
+    newArr[index] = item
+    return newArr
+  } else {
+    return [...arr, item]
+  }
+}
+
+export const sortByCreatedAt = (arr: Array<any>) => {
+  return arr.sort((a, b) =>
+    b.createdAt && a.createdAt ? b.createdAt - a.createdAt : 0
+  )
+}
+
 export function getWidgetCardHeight(theme: Theme) {
   return Math.min(window.outerWidth - theme.spacing(8) - 100, 200)
 }
@@ -14,20 +36,7 @@ export function generateUid() {
   let S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
   }
-  return (
-    S4() +
-    S4() +
-    '-' +
-    S4() +
-    '-' +
-    S4() +
-    '-' +
-    S4() +
-    '-' +
-    S4() +
-    S4() +
-    S4()
-  )
+  return S4() + S4() + S4() + S4()
 }
 
 export const getProductData = (): Project => {

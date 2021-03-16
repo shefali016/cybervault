@@ -1,45 +1,46 @@
 import React from 'react'
-import { Button, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
-import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
+import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
+import { EditButton } from '../Button/EditButton'
+import { Project } from 'utils/Interface'
 
-export const RenderProjectDetails = (props: any) => {
+type Props = {
+  projectData: Project
+  editInfo?: boolean
+  onEdit?: () => void
+  hideBorder?: boolean
+}
+
+export const RenderProjectDetails = (props: Props) => {
   const classes = useStyles()
   return (
     <div className={classes.clientDetailsContainer}>
       <div className={classes.innerDiv}>
-        <Typography variant={'h6'} className={classes.title}>
+        <Typography variant={'h5'} className={classes.title}>
           Project Details
         </Typography>
-        {props.editInfo ? (
-          <Button className={classes.button} onClick={props.onEdit}>
-            <img
-              src={iconMaterialEdit}
-              alt='icon'
-              className={classes.editIcon}
-            />
-          </Button>
-        ) : null}
+        {props.editInfo && <EditButton onClick={props.onEdit} />}
       </div>
 
-      {renderDetails(
-        'Campaign Objective:',
-        props.projectData ? props.projectData.campaignObjective : ''
-      )}
-
-      {renderDetails(
-        'Deadline: ',
-        props.projectData ? props.projectData.campaignDeadLine : ''
-      )}
-
-      {props.projectData &&
-        props.projectData.description &&
-        renderDetails(
-          'Project Summary: ',
-          props.projectData ? props.projectData.description : ''
-        )}
+      <Details
+        label={'Campaign Name:'}
+        value={props.projectData?.campaignName}
+      />
+      <Details
+        label={'Campaign Objective:'}
+        value={props.projectData?.campaignObjective}
+      />
+      <Details label={'Start Date:'} value={props.projectData?.campaignDate} />
+      <Details
+        label={'Deadline:'}
+        value={props.projectData?.campaignDeadLine}
+      />
+      <Details
+        label={'Project Summary:'}
+        value={props.projectData?.description}
+      />
 
       {!props.hideBorder && <AppDivider />}
     </div>

@@ -13,7 +13,7 @@ import {
 } from 'utils/constants/stringConstants'
 import NewProjectTitle from '../../Common/Modal/ModalTitle'
 import NewProjectFooter from '../NewProjectFooter'
-import { RenderClientDetails } from '../../Common/Widget/ClientDetailsWidget'
+import { ClientDetails } from '../../Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../../Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../../Common/Widget/ProjectDetailWidget'
 import { RenderExpenseDetails } from '../../Common/Widget/ExpenseDetailsWidget'
@@ -43,7 +43,7 @@ const NewProjectStepFive = (props: any) => {
   const renderMiddleView = () => {
     return (
       <div className={classes.middleView}>
-        <RenderClientDetails clientData={clientData} />
+        <ClientDetails clientData={clientData} />
 
         <RenderProjectDetails projectData={projectData} />
 

@@ -7,15 +7,24 @@ import clsx from 'clsx'
 import { IconButton, Typography } from '@material-ui/core'
 import { AppButton } from 'components/Common/Core/AppButton'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
+import { useOnChange } from 'utils/hooks'
 
 type Props = {
   history: any
   goToSignUp: () => void
   onLogout: () => void
   isLoggedIn: boolean
+  width: any
 }
 
-export const Nav = ({ history, goToSignUp, onLogout, isLoggedIn }: Props) => {
+const NavBar = ({
+  history,
+  goToSignUp,
+  onLogout,
+  isLoggedIn,
+  width
+}: Props) => {
   const classes = useStyles()
   const theme = useTheme()
   const [state, setState] = useState({
@@ -24,6 +33,12 @@ export const Nav = ({ history, goToSignUp, onLogout, isLoggedIn }: Props) => {
   })
   const { navOpen } = state
   const atTopRef = useRef(state.atTop)
+
+  useOnChange(width, (width: any) => {
+    if (!isWidthDown('sm', width) && state.navOpen) {
+      setState((state) => ({ ...state, navOpen: false }))
+    }
+  })
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, true)
@@ -154,3 +169,5 @@ export const Nav = ({ history, goToSignUp, onLogout, isLoggedIn }: Props) => {
     </div>
   )
 }
+
+export const Nav = withWidth()(NavBar)

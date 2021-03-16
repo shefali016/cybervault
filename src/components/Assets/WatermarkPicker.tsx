@@ -31,14 +31,7 @@ const WatermarkPicker = ({ url, onChange, size = 120, className }: Props) => {
         onChange={(event: any) => onChange(event.target.files[0])}
         style={{ display: 'none' }}
       />
-      {!!url && (
-        <img
-          src={url}
-          className={classes.img}
-          alt={'client-logo'}
-          style={roundStyle}
-        />
-      )}
+      {!!url && <img src={url} className={classes.img} alt={'client-logo'} />}
     </Button>
   )
 }
@@ -49,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden'
   },
   img: {
-    position: POSITION_ABSOLUTE
+    position: POSITION_ABSOLUTE,
+    width: '100%',
+    height: 'auto'
   }
 }))
 

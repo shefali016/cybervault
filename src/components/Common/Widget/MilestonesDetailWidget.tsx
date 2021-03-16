@@ -1,36 +1,37 @@
 import React from 'react'
-import { Button, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import {
-  renderDetails,
-  renderDevider
-} from '../../ProjectInfoDisplay/renderDetails'
-import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
+import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
+import { EditButton } from '../Button/EditButton'
+import { CostItem } from 'components/Projects/CostItem'
 
 export const RenderMilestonesDetails = (props: any) => {
   const classes = useStyles()
+
+  const renderMilestones = () => {
+    if (!props.projectData.milestones.length) {
+      return (
+        <Typography variant='body1' className={'metaText'}>
+          This project has no milestones
+        </Typography>
+      )
+    }
+    return props.projectData.milestones.map((item: any, index: number) => {
+      const { title, payment } = item
+      return <CostItem key={title} title={title} value={payment} />
+    })
+  }
+
   return (
-    <div
-      className={classes.clientDetailsContainer}
-      style={{ color: props.editInfo ? 'white' : 'black' }}>
+    <div className={classes.clientDetailsContainer}>
       <div className={classes.innerDiv}>
-        <Typography variant={'h6'} className={classes.title}>
+        <Typography variant={'h5'} className={classes.title}>
           Milestones Details
         </Typography>
-        {props.editInfo ? (
-          <Button className={classes.button} onClick={props.onEdit}>
-            <img
-              src={iconMaterialEdit}
-              alt='icon'
-              className={classes.editIcon}
-            />
-          </Button>
-        ) : null}
+        {props.editInfo ? <EditButton onClick={props.onEdit} /> : null}
       </div>
-      {props.projectData.milestones.map((item: any, index: number) => {
-        return renderDetails(item.title, item.payment)
-      })}
+      {renderMilestones()}
       <AppDivider />
     </div>
   )

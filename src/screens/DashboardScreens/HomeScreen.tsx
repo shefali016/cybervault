@@ -17,6 +17,7 @@ import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
 import * as Types from '../../utils/Interface'
+import clsx from 'clsx'
 
 const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
@@ -68,7 +69,7 @@ const HomeScreen = (props: any) => {
           />
         )}
       />
-      <div className={classes.invoicingWrapper}>
+      <div className={clsx(classes.invoicingWrapper, 'sectionContainer')}>
         <Typography variant={'body1'} className={classes.sectionTitle}>
           Invoicing and Analytics
         </Typography>
@@ -120,8 +121,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const useStyles = makeStyles((theme) => ({
   invoicingWrapper: {
-    marginBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(5),
     flexWrap: 'nowrap',
     overflowX: 'auto',
     whiteSpace: 'nowrap'

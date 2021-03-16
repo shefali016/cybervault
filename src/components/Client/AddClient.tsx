@@ -28,6 +28,7 @@ type AddClientProps = {
   showStep?: boolean
   stepText?: string
   client?: Client | undefined
+  onSuccess?: (client: Client) => void
 }
 
 export const AddClient = (props: AddClientProps) => {
@@ -43,12 +44,21 @@ export const AddClient = (props: AddClientProps) => {
   const isLoading = useSelector((state: any) => state.clients.newClientLoading)
   const errorMsg = useSelector((state: any) => state.clients.newClientErrorMsg)
   const updateError = useSelector((state: any) => state.clients.newClientError)
+  const clientAdded = useSelector(
+    (state: any) => state.clients.newClientSuccess
+  )
 
   const toastContext = useContext(ToastContext)
 
   useOnChange(updateError, (error: string | null) => {
     if (error) {
       toastContext.showToast({ title: errorMsg, type: ToastTypes.error })
+    }
+  })
+
+  useOnChange(clientAdded, (clientAdded) => {
+    if (clientAdded) {
+      typeof props.onSuccess === 'function' && props.onSuccess(clientAdded)
     }
   })
 
@@ -91,7 +101,12 @@ export const AddClient = (props: AddClientProps) => {
         setClientData(client)
 
         dispatch(addClientRequest(account, client))
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+        toastContext.showToast({
+          title: 'Failed to upload client image. Please try again.'
+        })
+      }
     }
   }
 
@@ -231,11 +246,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 40,
     backgroundColor: TRANSPARENT,
     marginBottom: 5,
+    position: 'relative',
     overflow: 'hidden'
   },
   clientLogoImg: {
-    height: 80,
-    borderRadius: 40,
+    minHeight: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+    objectFit: 'cover',
     position: POSITION_ABSOLUTE
   },
   addLogoText: {

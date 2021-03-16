@@ -2,9 +2,41 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    '*': { outline: 'none' },
+    body: {
+      background: theme.palette.background.default
+    },
+    '.splashScreen': {
+      display: 'flex',
+      height: '100vh',
+      width: '100vw',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: theme.palette.background.default
+    },
+    '.hiddenSmDown': {
+      [theme.breakpoints.down('sm')]: {
+        display: 'none !important'
+      }
+    },
+    '.hiddenMdUp': {
+      [theme.breakpoints.up('md')]: {
+        display: 'none !important'
+      }
+    },
+    '.rotate180': { transform: 'rotate(180deg)' },
+    '.alignLeftButton': {
+      justifyContent: 'flex-start',
+      paddingLeft: theme.spacing(2)
+    },
+    '.fullHeight': { minHeight: '100vh' },
+    '.stretch': { alignSelf: 'stretch' },
+    '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
     '.col': { display: 'flex', flexDirection: 'column' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
+    '.wrap': { flexWrap: 'wrap' },
+    '.fullWidth': { width: '100%' },
     '.MuiButton-label': { textTransform: 'capitalize' },
     '.MuiToggleButton-label': { textTransform: 'capitalize' },
     '.Mui-selected': {
@@ -95,13 +127,67 @@ export const useGlobalStyles = makeStyles((theme) => ({
       },
       color: theme.palette.text.background
     },
+    '.screenTopPadding': {
+      paddingTop: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        paddingTop: theme.spacing(3)
+      }
+    },
     '.screenContainer': {
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
       color: theme.palette.text.background,
-      alignItems: 'center',
-      width: '100%'
+      background: theme.palette.background
+    },
+    '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
+    '.screenInner': {
+      width: '100%',
+      maxWidth: 1600,
+      alignSelf: 'center'
+    },
+    '.screenInnerMd': {
+      width: '100%',
+      maxWidth: 1100,
+      alignSelf: 'center'
+    },
+    '.responsivePadding': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      paddingBottom: theme.spacing(6),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+        paddingBottom: theme.spacing(3)
+      }
+    },
+    '.responsiveHorizontalPadding': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3)
+      }
+    },
+    '.sectionContainer': {
+      paddingBottom: theme.spacing(6),
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3)
+      }
+    },
+    '.screenChild': {
+      background: theme.palette.background.secondary,
+      borderRadius: theme.shape.borderRadius,
+      padding: `${theme.spacing(7)}px ${theme.spacing(6)}px`,
+      [theme.breakpoints.down('md')]: {
+        padding: `${theme.spacing(5.5)}px ${theme.spacing(4.5)}px`,
+        [theme.breakpoints.down('sm')]: {
+          padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`
+        }
+      }
     },
     '.centerContent': {
       display: 'flex',
@@ -139,6 +225,14 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
+    '.headerContainer': {
+      paddingBottom: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        paddingBottom: theme.spacing(2),
+        flexDirection: 'column',
+        alignItems: 'flex-start'
+      }
+    },
     // Section
     '.sectionInner': {
       background: theme.palette.common.white,
@@ -153,6 +247,46 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     // Text
     '.metaText': { color: theme.palette.text.meta },
-    '.whiteText': { color: 'white' }
+    '.whiteText': { color: 'white' },
+    '.backgroundText': { color: theme.palette.text.background },
+    // Icons
+    '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
+    '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
+    '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
+    '.backIcon': {
+      color: theme.palette.grey[500],
+      fontSize: 25,
+      marginLeft: 10
+    },
+    // img
+    '.circleImage': {
+      minWidth: 60,
+      height: 60,
+      borderRadius: 30,
+      overflow: 'hidden',
+      background: theme.palette.grey[200],
+      position: 'relative',
+      '& img': {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover'
+      }
+    },
+    // Buttons
+    '.iconButton': {
+      color: theme.palette.background.surfaceHighlight,
+      backgroundColor: '#00000040'
+    },
+    '.MuiIconButton-root': {
+      transition: theme.transitions.create(
+        ['background-color', 'box-shadow', 'border'],
+        {
+          duration: theme.transitions.duration.standard
+        }
+      )
+    },
+    // Color
+    '.lightGrey': { color: theme.palette.grey[100] }
   }
 }))

@@ -1,38 +1,49 @@
 import React from 'react'
-import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
-import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
+import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
+import { EditButton } from '../Button/EditButton'
+import { AvatarTitle } from 'components/AvatarTitle'
+import { Client } from 'utils/Interface'
 
-export const RenderClientDetails = (props: any) => {
+type Props = {
+  clientData: Client | undefined
+  editInfo?: boolean
+  onEdit?: () => void
+  hideInfo?: boolean
+}
+
+export const ClientDetails = ({
+  clientData,
+  editInfo,
+  hideInfo,
+  onEdit
+}: Props) => {
   const classes = useStyles()
+
+  if (!clientData) return null
+
   return (
-    <div
-      className={classes.clientDetailsContainer}
-      style={{ color: props.editInfo ? 'white' : 'black' }}>
-      <div className={classes.innerDiv}>
-        <Typography variant={'h6'} className={classes.title}>
-          Client Details
-        </Typography>
-        {props.editInfo ? (
-          <Button className={classes.button} onClick={props.onEdit}>
-            <img
-              src={iconMaterialEdit}
-              alt='icon'
-              className={classes.editIcon}
-            />
-          </Button>
-        ) : null}
+    <div className={classes.clientDetailsContainer}>
+      <div className={'row'}>
+        <AvatarTitle
+          title={clientData.name}
+          avatar={clientData.logo}
+          className={classes.clientAvatarTitle}
+        />
+        {editInfo ? <EditButton onClick={onEdit} /> : null}
       </div>
-      {renderDetails(
-        'Client Name:',
-        props.clientData ? props.clientData.name : ''
+
+      {!hideInfo && (
+        <div className={classes.clientDetails}>
+          <Details label={'Email'} value={clientData.email} />
+          <Details label={'Address'} value={clientData.address} />
+          <Details label={'City'} value={clientData.city} />
+          <Details label={'State'} value={clientData.state} />
+          <Details label={'County'} value={clientData.country} />
+        </div>
       )}
-      {renderDetails(
-        'Client Contact: ',
-        props.clientData ? props.clientData.email : ''
-      )}
+
       <AppDivider />
     </div>
   )

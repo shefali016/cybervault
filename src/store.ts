@@ -6,6 +6,8 @@ import rootReducer from 'reducers/rootReducer'
 import rootSagas from 'sagas/rootSaga'
 import { authTransform } from './reducers/authReducer'
 import { projectTransform } from 'reducers/projectReducer'
+import { clientTransform } from 'reducers/clientReducer'
+import { portfolioTransform } from 'reducers/portfoliosReducer'
 import logger from 'redux-logger'
 import { stripeTransform } from 'reducers/stripeReducer'
 
@@ -25,7 +27,13 @@ const composeEnhancers =
 const persistConfig = {
   key: 'root',
   storage,
-  transforms: [authTransform, projectTransform, stripeTransform]
+  transforms: [
+    authTransform,
+    projectTransform,
+    stripeTransform,
+    clientTransform,
+    portfolioTransform
+  ]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any)

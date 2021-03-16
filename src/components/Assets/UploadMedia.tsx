@@ -11,7 +11,7 @@ type AssetUploadDisplayProps = {
   titleClassName?: string
   assetIds: Array<string>
   accountId: string
-  onUpload?: (data: any) => void
+  onUpload?: (files: File[]) => void
   isLoading?: boolean | undefined
   title?: string
   isVideo?: boolean
@@ -39,7 +39,7 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
     <div className={clsx(classes.container, containerClassName)}>
       {!!title && (
         <Typography
-          variant='h6'
+          variant='h5'
           className={clsx(classes.title, titleClassName)}>
           {title}
         </Typography>
@@ -52,7 +52,7 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
             isVideo={isVideo}
           />
         </div>
-        {!disableUpload && (
+        {!disableUpload && !!onUpload && (
           <div className={clsx(classes.uploader, uploaderClassName)}>
             <DragAndDropUploader
               onSubmit={onUpload}
@@ -95,5 +95,5 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: theme.spacing(3)
     }
   },
-  title: { fontWeight: 'bold', marginBottom: theme.spacing(3) }
+  title: { marginBottom: theme.spacing(3), color: theme.palette.text.secondary }
 }))

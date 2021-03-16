@@ -9,21 +9,17 @@ type Props = {
 }
 
 export const AppDivider = ({ className, spacing = 5 }: Props) => {
-  const classes = useStyles()
+  const classes = useStyles(spacing)
   const theme = useTheme()
-  return (
-    <Divider
-      className={clsx(classes.divider, className)}
-      style={{
-        marginTop: theme.spacing(spacing),
-        marginBottom: theme.spacing(spacing)
-      }}
-    />
-  )
+  return <Divider className={clsx(classes.divider, className)} />
 }
 
-const useStyles = makeStyles((theme) => ({
-  divider: {
-    backgroundColor: theme.palette.background.surfaceHighlight
-  }
-}))
+const useStyles = (spacing: number) => {
+  return makeStyles((theme) => ({
+    divider: {
+      marginTop: theme.spacing(spacing),
+      marginBottom: theme.spacing(spacing),
+      backgroundColor: theme.palette.background.surfaceHighlight
+    }
+  }))()
+}

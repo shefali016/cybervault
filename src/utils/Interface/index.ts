@@ -1,5 +1,6 @@
 import { StripeElementChangeEvent } from '@stripe/stripe-js'
 import { ChangeEvent } from 'react'
+import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 import {
   InvoiceStatuses,
   ProjectStatuses,
@@ -237,10 +238,9 @@ export interface Subscription {
 export type Account = {
   id: string
   owner: string // id of user
-  email: string | null
   type: 'creator' | 'client'
   region?: Region
-  name?: string
+  name: string
   security: {
     twoFactorEnabled: boolean
     textMessageVerification: boolean
@@ -259,6 +259,7 @@ export type Account = {
   }
   branding: {
     email: {
+      foregroundColor: string
       backgroundColor: string
       text: string
       buttonBackgroundColor: string
@@ -318,7 +319,6 @@ export type Expense = {
 export type Milestone = {
   id: string
   title: string
-  cost: number
   payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 
@@ -346,8 +346,8 @@ export type Project = {
   createdAt?: Date | string
   updatedAt?: Date | string
   id: string
-  videos: Array<MediaObject>
-  images: Array<MediaObject>
+  videos: Array<string>
+  images: Array<string>
   canInvoice: Boolean
   status: ProjectStatus
   featuredImage?: string
@@ -415,11 +415,20 @@ export type Client = {
 
 export type AllProjects = Array<Project>
 
+export interface PortfolioFolderCache {
+  [id: string]: PortfolioFolder
+}
+
+export interface PortfolioCache {
+  [id: string]: Portfolio
+}
+
 export interface PortfolioFolder {
   id: string
   name: string
   description?: string
   portfolios: Array<string>
+  createdAt: number
 }
 
 export interface Portfolio {
@@ -428,6 +437,18 @@ export interface Portfolio {
   description?: string
   icon?: string | null
   projects: Array<string> // project ids
+  folderId: string
+  createdAt?: number
+}
+
+export interface PortfolioShare {
+  id: string
+  accountId: string
+  portfolioId: string
+  title: string
+  description: string | undefined
+  createdAt: number
+  isViewed: boolean
 }
 
 export type Cell = {
@@ -449,7 +470,45 @@ export type MailTemplate = {
   type: string
 }
 
+export type PortfolioShareMailData = {
+  foregroundColor: string
+  backgroundColor: string
+  textColor: string
+  buttonBackgroundColor: string
+  buttonTextColor: string
+  link: string
+  sender: string
+  contentDesc: string
+  logo: string
+  portfolioName: string
+}
+
 export type Row = {
   key: string
   row: Array<Cell>
+}
+
+export type Branding = {
+  email: {
+    foregroundColor: string
+    backgroundColor: string
+    text: string
+    buttonBackgroundColor: string
+    buttonTextColor: string
+  }
+  portfolio: {
+    backgroundColor: string
+    foregroundColor: string
+    text: string
+    headerGradient1: string
+    headerGradient2: string
+  }
+}
+
+export interface Notification {
+  id: string
+  type: 'portfolioViewed'
+  createdAt: number
+  title: string
+  isRead: boolean
 }

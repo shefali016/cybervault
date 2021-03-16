@@ -38,6 +38,7 @@ type NewProjectProps = {
   onUpdate?: (project: Types.Project) => void
   isBeyondLimit?: boolean
   onUpgradeSubscription?: () => void
+  onClientAdded?: () => void
 }
 
 const NewProject = ({
@@ -57,7 +58,8 @@ const NewProject = ({
   initialStep = 1,
   onUpdate,
   isBeyondLimit,
-  onUpgradeSubscription
+  onUpgradeSubscription,
+  onClientAdded
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
@@ -100,13 +102,21 @@ const NewProject = ({
     if (typeof onUpdate !== 'function') {
       return
     }
-    const projectUpdate = { ...projectData }
 
-    if (clientData) {
-      projectUpdate.clientId = clientData.id
+    const isError = validate(currentStep, projectData, clientData)
+    if (isError) {
+      setHaveError(true)
+    } else {
+      setHaveError(false)
+
+      const projectUpdate = { ...projectData }
+
+      if (clientData) {
+        projectUpdate.clientId = clientData.id
+      }
+
+      onUpdate(projectUpdate)
     }
-
-    onUpdate(projectUpdate)
   }
 
   const onSubmitData = async () => {
@@ -132,6 +142,7 @@ const NewProject = ({
 
   const renderStepsView = () => {
     const props = {
+      onClientAdded,
       isLoading,
       projectData,
       haveError,
@@ -251,6 +262,7 @@ type NewProjectModalProps = {
   onUpdate?: (project: Types.Project) => void
   isBeyondLimit?: boolean
   onUpgradeSubscription?: () => void
+  onClientAdded?: () => void
 }
 
 const NewProjectModal = ({
@@ -269,7 +281,8 @@ const NewProjectModal = ({
   initialStep,
   onUpdate,
   isBeyondLimit,
-  onUpgradeSubscription
+  onUpgradeSubscription,
+  onClientAdded
 }: NewProjectModalProps & StateProps) => {
   const newClientSuccess = useSelector(
     (state: any) => state.clients.newClientSuccess
@@ -279,6 +292,7 @@ const NewProjectModal = ({
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
+        onClientAdded={onClientAdded}
         onUpgradeSubscription={onUpgradeSubscription}
         initialStep={initialStep}
         onRequestClose={onRequestClose}

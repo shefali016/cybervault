@@ -10,7 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '20px'
   },
   dropzone: {
-    outline: "none",
+    outline: 'none',
     textAlign: 'center',
     padding: '20px',
     border: `2px dashed ${theme.palette.background.surfaceHighlight}`,

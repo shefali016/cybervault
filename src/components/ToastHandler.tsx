@@ -46,10 +46,13 @@ export default connect(mapState)(ToastHandler)
 
 const stripeState = (state: ReduxState) => state.stripe
 const authState = (state: ReduxState) => state.auth
+const portfolioState = (state: ReduxState) => state.portfolio
+const clientsState = (state: ReduxState) => state.clients
+const projectState = (state: ReduxState) => state.project
 
 const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
-  [stripeState, authState],
-  (stripe, auth) => {
+  [stripeState, authState, portfolioState, clientsState, projectState],
+  (stripe, auth, portfolio, clients, projects) => {
     const stripeToasts = [
       {
         error:
@@ -93,6 +96,49 @@ const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
       }
     ]
 
-    return [...stripeToasts, ...authToasts]
+    const portfolioToasts = [
+      {
+        error:
+          !!portfolio.updatePortfolioError &&
+          'Failed to create porfolio. Please try again or contact support.'
+      },
+      {
+        error:
+          !!portfolio.sharePortfolioError &&
+          'Failed to share portfolio. Please try again or contact support.',
+        success:
+          !!portfolio.sharePortfolioSuccess &&
+          "Your portfolio has been shared. You will be notified when it's viewed"
+      }
+    ]
+
+    const clientsToasts = [
+      {
+        error:
+          !!clients.newClientError &&
+          'Failed to add client. Please try again or contact support.',
+        success: !!clients.newClientSuccess && 'Client has been added.'
+      }
+    ]
+
+    console.log(projects)
+
+    const projectToasts = [
+      {
+        error:
+          !!projects.updateProjectFailure &&
+          'Failed to update project. Please try again or contact support.',
+        success:
+          !!projects.updateProjectSuccess && 'Your project has beed updated.'
+      }
+    ]
+
+    return [
+      ...stripeToasts,
+      ...authToasts,
+      ...portfolioToasts,
+      ...clientsToasts,
+      ...projectToasts
+    ]
   }
 )

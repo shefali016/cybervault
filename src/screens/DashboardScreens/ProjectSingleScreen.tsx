@@ -8,12 +8,12 @@ import React, {
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { COLUMN, FLEX, FLEX_END } from '../../utils/constants/stringConstants'
+import { COLUMN, FLEX } from '../../utils/constants/stringConstants'
 import {
   requestGetProjectDetails,
   requestUpdateProjectDetails
 } from '../../actions/projectActions'
-import { RenderClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
+import { ClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../../components/Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../../components/Common/Widget/ProjectDetailWidget'
 import { RenderExpenseDetails } from '../../components/Common/Widget/ExpenseDetailsWidget'
@@ -31,6 +31,8 @@ import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
 import * as Types from '../../utils/Interface'
+import Header from 'components/Common/Header/header'
+import clsx from 'clsx'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -40,10 +42,8 @@ type EditProjectStates = {
   isCampaignEdit: boolean | undefined
   isTaskEdit: boolean | undefined
   isBudgetEdit: boolean | undefined
-  isImageLoading: boolean | undefined
-  isVideoLoading: boolean | undefined
-  showTostify: boolean
-  account: Types.Account
+  imagesLoading: string[]
+  videosLoading: string[]
 }
 
 const EditProjectScreen = (props: any) => {
@@ -60,10 +60,8 @@ const EditProjectScreen = (props: any) => {
     isCampaignEdit: false,
     isTaskEdit: false,
     isBudgetEdit: false,
-    isImageLoading: false,
-    isVideoLoading: false,
-    showTostify: false,
-    account: props.account
+    imagesLoading: [],
+    videosLoading: []
   })
 
   const openEditProjectModal = (
@@ -89,23 +87,6 @@ const EditProjectScreen = (props: any) => {
     []
   )
 
-  useOnChange(props.isUpdatedSuccess, (success) => {
-    if (success) {
-      toastContext.showToast({
-        title: 'Project updated',
-        type: 'success'
-      })
-    }
-  })
-
-  useOnChange(props.projectUpdateError, (error) => {
-    if (error) {
-      toastContext.showToast({
-        title: 'Failed to update project'
-      })
-    }
-  })
-
   useOnChange(props.projectDetails, (projectData: Project | null) => {
     if (projectData) {
       setState({ ...state, projectData })
@@ -119,21 +100,29 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
-  const onAssetUpload = (type: 'image' | 'video') => async (file: File) => {
+  const uploadFiles = (type: 'image' | 'video') => async (files: File[]) => {
+    files.map((file: File) => handleAssetUpload(file, type))
+  }
+
+  const handleAssetUpload = async (file: File, type: 'image' | 'video') => {
+    const { account } = props
+
+    const asset: ProjectAsset = {
+      type,
+      files: [],
+      fileName: file.name,
+      id: generateUid()
+    }
+
+    setState(
+      Object.assign(
+        state,
+        'image' ? { videosLoading: [...state.videosLoading, asset.id] } : {},
+        'video' ? { imagesLoading: [...state.imagesLoading, asset.id] } : {}
+      )
+    )
+
     try {
-      const { account } = props
-
-      setState({
-        ...state,
-        [type === 'image' ? 'isImageLoading' : 'isVideoLoading']: true
-      })
-
-      const asset: ProjectAsset = {
-        type,
-        files: [],
-        fileName: file.name,
-        id: generateUid()
-      }
       const downloadUrl = await setMedia(asset.id, file)
 
       if (typeof downloadUrl === 'string') {
@@ -147,27 +136,64 @@ const EditProjectScreen = (props: any) => {
             : { videos: [...state.projectData.videos, asset.id] }
         )
 
-        setState({
-          ...state,
-          projectData: project,
-          isVideoLoading: false
-        })
+        setState((state) =>
+          Object.assign(
+            state,
+            { projectData: project },
+            'image'
+              ? {
+                  videosLoading: state.videosLoading.filter(
+                    (a) => a !== asset.id
+                  )
+                }
+              : {},
+            'video'
+              ? {
+                  imagesLoading: state.imagesLoading.filter(
+                    (a) => a !== asset.id
+                  )
+                }
+              : {}
+          )
+        )
 
         props.updateProjectDetails(project)
       } else {
         throw Error('Download url is not a string')
       }
     } catch (error) {
+      setState((state) =>
+        Object.assign(
+          state,
+          'image'
+            ? {
+                videosLoading: state.videosLoading.filter((a) => a !== asset.id)
+              }
+            : {},
+          'video'
+            ? {
+                imagesLoading: state.imagesLoading.filter((a) => a !== asset.id)
+              }
+            : {}
+        )
+      )
       console.log('Asset upload failed.', error)
-      toastContext.showToast({ title: `Failed to upload ${type}` })
+      toastContext.showToast({
+        title: `Failed to upload ${type === 'image' ? 'Image' : 'Video'}`
+      })
     }
   }
 
   const renderHeader = () => {
     return (
-      <div className={classes.headText}>
-        <Typography> Status : {'In Progress'}</Typography>
-        <ProjectStatusIndicator status={'In progress'} />
+      <div className={clsx('row', 'headerContainer')}>
+        <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
+          {state.projectData.campaignName}
+        </Typography>
+        <div className={classes.projectStatus}>
+          <Typography>Status: {state.projectData.status}</Typography>
+          <ProjectStatusIndicator status={state.projectData.status} />
+        </div>
       </div>
     )
   }
@@ -184,7 +210,6 @@ const EditProjectScreen = (props: any) => {
 
   //submit project details update
   const handleUpdateProject = async (projectData: Project) => {
-    console.log('IU')
     setState({
       ...state,
       projectData,
@@ -196,43 +221,37 @@ const EditProjectScreen = (props: any) => {
   const renderProjectDetails = () => {
     return (
       <div>
-        <RenderClientDetails
+        <ClientDetails
           clientData={client}
           editInfo
           onEdit={() => openEditProjectModal(1)}
+          hideInfo={true}
         />
+
         <RenderProjectDetails
           projectData={state.projectData}
           editInfo
           onEdit={() => openEditProjectModal(2, false, true, false, false)}
         />
-        {state.projectData &&
-        state.projectData.tasks &&
-        state.projectData.tasks.length > 0 ? (
-          <RenderTaskDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(2, true, false, false, false)}
-          />
-        ) : null}
-        {state.projectData &&
-        state.projectData.expenses &&
-        state.projectData.expenses.length > 0 ? (
-          <RenderExpenseDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(3, false, false, true, false)}
-          />
-        ) : null}
-        {state.projectData &&
-        state.projectData.milestones &&
-        state.projectData.milestones.length > 0 ? (
-          <RenderMilestonesDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(4)}
-          />
-        ) : null}
+
+        <RenderTaskDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(2, true, false, false, false)}
+        />
+
+        <RenderExpenseDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(3, false, false, true, false)}
+        />
+
+        <RenderMilestonesDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(4)}
+        />
+
         <RenderBudgetDetails
           projectData={state.projectData}
           editInfo
@@ -251,10 +270,10 @@ const EditProjectScreen = (props: any) => {
           <AssetUploadDisplay
             {...{
               containerClassName: classes.uploadVideoContainer,
-              onUpload: onAssetUpload('video'),
+              onUpload: uploadFiles('video'),
               assetIds: state.projectData.videos,
               accountId: props.account.id,
-              isLoading: state.isVideoLoading,
+              isLoading: !!state.videosLoading.length,
               title: 'Upload Video Content',
               isVideo: true
             }}
@@ -263,10 +282,10 @@ const EditProjectScreen = (props: any) => {
           <FeatureAssetUpload
             {...{
               containerClassName: classes.uploadImageContainer,
-              onUpload: onAssetUpload('image'),
+              onUpload: uploadFiles('image'),
               assetIds: state.projectData.images,
               accountId: props.account.id,
-              isLoading: state.isImageLoading,
+              isLoading: !!state.imagesLoading.length,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
               featuredAsset: state.projectData.featuredImage
@@ -293,13 +312,24 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  const handleBack = () => props.history.push('/dashboard')
+
   return (
-    <div>
-      {renderEditProjectModel()}
-      <div className={classes.dashboardContainer}>
-        <div className={classes.wrapper}>
-          {renderHeader()}
-          {renderBody()}
+    <div className={clsx('screenContainer', 'fullHeight')}>
+      <Header
+        user={props.user}
+        renderAppIcon={true}
+        onLogoClick={handleBack}
+        history={props.history}
+      />
+
+      <div className={'screenInner'}>
+        <div className={clsx('responsivePadding', 'screenTopPadding')}>
+          <div className={'screenChild'}>
+            {renderHeader()}
+            {renderBody()}
+            {renderEditProjectModel()}
+          </div>
         </div>
       </div>
     </div>
@@ -307,12 +337,11 @@ const EditProjectScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
+  user: state.auth.user as Types.User,
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
-  isUpdatedSuccess: state.project.isUpdatedSuccess,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
-  projectUpdateError: state.project.projectUpdateError,
   account: state.auth.account,
   clients: state.clients.clientsData
 })
@@ -327,6 +356,12 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  projectStatus: {
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(1)
+    }
+  },
   divider: {
     backgroundColor: theme.palette.background.surfaceHighlight,
     marginTop: theme.spacing(6),
@@ -345,11 +380,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(6),
     marginBottom: theme.spacing(5)
   },
-  headText: {
-    display: FLEX,
-    justifyContent: FLEX_END,
-    color: 'white'
-  },
+  header: {},
   detailsWrapper: {
     color: theme.palette.text.background,
     marginTop: 30

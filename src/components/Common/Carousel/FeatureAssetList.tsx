@@ -147,13 +147,10 @@ export const FeatureAssetList = ({
               className={clsx(classes.img, innerImageClassName)}
             />
           )}
-          {!!asset && (
+          {!!asset && typeof onFeatureSelect === 'function' && (
             <IconButton
               className={classes.featureButton}
-              onClick={() =>
-                typeof onFeatureSelect === 'function' &&
-                onFeatureSelect(asset.id)
-              }>
+              onClick={() => onFeatureSelect(asset.id)}>
               {asset.id === featuredAsset ? (
                 <Star className={classes.featureIcon} />
               ) : (
@@ -171,7 +168,7 @@ export const FeatureAssetList = ({
       return null
     }
     return (
-      <div className={classes.assetPickerContainer}>
+      <div className={classes.assetPickerInner}>
         {assets.map((asset, index) => {
           const file = asset.files[0]
           const isCurrent = index === currentIndex ? -200 : 0
@@ -183,43 +180,17 @@ export const FeatureAssetList = ({
                 onClick={() => handleAssetClick(index)}
                 style={{
                   zIndex: 1000 - index,
-                  opacity: isCurrent ? 0.2 : 1,
                   pointerEvents: isCurrent ? 'none' : 'auto'
                 }}
-                className={classes.assetPickerItemOuter}>
-                <div className={classes.assetPickerItemInner}>
-                  <img
-                    src={file.url}
-                    alt={asset.fileName}
-                    className={classes.coverImage}
-                  />
-                </div>
-              </div>
-              <div
-                onClick={() => handleAssetClick(index)}
-                key={index}
-                style={{
-                  zIndex: 1000 - index,
-                  position: 'absolute',
-                  top: 0,
-                  transform: `translateY(${
-                    isCurrent ? -window.innerWidth * 0.15 : 0
-                  }px) scale(${
-                    isCurrent ? 4 * (window.innerWidth / 1300) : 1
-                  }) translateX(${
-                    isCurrent ? ((assets.length - 1) / 2 - index) * 20 : 0
-                  }px)`,
-                  opacity: isCurrent ? 0 : 1,
-                  pointerEvents: isCurrent ? 'none' : 'auto'
-                }}
-                className={classes.assetPickerItemOuter}>
-                <div className={classes.assetPickerItemInner}>
-                  <img
-                    src={file.url}
-                    alt={asset.fileName}
-                    className={classes.coverImage}
-                  />
-                </div>
+                className={clsx(
+                  classes.assetPickerItemOuter,
+                  isCurrent ? classes.assetPickerItemPicked : {}
+                )}>
+                <img
+                  src={file.url}
+                  alt={asset.fileName}
+                  className={classes.coverImage}
+                />
               </div>
             </div>
           )
@@ -240,23 +211,26 @@ export const FeatureAssetList = ({
             onClick={prev}
             direction={'left'}
             inActive={currentIndex === 0}
+            className={classes.largeSwitchButton}
           />
 
           <div className={classes.currentAssetContainer}>
             <div
               style={{
-                position: 'relative',
-                display: 'flex',
-                flexGrow: 1,
-                alignSelf: 'stretch'
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
               }}>
               {!hasAsset && (
                 <div className={classes.currentAssetOuter}>
                   <div className={classes.currentAssetInner}>
-                    <img
-                      src={ImagePreview}
-                      alt='image-default'
-                      className={classes.coverImage}
+                    <div
+                      className={clsx(
+                        classes.coverImage,
+                        classes.imgPlaceholder
+                      )}
                     />
                   </div>
                 </div>
@@ -280,9 +254,26 @@ export const FeatureAssetList = ({
             onClick={next}
             direction={'right'}
             inActive={!assets.length || currentIndex === assets.length - 1}
+            className={classes.largeSwitchButton}
           />
         </div>
-        {renderAssetPicker()}
+        <div className={classes.smallSwitchContainer}>
+          <CarouselButton
+            onClick={prev}
+            direction={'left'}
+            inActive={currentIndex === 0}
+            className={classes.smallSwitchButton}
+          />
+          <CarouselButton
+            onClick={next}
+            direction={'right'}
+            inActive={!assets.length || currentIndex === assets.length - 1}
+            className={classes.smallSwitchButton}
+          />
+        </div>
+        <div className={classes.assetPickerContainer}>
+          {renderAssetPicker()}
+        </div>
       </div>
     </div>
   )
@@ -291,26 +282,63 @@ export const FeatureAssetList = ({
 const currentAssetTransitionDuration = 650
 const pickerTransitionDuration = 640
 
+const pickerHeightLg = 18
+const pickerHeightMd = 12
+const pickerHeightSm = 8
+
 const useStyles = makeStyles((theme) => ({
+  largeSwitchButton: { [theme.breakpoints.down('sm')]: { display: 'none' } },
+  smallSwitchContainer: {
+    display: 'inline-flex',
+    gap: 10,
+    paddingTop: theme.spacing(3)
+  },
+  smallSwitchButton: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      flex: 1
+    },
+    display: 'none'
+  },
+
+  imgPlaceholder: { background: theme.palette.background.surface },
+
   featureButton: {
     position: 'absolute',
-    right: 70,
-    top: 20,
+    right: '5%',
+    top: '5%',
     background: 'rgba(0,0,0,0.2)'
   },
   featureIcon: { color: 'gold' },
 
   assetPickerContainer: {
-    display: 'flex',
+    zIndex: 100,
     position: 'relative',
-    justifyContent: 'center',
-    height: 80,
+    height: theme.spacing(pickerHeightLg),
+    marginLeft: theme.spacing(11),
+    [theme.breakpoints.down('md')]: {
+      height: theme.spacing(pickerHeightMd),
+      [theme.breakpoints.down('sm')]: {
+        height: theme.spacing(pickerHeightSm),
+        marginLeft: 0
+      }
+    },
     marginTop: theme.spacing(3)
   },
-  assetPickerItemOuter: {
+  assetPickerInner: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    overflowX: 'scroll',
+    overflowY: 'auto'
+  },
+  assetPickerItemOuter: {
+    zIndex: 200,
+    position: 'relative',
     transition: theme.transitions.create(['transform', 'opacity', 'width'], {
       duration: pickerTransitionDuration
     }),
@@ -318,15 +346,36 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     marginLeft: theme.spacing(1.2),
     marginRight: theme.spacing(1.2),
-    overflow: 'hidden'
-  },
-  assetPickerItemInner: {
-    position: 'relative',
-    width: 60,
-    height: 60,
-    display: 'inline-block',
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: theme.spacing(0.8),
+      marginRight: theme.spacing(0.8)
+    },
     overflow: 'hidden',
-    margin: 0
+    minWidth: theme.spacing(pickerHeightLg),
+    height: theme.spacing(pickerHeightLg),
+    [theme.breakpoints.down('md')]: {
+      minWidth: theme.spacing(pickerHeightMd),
+      height: theme.spacing(pickerHeightMd),
+      [theme.breakpoints.down('sm')]: {
+        minWidth: theme.spacing(pickerHeightSm),
+        height: theme.spacing(pickerHeightSm)
+      }
+    }
+  },
+  assetPickerItemPicked: {
+    animation: `$isPicked 500ms ${theme.transitions.easing.easeOut}`,
+    opacity: 0.2
+  },
+  '@keyframes isPicked': {
+    '0%': {
+      transform: 'scale(1)'
+    },
+    '50%': {
+      transform: 'scale(0.9)'
+    },
+    '100%': {
+      transform: 'scale(1)'
+    }
   },
   coverImage: {
     display: 'block',
@@ -345,7 +394,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    maxHeight: '100%',
+    objectFit: 'cover',
+    minHeight: '100%',
     maxWidth: '100%',
     transform: 'translate(-50%, -50%)',
     borderRadius: 10
@@ -370,18 +420,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex'
   },
   currentAssetContainer: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     position: 'relative',
-    minHeight: (props: any) =>
-      props.assetContainerMinHeight && props.assets.length
-        ? props.assetContainerMinHeight
-        : 300,
-    padding: `20px 30px`
+    width: '100%',
+    margin: `0 ${theme.spacing(6)}px`,
+    paddingTop: '46.25%',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: '56.25%',
+      margin: 0
+    }
   },
   currentAssetOuter: {
+    height: '100%',
     display: 'flex',
     flex: 1,
     alignSelf: 'stretch',
