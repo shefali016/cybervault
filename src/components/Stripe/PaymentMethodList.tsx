@@ -184,7 +184,9 @@ export const PaymentMethodList = ({
               </Typography>
             )}
           </div>
-          <AppButton onClick={toggleConfirmDetach(paymentMethod)}>
+          <AppButton
+            onClick={toggleConfirmDetach(paymentMethod)}
+            style={{ marginRight: theme.spacing(1) }}>
             <Typography className={classes.buttonText}>Remove</Typography>
           </AppButton>
           {defaultPaymentMethod !== paymentMethod.id &&
