@@ -44,8 +44,6 @@ import SubscriptionIcon from '@material-ui/icons/LocalActivity'
 
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
-// import BankingScreen from 'screens/SharedScreens/BankingScreen'
-import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
 import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 

@@ -9,6 +9,7 @@ type StateProps = {
   paymentMethods: Array<PaymentMethod>
   user: User
   defaultPaymentMethod: string | undefined
+  setAsDefaultLoadingId: string | null
 }
 
 type Props = StateProps
@@ -16,7 +17,8 @@ type Props = StateProps
 const PaymentMethodScreen = ({
   paymentMethods,
   user,
-  defaultPaymentMethod
+  defaultPaymentMethod,
+  setAsDefaultLoadingId
 }: Props) => {
   return (
     <div className={'dashboardScreen'}>
@@ -24,6 +26,7 @@ const PaymentMethodScreen = ({
         paymentMethods={paymentMethods}
         customerId={user.customerId}
         defaultPaymentMethod={defaultPaymentMethod}
+        setAsDefaultLoadingId={setAsDefaultLoadingId}
       />
     </div>
   )
@@ -33,7 +36,8 @@ const mapState = (state: ReduxState): StateProps => ({
   paymentMethods: state.stripe.paymentMethods,
   user: state.auth.user as User,
   defaultPaymentMethod: state.stripe.customer.invoice_settings
-    .default_payment_method as string | undefined
+    .default_payment_method as string | undefined,
+  setAsDefaultLoadingId: state.stripe.setAsDefaultLoadingId
 })
 
 export default connect(mapState)(PaymentMethodScreen)

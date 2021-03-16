@@ -167,7 +167,7 @@ const SubscriptionScreen = ({
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>
+                      <Typography variant='body1'>
                         {!!accountSubscription
                           ? `${
                               getSubscriptionDetails(
@@ -207,7 +207,7 @@ const SubscriptionScreen = ({
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>Your Storage</Typography>
+                      <Typography variant='body1'>Your Storage</Typography>
                       <Typography variant='caption'>
                         Add storage to account to upload more content
                       </Typography>
@@ -238,7 +238,7 @@ const SubscriptionScreen = ({
                           />
                         </div>
                       ) : (
-                        <Typography variant='subtitle1'>
+                        <Typography variant='body1'>
                           You haven't added a payment method
                         </Typography>
                       )}
@@ -276,34 +276,41 @@ const SubscriptionScreen = ({
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      {billingHistory && billingHistory.length ? (
+                      {!!accountSubscription ? (
                         <div>
-                          <Typography variant='subtitle1'>
-                            Most Recent
-                          </Typography>
-                          <Typography variant='caption'>
-                            <div style={{ flex: 1 }}>
-                              <Typography
-                                style={{ marginRight: 20 }}
-                                variant='caption'>
-                                Date:{' '}
-                                {new Date(
-                                  billingHistory[0].created * 1000
-                                ).toDateString()}
-                              </Typography>
-                              <Typography
-                                style={{ marginRight: 20 }}
-                                variant='caption'>
-                                Item Type:{' '}
-                                {billingHistory[0].lines.data[0].metadata.type}
-                              </Typography>
-                              <Typography
-                                style={{ marginRight: 20 }}
-                                variant='caption'>
-                                Amount: ${billingHistory[0].amount_paid / 100}
-                              </Typography>
-                            </div>
-                          </Typography>
+                          <Typography variant='body1'>Most Recent</Typography>
+                          {billingHistory && billingHistory.length ? (
+                            <Typography variant='caption'>
+                              <div style={{ flex: 1 }}>
+                                <Typography
+                                  style={{ marginRight: 20 }}
+                                  variant='caption'>
+                                  Date:{' '}
+                                  {new Date(
+                                    billingHistory[0].created * 1000
+                                  ).toDateString()}
+                                </Typography>
+                                <Typography
+                                  style={{ marginRight: 20 }}
+                                  variant='caption'>
+                                  Item Type:{' '}
+                                  {
+                                    billingHistory[0].lines.data[0].metadata
+                                      .type
+                                  }
+                                </Typography>
+                                <Typography
+                                  style={{ marginRight: 20 }}
+                                  variant='caption'>
+                                  Amount: ${billingHistory[0].amount_paid / 100}
+                                </Typography>
+                              </div>
+                            </Typography>
+                          ) : (
+                            <Typography variant='caption'>
+                              No recent charges
+                            </Typography>
+                          )}
                         </div> // @todo fetch most recent billing history item
                       ) : (
                         <Typography variant='subtitle1'>
@@ -311,7 +318,9 @@ const SubscriptionScreen = ({
                         </Typography>
                       )}
                     </div>,
-                    <GradiantButton onClick={navigateToBillingHistoryScreen}>
+                    <GradiantButton
+                      onClick={navigateToBillingHistoryScreen}
+                      disabled={!accountSubscription}>
                       <div className={'row'}>
                         <Typography style={{ marginRight: 5 }}>
                           View History

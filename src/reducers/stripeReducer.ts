@@ -16,7 +16,7 @@ export type State = {
 
   setAsDefaultError: null | string
   setAsDefaultSuccess: boolean
-  setAsDefaultLoading: boolean
+  setAsDefaultLoadingId: null | string
 
   accountSubscription: null | Object | any
   storageSubscription: null | Object | any
@@ -68,7 +68,7 @@ const initialState = {
 
   setAsDefaultError: null,
   setAsDefaultSuccess: false,
-  setAsDefaultLoading: false,
+  setAsDefaultLoadingId: null,
 
   attachError: null,
   attachSuccess: false,
@@ -259,7 +259,7 @@ const stripe = (state = initialState, action: Action) => {
     case ActionTypes.SET_DEFAULT_PAYMENT_METHOD:
       return {
         ...state,
-        setAsDefaultLoading: true
+        setAsDefaultLoadingId: action.paymentMethodId
       }
     case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS:
       const paymentMethodsData = [...state.paymentMethods]
@@ -274,14 +274,14 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         customer: action.customer,
         setAsDefaultSuccess: true,
-        setAsDefaultLoading: false,
+        setAsDefaultLoadingId: null,
         paymentMethods: paymentMethodsData
       }
     case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE:
       return {
         ...state,
         setAsDefaultError: action.error,
-        setAsDefaultLoading: false
+        setAsDefaultLoadingId: null
       }
     case ActionTypes.GET_CUSTOMER_INVOICE:
       return {

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import { getCardIcon } from './utils'
 import { AppButton } from 'components/Common/Core/AppButton'
@@ -15,19 +15,23 @@ import {
 import { useOnChange } from 'utils/hooks'
 import { ToastContext, ToastTypes } from 'context/Toast'
 import { ReduxState } from 'reducers/rootReducer'
+import { AppLoader } from 'components/Common/Core/AppLoader'
 
 type Props = {
   paymentMethods: Array<PaymentMethod>
   customerId: string
   defaultPaymentMethod: string | undefined
+  setAsDefaultLoadingId: string | null
 }
 
 export const PaymentMethodList = ({
   paymentMethods,
   customerId,
-  defaultPaymentMethod
+  defaultPaymentMethod,
+  setAsDefaultLoadingId
 }: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
   const dispatch = useDispatch()
 
   const {
@@ -173,19 +177,33 @@ export const PaymentMethodList = ({
           </div>
         </div>
         <div className={classes.footer}>
-          <div className={classes.primaryCardTitleContainer}></div>
+          <div className={classes.primaryCardTitleContainer}>
+            {defaultPaymentMethod === paymentMethod.id && (
+              <Typography className={classes.defaultText}>
+                {'Primary'}
+              </Typography>
+            )}
+          </div>
           <AppButton onClick={toggleConfirmDetach(paymentMethod)}>
             <Typography className={classes.buttonText}>Remove</Typography>
           </AppButton>
-          <AppButton
-            disabled={defaultPaymentMethod === paymentMethod.id ? true : false}
-            onClick={toggleconfirmingAttachDefaultPayment(paymentMethod)}>
-            <Typography className={classes.buttonText}>
-              {defaultPaymentMethod === paymentMethod.id
-                ? 'Primary Method'
-                : 'Set as primary'}
-            </Typography>
-          </AppButton>
+          {defaultPaymentMethod !== paymentMethod.id &&
+            (setAsDefaultLoadingId === paymentMethod.id ? (
+              <div style={{ marginLeft: theme.spacing(2) }}>
+                <AppLoader
+                  color={theme.palette.primary.light}
+                  height={40}
+                  width={40}
+                />
+              </div>
+            ) : (
+              <AppButton
+                onClick={toggleconfirmingAttachDefaultPayment(paymentMethod)}>
+                <Typography className={classes.buttonText}>
+                  {'Set as primary'}
+                </Typography>
+              </AppButton>
+            ))}
         </div>
       </div>
     )
@@ -207,44 +225,44 @@ export const PaymentMethodList = ({
   }
 
   return (
-    <div className={classes.container}>
-      <div className={classes.innerContainer}>
-        {paymentMethods
-          .slice()
-          .reverse()
-          .map((paymentMethod: PaymentMethod) => renderCard(paymentMethod))}
-        {renderAddCard()}
-        {renderSpacer()}
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <div className={classes.innerContainer}>
+            {paymentMethods
+              .slice()
+              .reverse()
+              .map((paymentMethod: PaymentMethod) => renderCard(paymentMethod))}
+            {renderAddCard()}
+            {renderSpacer()}
+          </div>
+          <CardModal
+            open={cardModalOpen}
+            onRequestClose={toggleCardModal(false)}
+            customerId={customerId}
+          />
+          <ConfirmationDialog
+            title={'Set as default payment method'}
+            message={
+              'Are you sure you want to set this as your default payment method?'
+            }
+            isOpen={!!confirmingAttachDefaultPayment}
+            onYes={handleAttachPaymentMethod}
+            onNo={toggleconfirmingAttachDefaultPayment(null)}
+            onClose={toggleconfirmingAttachDefaultPayment(null)}
+          />
+          <ConfirmationDialog
+            title={'Remove payment method'}
+            message={
+              'Are you sure you want to remove this payment method. This cannot be undone'
+            }
+            isOpen={!!confirmingDetach}
+            onYes={handleDetach}
+            onNo={toggleConfirmDetach(null)}
+            onClose={toggleConfirmDetach(null)}
+          />
+        </div>
       </div>
-      <CardModal
-        open={cardModalOpen}
-        onRequestClose={toggleCardModal(false)}
-        customerId={customerId}
-      />
-      <ConfirmationDialog
-        title={
-          confirmingDetach
-            ? 'Remove payment method'
-            : 'Set as default payment method'
-        }
-        message={`Are you sure you want to ${
-          confirmingDetach ? 'remove' : 'set as default'
-        } this payment method. ${
-          confirmingDetach ? 'This cannot be undone.' : ''
-        }`}
-        isOpen={!!confirmingDetach || !!confirmingAttachDefaultPayment}
-        onYes={!!confirmingDetach ? handleDetach : handleAttachPaymentMethod}
-        onNo={
-          !!confirmingDetach
-            ? toggleConfirmDetach(null)
-            : toggleconfirmingAttachDefaultPayment(null)
-        }
-        onClose={
-          !!confirmingDetach
-            ? toggleConfirmDetach(null)
-            : toggleconfirmingAttachDefaultPayment(null)
-        }
-      />
     </div>
   )
 }
@@ -258,14 +276,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     flex: 1,
-    maxWidth: 1200
+    [theme.breakpoints.down('xs')]: {
+      flexWrap: 'auto',
+      flexDirection: 'column'
+    }
   },
   listItem: {
     flex: 1,
-    [theme.breakpoints.up(530)]: {
-      minWidth: WIDTH,
-      marginLeft: 20,
-      marginRight: 20
+    marginLeft: 20,
+    marginRight: 20,
+    minWidth: WIDTH,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: WIDTH - 100,
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: 0,
+        marginRight: 0,
+        minWidth: 'auto'
+      }
     }
   },
   addCard: {
@@ -273,7 +300,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     minHeight: CARD_HEIGHT,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+      minWidth: 150,
+      alignSelf: 'stretch',
+      flex: 1
+    }
   },
   cardContainer: {
     marginBottom: theme.spacing(4),
@@ -290,13 +322,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     flex: 1,
-    [theme.breakpoints.down(530)]: {
+    [theme.breakpoints.down('xs')]: {
       flexDirection: 'column-reverse'
     }
   },
   cardTextContainer: {
     marginLeft: theme.spacing(4),
-    [theme.breakpoints.down(530)]: {
+    [theme.breakpoints.down('xs')]: {
       marginLeft: 0,
       marginBottom: theme.spacing(2)
     }
@@ -305,7 +337,7 @@ const useStyles = makeStyles((theme) => ({
   cardIcon: {
     fontSize: 80,
     color: theme.palette.grey[300],
-    [theme.breakpoints.down(530)]: { fontSize: '40vw' }
+    [theme.breakpoints.down('xs')]: { fontSize: '40vw' }
   },
   cardMeta: { color: theme.palette.text.meta, fontSize: 14 },
   footer: {
@@ -319,5 +351,9 @@ const useStyles = makeStyles((theme) => ({
   primaryCardTitleContainer: { flex: 1 },
   buttonText: {
     color: theme.palette.primary.light
+  },
+  defaultText: {
+    color: theme.palette.text.meta,
+    paddingLeft: theme.spacing(1)
   }
 }))

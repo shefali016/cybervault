@@ -56,7 +56,7 @@ const SecurityScreen = ({ account }: Props) => {
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>
+                      <Typography variant='body1'>
                         Change your login password
                       </Typography>
                       <Typography variant='caption'>
@@ -101,7 +101,7 @@ const SecurityScreen = ({ account }: Props) => {
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>
+                      <Typography variant='body1'>
                         Authenticator Verification
                       </Typography>
                       <Typography variant='caption'>
@@ -128,7 +128,7 @@ const SecurityScreen = ({ account }: Props) => {
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>
+                      <Typography variant='body1'>
                         Text Message Verification
                       </Typography>
                       <Typography variant='caption'>
@@ -155,9 +155,7 @@ const SecurityScreen = ({ account }: Props) => {
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>
-                        Security Question
-                      </Typography>
+                      <Typography variant='body1'>Security Question</Typography>
                       <Typography variant='caption'>
                         Confirm your identity with a question only you know
                         answer to.
@@ -187,7 +185,7 @@ const SecurityScreen = ({ account }: Props) => {
               <ResponsiveRow>
                 {[
                   <div style={{ flex: 1 }}>
-                    <Typography variant='subtitle1'>
+                    <Typography variant='body1'>
                       Second Email Address
                     </Typography>
                     <Typography variant='caption'>
