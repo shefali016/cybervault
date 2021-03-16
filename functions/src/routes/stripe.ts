@@ -377,6 +377,54 @@ router.post('/update_storage_plan_price', (req, res) => {
   })
 })
 
+router.post('/customer_balance_transctions', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId } = req.body
+      const balanceTransactions = await stripe.customers.listBalanceTransactions(
+        customerId,
+        { limit: 3 }
+      )
+      return res.json(balanceTransactions)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/get_customer_invoices', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId } = req.body
+      const invoices = await stripe.invoices.list({
+        customer: customerId,
+      })
+      return res.json(invoices)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/set_payment_method_to_default', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { paymentMethodId, customerId } = req.body
+      const customer = await stripe.customers.update(customerId, {
+        invoice_settings: {
+          default_payment_method: paymentMethodId
+        }
+      })
+      return res.json(customer)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/stripe-webhook', (req, res) => {
   return corsHandler(req, res, async () => {
     // Retrieve the event by verifying the signature using the raw body and secret.

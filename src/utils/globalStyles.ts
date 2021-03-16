@@ -245,6 +245,16 @@ export const useGlobalStyles = makeStyles((theme) => ({
         flexDirection: 'column'
       }
     },
+    '.tableContainer': {
+      padding: theme.spacing(1),
+      paddingTop: theme.spacing(2),
+      flex: 1,
+      display: 'flex',
+      minHeight: 500
+    },
+    '.table': {
+      borderRadius: theme.shape.borderRadius
+    },
     // Text
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },

@@ -1,6 +1,6 @@
 import * as ActionTypes from './actionTypes'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { Subscription, SubscriptionType } from 'utils/Interface'
+import { StripeCustomer, Subscription, SubscriptionType } from 'utils/Interface'
 
 export const requestPaymentMethods = (customerId: string) => ({
   type: ActionTypes.GET_PAYMENT_METHODS,
@@ -141,5 +141,34 @@ export const createAmountSubscriptionSuccess = (subscription: any) => ({
 })
 export const createAmountSubscriptionFailure = (error: any) => ({
   type: ActionTypes.CREATE_AMOUNT_SUBSCRIPTION_FAILURE,
+  error
+})
+
+export const setDefultPaymentMethod = (paymentMethodId: string) => ({
+  type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD,
+  paymentMethodId
+})
+export const setDefultPaymentMethodSuccess = (
+  paymentMethodId: string,
+  customer: StripeCustomer
+) => ({
+  type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS,
+  paymentMethodId,
+  customer
+})
+export const setDefultPaymentMethodFailure = (error: any) => ({
+  type: ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE,
+  error
+})
+
+export const getCustomerInvoices = () => ({
+  type: ActionTypes.GET_CUSTOMER_INVOICE
+})
+export const getCustomerInvoicesSuccess = (billingHistory: any) => ({
+  type: ActionTypes.GET_CUSTOMER_INVOICE_SUCCESS,
+  billingHistory
+})
+export const getCustomerInvoicesFailure = (error: any) => ({
+  type: ActionTypes.GET_CUSTOMER_INVOICE_FAILURE,
   error
 })
