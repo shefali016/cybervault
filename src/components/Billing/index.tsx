@@ -6,19 +6,19 @@ import { InvoiceStatusIndicator } from '../Invoices/InvoiceStatusIndicator'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import moment from 'moment'
 import { AppLoader } from 'components/Common/Core/AppLoader'
+import { isWidthDown, withWidth } from '@material-ui/core'
 
 const headerCells = [
-  { title: 'Project Name', key: 'name' },
-  { title: 'Amount', key: 'amount' },
   { title: 'Date', key: 'date' },
-  { title: 'Status', key: 'status' }
-]
-
-const billingHeaderCells = [
-  { title: 'Date', key: 'date' },
-  { title: 'Item', key: 'item' },
+  { title: 'Number', key: 'number' },
   { title: 'Amount', key: 'amount' },
   { title: 'Paid', key: 'paid' }
+]
+
+const mobileHeaderCells = [
+  { title: 'Date', key: 'date' },
+  { title: 'Amount', key: 'amount' },
+  { title: 'Status', key: 'paid' }
 ]
 
 type Props = {
@@ -26,82 +26,76 @@ type Props = {
   tableContainerClassName?: string
   isBilling?: boolean
   loading?: boolean
+  width: any
 }
 
-export const BillingHistory = ({
+const BillingHistory = ({
   invoices,
   tableContainerClassName,
-  loading
+  loading,
+  width
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   const handleRowClick = () => {}
 
-  const rows = useMemo(() => {
-    let rows: Array<Row> = []
-    invoices &&
-      invoices.length &&
-      invoices.forEach((inv: StripeInvoice | any) => {
-        const data = inv?.lines?.data
-        const type = data && data.length ? data[0].metadata.type : null
-        const billType: any = type
-        !loading
-          ? rows.push({
-              row: [
-                {
-                  title: `${moment(inv.created * 1000).format('YYYY-MM-DD')}`,
-                  key: `${inv.id}date`
-                },
-                {
-                  title: billType ? billType : 'Subscription',
-                  key: `${inv.id}item`
-                },
-                {
-                  title: `$${(inv.amount_paid / 100).toFixed(2)}`,
-                  key: `${inv.id}amountPaid`
-                },
-                {
-                  renderer: () => (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <InvoiceStatusIndicator
-                        status={inv.status}
-                        className={classes.status}
-                      />
-                      {inv.status}
-                    </div>
-                  ),
-                  key: `${inv.id}status`
-                }
-              ],
-              key: `${inv.id}`
-            })
-          : rows.push({
-              row: [
-                {
-                  renderer: () => (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <AppLoader color={theme.palette.primary.main} />
-                      {inv.status}
-                    </div>
-                  ),
-                  key: `${inv.id}loading`
-                }
-              ],
-              key: `${inv.id}`
-            })
-      })
+  const isMobile = isWidthDown('sm', width)
 
-    return rows
-  }, [invoices])
+  const rows: Array<Row> = useMemo(() => {
+    if (!(invoices && invoices.length)) {
+      return []
+    }
+    return invoices.map((inv: StripeInvoice | any) => {
+      const dateCell = {
+        title: `${moment(inv.created * 1000).format('YYYY-MM-DD')}`,
+        key: `${inv.id}date`
+      }
+      const numberCell = {
+        title: inv.number,
+        key: `${inv.id}number`
+      }
+      const amountCell = {
+        title: `$${(inv.amount_paid / 100).toFixed(2)}`,
+        key: `${inv.id}amountPaid`
+      }
+      const statusCell = {
+        renderer: () => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+            <InvoiceStatusIndicator
+              status={inv.status}
+              className={classes.status}
+              style={isMobile ? { marginLeft: 15 } : {}}
+            />
+            {isMobile ? '' : inv.status}
+          </div>
+        ),
+        key: `${inv.id}status`
+      }
+
+      const row = {
+        row: isMobile
+          ? [dateCell, amountCell, statusCell]
+          : [dateCell, numberCell, amountCell, statusCell],
+        key: `${inv.id}`
+      }
+
+      return row
+    })
+  }, [invoices, width])
 
   return (
     <AppTable
       rows={rows}
-      headerCells={billingHeaderCells}
+      headerCells={isMobile ? mobileHeaderCells : headerCells}
       tableContainerClassName={tableContainerClassName}
-      emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
+      emptyProps={{ Icon: InvoiceIcon, title: 'You have not been charged' }}
       handleRowClick={handleRowClick}
+      loading={loading}
     />
   )
 }
@@ -109,3 +103,5 @@ export const BillingHistory = ({
 const useStyles = makeStyles((theme) => ({
   status: { marginRight: theme.spacing(1.5) }
 }))
+
+export default withWidth()(BillingHistory)

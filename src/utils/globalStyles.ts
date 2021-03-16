@@ -44,9 +44,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: `#fff !important`,
       fontWeight: 'bold !important'
     },
-    '.MuiTableCell-body': {
-      borderColor: theme.palette.background.surfaceHighlight
-    },
     '.MuiTableCell-head': {
       borderColor: theme.palette.background.surfaceHighlight
     },
@@ -245,12 +242,16 @@ export const useGlobalStyles = makeStyles((theme) => ({
         flexDirection: 'column'
       }
     },
+    '.tableHeader': {
+      fontWeight: 'bold',
+      marginBottom: theme.spacing(3)
+    },
     '.tableContainer': {
-      padding: theme.spacing(1),
-      paddingTop: theme.spacing(2),
+      padding: theme.spacing(3),
+      background: theme.palette.background.secondary,
+      borderRadius: theme.shape.borderRadius,
       flex: 1,
-      display: 'flex',
-      minHeight: 500
+      overflow: "hidden"
     },
     '.table': {
       borderRadius: theme.shape.borderRadius
