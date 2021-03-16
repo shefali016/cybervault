@@ -1,31 +1,41 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { StripeInvoice } from 'utils/Interface'
 import { BillingHistory } from 'components/Billing'
+import { getCustomerInvoices } from 'actions/stripeActions'
 
 type StateProps = {
   billingHistory: Array<StripeInvoice> | null
   billingHistoryLoading: boolean
 }
 
+type DispatchProps = { loadBillingHistory: () => void }
+
 type Props = {
   history: any
-} & StateProps
+} & StateProps &
+  DispatchProps
 
 const BillingHistoryScreen = ({
+  loadBillingHistory,
   billingHistory,
   billingHistoryLoading
 }: Props) => {
-  console.log('################')
+  useEffect(() => {
+    loadBillingHistory()
+  }, [])
 
   return (
-    <div className={'dashboardScreen'}>
-      <BillingHistory
-        invoices={billingHistory}
-        isBilling={true}
-        billingHistoryLoading={billingHistoryLoading}
-      />
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className={'responsivePadding'}>
+          <BillingHistory
+            invoices={billingHistory}
+            loading={billingHistoryLoading}
+          />
+        </div>
+      </div>
     </div>
   )
 }
@@ -35,4 +45,8 @@ const mapState = (state: ReduxState): StateProps => ({
   billingHistoryLoading: state.stripe.billingHistoryLoading as boolean
 })
 
-export default connect(mapState)(BillingHistoryScreen)
+const mapDispatch = (dispatch: any) => ({
+  loadBillingHistory: () => dispatch(getCustomerInvoices())
+})
+
+export default connect(mapState, mapDispatch)(BillingHistoryScreen)

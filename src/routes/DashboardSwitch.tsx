@@ -63,7 +63,8 @@ export const AccountTabIds = {
 }
 
 export const ChildTabs = {
-  paymentMethods: 'paymentmethods'
+  paymentMethods: 'paymentmethods',
+  billing: 'billing'
 }
 
 export const SharedTabIds = {
@@ -136,13 +137,6 @@ const MainScreen = ({
   const getTab = (id: string): Tab => {
     switch (id) {
       // Dashboard tabs
-      case DashboardTabIds.dashboard:
-        return {
-          id,
-          text: 'Dashboard',
-          icon: <DashboardIcon className={classes.listIconStyle} />
-        }
-
       case DashboardTabIds.projects:
         return {
           id,
@@ -197,20 +191,21 @@ const MainScreen = ({
           icon: <BrandingIcon className={classes.listIconStyle} />
         }
       case SharedTabIds.subscription:
+      case ChildTabs.billing:
+      case ChildTabs.paymentMethods:
         return {
-          id,
+          id: 'subscription',
           text: 'Subscription',
           icon: <SubscriptionIcon className={classes.listIconStyle} />
         }
-      // Child tabs
-      case ChildTabs.paymentMethods:
+
+      case DashboardTabIds.dashboard:
+      default:
         return {
           id,
-          text: 'Payment Methods'
+          text: 'Dashboard',
+          icon: <DashboardIcon className={classes.listIconStyle} />
         }
-
-      default:
-        return { id: 'default', text: 'Default', icon: null }
     }
   }
 
@@ -224,9 +219,10 @@ const MainScreen = ({
   }, [screenView])
 
   const [activeTab, setActiveTab] = useState(
-    tabs.find((tab) => tab.id === history.location.pathname.replace('/', '')) ||
-      tabs[0]
+    getTab(history.location.pathname.replace('/', ''))
   )
+
+  console.log(activeTab)
 
   const getSidebarButtonConfig = (): ButtonConfig => {
     if (screenView === ScreenViews.account) {

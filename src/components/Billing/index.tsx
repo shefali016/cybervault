@@ -25,13 +25,13 @@ type Props = {
   invoices: Array<Invoice> | any
   tableContainerClassName?: string
   isBilling?: boolean
-  billingHistoryLoading?: boolean
+  loading?: boolean
 }
 
 export const BillingHistory = ({
   invoices,
   tableContainerClassName,
-  billingHistoryLoading
+  loading
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -43,21 +43,24 @@ export const BillingHistory = ({
     invoices &&
       invoices.length &&
       invoices.forEach((inv: StripeInvoice | any) => {
-        const { data } = inv?.lines
-        const { type } = data && data.length ? data[0].metadata : null
+        const data = inv?.lines?.data
+        const type = data && data.length ? data[0].metadata.type : null
         const billType: any = type
-        !billingHistoryLoading
+        !loading
           ? rows.push({
               row: [
                 {
-                  title: `${new Date(inv.created * 1000).toDateString()}`,
+                  title: `${moment(inv.created * 1000).format('YYYY-MM-DD')}`,
                   key: `${inv.id}date`
                 },
                 {
-                  title: billType ? billType : 'plan subscription',
+                  title: billType ? billType : 'Subscription',
                   key: `${inv.id}item`
                 },
-                { title: `${inv.amount_paid}`, key: `${inv.id}amountPaid` },
+                {
+                  title: `$${(inv.amount_paid / 100).toFixed(2)}`,
+                  key: `${inv.id}amountPaid`
+                },
                 {
                   renderer: () => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -82,7 +85,7 @@ export const BillingHistory = ({
                       {inv.status}
                     </div>
                   ),
-                  key: `${inv.id}status`
+                  key: `${inv.id}loading`
                 }
               ],
               key: `${inv.id}`
