@@ -4,6 +4,7 @@ import { ReduxState } from 'reducers/rootReducer'
 import { StripeInvoice } from 'utils/Interface'
 import { BillingHistory } from 'components/Billing'
 import { getCustomerInvoices } from 'actions/stripeActions'
+import { Typography } from '@material-ui/core'
 
 type StateProps = {
   billingHistory: Array<StripeInvoice> | null
@@ -30,10 +31,16 @@ const BillingHistoryScreen = ({
     <div className={'screenContainer'}>
       <div className={'screenInner'}>
         <div className={'responsivePadding'}>
-          <BillingHistory
-            invoices={billingHistory}
-            loading={billingHistoryLoading}
-          />
+          <div className={'screenChild'}>
+            <Typography variant={'h5'} className={'bold'}>
+              Billing History
+            </Typography>
+            <BillingHistory
+              invoices={billingHistory}
+              loading={billingHistoryLoading}
+              tableContainerClassName={'table'}
+            />
+          </div>
         </div>
       </div>
     </div>
