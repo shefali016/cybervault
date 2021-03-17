@@ -3,7 +3,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { IconButton } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { Asset } from 'utils/Interface'
-import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
 import Star from '@material-ui/icons/Star'
 import StarOutline from '@material-ui/icons/StarOutline'
@@ -175,7 +174,7 @@ export const FeatureAssetList = ({
                   e.stopPropagation()
                   onDeleteAsset(asset)
                 }}
-                className={classes.deleteButton}
+                className={'assetDeleteButton'}
               />
             )}
           </div>
@@ -333,7 +332,7 @@ const useStyles = makeStyles((theme) => ({
 
   featureButton: {
     position: 'absolute',
-    left: '5%',
+    left: '3%',
     top: '5%',
     background: 'rgba(0,0,0,0.2)'
   },

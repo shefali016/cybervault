@@ -2,9 +2,15 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
-    '*': { outline: 'none', selection: "none" },
+    '*': { outline: 'none', selection: 'none' },
     body: {
       background: theme.palette.background.default
+    },
+    '.assetDeleteButton': {
+      position: 'absolute',
+      top: '5%',
+      right: '3%',
+      background: '#00000050'
     },
     '.splashScreen': {
       display: 'flex',

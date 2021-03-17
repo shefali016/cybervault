@@ -31,6 +31,7 @@ import Header from 'components/Common/Header/header'
 import clsx from 'clsx'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { AssetUploadContext } from 'context/AssetUpload'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -40,8 +41,6 @@ type EditProjectStates = {
   isCampaignEdit: boolean | undefined
   isTaskEdit: boolean | undefined
   isBudgetEdit: boolean | undefined
-  imagesLoading: string[]
-  videosLoading: string[]
 }
 
 const EditProjectScreen = (props: any) => {
@@ -55,10 +54,12 @@ const EditProjectScreen = (props: any) => {
     isExpensesEdit: false,
     isCampaignEdit: false,
     isTaskEdit: false,
-    isBudgetEdit: false,
-    imagesLoading: [],
-    videosLoading: []
+    isBudgetEdit: false
   })
+
+  const [confirmDeleteAsset, setConfirmDeleteAsset] = useState<Asset | null>(
+    null
+  )
 
   const client = useGetClient(props.clients, state.projectData)
 
@@ -116,7 +117,15 @@ const EditProjectScreen = (props: any) => {
     props.updateProjectDetails(project)
   }
 
-  const handleDeleteAsset = () => {}
+  const confirmAssetDelete = (asset: Asset) => {
+    setConfirmDeleteAsset(asset)
+  }
+
+  const handleAssetDelete = async (asset: Asset) => {
+    setConfirmDeleteAsset(null)
+    try {
+    } catch (error) {}
+  }
 
   const renderHeader = () => {
     if (!state.projectData) {
@@ -218,9 +227,9 @@ const EditProjectScreen = (props: any) => {
               onUpload: uploadFiles('video'),
               assetIds: state.projectData.videos,
               accountId: props.account.id,
-              isLoading: !!state.videosLoading.length,
               title: 'Upload Video Content',
-              isVideo: true
+              isVideo: true,
+              onDeleteAsset: confirmAssetDelete
             }}
           />
           <AppDivider spacing={6} />
@@ -230,11 +239,10 @@ const EditProjectScreen = (props: any) => {
               onUpload: uploadFiles('image'),
               assetIds: state.projectData.images,
               accountId: props.account.id,
-              isLoading: !!state.imagesLoading.length,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
               featuredAsset: state.projectData.featuredImage,
-              onDeleteAsset: handleDeleteAsset
+              onDeleteAsset: confirmAssetDelete
             }}
           />
         </Fragment>
@@ -275,6 +283,18 @@ const EditProjectScreen = (props: any) => {
             {renderHeader()}
             {renderBody()}
             {renderEditProjectModel()}
+            <ConfirmationDialog
+              title={'Delete Project Asset'}
+              message={
+                'Are you sure you want to remove this asset from the project? This cannot be undone'
+              }
+              isOpen={!!confirmDeleteAsset}
+              onYes={() =>
+                confirmDeleteAsset && handleAssetDelete(confirmDeleteAsset)
+              }
+              onNo={() => setConfirmDeleteAsset(null)}
+              onClose={() => setConfirmDeleteAsset(null)}
+            />
           </div>
         </div>
       </div>

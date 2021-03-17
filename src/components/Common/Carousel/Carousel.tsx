@@ -3,19 +3,26 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { makeStyles } from '@material-ui/core/styles'
 import { VideoComponent } from '../Video'
 import { Asset } from 'utils/Interface'
-import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
 import { CarouselButton } from './CarouselButton'
 import clsx from 'clsx'
+import { AppIconButton } from '../Core/AppIconButton'
+import CloseIcon from '@material-ui/icons/Close'
 
 export type Props = {
   isVideo?: boolean
   assetIds: Array<string>
   isAssetLoading?: boolean | undefined
   accountId: string
+  onDeleteAsset?: (asset: Asset) => void
 }
 
-export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
+export const AssetCarousel = ({
+  isVideo,
+  assetIds,
+  accountId,
+  onDeleteAsset
+}: Props) => {
   const classes = useStyles()
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -107,7 +114,13 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
                     className={classes.assetInner}
                     style={{ pointerEvents: position === 0 ? 'auto' : 'none' }}>
                     {isVideo ? (
-                      <VideoComponent url={file.url} />
+                      <VideoComponent
+                        url={file.url}
+                        onDelete={() =>
+                          typeof onDeleteAsset === 'function' &&
+                          onDeleteAsset(asset)
+                        }
+                      />
                     ) : (
                       <img
                         src={file.url}
