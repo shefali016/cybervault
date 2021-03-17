@@ -29,13 +29,13 @@ export enum SubscriptionDurations {
 }
 
 export enum InvoiceStatuses {
-  PENDING = 'pending',
-  VIEWED = 'viewed',
-  PAID = 'paid'
+  PENDING = 'Pending',
+  VIEWED = 'Viewed',
+  PAID = 'Paid'
 }
 
 export enum ProjectStatuses {
-  PENDING = 'pending',
-  PAID = 'paid',
-  ARCHIVED = 'archived'
+  PROGRESS = 'In progress',
+  PAID = 'Paid',
+  ARCHIVED = 'Archived'
 }

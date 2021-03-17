@@ -512,7 +512,7 @@ export type Invoice = {
 }
 
 export type ProjectStatus =
-  | ProjectStatuses.PENDING
+  | ProjectStatuses.PROGRESS
   | ProjectStatuses.PAID
   | ProjectStatuses.ARCHIVED
 

@@ -77,7 +77,7 @@ export const getProductData = (): Project => {
     id: '',
     images: [],
     videos: [],
-    status: ProjectStatuses.PENDING
+    status: ProjectStatuses.PROGRESS
   }
 }
 
