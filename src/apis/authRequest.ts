@@ -12,7 +12,6 @@ import { getUser, updateUser } from 'apis/user'
 import { getAccount } from 'apis/account'
 import {
   SharingPrivacies,
-  SubscriptionTypes,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
@@ -78,6 +77,25 @@ export const signUpRequest = (
 
 export const logoutRequest = () => firebase.auth().signOut()
 
+export const resetPassword = async (
+  password: string,
+  currentPassword: string
+) => {
+  var user = firebase.auth().currentUser
+  try {
+    if (user && user.email) {
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, currentPassword)
+      return user.updatePassword(password)
+    } else {
+      throw Error()
+    }
+  } catch (error) {
+    throw Error('Failed to change Password')
+  }
+}
+
 export const googleLoginRequest = async () => {
   const googleProvider = await new firebase.auth.GoogleAuthProvider()
   const { user: authUser } = await firebase
@@ -110,7 +128,7 @@ export const createAccount = (
     id: generateUid(),
     owner: authUser.uid,
     type: 'creator',
-    email: authUser.email,
+    name: '',
     security: {
       twoFactorEnabled: false,
       textMessageVerification: false,
@@ -121,7 +139,6 @@ export const createAccount = (
       detailsSubmitted: false,
       payoutsEnabled: false
     },
-    subscription: { type: SubscriptionTypes.creator },
     settings: {
       sharingPrivacy: SharingPrivacies.strict,
       watermarkStyle: WatermarkStyles.single,
@@ -129,6 +146,7 @@ export const createAccount = (
     },
     branding: {
       email: {
+        foregroundColor: '#fff',
         backgroundColor: '#EFEFEF',
         text: '#000',
         buttonBackgroundColor: '#0f77ff',

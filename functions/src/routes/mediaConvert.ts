@@ -4,10 +4,10 @@ const { corsHandler } = require('../index')
 
 const router = express.Router()
 const bodyParser = require('body-parser')
+var AWS = require('aws-sdk')
 
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
-var AWS = require('aws-sdk')
 AWS.config.update({
   accessKeyId: 'AKIAIP2UOWNJHVDDZDFQ',
   secretAccessKey: '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',
@@ -20,34 +20,41 @@ AWS.config.update({
 router.post('/convert', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const {
-        resolution,
-        ratio,
-        format,
-        container,
-        assetId,
-        fileName,
-        fileWidth,
-        fileHeight
-      } = req.body
+      // const {
+      //   resolution,
+      //   ratio,
+      //   format,
+      //   container,
+      //   assetId,
+      //   fileName,
+      //   fileWidth,
+      //   fileHeight
+      // } = req.body
+      // videoArray = []
+      let videoArray = req.body.data.map(async (item: any, i: number) => {
+        return await resizeVideo(item)
+      })
+      console.log(videoArray)
+      let result = await Promise.all(videoArray)
+      return await res.status(200).send(result)
 
-      //   const customer = await stripe.customers.create({
-      //     email,
-      //     name
-      //   });
-      // return await getMedia(assetId, fileName)
-      return await resizeVideo(
-        resolution,
-        ratio,
-        format,
-        container,
-        assetId,
-        fileName,
-        fileWidth,
-        fileHeight
-      )
+      // console.log(req.body, videoArray, 'bodyyyyyy')
 
-      //   return res.json(customer)
+      // //   const customer = await stripe.customers.create({
+      // //     email,
+      // //     name
+      // //   });
+      // // return await getMedia(assetId, fileName)
+      // return await resizeVideo(
+      //   resolution,
+      //   ratio,
+      //   format,
+      //   container,
+      //   assetId,
+      //   fileName,
+      //   fileWidth,
+      //   fileHeight
+      // )
     } catch (error) {
       console.log('create_customer', error)
       return res.status(400).send(error)
@@ -55,189 +62,207 @@ router.post('/convert', (req, res) => {
   })
 })
 
-// const getMedia = async (assetId: string, fileName: string) => {
-//   var params = {
-//     Bucket: 'cybervault-bucket',
-//     Key: `${assetId}${fileName}`
-//   }
-//   return await s3.getObject(params, (err: any, data: any) => {
-//     if (err) {
-//       console.log(err, err.stack,"yyyyyyyyyyyyyyyyyyy")
-//     }
-//     // an error occurred
-//     else {
-//       console.log(assetId,fileName,"rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
-//       console.log(data.Metadata,"jjjjjjjjjjjjjjjjjjj")
-//       return data
-//     } // successful response
-//     /*
-//    data = {
-//     AcceptRanges: "bytes", 
-//     ContentLength: 3191, 
-//     ContentType: "image/jpeg", 
-//     ETag: "\"6805f2cfc46c0f04559748bb039d69ae\"", 
-//     LastModified: <Date Representation>, 
-//     Metadata: {
-//     }, 
-//     TagCount: 2, 
-//     VersionId: "null"
-//    }
-//    */
-//   })
-// }
+const resizeVideo = async (item: any) => {
+  return new Promise(async ( resolve, reject) => {
+    const {
+      resolution,
+      ratio,
+      // format,
+      // container,
+      id,
+      fileName,
+      fileWidth,
+      fileHeight
+    } = item
 
-const resizeVideo = async (
-  resolution: number,
-  ratio: any,
-  format: any,
-  container: string,
-  assetId: string,
-  fileName: string,
-  fileWidth: number,
-  fileHeight: number
-) => {
-  console.log(
-    resolution,
-    ratio,
-    format,
-    container,
-    assetId,
-    fileName,
-    fileWidth,
-    fileHeight,
-    'vvvvvvvvvvvvvvvvvv'
-  )
-
-const originalRatio =  fileWidth/fileHeight      //1280 x 720
-const newRatio = ratio.w/ratio.h      // 0.5625
-
-// original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
-const cropWidth=originalRatio>newRatio?newRatio*fileHeight:ratio.w
-
-// //That gives us `width` and `height` for cropping params
-
-// // Now we have crop frame but we need to center it.
-// // Since we are cropping width we will be centering with X.
-const croppedWidth = originalRatio>newRatio?Math.ceil((fileWidth - cropWidth)/2)*2:2 ;// This is amount of px being cut
-const croppedHeight=2
-const X = originalRatio>newRatio?croppedWidth / 2:0 ;// Even spacing on both sides of video
-const Y = originalRatio<newRatio?croppedWidth / 2:0 ;
-
-console.log(originalRatio,newRatio,croppedWidth,croppedHeight,X,Y,"hhhhhhhhhhhhhhhhh")
-  try {
-    console.log('resizessssssssssssssssssssssssssssssssssssssssss')
-    var params = {
-      // Queue: "JOB_QUEUE_ARN",
-      UserMetadata: {
-        Customer: 'Amazon'
-      },
-      Role:
-        'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role',
-      Settings: {
-        OutputGroups: [
-          {
-            Name: 'magnify-technologies',
-            OutputGroupSettings: {
-              Type: 'FILE_GROUP_SETTINGS',
-              FileGroupSettings: {
-                Destination: 's3://cybervault-bucket/'
-              }
-            },
-            Outputs: [
-              {
-                VideoDescription: {
-                  ScalingBehavior: 'DEFAULT',
-                  TimecodeInsertion: 'DISABLED',
-                  AntiAlias: 'ENABLED',
-                  Sharpness: 100,
-                  CodecSettings:
-                    format === 'h.264'
-                      ? {
-                          Codec: 'H_264',
-                          H264Settings: {
-                            Bitrate: 7200,
-                            FramerateControl: 'INITIALIZE_FROM_SOURCE',
-                            FramerateConversionAlgorithm: 'DUPLICATE_DROP',
-                            FramerateDenominator: 50,
-                            FramerateNumerator: 50,
-                            GopSize: 50,
-                            HrdBufferSize: 50,
-                            MaxBitrate: 7200,
-                            ParControl: 'INITIALIZE_FROM_SOURCE',
-                            ParDenominator: 50,
-                            ParNumerator: 50,
-                            QualityTuningLevel: 'MULTI_PASS_HQ',
-                            RateControlMode: 'VBR'
-                          }
-                        }
-                      : {
-                          Codec: 'PRORES',
-                          ProresSettings: {
-                            CodecProfile: 'APPLE_PRORES_422',
-                            FramerateControl: 'INITIALIZE_FROM_SOURCE',
-                            FramerateConversionAlgorithm: 'DUPLICATE_DROP',
-                            FramerateDenominator: 50,
-                            FramerateNumerator: 50,
-                            ParControl: 'INITIALIZE_FROM_SOURCE',
-                            ParDenominator: 50,
-                            ParNumerator: 50
-                          }
-                        },
-                  Crop: {
-                      Height:croppedHeight,
-                      Width: croppedWidth,
-                      X: X,
-                      Y: Y
-                    },
-                  // AfdSignaling: "NONE",
-                  // DropFrameTimecode: "ENABLED",
-                  // RespondToAfd: "NONE",
-                  // ColorMetadata: "INSERT",
-                  Height: resolution,
-                },
-
-                ContainerSettings: {
-                  Container: container,
-                  Mp4Settings: {
-                    CslgAtom: 'INCLUDE',
-                    FreeSpaceBox: 'EXCLUDE',
-                    MoovPlacement: 'PROGRESSIVE_DOWNLOAD'
+    const name=fileName.replace(/ /g,"")
+  
+    const originalRatio = fileWidth / fileHeight //1280 x 720
+    const newRatio = ratio.w / ratio.h // 0.5625
+  
+    // original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
+    const cropWidth = originalRatio > newRatio ? newRatio * fileHeight : fileWidth
+  
+    // //That gives us `width` and `height` for cropping params
+  
+    // // Now we have crop frame but we need to center it.
+    // // Since we are cropping width we will be centering with X.
+    const croppedWidth =
+      originalRatio > newRatio ? Math.ceil((fileWidth - cropWidth) / 2) * 2 : 2 // This is amount of px being cut
+    const croppedHeight = 2
+    const X = originalRatio > newRatio ? croppedWidth / 2 : 0 // Even spacing on both sides of video
+    const Y = 0
+  
+    console.log(
+      originalRatio,
+      newRatio,
+      croppedWidth,
+      croppedHeight,
+      X,
+      Y,
+      'hhhhhhhhhhhhhhhhh'
+    )
+    try {
+      var params = {
+        Settings: {
+          AdAvailOffset: 0,
+          Inputs: [
+            {
+              FilterEnable: 'AUTO',
+              PsiControl: 'USE_PSI',
+              FilterStrength: 0,
+              DeblockFilter: 'DISABLED',
+              DenoiseFilter: 'DISABLED',
+              InputScanType: 'AUTO',
+              TimecodeSource: 'ZEROBASED',
+              VideoSelector: {
+                ColorSpace: 'FOLLOW',
+                Rotate: 'DEGREE_0',
+                AlphaBehavior: 'DISCARD'
+              },
+              AudioSelectors: {
+                'Audio Selector 1': {
+                  Offset: 0,
+                  DefaultSelection: 'DEFAULT',
+                  ProgramSelection: 1
+                }
+              },
+              FileInput: `s3://cybervault-bucket/${id}${name}`
+            }
+          ],
+          OutputGroups: [
+            {
+              Name: 'File Group',
+              OutputGroupSettings: {
+                Type: 'FILE_GROUP_SETTINGS',
+                FileGroupSettings: {
+                  Destination: `s3://cybervault-bucket/${id}/${resolution}/`,
+                  DestinationSettings: {
+                    S3Settings: {
+                      AccessControl: {
+                        CannedAcl: 'PUBLIC_READ'
+                      }
+                    }
                   }
                 }
-              }
-            ]
+              },
+              Outputs: [
+                {
+                  VideoDescription: {
+                    ScalingBehavior: 'DEFAULT',
+                    TimecodeInsertion: 'DISABLED',
+                    AntiAlias: 'ENABLED',
+                    Sharpness: 50,
+                    CodecSettings: {
+                      Codec: 'H_264',
+                      H264Settings: {
+                        InterlaceMode: 'PROGRESSIVE',
+                        ScanTypeConversionMode: 'INTERLACED',
+                        NumberReferenceFrames: 3,
+                        Syntax: 'DEFAULT',
+                        Softness: 0,
+                        GopClosedCadence: 1,
+                        GopSize: 90,
+                        Slices: 1,
+                        GopBReference: 'DISABLED',
+                        SlowPal: 'DISABLED',
+                        EntropyEncoding: 'CABAC',
+                        FramerateControl: 'INITIALIZE_FROM_SOURCE',
+                        RateControlMode: 'CBR',
+                        CodecProfile: 'MAIN',
+                        Telecine: 'NONE',
+                        MinIInterval: 0,
+                        AdaptiveQuantization: 'AUTO',
+                        CodecLevel: 'AUTO',
+                        FieldEncoding: 'PAFF',
+                        SceneChangeDetect: 'ENABLED',
+                        QualityTuningLevel: 'SINGLE_PASS',
+                        FramerateConversionAlgorithm: 'DUPLICATE_DROP',
+                        UnregisteredSeiTimecode: 'DISABLED',
+                        GopSizeUnits: 'FRAMES',
+                        ParControl: 'INITIALIZE_FROM_SOURCE',
+                        NumberBFramesBetweenReferenceFrames: 2,
+                        RepeatPps: 'DISABLED',
+                        DynamicSubGop: 'STATIC',
+                        Bitrate: resolution * 800
+                      }
+                    },
+                    AfdSignaling: 'NONE',
+                    DropFrameTimecode: 'ENABLED',
+                    RespondToAfd: 'NONE',
+                    ColorMetadata: 'INSERT',
+                    // Crop: {
+                    //   X: X,
+                    //   Y: Y,
+                    //   Width: croppedWidth,
+                    //   Height: croppedHeight
+                    // },
+                    Width: cropWidth,
+                    Height: resolution
+                  },
+                  AudioDescriptions: [
+                    {
+                      AudioTypeControl: 'FOLLOW_INPUT',
+                      CodecSettings: {
+                        Codec: 'AAC',
+                        AacSettings: {
+                          AudioDescriptionBroadcasterMix: 'NORMAL',
+                          Bitrate: 96000,
+                          RateControlMode: 'CBR',
+                          CodecProfile: 'LC',
+                          CodingMode: 'CODING_MODE_2_0',
+                          RawFormat: 'NONE',
+                          SampleRate: 48000,
+                          Specification: 'MPEG4'
+                        }
+                      },
+                      LanguageCodeControl: 'FOLLOW_INPUT'
+                    }
+                  ],
+                  NameModifier: `${resolution}`,
+                  ContainerSettings: {
+                    Container: 'MP4',
+                    Mp4Settings: {
+                      CslgAtom: 'INCLUDE',
+                      CttsVersion: 0,
+                      FreeSpaceBox: 'EXCLUDE',
+                      MoovPlacement: 'PROGRESSIVE_DOWNLOAD',
+                      AudioDuration: 'DEFAULT_CODEC_DURATION'
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+
+          TimecodeConfig: {
+            Source: 'ZEROBASED'
           }
-        ],
-        AdAvailOffset: 0,
-        Inputs: [
-          {
-            VideoSelector: {
-              ColorSpace: 'FOLLOW'
-            },
-            FilterEnable: 'AUTO',
-            PsiControl: 'USE_PSI',
-            FilterStrength: 0,
-            DeblockFilter: 'DISABLED',
-            DenoiseFilter: 'DISABLED',
-            TimecodeSource: 'EMBEDDED',
-            FileInput:
-              `s3://cybervault-bucket/${fileName}`
-          }
-        ],
-        TimecodeConfig: {
-          Source: 'EMBEDDED'
-        }
+        },
+        Role:
+          'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role'
       }
+  
+      var createJonPromise = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
+        .createJob(params)
+        .promise()
+      console.log(await createJonPromise, 'nnnnnnnnnnnnnnnnnnnnnnnnn')
+      createJonPromise.then(() => {
+        resolve({
+          height: resolution,
+          width: cropWidth,
+          original: false,
+          id: id,
+          url: `https://cybervault-bucket.s3.us-east-2.amazonaws.com/${id}/${resolution}/${id}${name}`
+        })
+      }).catch((error:any) => {
+        reject(error)
+      })
+    } catch (error) {
+      console.log(error, '=========')
+      reject(error)
     }
-
-    var createJonPromise = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
-      .createJob(params)
-      .promise()
-
-    await createJonPromise
-  } catch (error) {
-    console.log(error, '=========')
-  }
+  })
 }
 
 module.exports = router

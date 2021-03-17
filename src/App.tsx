@@ -7,6 +7,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
 import { StripeProvider } from 'react-stripe-elements'
 import { stripe_public_key } from 'config.json'
+import ToastHandler from 'components/ToastHandler'
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -52,7 +53,10 @@ function App() {
       <StripeProvider apiKey={stripe_public_key}>
         <ThemeProvider theme={theme}>
           <ToastProvider>
-            <Routes />
+            <React.Fragment>
+              <Routes />
+              <ToastHandler />
+            </React.Fragment>
           </ToastProvider>
         </ThemeProvider>
       </StripeProvider>

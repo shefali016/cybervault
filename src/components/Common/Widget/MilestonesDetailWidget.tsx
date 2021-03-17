@@ -1,10 +1,7 @@
 import React from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import {
-  renderDetails,
-  renderDevider
-} from '../../ProjectInfoDisplay/renderDetails'
+import { Details } from '../../ProjectInfoDisplay/Details'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
 import { AppDivider } from '../Core/AppDivider'
 
@@ -29,7 +26,7 @@ export const RenderMilestonesDetails = (props: any) => {
         ) : null}
       </div>
       {props.projectData.milestones.map((item: any, index: number) => {
-        return renderDetails(item.title, item.payment)
+        return <Details label={item.title} value={item.payment} />
       })}
       <AppDivider />
     </div>

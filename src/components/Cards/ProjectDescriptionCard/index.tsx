@@ -86,12 +86,11 @@ const ProjectCard = ({
         userInfo={userInfo}
       />
       <Card className={classes.card} elevation={5}>
-        <div
-          className={classes.imageWrapper}
-          style={{
-            background: `url(${clientLogo}) no-repeat center`,
-            backgroundSize: 'cover'
-          }}></div>
+        <div className={classes.imageWrapper}>
+          {!!clientLogo && (
+            <img src={clientLogo} alt='client-logo' className={classes.image} />
+          )}
+        </div>
 
         <div className={classes.footer}>
           <Typography variant={'body1'} className={classes.title} noWrap={true}>
@@ -252,10 +251,18 @@ const useStyles = makeStyles((theme) => ({
     borderBottomColor: theme.palette.grey[300],
     overflow: 'hidden'
   },
+  image: {
+    minHeight: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+    objectFit: 'cover'
+  },
   title: {
     fontSize: 13,
     color: theme.palette.text.paper,
-    fontWeight: 600
+    fontWeight: 600,
+    margin: `0 ${theme.spacing(2)}px`
   },
   bodyText: {
     fontSize: 10,

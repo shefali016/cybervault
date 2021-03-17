@@ -6,6 +6,7 @@ import { ProjectAsset } from 'utils/Interface'
 import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
 import { CarouselButton } from './CarouselButton'
+import clsx from 'clsx'
 
 export type Props = {
   isVideo?: boolean
@@ -57,15 +58,12 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flex: 1
-      }}>
+    <div className={classes.container}>
       <CarouselButton
         direction={'left'}
         onClick={prev}
         inActive={currentIndex === 0}
+        className={classes.largeSwitchButton}
       />
 
       <div className={classes.assetContainer}>
@@ -76,14 +74,10 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
             flex: 1,
             alignItems: 'center'
           }}>
-          {assets.length === 0 ? (
-            <div className={classes.assetOuter} style={{ minHeight: 300 }}>
+          {!(assets && assets.length) ? (
+            <div className={classes.assetOuter}>
               <div className={classes.assetInner}>
-                <img
-                  src={ImagePreview}
-                  alt='default-asset'
-                  className={classes.img}
-                />
+                <div className={clsx(classes.img, classes.imgPlaceholder)} />
               </div>
             </div>
           ) : (
@@ -129,16 +123,51 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
         </div>
       </div>
 
+      <div className={classes.smallSwitchContainer}>
+        <CarouselButton
+          direction={'left'}
+          onClick={prev}
+          inActive={currentIndex === 0}
+          className={classes.smallSwitchButton}
+        />
+        <CarouselButton
+          direction={'right'}
+          onClick={next}
+          inActive={!assets.length || currentIndex === assets.length - 1}
+          className={classes.smallSwitchButton}
+        />
+      </div>
+
       <CarouselButton
         direction={'right'}
         onClick={next}
         inActive={!assets.length || currentIndex === assets.length - 1}
+        className={classes.largeSwitchButton}
       />
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flex: 1,
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
+  },
+  largeSwitchButton: { [theme.breakpoints.down('sm')]: { display: 'none' } },
+  smallSwitchContainer: {
+    display: 'inline-flex',
+    gap: 10,
+    paddingTop: theme.spacing(3)
+  },
+  smallSwitchButton: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      flex: 1
+    },
+    display: 'none'
+  },
   img: {
     display: 'block',
     position: 'absolute',
@@ -148,6 +177,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     transform: 'translate(-50%, -50%)'
   },
+  imgPlaceholder: { background: theme.palette.background.surface },
   buttonImage: {
     fontSize: 50,
     color: theme.palette.grey[500],
@@ -173,7 +203,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     position: 'relative',
     flex: 1,
-    padding: `20px 30px`
+    margin: `0 ${theme.spacing(6)}px`,
+    [theme.breakpoints.down('sm')]: { margin: 0 }
   },
   assetOuter: {
     display: 'flex',
@@ -181,11 +212,17 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create(['transform', 'opacity'], {
       duration: 600
     }),
-    borderRadius: 10
+    borderRadius: 10,
+    width: '100%',
+    paddingTop: '56.25%'
   },
   assetInner: {
     flex: 1,
-    position: 'relative',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
     display: 'inline-block',
     overflow: 'hidden',
     margin: 0,

@@ -6,7 +6,7 @@ import AppModal from '../Common/Modal'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
-import ModalTitle from 'components/Projects/NewProjectTitle'
+import ModalTitle from 'components/Common/Modal/ModalTitle'
 
 type Props = {
   open: boolean

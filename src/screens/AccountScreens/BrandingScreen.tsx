@@ -20,6 +20,7 @@ import LeftArrowIcon from '@material-ui/icons/ArrowBackIos'
 import RightArrowIcon from '@material-ui/icons/ArrowForwardIos'
 import defaultProfileIcon from '../../assets/default_user.png'
 import { Dot } from '../../components/Common/Dot'
+import { getTextColor } from 'utils/helpers'
 
 type StateProps = {
   account: Account
@@ -115,42 +116,56 @@ const BrandingScreen = ({
   const renderEmail = () => (
     <div className={classes.brandingDisplayContainer}>
       <div className={classes.brandingDisplaySection}>
-        <div className={classes.emailHeader}>
+        <div
+          className={classes.emailHeader}
+          style={{
+            backgroundColor: accountUpdate.branding.email.backgroundColor
+          }}>
           <img
-            src={accountUpdate.settings.watermark}
-            height='60px'
+            src={
+              watermarkFile
+                ? URL.createObjectURL(watermarkFile)
+                : accountUpdate.settings?.watermark
+            }
+            className={classes.emailLogo}
             alt={'acc img'}
           />
         </div>
         <div
           className={classes.emailContent}
           style={{
-            backgroundColor: accountUpdate.branding.email.backgroundColor,
-            color: accountUpdate.branding.email.text
+            backgroundColor: accountUpdate.branding.email.backgroundColor
           }}>
-          <Typography variant='body1'>
-            {accountUpdate.name} has shared a portfolio
-          </Typography>
-          <Typography variant='caption'>
-            2 campaigns with video and photo assets
-          </Typography>
-          <div className={classes.emailContentAssets}></div>
-          <div className={classes.emailFooter}>
-            <div
-              className={classes.emailButton}
-              style={{
-                backgroundColor:
-                  accountUpdate.branding.email.buttonBackgroundColor
-              }}>
-              <Typography
-                color={'inherit'}
-                variant='caption'
-                className={classes.emailButtonText}
+          <div
+            className={classes.emailForeground}
+            style={{
+              backgroundColor: accountUpdate.branding.email.foregroundColor,
+              color: accountUpdate.branding.email.text
+            }}>
+            <Typography variant='body1' className='bold'>
+              {accountUpdate.name} has shared a portfolio
+            </Typography>
+            <Typography variant='caption'>
+              2 campaigns with video and photo assets
+            </Typography>
+            <div className={classes.emailContentAssets}></div>
+            <div className={classes.emailFooter}>
+              <div
+                className={classes.emailButton}
                 style={{
-                  color: accountUpdate.branding.email.buttonTextColor
+                  backgroundColor:
+                    accountUpdate.branding.email.buttonBackgroundColor
                 }}>
-                View Portfolio
-              </Typography>
+                <Typography
+                  color={'inherit'}
+                  variant='caption'
+                  className={classes.emailButtonText}
+                  style={{
+                    color: accountUpdate.branding.email.buttonTextColor
+                  }}>
+                  View Portfolio
+                </Typography>
+              </div>
             </div>
           </div>
         </div>
@@ -225,306 +240,350 @@ const BrandingScreen = ({
     )
   }
 
-  const renderPortfolio = () => (
-    <div className={classes.brandingDisplayContainer}>
-      <div
-        className={classes.brandingDisplaySection}
-        style={{
-          backgroundColor: accountUpdate.branding.portfolio.backgroundColor
-        }}>
-        <div className={classes.portfolioHeader}>
-          <CreatorCloudIcon className={classes.portfolioHeaderIcon} />
-          <div className={classes.portfolioHeaderTitleContainer}>
-            <div className={classes.portfolioHeaderImageWrapper}>
+  const renderPortfolio = () => {
+    const headerTextColor =
+      getTextColor(accountUpdate.branding.portfolio.headerGradient1) === 'dark'
+        ? '#fff'
+        : '#000'
+    return (
+      <div className={classes.brandingDisplayContainer}>
+        <div
+          className={classes.brandingDisplaySection}
+          style={{
+            backgroundColor: accountUpdate.branding.portfolio.backgroundColor
+          }}>
+          <div className={classes.portfolioHeader}>
+            <CreatorCloudIcon className={classes.portfolioHeaderIcon} />
+            <div className={classes.portfolioHeaderTitleContainer}>
+              <div className={classes.portfolioHeaderImageWrapper}>
+                <img
+                  src={
+                    'https://www.kinaxis.com/sites/default/files/blog/2015/09/iStock_000049353450_Small.jpg'
+                  }
+                  height='25px'
+                  width='auto'
+                  className={classes.portfolioHeaderImage}
+                  alt={'portfolioHeaderImage'}
+                />
+              </div>
+              <Typography className={classes.portfolioHeaderTitle}>
+                Technology Portfolio - {accountUpdate.name} - 2021
+              </Typography>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                paddingRight: theme.spacing(1)
+              }}>
+              <NotificationIcon className={classes.notificationIcon} />
               <img
-                src={
-                  'https://www.kinaxis.com/sites/default/files/blog/2015/09/iStock_000049353450_Small.jpg'
-                }
-                height='25px'
-                width='auto'
-                className={classes.portfolioHeaderImage}
-                alt={'portfolioHeaderImage'}
+                src={user.avatar ? user.avatar : defaultProfileIcon}
+                style={{ borderRadius: 20, height: 25, width: 25 }}
+                alt={'defaultProfileIcon'}
               />
             </div>
-            <Typography className={classes.portfolioHeaderTitle}>
-              Technology Portfolio - {accountUpdate.name} - 2021
+          </div>
+          <div
+            className={classes.portfolioBanner}
+            style={{
+              display: 'flex',
+              background: `linear-gradient(90deg, ${accountUpdate.branding.portfolio.headerGradient1},  ${accountUpdate.branding.portfolio.headerGradient2})`,
+              minHeight: 35,
+              width: '100%',
+              paddingLeft: theme.spacing(4),
+              alignItems: 'center',
+              color: headerTextColor
+            }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                position: 'relative',
+                paddingLeft: 15,
+                paddingRight: 15
+              }}>
+              <Typography
+                className={classes.portfolioBannerText}
+                color='inherit'>
+                Apple iPhone 12 Promo
+              </Typography>
+              <Dot
+                color={headerTextColor}
+                style={{ position: 'absolute', bottom: -5 }}
+              />
+            </div>
+            <Typography
+              className={classes.portfolioBannerText}
+              style={{ paddingLeft: 15, paddingRight: 15 }}
+              color='inherit'>
+              iPad Air Commercial '16
             </Typography>
           </div>
           <div
+            className={classes.portfolioContent}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              paddingRight: theme.spacing(1)
+              backgroundColor: accountUpdate.branding.portfolio.foregroundColor,
+              color: accountUpdate.branding.portfolio.text
             }}>
-            <NotificationIcon className={classes.notificationIcon} />
-            <img
-              src={user.avatar ? user.avatar : defaultProfileIcon}
-              style={{ borderRadius: 20, height: 25, width: 25 }}
-              alt={'defaultProfileIcon'}
-            />
-          </div>
-        </div>
-        <div
-          className={classes.portfolioBanner}
-          style={{
-            display: 'flex',
-            background: `linear-gradient(90deg, ${accountUpdate.branding.portfolio.headerGradient1},  ${accountUpdate.branding.portfolio.headerGradient2})`,
-            minHeight: 35,
-            width: '100%',
-            paddingLeft: theme.spacing(4),
-            alignItems: 'center'
-          }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              position: 'relative',
-              paddingLeft: 15,
-              paddingRight: 15
-            }}>
-            <Typography className={classes.portfolioBannerText}>
-              Apple iPhone 12 Promo
+            <Typography variant='h6' className={classes.portfolioHeaderText}>
+              iPhone 12 Promo Campaign
             </Typography>
-            <Dot color='#fff' style={{ position: 'absolute', bottom: -5 }} />
-          </div>
-          <Typography
-            className={classes.portfolioBannerText}
-            style={{ paddingLeft: 15, paddingRight: 15 }}>
-            iPad Air Commercial '16
-          </Typography>
-        </div>
-        <div
-          className={classes.portfolioContent}
-          style={{
-            backgroundColor: accountUpdate.branding.portfolio.foregroundColor,
-            color: accountUpdate.branding.portfolio.text
-          }}>
-          <Typography variant='h6' className={classes.portfolioHeaderText}>
-            iPhone 12 Promo Campaign
-          </Typography>
-          <Typography
-            variant='subtitle1'
-            className={classes.portfolioSubheaderText}>
-            Apple Inc.
-          </Typography>
+            <Typography
+              variant='subtitle1'
+              className={classes.portfolioSubheaderText}>
+              Apple Inc.
+            </Typography>
 
-          <div
-            style={{
-              marginBottom: theme.spacing(2),
-              marginTop: theme.spacing(2)
-            }}>
+            <div
+              style={{
+                marginBottom: theme.spacing(2),
+                marginTop: theme.spacing(2)
+              }}>
+              <Typography
+                variant='body1'
+                className={classes.portfolioTitleText}>
+                Campaign Description
+              </Typography>
+              <Typography variant='body1' className={classes.portfolioBodyText}>
+                Create briefs and documents used by designers, writers, artists,
+                and agencies in the production of everything from graphic design
+                and copy to websites and commercials.
+              </Typography>
+            </div>
+
             <Typography variant='body1' className={classes.portfolioTitleText}>
-              Campaign Description
+              Project Details
             </Typography>
-            <Typography variant='body1' className={classes.portfolioBodyText}>
-              Create briefs and documents used by designers, writers, artists,
-              and agencies in the production of everything from graphic design
-              and copy to websites and commercials.
-            </Typography>
-          </div>
 
-          <Typography variant='body1' className={classes.portfolioTitleText}>
-            Project Details
-          </Typography>
-
-          <div
-            style={{
-              display: 'flex',
-              marginBottom: theme.spacing(0.5)
-            }}>
-            <div style={{ minWidth: 120 }}>
-              <Typography
-                variant='body1'
-                style={{ marginRight: 10 }}
-                className={classes.portfolioBodyText}>
-                Campaign Objective:
+            <div
+              style={{
+                display: 'flex',
+                marginBottom: theme.spacing(0.5)
+              }}>
+              <div style={{ minWidth: 120 }}>
+                <Typography
+                  variant='body1'
+                  style={{ marginRight: 10 }}
+                  className={classes.portfolioBodyText}>
+                  Campaign Objective:
+                </Typography>
+              </div>
+              <Typography variant='body1' className={classes.portfolioBodyText}>
+                Brand awareness for new product releases
               </Typography>
             </div>
-            <Typography variant='body1' className={classes.portfolioBodyText}>
-              Brand awareness for new product releases
-            </Typography>
-          </div>
 
-          <div style={{ display: 'flex' }}>
-            <div style={{ minWidth: 120 }}>
-              <Typography
-                variant='body1'
-                style={{ marginRight: 10 }}
-                className={classes.portfolioBodyText}
-                noWrap={true}>
-                Product Summary:
+            <div style={{ display: 'flex' }}>
+              <div style={{ minWidth: 120 }}>
+                <Typography
+                  variant='body1'
+                  style={{ marginRight: 10 }}
+                  className={classes.portfolioBodyText}
+                  noWrap={true}>
+                  Product Summary:
+                </Typography>
+              </div>
+              <Typography variant='body1' className={classes.portfolioBodyText}>
+                Create briefs and documents used by designers, writers, artists,
+                and agencies in the production of everything from graphic design
+                and copy to websites and commercials.
               </Typography>
             </div>
-            <Typography variant='body1' className={classes.portfolioBodyText}>
-              Create briefs and documents used by designers, writers, artists,
-              and agencies in the production of everything from graphic design
-              and copy to websites and commercials.
-            </Typography>
-          </div>
 
-          <div className={classes.portfolioSwiperContainer}>
-            {renderPortfolioSwiper()}
+            <div className={classes.portfolioSwiperContainer}>
+              {renderPortfolioSwiper()}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
-    <div className={clsx('container', classes.container)}>
-      <Section title={'Account Appearance'} className={classes.section}>
-        <div className={classes.watermarkPickerOuter}>
-          <div className={classes.watermarkPickerContainer}>
-            <div className={classes.watermarkPickerInner}>
-              <WatermarkPicker
-                url={
-                  watermarkFile
-                    ? URL.createObjectURL(watermarkFile)
-                    : accountUpdate.settings?.watermark
-                }
-                onChange={handleWatermarkChange}
-                className={classes.watermarkPicker}
-              />
-              <Typography
-                variant={'body1'}
-                className={classes.watermarkPickerTitle}>
-                Change logo
-              </Typography>
-            </div>
-            <EditModal
-              onSave={(val: any) => {
-                setAccountUpdate((account) => ({ ...account, ...val }))
-                handleSave({ ...account, ...val })
-              }}
-              className={classes.accountNameEditor}
-              editItems={[
-                {
-                  title: 'Account Name',
-                  value: accountUpdate.name,
-                  key: 'name',
-                  placeholder: 'Enter account name'
-                }
-              ]}
-            />
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <div className={'col'}>
+            <Section title={'Account Appearance'} className={classes.section}>
+              <div className={classes.watermarkPickerOuter}>
+                <div className={classes.watermarkPickerContainer}>
+                  <div className={classes.watermarkPickerInner}>
+                    <WatermarkPicker
+                      url={
+                        watermarkFile
+                          ? URL.createObjectURL(watermarkFile)
+                          : accountUpdate.settings?.watermark
+                      }
+                      onChange={handleWatermarkChange}
+                      className={classes.watermarkPicker}
+                    />
+                    <Typography
+                      variant={'body1'}
+                      className={classes.watermarkPickerTitle}>
+                      Change logo
+                    </Typography>
+                  </div>
+                  <EditModal
+                    onSave={(val: any) => {
+                      setAccountUpdate((account) => ({ ...account, ...val }))
+                      handleSave({ ...account, ...val })
+                    }}
+                    className={classes.accountNameEditor}
+                    editItems={[
+                      {
+                        title: 'Account Name',
+                        value: accountUpdate.name,
+                        key: 'name',
+                        placeholder: 'Enter account name'
+                      }
+                    ]}
+                  />
+                </div>
+              </div>
+            </Section>
+
+            <Section title={'Branding Appearance'}>
+              <div>
+                <div
+                  className={clsx(
+                    classes.emailNotifications,
+                    classes.sectionInner
+                  )}>
+                  <Typography variant={'h6'}>
+                    Customize your email notifications
+                  </Typography>
+                  <Typography
+                    variant={'caption'}
+                    style={{ marginBottom: theme.spacing(2) }}>
+                    Customize your email notifications
+                  </Typography>
+                  <div className={classes.colorPickerContainer}>
+                    <div>
+                      <ColorPicker
+                        color={accountUpdate.branding.email.backgroundColor}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('backgroundColor')(color)
+                        }
+                        label={'Background color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.email.foregroundColor}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('foregroundColor')(color)
+                        }
+                        label={'Foreground color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.email.text}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('text')(color)
+                        }
+                        label={'Text color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={
+                          accountUpdate.branding.email.buttonBackgroundColor
+                        }
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('buttonBackgroundColor')(
+                            color
+                          )
+                        }
+                        label={'Button background'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.email.buttonTextColor}
+                        onChange={(color: string) =>
+                          updateAccountEmailBranding('buttonTextColor')(color)
+                        }
+                        label={'Button text'}
+                        className={classes.colorPicker}
+                      />
+                    </div>
+                    {renderEmail()}
+                  </div>
+                </div>
+                <div className={clsx(classes.sectionInner)}>
+                  <Typography variant={'h6'}>
+                    Customize your portfolio page
+                  </Typography>
+                  <Typography
+                    variant={'caption'}
+                    style={{ marginBottom: theme.spacing(2) }}>
+                    Displayed through the portfolio sharing link
+                  </Typography>
+                  <div className={classes.colorPickerContainer}>
+                    <div>
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.backgroundColor}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('backgroundColor')(
+                            color
+                          )
+                        }
+                        label={'Background color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.foregroundColor}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('foregroundColor')(
+                            color
+                          )
+                        }
+                        label={'Foreground color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.text}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('text')(color)
+                        }
+                        label={'Text color'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.headerGradient1}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('headerGradient1')(
+                            color
+                          )
+                        }
+                        label={'Header gradient 1'}
+                        className={classes.colorPicker}
+                      />
+                      <ColorPicker
+                        color={accountUpdate.branding.portfolio.headerGradient2}
+                        onChange={(color: string) =>
+                          updateAccountPortfolioBranding('headerGradient2')(
+                            color
+                          )
+                        }
+                        label={'Header gradient 2'}
+                        className={classes.colorPicker}
+                      />
+                    </div>
+                    {renderPortfolio()}
+                  </div>
+                </div>
+              </div>
+            </Section>
+
+            <GradiantButton
+              className={classes.saveButton}
+              onClick={() => handleSave(accountUpdate)}
+              loading={loading}>
+              <Typography variant='button'>Save</Typography>
+            </GradiantButton>
           </div>
         </div>
-      </Section>
-
-      <Section title={'Branding Appearance'}>
-        <div>
-          <div
-            className={clsx(classes.emailNotifications, classes.sectionInner)}>
-            <Typography variant={'h6'}>
-              Customize your email notifications
-            </Typography>
-            <Typography
-              variant={'caption'}
-              style={{ marginBottom: theme.spacing(2) }}>
-              Customize your email notifications
-            </Typography>
-            <div className={classes.colorPickerContainer}>
-              <div>
-                <ColorPicker
-                  color={accountUpdate.branding.email.backgroundColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('backgroundColor')(color)
-                  }
-                  label={'Background color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.text}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('text')(color)
-                  }
-                  label={'Text color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.buttonBackgroundColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('buttonBackgroundColor')(color)
-                  }
-                  label={'Button background'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.email.buttonTextColor}
-                  onChange={(color: string) =>
-                    updateAccountEmailBranding('buttonTextColor')(color)
-                  }
-                  label={'Button text'}
-                  className={classes.colorPicker}
-                />
-              </div>
-              {renderEmail()}
-            </div>
-          </div>
-          <div className={clsx(classes.sectionInner)}>
-            <Typography variant={'h6'}>
-              Customize your portfolio page
-            </Typography>
-            <Typography
-              variant={'caption'}
-              style={{ marginBottom: theme.spacing(2) }}>
-              Displayed through the portfolio sharing link
-            </Typography>
-            <div className={classes.colorPickerContainer}>
-              <div>
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.backgroundColor}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('backgroundColor')(color)
-                  }
-                  label={'Background color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.foregroundColor}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('foregroundColor')(color)
-                  }
-                  label={'Foreground color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.text}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('text')(color)
-                  }
-                  label={'Text color'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.headerGradient1}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('headerGradient1')(color)
-                  }
-                  label={'Header gradient 1'}
-                  className={classes.colorPicker}
-                />
-                <ColorPicker
-                  color={accountUpdate.branding.portfolio.headerGradient2}
-                  onChange={(color: string) =>
-                    updateAccountPortfolioBranding('headerGradient2')(color)
-                  }
-                  label={'Header gradient 2'}
-                  className={classes.colorPicker}
-                />
-              </div>
-              {renderPortfolio()}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <GradiantButton
-        className={classes.saveButton}
-        onClick={() => handleSave(accountUpdate)}
-        loading={loading}>
-        <Typography variant='button'>Save</Typography>
-      </GradiantButton>
+      </div>
     </div>
   )
 }
@@ -533,7 +592,8 @@ const useStyles = makeStyles((theme) => ({
   arrowIcon: { color: theme.palette.grey[300] },
   emailButton: {
     borderRadius: '100px',
-    padding: `${theme.spacing(1.5)}px ${theme.spacing(2)}px`
+    padding: `${theme.spacing(1.5)}px ${theme.spacing(2)}px`,
+    marginTop: theme.spacing(3)
   },
   emailButtonText: { fontWeight: 'bold' },
   emailContentAssets: { display: 'flex', flexDirection: 'column', flex: 1 },
@@ -541,16 +601,21 @@ const useStyles = makeStyles((theme) => ({
   emailHeader: {
     display: 'flex',
     justifyContent: 'center',
-    padding: theme.spacing(1)
+    paddingTop: 20
   },
+  emailLogo: { height: 40, width: 'auto' },
   emailContent: {
-    borderRadius: theme.shape.borderRadius,
     flex: 1,
-    margin: theme.spacing(4),
-    marginTop: theme.spacing(1),
-    padding: theme.spacing(3),
+    padding: 30,
+    paddingTop: 20,
+    paddingBottom: 50,
     display: 'flex',
     flexDirection: 'column'
+  },
+  emailForeground: {
+    padding: 30,
+    borderRadius: theme.shape.borderRadius,
+    flex: 1
   },
   emailHeaderLogo: {},
 
@@ -602,7 +667,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10
   },
   portfolioBanner: {},
-  portfolioBannerText: { color: '#fff', fontSize: 10 },
+  portfolioBannerText: { fontSize: 10 },
   portfolioHeaderText: {
     fontSize: 16,
     fontWeight: 'bold'
@@ -628,6 +693,7 @@ const useStyles = makeStyles((theme) => ({
 
   colorPickerContainer: {
     display: 'flex',
+    alignItems: 'flex-start',
     [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
   },
   brandingDisplayContainer: {
@@ -684,10 +750,8 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     color: theme.palette.text.background,
-    alignItems: 'center',
-    paddingBottom: theme.spacing(6),
-    justifyContent: 'center',
-    width: '100%'
+    padding: `0 ${theme.spacing(3)}px`,
+    paddingBottom: theme.spacing(6)
   },
   sectionInner: {
     background: theme.palette.common.white,
@@ -713,7 +777,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
-    minWidth: 150
+    minWidth: 150,
+    alignSelf: 'center'
   }
 }))
 

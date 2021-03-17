@@ -5,28 +5,67 @@ import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import Section from 'components/Common/Section'
 import { Typography } from '@material-ui/core'
-import { Account, User } from 'utils/Interface'
-import { getSubscriptionDetails } from 'utils/subscription'
+import {
+  Account,
+  User,
+  SubscriptionType,
+  StripePlans,
+  Product
+} from 'utils/Interface'
+import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
 import { ResponsiveRow } from 'components/ResponsiveRow'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { SubscriptionModal } from 'components/Subscription/SubscriptionModal'
 import { StorageModal } from 'components/Storage/StorageModal'
 import { CardModal } from 'components/Stripe/CardModal'
-import { requestPaymentMethods } from 'actions/stripeActions'
+import {
+  cancelPlanSubscription,
+  createAmountSubscription,
+  getStripPlanList,
+  planSubscription,
+  requestPaymentMethods,
+  updatePlanSubscription
+} from 'actions/stripeActions'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { PaymentMethodList } from 'components/Stripe/PaymentMethodList'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
+import { SubscriptionTypes } from 'utils/enums'
+import moment from 'moment'
 
 type StateProps = {
   account: Account
   user: User
   paymentMethods: Array<PaymentMethod>
   customerId: string
+  accountSubscription: any
+  storageSubscription: any
+  subscriptionLoading: boolean
+  subscriptionPlans: Array<StripePlans> | null
+  storagePurchaseLoading: boolean
 }
-type DispatchProps = { getPaymentMethods: (customerId: string) => void }
+type DispatchProps = {
+  getPaymentMethods: (customerId: string) => void
+  planSubscription: (
+    planId: string,
+    paymentMethodId: string,
+    type: SubscriptionType
+  ) => void
+  cancelSubscription: (subscriptionId: string) => void
+  updateSubscription: (
+    subscriptionId: string,
+    planId: string,
+    type: SubscriptionType
+  ) => void
+  createAmountSubscription: (
+    price: number,
+    paymentMethodId: string,
+    extraStorage: number,
+    productId: string
+  ) => void
+  getPlanList: () => void
+}
 type ReduxProps = StateProps & DispatchProps
-type Props = { history: any }
+type Props = { history: any; location: any }
 
 const SubscriptionScreen = ({
   account,
@@ -34,18 +73,31 @@ const SubscriptionScreen = ({
   getPaymentMethods,
   paymentMethods,
   history,
-  customerId
+  location,
+  customerId,
+  planSubscription,
+  accountSubscription,
+  storageSubscription,
+  cancelSubscription,
+  updateSubscription,
+  createAmountSubscription,
+  getPlanList,
+  subscriptionPlans,
+  subscriptionLoading,
+  storagePurchaseLoading
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
   useEffect(() => {
     getPaymentMethods(user.customerId)
+    getPlanList()
   }, [])
 
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
-    false
+    !!location.state?.params?.isSubscribing
   )
   const [storageModalOpen, setStorageModalOpen] = useState<boolean>(false)
+  const [storageProduct, setStorageProduct] = useState<Product | any>({})
 
   const openSubscriptionModal = () => setSubscriptionModalOpen(true)
   const closeSubscriptionModal = () => setSubscriptionModalOpen(false)
@@ -60,153 +112,185 @@ const SubscriptionScreen = ({
   const navigateToPaymentMethodsScreen = () => history.push('paymentmethods')
 
   return (
-    <div className={clsx('container', classes.container)}>
-      <SubscriptionModal
-        open={subscriptionModalOpen}
-        onRequestClose={closeSubscriptionModal}
-        activeSubscriptionType={account.subscription?.type}
-        customerId={customerId}
-        paymentMethods={paymentMethods}
-      />
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
+        <div className='responsivePadding'>
+          <SubscriptionModal
+            loading={subscriptionLoading}
+            open={subscriptionModalOpen}
+            onRequestClose={closeSubscriptionModal}
+            activeSubscriptionType={
+              accountSubscription
+                ? accountSubscription.metadata.type
+                : SubscriptionTypes.CREATOR
+            }
+            customerId={customerId}
+            paymentMethods={paymentMethods}
+            planSubscription={planSubscription}
+            setStorageProduct={setStorageProduct}
+            subscription={accountSubscription}
+            planList={subscriptionPlans}
+            cancelSubscription={cancelSubscription}
+            updateSubscription={updateSubscription}
+          />
 
-      <StorageModal
-        open={storageModalOpen}
-        onRequestClose={closeStorageModal}
-        account={account}
-      />
+          <StorageModal
+            open={storageModalOpen}
+            onRequestClose={closeStorageModal}
+            account={account}
+            storageSubscription={storageSubscription}
+            accountSubscription={accountSubscription}
+            paymentMethods={paymentMethods}
+            customerId={customerId}
+            createAmountSubscription={createAmountSubscription}
+            storageProduct={storageProduct}
+            storagePurchaseLoading={storagePurchaseLoading}
+          />
 
-      <CardModal
-        open={cardModalOpen}
-        onRequestClose={toggleCardModal(false)}
-        customerId={user.customerId}
-      />
+          <CardModal
+            open={cardModalOpen}
+            onRequestClose={toggleCardModal(false)}
+            customerId={user.customerId}
+          />
 
-      <Section title={'Your Plan'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>
-                    {account.subscription
-                      ? `${
-                          getSubscriptionDetails(account.subscription.type).name
-                        } Plan`
-                      : 'Unsubscribed'}
-                  </Typography>
-                  <Typography variant='caption'>
-                    {account.subscription
-                      ? 'Your subscription renews on DATE' // @todo connect to real renewal date
-                      : 'Subscribe to benefit from the full features of Creator Cloud'}
-                  </Typography>
-                </div>,
-                <GradiantButton onClick={openSubscriptionModal}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      Manage Plan
-                    </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-        </div>
-      </Section>
-
-      <Section title={'Storage'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  <Typography variant='subtitle1'>Your Storage</Typography>
-                  <Typography variant='caption'>
-                    Viewers can also download a previewed watermarked version
-                  </Typography>
-                </div>,
-                <GradiantButton onClick={openStorageModal}>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      Manage Storage
-                    </Typography>
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-        </div>
-      </Section>
-
-      <Section title={'Payment Details'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  {paymentMethods && !!paymentMethods.length ? (
-                    <div className={'row'}>
-                      <PaymentMethodInline paymentMethod={paymentMethods[0]} />
-                    </div>
-                  ) : (
-                    <Typography variant='subtitle1'>
-                      You haven't added a payment method
-                    </Typography>
-                  )}
-                </div>,
-                <div className={'row'}>
-                  <GradiantButton onClick={toggleCardModal(true)}>
-                    <div className={'row'}>
-                      <Typography style={{ marginRight: 5 }}>
-                        Add Method
+          <Section title={'Your Plan'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>
+                        {!!accountSubscription
+                          ? `${
+                              getSubscriptionDetails(
+                                getSubscriptionType(accountSubscription)
+                              ).name
+                            } Plan`
+                          : 'Unsubscribed'}
                       </Typography>
-                    </div>
-                  </GradiantButton>
-                  {paymentMethods && !!paymentMethods.length && (
-                    <GradiantButton
-                      onClick={navigateToPaymentMethodsScreen}
-                      style={{ marginLeft: 15 }}>
+                      <Typography variant='caption'>
+                        {!!accountSubscription
+                          ? accountSubscription.cancel_at_period_end
+                            ? `Your subscription ends ${moment(
+                                accountSubscription.cancel_at * 1000
+                              ).format('YYYY-MM-DD')}`
+                            : `Your subscription renews on ${moment(
+                                accountSubscription.current_period_end * 1000
+                              ).format('YYYY-MM-DD')}` // @todo connect to real renewal date
+                          : 'Subscribe to benefit from the full features of Creator Cloud'}
+                      </Typography>
+                    </div>,
+                    <GradiantButton onClick={openSubscriptionModal}>
                       <div className={'row'}>
                         <Typography style={{ marginRight: 5 }}>
-                          Manage Cards
+                          Manage Plan
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section title={'Storage'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      <Typography variant='subtitle1'>Your Storage</Typography>
+                      <Typography variant='caption'>
+                        Add storage to account to upload more content
+                      </Typography>
+                    </div>,
+                    <GradiantButton onClick={openStorageModal}>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          Manage Storage
+                        </Typography>
+                      </div>
+                    </GradiantButton>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section title={'Payment Details'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      {paymentMethods && !!paymentMethods.length ? (
+                        <div className={'row'}>
+                          <PaymentMethodInline
+                            paymentMethod={paymentMethods[0]}
+                          />
+                        </div>
+                      ) : (
+                        <Typography variant='subtitle1'>
+                          You haven't added a payment method
+                        </Typography>
+                      )}
+                    </div>,
+                    <div className={'responsiveRow'}>
+                      <GradiantButton onClick={toggleCardModal(true)}>
+                        <div className={'row'}>
+                          <Typography style={{ marginRight: 5 }}>
+                            Add Method
+                          </Typography>
+                        </div>
+                      </GradiantButton>
+                      {paymentMethods && !!paymentMethods.length && (
+                        <GradiantButton
+                          onClick={navigateToPaymentMethodsScreen}
+                          className={classes.manageCardsButton}>
+                          <div className={'row'}>
+                            <Typography style={{ marginRight: 5 }}>
+                              Manage Cards
+                            </Typography>
+                            <RightArrow style={{ fontSize: 15 }} />
+                          </div>
+                        </GradiantButton>
+                      )}
+                    </div>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
+
+          <Section title={'Billing History'} className={classes.section}>
+            <div className={classes.sectionInner}>
+              <div className={classes.sectionTextArea}>
+                <ResponsiveRow>
+                  {[
+                    <div style={{ flex: 1 }}>
+                      {false ? (
+                        <div></div> // @todo fetch most recent billing history item
+                      ) : (
+                        <Typography variant='subtitle1'>
+                          You are not subscribed
+                        </Typography>
+                      )}
+                    </div>,
+                    <GradiantButton>
+                      <div className={'row'}>
+                        <Typography style={{ marginRight: 5 }}>
+                          View History
                         </Typography>
                         <RightArrow style={{ fontSize: 15 }} />
                       </div>
                     </GradiantButton>
-                  )}
-                </div>
-              ]}
-            </ResponsiveRow>
-          </div>
+                  ]}
+                </ResponsiveRow>
+              </div>
+            </div>
+          </Section>
         </div>
-      </Section>
-
-      <Section title={'Billing History'} className={classes.section}>
-        <div className={classes.sectionInner}>
-          <div className={classes.sectionTextArea}>
-            <ResponsiveRow>
-              {[
-                <div style={{ flex: 1 }}>
-                  {false ? (
-                    <div></div> // @todo fetch most recent billing history item
-                  ) : (
-                    <Typography variant='subtitle1'>
-                      You are not subscribed
-                    </Typography>
-                  )}
-                </div>,
-                <GradiantButton>
-                  <div className={'row'}>
-                    <Typography style={{ marginRight: 5 }}>
-                      View History
-                    </Typography>
-                    <RightArrow style={{ fontSize: 15 }} />
-                  </div>
-                </GradiantButton>
-              ]}
-            </ResponsiveRow>
-          </div>
-        </div>
-      </Section>
+      </div>
     </div>
   )
 }
@@ -241,6 +325,13 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 10,
     paddingBottom: 10,
     minWidth: 150
+  },
+  manageCardsButton: {
+    marginLeft: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 0,
+      marginTop: theme.spacing(2)
+    }
   }
 }))
 
@@ -248,12 +339,40 @@ const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
   user: state.auth.user as User,
   paymentMethods: state.stripe.paymentMethods,
-  customerId: state.stripe.customer.id as string
+  customerId: state.stripe.customer?.id as string,
+  accountSubscription: state.stripe.accountSubscription,
+  storageSubscription: state.stripe.storageSubscription,
+  subscriptionLoading: state.stripe.subscriptionLoading,
+  subscriptionPlans: state.stripe
+    .subscriptionPlans as Array<StripePlans> | null,
+  storagePurchaseLoading: state.stripe.storagePurchaseLoading
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({
   getPaymentMethods: (customerId: string) =>
-    dispatch(requestPaymentMethods(customerId))
+    dispatch(requestPaymentMethods(customerId)),
+  planSubscription: (
+    planId: string,
+    paymentMethodId: string,
+    type: SubscriptionType
+  ) => dispatch(planSubscription(planId, paymentMethodId, type)),
+  cancelSubscription: (subscriptionId: string) =>
+    dispatch(cancelPlanSubscription(subscriptionId)),
+  updateSubscription: (
+    subscriptionId: string,
+    planId: string,
+    type: SubscriptionType
+  ) => dispatch(updatePlanSubscription(subscriptionId, planId, type)),
+  createAmountSubscription: (
+    price: number,
+    paymentMethodId: string,
+    extraStorage: number,
+    productId: string
+  ) =>
+    dispatch(
+      createAmountSubscription(price, paymentMethodId, extraStorage, productId)
+    ),
+  getPlanList: () => dispatch(getStripPlanList())
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

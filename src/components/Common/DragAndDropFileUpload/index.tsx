@@ -7,18 +7,22 @@ import ReactLoading from 'react-loading'
 
 type Props = {
   isVideo?: boolean
-  isLoading: boolean
-  onSubmit: (file: File) => void
+  isLoading?: boolean
+  onSubmit: (files: File[]) => void
 }
 
-export const DragAndDropUploader = ({ isVideo, isLoading, onSubmit }: any) => {
+export const DragAndDropUploader = ({
+  isVideo,
+  isLoading,
+  onSubmit
+}: Props) => {
   const classes = useStyles()
   const [file, setFile] = useState<File | null>(null)
 
   // receives array of files that are done uploading when submit button is clicked
   const onDrop = useCallback((files) => {
     setFile(files)
-    onSubmit(files[0])
+    onSubmit(files)
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({

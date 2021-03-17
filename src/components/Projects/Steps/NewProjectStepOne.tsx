@@ -17,7 +17,7 @@ import {
   ROW
 } from 'utils/constants/stringConstants'
 import NewProjectFooter from '../NewProjectFooter'
-import NewProjectTitle from '../NewProjectTitle'
+import NewProjectTitle from '../../Common/Modal/ModalTitle'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import AppSelect from '../../Common/Core/AppSelect'
 import { Client } from '../../../utils/Interface'

@@ -2,9 +2,36 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
+    '.splashScreen': {
+      display: 'flex',
+      height: '100vh',
+      width: '100vw',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: theme.palette.background.default
+    },
+    '.hiddenSmDown': {
+      [theme.breakpoints.down('sm')]: {
+        display: 'none !important'
+      }
+    },
+    '.hiddenMdUp': {
+      [theme.breakpoints.up('md')]: {
+        display: 'none !important'
+      }
+    },
+    '.rotate180': { transform: 'rotate(180deg)' },
+    '.alignLeftButton': {
+      justifyContent: 'flex-start',
+      paddingLeft: theme.spacing(2)
+    },
+    '.stretch': { alignSelf: 'stretch' },
+    '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
     '.col': { display: 'flex', flexDirection: 'column' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
+    '.wrap': { flexWrap: 'wrap' },
+    '.fullWidth': { width: '100%' },
     '.MuiButton-label': { textTransform: 'capitalize' },
     '.MuiToggleButton-label': { textTransform: 'capitalize' },
     '.Mui-selected': {
@@ -28,7 +55,42 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modalContentWrapper': {
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      overflow: 'hidden',
+      position: 'relative'
+    },
     '.modalContent': {
+      color: theme.palette.text.paper,
+      backgroundColor: theme.palette.background.paper,
+      padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
+      maxHeight: '80vh',
+      minWidth: 400,
+      maxWidth: 1200,
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      display: 'flex',
+      flexDirection: 'column',
+      overflowY: 'scroll',
+      position: 'relative',
+      [theme.breakpoints.down('md')]: {
+        // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+      },
+      [theme.breakpoints.down('sm')]: {
+        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+        minWidth: 'auto'
+      }
+    },
+    '.bold': { fontWeight: 'bold' },
+    '.responsiveRow': {
+      display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
+      }
+    },
+    '.scrollY': { overflowY: 'scroll' },
+    '.modalContentNoScroll': {
       color: theme.palette.text.paper,
       backgroundColor: theme.palette.background.paper,
       padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
@@ -38,7 +100,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius * 2,
       display: 'flex',
       flexDirection: 'column',
-      overflowY: 'scroll',
       position: 'relative'
     },
     '.modalCloseButton': { position: 'absolute', top: 10, right: 10 },
@@ -66,8 +127,26 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flex: 1,
       flexDirection: 'column',
       color: theme.palette.text.background,
-      alignItems: 'center',
-      width: '100%'
+      alignItems: 'center'
+    },
+    '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
+    '.screenInner': {
+      width: '100%',
+      maxWidth: 1500
+    },
+    '.screenInnerMd': {
+      width: '100%',
+      maxWidth: 1000
+    },
+    '.responsivePadding': {
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      paddingBottom: theme.spacing(6),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),
+        paddingBottom: theme.spacing(4)
+      }
     },
     '.centerContent': {
       display: 'flex',
@@ -118,6 +197,26 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Text
-    '.metaText': { color: theme.palette.text.meta }
+    '.metaText': { color: theme.palette.text.meta },
+    '.whiteText': { color: 'white' },
+    '.backgroundText': { color: theme.palette.text.background },
+    // Icons
+    '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
+    '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
+    // img
+    '.circleImage': {
+      minWidth: 60,
+      height: 60,
+      borderRadius: 30,
+      overflow: 'hidden',
+      background: theme.palette.grey[200],
+      position: 'relative',
+      '& img': {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover'
+      }
+    }
   }
 }))

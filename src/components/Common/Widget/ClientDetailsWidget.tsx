@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
-import { renderDetails } from '../../ProjectInfoDisplay/renderDetails'
+import { Details } from '../../ProjectInfoDisplay/Details'
 import iconMaterialEdit from '../../../assets/iconMaterialEdit.png'
 import { AppDivider } from '../Core/AppDivider'
 
@@ -25,14 +25,10 @@ export const RenderClientDetails = (props: any) => {
           </Button>
         ) : null}
       </div>
-      {renderDetails(
-        'Client Name:',
-        props.clientData ? props.clientData.name : ''
-      )}
-      {renderDetails(
-        'Client Contact: ',
-        props.clientData ? props.clientData.email : ''
-      )}
+
+      <Details label={'Client Name:'} value={props.clientData?.name} />
+      <Details label={'Client Contact:'} value={props.clientData?.email} />
+
       <AppDivider />
     </div>
   )

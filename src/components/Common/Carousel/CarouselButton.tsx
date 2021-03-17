@@ -39,15 +39,15 @@ export const CarouselButton = ({
 const useStyles = makeStyles((theme) => ({
   buttonImage: {
     fontSize: 50,
-    color: theme.palette.grey[500],
+    color: theme.palette.grey[800],
     transition: theme.transitions.create(['color'], { duration: 500 })
   },
-  inActiveButtonImage: { color: theme.palette.grey[800] },
+  inActiveButtonImage: { color: theme.palette.grey[300] },
   button: {
+    background: 'rgba(0,0,0,0.05)',
     display: 'flex',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
-    zIndex: 2000,
     height: '100%',
     '&:hover': {
       background: 'rgba(0,0,0,0.2)'

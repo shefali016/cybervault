@@ -19,7 +19,7 @@ import {
 import { Expense, InputChangeEvent, Task } from '../../../utils/Interface'
 import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
-import NewProjectTitle from '../NewProjectTitle'
+import NewProjectTitle from '../../Common/Modal/ModalTitle'
 import { useTabletLayout } from '../../../utils/hooks'
 import AddMoreButton from '../../Common/Button/MoreButton'
 import { generateUid } from '../../../utils'

@@ -11,7 +11,7 @@ type AssetUploadDisplayProps = {
   titleClassName?: string
   assetIds: Array<string>
   accountId: string
-  onUpload?: (data: any) => void
+  onUpload?: (files: File[]) => void
   isLoading?: boolean | undefined
   title?: string
   isVideo?: boolean
@@ -58,7 +58,7 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
             featuredAsset={featuredAsset}
           />
         </div>
-        {!disableUpload && (
+        {!disableUpload && !!onUpload && (
           <div className={clsx(classes.uploader, uploaderClassName)}>
             <DragAndDropUploader
               onSubmit={onUpload}

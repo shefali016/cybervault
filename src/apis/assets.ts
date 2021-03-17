@@ -20,7 +20,7 @@ const { server_url, domain } = require('../config.json')
 export const convertMedia = async (data: any) => {
   const res = await axios.post<any>(
     `${server_url}/api/v1/media/convert`,
-    { ...data }
+    {data:data}
   )
 
   if (res.status === 200) {
@@ -37,10 +37,11 @@ export const createAsset = async (asset: Asset) => {
 
 export const setMedia = async (id: string, file:any) => {
   return new Promise(function (resolve, reject) {
+    const fileName=file.name.replace(/ /g,"")
     var params = { 
       Body: file,
       Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-      Key:`${id}${file.name}`,
+      Key:`${id}${fileName}`,
       ACL: 'public-read'
      };
      s3.upload(params, function(err:any, data:any) {    

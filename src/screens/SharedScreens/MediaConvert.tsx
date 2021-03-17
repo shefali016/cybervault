@@ -4,7 +4,9 @@ import { makeStyles } from '@material-ui/core'
 import { GradiantButton } from '../../components/Common/Button/GradiantButton'
 import { ProjectAsset } from 'utils/Interface'
 import { getAssets } from 'apis/assets'
-import { createNonNullChain } from 'typescript'
+import CloseButton from '../../components/Common/Button/CloseButton'
+import AppModal from 'components/Common/Modal'
+import { createNull } from 'typescript'
 
 type Media = {
   format: string
@@ -32,7 +34,10 @@ const MediaConvert = ({
   selectedAsset
 }: MediaConvertProps) => {
   const classes = useStyles()
-  const [state, setState] = useState<any>([])
+  const [open, setOpen] = useState<any>(false)
+  const [state, setState] = useState<any>({})
+  const [items, setItems] = useState<any>([])
+  const [error, setError] = useState('')
   // {
   //   format: '',
   //   resolution: 0,
@@ -43,10 +48,14 @@ const MediaConvert = ({
   // }
 
   const chooseSize = (type: string, value: any) => {
-    
+    setState({
+      ...state,
+      [type]: value
+    })
   }
 
-  const [assets, setAssets] = useState<Array<ProjectAsset>>([])
+  const [asset, setAsset] = useState<any>({})
+  const [activeAsset, setActiveAsset] = useState<any>({})
 
   useEffect(() => {
     if (Array.isArray(assetIds) && assetIds) {
@@ -56,11 +65,13 @@ const MediaConvert = ({
 
   const loadAssets = async (ids: Array<string>) => {
     const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
-    setAssets(assets)
+    setAsset(assets)
   }
 
-  console.log(assets, 'assetssss')
-  const add = () => {}
+  console.log(asset, 'assetssss')
+  const add = () => {
+    setOpen(true)
+  }
 
   const resolutions = [
     {
@@ -85,150 +96,282 @@ const MediaConvert = ({
     }
   ]
 
-  // useEffect(()=>{
+  useEffect(() => {
+    if (selectedAsset && asset.length) {
+      setActiveAsset(
+        asset.filter((ass: ProjectAsset, i: number) => {
+          return ass.id === selectedAsset
+        })[0]
+      )
+    }
+  }, [selectedAsset, asset])
 
-  // },[selectedAsset])
+  console.log(activeAsset, 'activeee')
+  const validate = () => {
+    if (!state.resolution) {
+      return 'Choose Resolution'
+    } else if (!state.format) {
+      return 'Choose Format'
+    } else if (!state.ratio) {
+      return 'Choose Aspect Ratio'
+    } else if (!state.container) {
+      return 'Choose File Type'
+    }
+  }
 
-  const save = () => {}
+  const validateRepeative = (assetId: string, resolution: number) => {
+    const error = validate()
+    if (!error) {
+      const existingItemWithSameResolution = items.filter(
+        (item: any, i: number) => {
+          if (item.id === assetId && item.resolution === resolution) {
+            return item
+          }
+        }
+      )
+      if (existingItemWithSameResolution.length) {
+        return 'Cannot choose same resolution Again'
+      }
+    } else {
+      return error
+    }
+  }
+  const save = () => {
+    const err = validateRepeative(selectedAsset, state.resolution)
+    const originalFile=activeAsset.files.filter((file:any,i:number)=>{
+        return file.original
+    })
+    if (!err) {
+      setItems([
+        ...items,
+        {
+          id: selectedAsset,
+          fileName: activeAsset.fileName,
+          fileHeight: originalFile[0].height,
+          fileWidth:originalFile[0].width,
+          ...state
+        }
+      ])
+      setState({})
+      onRequestClose()
+    } else {
+      setError(err)
+    }
+  }
+
+  const onRequestClose = () => {
+    setOpen(false)
+  }
+
+
+  const Modal = () => {
+    return (
+      <div className={classes.modalContent}>
+        <div className={classes.section}>
+          <Typography paragraph>Choose Format</Typography>
+          <Grid container justify='center'>
+            <Grid item sm={8} container className={classes.box}>
+              <Grid
+                item
+                sm={6}
+                className={classes.tab}
+                onClick={() => chooseSize('format', 'prores')}>
+                <Typography>Pro-Res</Typography>
+                <Typography className={classes.desc}>
+                  Bigger file size, for highest cinematic quality.
+                </Typography>
+                <Typography className={classes.subDesc}>
+                  Est. File Size:5.6 GB
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                sm={6}
+                className={classes.tab}
+                onClick={() => chooseSize('format', 'h.264')}>
+                <Typography>H.264</Typography>
+                <Typography className={classes.desc}>
+                  Regular file size primarily for social media & web-usage
+                </Typography>
+
+                <Typography className={classes.subDesc}>
+                  Est. File Size:300 MB
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </div>
+        <div className={classes.section}>
+          <Typography paragraph>Choose File Type</Typography>
+          <Grid container justify='center'>
+            <Grid item sm={8} container className={classes.box}>
+              <Grid
+                item
+                sm={6}
+                className={classes.tab}
+                onClick={() => chooseSize('container', 'webM')}>
+                <Typography>WebM</Typography>
+              </Grid>
+              <Grid
+                item
+                sm={6}
+                className={classes.tab}
+                onClick={() => chooseSize('container', 'MP4')}>
+                <Typography>MP4</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </div>
+        <div className={classes.section}>
+          <Typography paragraph>Choose Resolution</Typography>
+          <Grid container justify='center'>
+            <Grid item sm={10} container className={classes.box}>
+              {activeAsset?.files?.length &&
+                resolutions.map((item, i) => {
+                  const originalFile = activeAsset.files.find(
+                    (file: any, i: number) => {
+                      return file.original
+                    }
+                  )
+                  return (
+                    <Grid
+                      item
+                      sm={3}
+                      className={classes.tab}
+                      onClick={() =>
+                        originalFile.height > item.res &&
+                        chooseSize('resolution', item.res)
+                      }>
+                      {originalFile.height > item.res ? (
+                        <>
+                          <Typography>{item.type}</Typography>
+                          <Typography className={classes.desc}>
+                            {item.desc}
+                          </Typography>
+                        </>
+                      ) : (
+                        <Typography>-</Typography>
+                      )}
+                    </Grid>
+                  )
+                })}
+            </Grid>
+          </Grid>
+        </div>
+
+        <div className={classes.section}>
+          <Typography paragraph>Choose Aspect Ratio</Typography>
+          <Grid container justify='center'>
+            <Grid item sm={12} container className={classes.box}>
+              <Grid
+                item
+                sm={3}
+                className={classes.tab}
+                onClick={() => chooseSize('ratio', { w: 9, h: 16 })}>
+                <Typography>9:16</Typography>
+                <Typography className={classes.desc}>
+                  Social Media Vertical Story Post
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                sm={3}
+                className={classes.tab}
+                onClick={() => chooseSize('ratio', { w: 16, h: 9 })}>
+                <Typography>16:9</Typography>
+                <Typography className={classes.desc}>
+                  Horizontal for websites and & Social Media
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                sm={3}
+                className={classes.tab}
+                onClick={() => chooseSize('ratio', { w: 1, h: 1 })}>
+                <Typography>1:1</Typography>
+                <Typography className={classes.desc}>
+                  Square for blogs,websites,& Social Media
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                sm={3}
+                className={classes.tab}
+                onClick={() => chooseSize('ratio', { w: 4, h: 5 })}>
+                <Typography>4:5</Typography>
+                <Typography className={classes.desc}>
+                  Social Media Vertical Feed Post
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </div>
+
+        <Grid
+          container
+          justify='flex-end'
+          direction='column'
+          alignItems='flex-end'>
+          {error ? (
+            <Typography className={classes.errorText}>{error}</Typography>
+          ) : null}
+          <GradiantButton className={classes.gradiantBtn} onClick={save}>
+            Save
+          </GradiantButton>
+        </Grid>
+
+        <CloseButton
+          onClick={onRequestClose}
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 10
+          }}
+        />
+      </div>
+    )
+  }
 
   return (
     <>
       <div className={classes.root}>
-        {
-          <GradiantButton className={classes.gradiantBtn} onClick={add}>
-            Add
-          </GradiantButton>
-        }
+        <GradiantButton className={classes.gradiantBtn} onClick={add}>
+          Add
+        </GradiantButton>
 
-        {
-          <GradiantButton className={classes.gradiantBtn} onClick={save}>
-            Save
-          </GradiantButton>
-        }
-
-        {
-          <>
-            <div className={classes.section}>
-              <Typography paragraph>Choose Format</Typography>
-              <Grid container justify='center'>
-                <Grid item sm={8} container className={classes.box}>
-                  <Grid
-                    item
-                    sm={6}
-                    className={classes.tab}
-                    onClick={() => chooseSize('format', 'prores')}>
-                    <Typography>Pro-Res</Typography>
-                    <Typography className={classes.desc}>
-                      Bigger file size, for highest cinematic quality.
+        <AppModal open={open} onRequestClose={onRequestClose}>
+          <Modal />
+        </AppModal>
+        {items?.length
+          ? items
+              .filter((item: any, i: number) => {
+                return item.id === selectedAsset
+              })
+              .map((val: any, i: number) => {
+                return (
+                  <div className={classes.selectedItem}>
+                    <Typography>Resolution:{val.resolution}</Typography>
+                    <Typography>
+                      Ratio:{val.ratio.w}:{val.ratio.h}
                     </Typography>
-                    <Typography className={classes.subDesc}>
-                      Est. File Size:5.6 GB
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={6}
-                    className={classes.tab}
-                    onClick={() => chooseSize('format', 'h.264')}>
-                    <Typography>H.264</Typography>
-                    <Typography className={classes.desc}>
-                      Regular file size primarily for social media & web-usage
-                    </Typography>
-
-                    <Typography className={classes.subDesc}>
-                      Est. File Size:300 MB
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </div>
-            <div className={classes.section}>
-              <Typography paragraph>Choose Resolution</Typography>
-              <Grid container justify='center'>
-                <Grid item sm={10} container className={classes.box}>
-                  {resolutions.map((item, i) => {
-                    return (
-                      <Grid
-                        item
-                        sm={3}
-                        className={classes.tab}
-                        onClick={() => chooseSize('resolution', item.res)}>
-                        <Typography>{item.type}</Typography>
-                        <Typography className={classes.desc}>
-                          {item.desc}
-                        </Typography>
-                      </Grid>
-                    )
-                  })}
-                </Grid>
-              </Grid>
-            </div>
-
-            <div className={classes.section}>
-              <Typography paragraph>Choose Aspect Ratio</Typography>
-              <Grid container justify='center'>
-                <Grid item sm={12} container className={classes.box}>
-                  <Grid
-                    item
-                    sm={3}
-                    className={classes.tab}
-                    onClick={() => chooseSize('ratio', { w: 9, h: 16 })}>
-                    <Typography>9:16</Typography>
-                    <Typography className={classes.desc}>
-                      Social Media Vertical Story Post
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={3}
-                    className={classes.tab}
-                    onClick={() => chooseSize('ratio', { w: 16, h: 9 })}>
-                    <Typography>16:9</Typography>
-                    <Typography className={classes.desc}>
-                      Horizontal for websites and & Social Media
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={3}
-                    className={classes.tab}
-                    onClick={() => chooseSize('ratio', { w: 1, h: 1 })}>
-                    <Typography>1:1</Typography>
-                    <Typography className={classes.desc}>
-                      Square for blogs,websites,& Social Media
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    sm={3}
-                    className={classes.tab}
-                    onClick={() => chooseSize('ratio', { w: 4, h: 5 })}>
-                    <Typography>4:5</Typography>
-                    <Typography className={classes.desc}>
-                      Social Media Vertical Feed Post
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </div>
-          </>
-        }
+                    <Typography>Format:{val.format}</Typography>
+                    <Typography>File Type:{val.container}</Typography>
+                  </div>
+                )
+              })
+          : null}
       </div>
 
-      <GradiantButton
-        className={classes.gradiantBtn}
-        onClick={() =>
-          mediaConvert({
-            ...state,
-            container: 'MP4',
-            fileName: assets[0].fileName,
-            fileWidth: assets[0].files[0].height,
-            fileHeight: assets[0].files[0].width,
-            assetId: assets[0].files[0].id
-          })
-        }>
-        Convert
-      </GradiantButton>
+      {items.length ? (
+        <GradiantButton
+          className={classes.gradiantBtn}
+          onClick={() =>
+            mediaConvert(items)
+          }
+        >
+          Convert
+        </GradiantButton>
+      ) : null}
     </>
   )
 }
@@ -243,7 +386,25 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '13px'
   },
   root: {
-    textAlign: 'center'
+    // textAlign: 'right'
+  },
+
+  modalContent: {
+    padding: '40px',
+    width: '60vw',
+    maxHeight: '80vh',
+    backgroundColor: '#ffffff',
+    outline: 'none',
+    borderRadius: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    overflowY: 'scroll',
+    position: 'relative'
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 15,
+    padding: '0 15px'
   },
   subDesc: {
     fontSize: '13px',
@@ -258,11 +419,15 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   section: {
-    marginBottom: '30px'
+    marginBottom: '30px',
+    textAlign: 'center'
+  },
+  selectedItem: {
+    marginBottom: '10px'
   },
   gradiantBtn: {
     borderRadius: 24,
-    marginTop: 20
+    margin: '10px 0'
   }
 }))
 

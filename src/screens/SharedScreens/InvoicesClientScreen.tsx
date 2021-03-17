@@ -208,8 +208,8 @@ console.log(selectedAsset,"selectedd")
               </Grid>
 
               <Grid container>
-                <Grid item sm={2}></Grid>
-                <Grid item sm={10}><MediaConvert 
+                <Grid item sm={8}></Grid>
+                <Grid item sm={4}><MediaConvert 
                 mediaConvert={mediaConvert} 
                 assetIds={projectDetails.videos} 
                 accountId={accId}

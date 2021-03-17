@@ -11,7 +11,7 @@ import {
   POSITION_ABSOLUTE,
   ROW
 } from 'utils/constants/stringConstants'
-import NewProjectTitle from '../NewProjectTitle'
+import NewProjectTitle from '../../Common/Modal/ModalTitle'
 import NewProjectFooter from '../NewProjectFooter'
 import { RenderClientDetails } from '../../Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../../Common/Widget/TaskDetailsWidget'
