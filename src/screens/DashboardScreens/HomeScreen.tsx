@@ -6,7 +6,7 @@ import {
 } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
-import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
+import { ProjectCard } from '../../components/Cards/ProjectCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
 import PendingInvoices from '../../components/Cards/PendingInvoices'
 import IncomeThisMonth from '../../components/Cards/IncomeThisMonth'

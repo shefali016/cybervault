@@ -86,8 +86,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    overflowX: 'auto',
-    whiteSpace: 'nowrap'
+    overflowX: 'scroll',
+    whiteSpace: 'nowrap',
+    paddingTop: 15,
+    paddingBottom: 15
   },
   tabletColumn: {
     [theme.breakpoints.down('sm')]: {

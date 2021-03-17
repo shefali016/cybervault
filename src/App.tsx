@@ -28,6 +28,7 @@ const theme = createMuiTheme({
     // action: { hoverOpacity: 0.3 },
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
     background: {
+      shadow: '#101010',
       default: '#181818',
       secondary: '#202020',
       surface: '#272726',
@@ -39,7 +40,7 @@ const theme = createMuiTheme({
       secondary: '#e3e3e3',
       background: '#ffffff',
       paper: '#24262b',
-      meta: '#999999'
+      meta: '#A3A5A9'
     },
     border: '#e6e6e6',
     status: {
@@ -50,7 +51,8 @@ const theme = createMuiTheme({
   },
   shape: { borderRadius: 12 },
   typography: {
-    body1: { fontSize: 18 }
+    body1: { fontSize: 18 },
+    caption: { fontSize: 13 }
   }
 })
 

@@ -274,6 +274,13 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },
     '.backgroundText': { color: theme.palette.text.background },
+    '.twoLines': {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: 'vertical'
+    },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
