@@ -8,11 +8,14 @@ export const useTabletLayout = () => {
   return useMediaQuery(theme.breakpoints.down('sm'))
 }
 
-export const useOnChange = (value: any, onChange: (value: any) => void) => {
+export const useOnChange = (
+  value: any,
+  onChange: (value: any, prevValue: any) => void
+) => {
   const previous = useRef(value)
   useEffect(() => {
     if (previous.current !== value) {
-      onChange(value)
+      onChange(value, previous)
     }
     previous.current = value
     // eslint-disable-next-line react-hooks/exhaustive-deps

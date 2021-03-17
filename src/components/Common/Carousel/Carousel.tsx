@@ -116,9 +116,10 @@ export const AssetCarousel = ({
                     {isVideo ? (
                       <VideoComponent
                         url={file.url}
-                        onDelete={() =>
-                          typeof onDeleteAsset === 'function' &&
-                          onDeleteAsset(asset)
+                        onDelete={
+                          typeof onDeleteAsset === 'function'
+                            ? () => onDeleteAsset(asset)
+                            : null
                         }
                       />
                     ) : (

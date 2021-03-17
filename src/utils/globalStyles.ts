@@ -139,9 +139,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       bottom: 0
     },
     '.screenTopPadding': {
-      paddingTop: theme.spacing(5),
+      paddingTop: theme.spacing(6),
       [theme.breakpoints.down('sm')]: {
-        paddingTop: theme.spacing(3)
+        paddingTop: theme.spacing(4)
       }
     },
     '.screenContainer': {

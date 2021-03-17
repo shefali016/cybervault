@@ -17,7 +17,7 @@ import {
   createNewProjectRequest,
   deleteProject,
   getAllProjectsRequest,
-  getProjectDetailsRequest,
+  getProject,
   updateProjectDetailsRequest
 } from '../apis/projectRequest'
 import { ReduxState } from 'reducers/rootReducer'
@@ -56,7 +56,7 @@ function* getAllProjects() {
 
 function* getProjectDetails({ projectId,accountId }: GetParams) {
   try {
-    const response = yield call(getProjectDetailsRequest, accountId, projectId)
+    const response = yield call(getProject, accountId, projectId)
 
     yield put(getProjectDetailsSuccess(response ? response : {}))
   } catch (error: any) {

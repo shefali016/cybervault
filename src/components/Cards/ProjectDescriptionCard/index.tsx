@@ -114,15 +114,15 @@ const ProjectCard = ({
         </div>
 
         <div className={classes.footer}>
-          <Typography variant={'body1'} className={classes.title} noWrap={true}>
+          <Typography variant={'h6'} className={classes.title} noWrap={true}>
             {project.campaignName}
           </Typography>
           <div className={classes.footerInfo}>
-            <Typography variant={'caption'} className={classes.bodyText}>
+            <Typography variant={'subtitle1'} className={classes.bodyText}>
               Value {project.campaignBudget}
             </Typography>
             <Dot style={{ marginLeft: 8, marginRight: 8 }} />
-            <Typography variant={'caption'} className={classes.bodyText}>
+            <Typography variant={'subtitle1'} className={classes.bodyText}>
               {project.campaignDate}
             </Typography>
           </div>
@@ -167,7 +167,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: COLUMN,
     justifyContent: CENTER,
     textAlign: 'center',
-    height: 60,
+    height: 80,
     overflow: 'hidden'
   },
   footerInfo: {
@@ -204,13 +204,11 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'cover'
   },
   title: {
-    fontSize: 13,
     color: theme.palette.text.paper,
     fontWeight: 600,
     margin: `0 ${theme.spacing(2)}px`
   },
   bodyText: {
-    fontSize: 10,
     color: theme.palette.text.paper
   }
 }))

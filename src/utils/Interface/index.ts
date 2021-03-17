@@ -398,11 +398,11 @@ export type Account = {
 
 export type User = {
   id: string
-  email: string | null
+  email: string
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
   avatar?: string | undefined
-  name?: string | null
+  name: string
   birthday?: string
   company?: string | undefined
   instagram?: string | undefined
@@ -414,7 +414,7 @@ export type User = {
 
 export type AuthUser = {
   uid: string
-  email: string | null
+  email: string
   name?: string | null
 }
 
@@ -476,6 +476,7 @@ export type Project = {
 
 export type InvoiceConversation = {
   name: string
+  senderId: string
   sendersEmail: string
   message: string
   date: Date | string
@@ -490,20 +491,18 @@ export type InvoiceUserInfo = {
 }
 
 export type Invoice = {
-  id: String // Using generateId function
+  id: string // Using generateId function
   dateCreated: Date | string
+  projectName: string
   datePaid: Date | null
   projectId: string // Id of the project being invoiced
+  accountId: string
+  clientId: string
   price: number // Amount that the client must pay
   milestones: Array<Milestone> | null // will contain milestones being invoiced or null if invoicing total amount
-  clientEmail: String
   isPaid: Boolean
-  status: InvoiceStatus
-  projectName: string
-  campaignDeadLine: string
-  featuredImage?: string
+  status: InvoiceStatuses
   conversation?: Array<InvoiceConversation>
-  userDetails: InvoiceUserInfo
 }
 
 export type ProjectStatus =

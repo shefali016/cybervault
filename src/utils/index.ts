@@ -45,11 +45,11 @@ export const sortByCreatedAt = (arr: Array<any>) => {
 }
 
 export function getWidgetCardHeight(theme: Theme) {
-  return Math.min(window.outerWidth - theme.spacing(8) - 100, 200)
+  return Math.min(window.outerWidth - theme.spacing(8) - 100, 250)
 }
 
 export function getCardHeight(theme: Theme) {
-  return Math.min(window.outerWidth - theme.spacing(16), 300)
+  return Math.min(window.outerWidth - theme.spacing(8), 350)
 }
 
 export function generateUid() {

@@ -14,7 +14,7 @@ import {
   Branding
 } from 'utils/Interface'
 import { generateUid, sortByCreatedAt } from 'utils'
-import { getProjectDetailsRequest } from './projectRequest'
+import { getProject } from './projectRequest'
 import { sendMail } from 'apis/mails'
 
 const { domain } = require('../config.json')
@@ -144,7 +144,7 @@ export const getPortfolioRequest = async (
   let projectDataList: Array<Project> = []
   for (let index = 0; index < portfolioProjects.length; index++) {
     const projectId = portfolioProjects[index]
-    const projects: Project | any = await getProjectDetailsRequest(
+    const projects: Project | any = await getProject(
       accountId,
       projectId
     )

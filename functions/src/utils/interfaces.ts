@@ -316,6 +316,8 @@ export type Project = {
 
 export type InvoiceConversation = {
   name: string
+  senderId: string
+  receiverId: string
   sendersEmail: string
   message: string
   date: Date | string

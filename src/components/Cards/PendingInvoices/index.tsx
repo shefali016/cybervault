@@ -1,5 +1,10 @@
 import React from 'react'
-import { LinearProgress, Card, CardContent } from '@material-ui/core'
+import {
+  LinearProgress,
+  Card,
+  CardContent,
+  Typography
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { CENTER, GRID } from 'utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
@@ -17,20 +22,21 @@ function PendingInvoices(props: Props) {
   return (
     <Card className={clsx(classes.card, props.className)}>
       <CardContent>
-        <h5 className={classes.Title}> Invoices Pending</h5>
-        <h6 className={classes.BodyText}>
-          {' '}
+        <Typography variant='h6' className={classes.Title}>
+          Invoices Pending
+        </Typography>
+        <Typography variant='subtitle1' className={classes.BodyText}>
           $ {props.unpaidAmount ? props.unpaidAmount : 0} Unpaid
-        </h6>
+        </Typography>
         <LinearProgress
           className={classes.progressBar}
           variant='determinate'
           value={props.unpaidAmount ? props.unpaidAmount : 50}
+          style={{ marginBottom: 8 }}
         />
-        <h6 className={classes.BodyText}>
-          {' '}
+        <Typography variant='subtitle1' className={classes.BodyText}>
           $ {props.paidAmount ? props.paidAmount : 0} Paid
-        </h6>
+        </Typography>
         <LinearProgress
           className={classes.progressBar}
           variant='determinate'
@@ -42,26 +48,24 @@ function PendingInvoices(props: Props) {
 }
 const useStyles = makeStyles((theme) => ({
   card: {
-    display: GRID,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
     minWidth: getCardHeight(theme),
-    height: '10rem',
-    borderRadius: 15
+    height: '12rem',
+    borderRadius: 15,
+    padding: 5
   },
   progressBar: {
     height: 18,
     borderRadius: 25,
-    alignSelf: CENTER,
-    marginTop: 8
+    alignSelf: CENTER
   },
   Title: {
-    fontSize: '14px',
-    color: BLACK_COLOR,
-    fontWeight: 600,
+    fontWeight: 'bold',
     margin: 0
   },
   BodyText: {
-    fontSize: '12px',
-    color: BLACK_COLOR,
     margin: 0,
     marginTop: 8
   }
