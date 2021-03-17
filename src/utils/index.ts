@@ -2,6 +2,26 @@ import { Theme } from '@material-ui/core/styles'
 import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
 
+export const addArrayToCache = (
+  cache: {},
+  arr: any[],
+  key: string | undefined = 'id'
+) => {
+  const newCache: { [id: string]: any } = { ...cache }
+  arr.forEach((item: any) => {
+    newCache[item[key]] = item
+  })
+  return newCache
+}
+
+export const addToCache = (
+  cache: {},
+  item: any,
+  key: string | undefined = 'id'
+) => {
+  return { ...cache, [item[key]]: item }
+}
+
 export const replaceOrAdd = (
   arr: any[],
   item: any,

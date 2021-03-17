@@ -33,6 +33,7 @@ import { AppDivider } from '../../components/Common/Core/AppDivider'
 import * as Types from '../../utils/Interface'
 import Header from 'components/Common/Header/header'
 import clsx from 'clsx'
+import { AppLoader } from 'components/Common/Core/AppLoader'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -50,10 +51,8 @@ const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
 
-  const client = useGetClient(props.clients, props.projectDetails)
-
   const [state, setState] = useState<EditProjectStates>({
-    projectData: props.projectDetails,
+    projectData: props.projectCache[props.match.params.id],
     editProjectModalOpen: false,
     currentStep: 0,
     isExpensesEdit: false,
@@ -63,6 +62,8 @@ const EditProjectScreen = (props: any) => {
     imagesLoading: [],
     videosLoading: []
   })
+
+  const client = useGetClient(props.clients, state.projectData)
 
   const openEditProjectModal = (
     currentStep: number,
@@ -87,9 +88,10 @@ const EditProjectScreen = (props: any) => {
     []
   )
 
-  useOnChange(props.projectDetails, (projectData: Project | null) => {
-    if (projectData) {
-      setState({ ...state, projectData })
+  useOnChange(props.projectCache, (projectCache: { [id: string]: Project }) => {
+    const project = projectCache[props.match.params.id]
+    if (project) {
+      setState((state) => ({ ...state, projectData: project }))
     }
   })
 
@@ -185,6 +187,14 @@ const EditProjectScreen = (props: any) => {
   }
 
   const renderHeader = () => {
+    if (!state.projectData) {
+      return (
+        <div className={clsx('row', 'center')}>
+          <AppLoader />
+        </div>
+      )
+    }
+
     return (
       <div className={clsx('row', 'headerContainer')}>
         <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
@@ -262,6 +272,9 @@ const EditProjectScreen = (props: any) => {
   }
 
   const renderBody = () => {
+    if (!state.projectData) {
+      return null
+    }
     return (
       <div className={classes.detailsWrapper}>
         <Fragment>
@@ -341,6 +354,7 @@ const mapStateToProps = (state: any) => ({
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
+  projectCache: state.project.projectCache,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
   account: state.auth.account,
   clients: state.clients.clientsData

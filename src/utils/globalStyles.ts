@@ -34,6 +34,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
     '.col': { display: 'flex', flexDirection: 'column' },
+    '.center': { justifyContent: 'center' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
     '.wrap': { flexWrap: 'wrap' },
     '.fullWidth': { width: '100%' },
@@ -251,7 +252,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       background: theme.palette.background.secondary,
       borderRadius: theme.shape.borderRadius,
       flex: 1,
-      overflow: "hidden"
+      overflow: 'hidden'
     },
     '.table': {
       borderRadius: theme.shape.borderRadius
