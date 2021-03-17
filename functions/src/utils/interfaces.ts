@@ -16,13 +16,6 @@ export type ButtonConfig = {
 
 export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
 
-export type Asset = {
-  id: string
-  width?: number
-  height?: number
-  original?: any
-}
-
 export type BankingDetails = {} // @todo R&D what details we need from user to deposit from Stripe
 
 export type StripeAccount = {
@@ -290,7 +283,7 @@ export type Milestone = {
   payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 
-export type MediaObject = {
+export type AssetFile = {
   id: string
   original?: boolean
   url: string
@@ -353,11 +346,11 @@ export type Invoice = {
   userDetails: InvoiceUserInfo
 }
 
-export interface ProjectAsset {
+export interface Asset {
   id: string
-  files: Array<MediaObject>
+  files: Array<AssetFile>
   fileName: string
-  type: string
+  type: 'video' | 'image'
 }
 
 export type Client = {

@@ -21,12 +21,8 @@ import { RenderMilestonesDetails } from '../../components/Common/Widget/Mileston
 import { RenderBudgetDetails } from '../../components/Common/Widget/BudgetDetailsWidget'
 import ProjectModal from 'components/Projects/NewProjectModal'
 import ProjectStatusIndicator from '../../components/Common/ProjectStatusIndicator'
-import { addProjectAssets, setMedia } from '../../apis/assets'
-import { generateUid } from '../../utils/index'
-import { getImageObject } from 'utils/helpers'
-import { ToastContext } from 'context/Toast'
 import { AssetUploadDisplay } from '../../components/Assets/UploadMedia'
-import { Project, ProjectAsset } from 'utils/Interface'
+import { Asset, Project } from 'utils/Interface'
 import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
@@ -34,6 +30,7 @@ import * as Types from '../../utils/Interface'
 import Header from 'components/Common/Header/header'
 import clsx from 'clsx'
 import { AppLoader } from 'components/Common/Core/AppLoader'
+import { AssetUploadContext } from 'context/AssetUpload'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -49,7 +46,7 @@ type EditProjectStates = {
 
 const EditProjectScreen = (props: any) => {
   const classes = useStyles()
-  const toastContext = useContext(ToastContext)
+  const assetUploadContext = useContext(AssetUploadContext)
 
   const [state, setState] = useState<EditProjectStates>({
     projectData: props.projectCache[props.match.params.id],
@@ -103,88 +100,23 @@ const EditProjectScreen = (props: any) => {
   }, [])
 
   const uploadFiles = (type: 'image' | 'video') => async (files: File[]) => {
-    files.map((file: File) => handleAssetUpload(file, type))
+    assetUploadContext.uploadFiles(files, type, addAssetToProject)
   }
 
-  const handleAssetUpload = async (file: File, type: 'image' | 'video') => {
-    const { account } = props
-
-    const asset: ProjectAsset = {
-      type,
-      files: [],
-      fileName: file.name,
-      id: generateUid()
-    }
-
-    setState(
-      Object.assign(
-        state,
-        'image' ? { videosLoading: [...state.videosLoading, asset.id] } : {},
-        'video' ? { imagesLoading: [...state.imagesLoading, asset.id] } : {}
-      )
+  const addAssetToProject = async (asset: Asset) => {
+    const project = Object.assign(
+      state.projectData,
+      asset.type === 'image'
+        ? { images: [...state.projectData.images, asset.id] }
+        : { videos: [...state.projectData.videos, asset.id] }
     )
 
-    try {
-      const downloadUrl = await setMedia(asset.id, file)
+    setState((state) => ({ ...state, projectData: project }))
 
-      if (typeof downloadUrl === 'string') {
-        asset.files.push(getImageObject(file, downloadUrl, asset.id))
-        await addProjectAssets(account.id, asset)
-
-        const project = Object.assign(
-          state.projectData,
-          type === 'image'
-            ? { images: [...state.projectData.images, asset.id] }
-            : { videos: [...state.projectData.videos, asset.id] }
-        )
-
-        setState((state) =>
-          Object.assign(
-            state,
-            { projectData: project },
-            'image'
-              ? {
-                  videosLoading: state.videosLoading.filter(
-                    (a) => a !== asset.id
-                  )
-                }
-              : {},
-            'video'
-              ? {
-                  imagesLoading: state.imagesLoading.filter(
-                    (a) => a !== asset.id
-                  )
-                }
-              : {}
-          )
-        )
-
-        props.updateProjectDetails(project)
-      } else {
-        throw Error('Download url is not a string')
-      }
-    } catch (error) {
-      setState((state) =>
-        Object.assign(
-          state,
-          'image'
-            ? {
-                videosLoading: state.videosLoading.filter((a) => a !== asset.id)
-              }
-            : {},
-          'video'
-            ? {
-                imagesLoading: state.imagesLoading.filter((a) => a !== asset.id)
-              }
-            : {}
-        )
-      )
-      console.log('Asset upload failed.', error)
-      toastContext.showToast({
-        title: `Failed to upload ${type === 'image' ? 'Image' : 'Video'}`
-      })
-    }
+    props.updateProjectDetails(project)
   }
+
+  const handleDeleteAsset = () => {}
 
   const renderHeader = () => {
     if (!state.projectData) {
@@ -301,7 +233,8 @@ const EditProjectScreen = (props: any) => {
               isLoading: !!state.imagesLoading.length,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
-              featuredAsset: state.projectData.featuredImage
+              featuredAsset: state.projectData.featuredImage,
+              onDeleteAsset: handleDeleteAsset
             }}
           />
         </Fragment>

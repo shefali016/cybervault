@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { makeStyles } from '@material-ui/core/styles'
 import { VideoComponent } from '../Video'
-import { ProjectAsset } from 'utils/Interface'
+import { Asset } from 'utils/Interface'
 import ImagePreview from '../../../assets/imagePreview.png'
 import { getAssets } from 'apis/assets'
 import { CarouselButton } from './CarouselButton'
@@ -20,7 +20,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const [assets, setAssets] = useState<Array<ProjectAsset>>([])
+  const [assets, setAssets] = useState<Array<Asset>>([])
 
   useEffect(() => {
     if (Array.isArray(assetIds) && assetIds) {
@@ -29,7 +29,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
   }, [assetIds])
 
   const loadAssets = async (ids: Array<string>) => {
-    const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
+    const assets: Array<Asset> = await getAssets(ids, accountId)
     setAssets(assets)
   }
 
@@ -81,7 +81,7 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId }: Props) => {
               </div>
             </div>
           ) : (
-            assets.map((asset: ProjectAsset, index: number) => {
+            assets.map((asset: Asset, index: number) => {
               const file = asset.files[0]
               const position = index - currentIndex
               return (

@@ -7,9 +7,11 @@ import {
   SharingPrivacies,
   SubscriptionDurations,
   SubscriptionTypes,
+  UploadStatuses,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
+import firebase from 'firebase'
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -49,13 +51,6 @@ export type ButtonConfig = {
 }
 
 export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
-
-export type Asset = {
-  id: string
-  width?: number
-  height?: number
-  original?: any
-}
 
 export type BankingDetails = {} // @todo R&D what details we need from user to deposit from Stripe
 
@@ -448,7 +443,7 @@ export type Milestone = {
   payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 
-export type MediaObject = {
+export type AssetFile = {
   id: string
   original?: boolean
   url: string
@@ -521,9 +516,9 @@ export type InvoiceStatus =
   | InvoiceStatuses.VIEWED
   | InvoiceStatuses.PAID
 
-export interface ProjectAsset {
+export interface Asset {
   id: string
-  files: Array<MediaObject>
+  files: Array<AssetFile>
   fileName: string
   type: string
 }
@@ -637,4 +632,12 @@ export interface Notification {
   createdAt: number
   title: string
   isRead: boolean
+}
+
+export type UploadCache = { [assetId: string]: AssetUpload }
+export type AssetUpload = {
+  asset: Asset
+  task: firebase.storage.UploadTask
+  status: UploadStatuses
+  progress: number
 }

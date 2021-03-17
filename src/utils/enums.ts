@@ -39,3 +39,10 @@ export enum ProjectStatuses {
   PAID = 'Paid',
   ARCHIVED = 'Archived'
 }
+
+export enum UploadStatuses {
+  UPLOADING = 'Uploading',
+  PAUSED = 'Paused',
+  FAILED = 'Failed',
+  COMPLETE = 'Complete'
+}

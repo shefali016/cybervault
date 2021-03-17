@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
-    '*': { outline: 'none' },
+    '*': { outline: 'none', selection: "none" },
     body: {
       background: theme.palette.background.default
     },
@@ -119,11 +119,18 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.dashboardScreen': {
       paddingLeft: theme.spacing(5),
       paddingRight: theme.spacing(5),
+      color: theme.palette.text.background,
       [theme.breakpoints.down(530)]: {
         paddingLeft: theme.spacing(3),
         paddingRight: theme.spacing(3)
-      },
-      color: theme.palette.text.background
+      }
+    },
+    '.fullScreenNonInteractable': {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      left: 0,
+      bottom: 0
     },
     '.screenTopPadding': {
       paddingTop: theme.spacing(5),

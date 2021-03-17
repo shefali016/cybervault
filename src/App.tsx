@@ -9,6 +9,7 @@ import {
   ThemeProvider
 } from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
+import AssetUploadProvider from 'context/AssetUpload'
 import { StripeProvider } from 'react-stripe-elements'
 import { stripe_public_key } from 'config.json'
 import ToastHandler from 'components/ToastHandler'
@@ -63,10 +64,12 @@ function App() {
       <StripeProvider apiKey={stripe_public_key}>
         <ThemeProvider theme={responsiveTheme}>
           <ToastProvider>
-            <React.Fragment>
-              <Routes />
-              <ToastHandler />
-            </React.Fragment>
+            <AssetUploadProvider>
+              <React.Fragment>
+                <Routes />
+                <ToastHandler />
+              </React.Fragment>
+            </AssetUploadProvider>
           </ToastProvider>
         </ThemeProvider>
       </StripeProvider>
