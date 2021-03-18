@@ -52,6 +52,7 @@ const HomeScreen = (props: any) => {
         emptyMessage={'No Active Projects'}
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
+        style={{ height: '70vw', maxHeight: 280 }}
         renderItem={(item) => (
           <ProjectCard
             clients={props.clients}
