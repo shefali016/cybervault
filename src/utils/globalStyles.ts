@@ -279,7 +279,8 @@ export const useGlobalStyles = makeStyles((theme) => ({
       textOverflow: 'ellipsis',
       display: '-webkit-box',
       WebkitLineClamp: 2,
-      WebkitBoxOrient: 'vertical'
+      WebkitBoxOrient: 'vertical',
+      whiteSpace: 'normal'
     },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
