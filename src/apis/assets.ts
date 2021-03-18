@@ -4,6 +4,7 @@ import 'firebase/firestore'
 import { Asset, Project, ProjectAsset } from '../utils/Interface'
 import { generateUid } from 'utils';
 import axios from 'axios';
+import { DataExchange } from 'aws-sdk';
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 var AWS = require('aws-sdk')
@@ -27,7 +28,6 @@ export const convertMedia = (data: any) => {
     }).catch((err)=>{
         reject(err)
     })
-    
   })
 }
 
@@ -78,18 +78,21 @@ export const addProjectAssets = async (
   asset: ProjectAsset
 ) => {
   console.log(asset,"assetttt")
-  try {
-    return firebase
-      .firestore()
-      .collection('AccountData')
-      .doc(accountId)
-      .collection('Assets')
-      .doc(asset.id)
-      .set(asset)
-  } catch (error) {
-    console.log('>>>>>>>>>>>Error', error)
-    return error
-  }
+  return new Promise(async (resolve,reject)=>{
+    try {
+      let data= firebase
+        .firestore()
+        .collection('AccountData')
+        .doc(accountId)
+        .collection('Assets')
+        .doc(asset.id)
+        .set(asset)
+        resolve(data)
+    } catch (error) {
+      console.log('>>>>>>>>>>>Error', error)
+      reject(error)
+    }
+  })
 }
 
 export const getAssets = async (
@@ -109,4 +112,19 @@ export const getAssets = async (
       })
   )
   return await (await Promise.all(assetRequests)).filter((asset) => !!asset)
+}
+
+export const getSingleAsset = async (
+  id: string,
+  accountId: string
+)=> {
+  const assetRequest = 
+    await firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(accountId)
+      .collection('Assets')
+      .doc(id)
+      .get()
+      return assetRequest.data() as ProjectAsset
 }

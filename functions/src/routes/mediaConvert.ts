@@ -41,7 +41,7 @@ const resizeVideo = async (item: any) => {
     const {
       resolution,
       ratio,
-      // format,
+      format,
       // container,
       id,
       fileName,
@@ -76,6 +76,59 @@ const resizeVideo = async (item: any) => {
       Y,
       'hhhhhhhhhhhhhhhhh'
     )
+    const codecSettings=()=>{
+      if(format==='prores'){
+          return {
+            Codec: 'PRORES',
+            ProresSettings: {
+              CodecProfile: "APPLE_PRORES_422",
+              FramerateControl: "INITIALIZE_FROM_SOURCE",
+              FramerateConversionAlgorithm: "DUPLICATE_DROP",
+              InterlaceMode: "PROGRESSIVE",
+              ParControl: "INITIALIZE_FROM_SOURCE",
+              ScanTypeConversionMode: "INTERLACED",
+              SlowPal: "DISABLED",
+              Telecine: "NONE"
+            },
+          }
+      }
+      else{
+        return {
+          Codec: 'H_264',
+          H264Settings: {
+            InterlaceMode: 'PROGRESSIVE',
+            ScanTypeConversionMode: 'INTERLACED',
+            NumberReferenceFrames: 3,
+            Syntax: 'DEFAULT',
+            Softness: 0,
+            GopClosedCadence: 1,
+            GopSize: 90,
+            Slices: 1,
+            GopBReference: 'DISABLED',
+            SlowPal: 'DISABLED',
+            EntropyEncoding: 'CABAC',
+            FramerateControl: 'INITIALIZE_FROM_SOURCE',
+            RateControlMode: 'CBR',
+            CodecProfile: 'MAIN',
+            Telecine: 'NONE',
+            MinIInterval: 0,
+            AdaptiveQuantization: 'AUTO',
+            CodecLevel: 'AUTO',
+            FieldEncoding: 'PAFF',
+            SceneChangeDetect: 'ENABLED',
+            QualityTuningLevel: 'SINGLE_PASS',
+            FramerateConversionAlgorithm: 'DUPLICATE_DROP',
+            UnregisteredSeiTimecode: 'DISABLED',
+            GopSizeUnits: 'FRAMES',
+            ParControl: 'INITIALIZE_FROM_SOURCE',
+            NumberBFramesBetweenReferenceFrames: 2,
+            RepeatPps: 'DISABLED',
+            DynamicSubGop: 'STATIC',
+            Bitrate: resolution * 800
+          }
+        }
+      }
+    }
     try {
       var params = {
         Settings: {
@@ -127,40 +180,7 @@ const resizeVideo = async (item: any) => {
                     TimecodeInsertion: 'DISABLED',
                     AntiAlias: 'ENABLED',
                     Sharpness: 50,
-                    CodecSettings: {
-                      Codec: 'H_264',
-                      H264Settings: {
-                        InterlaceMode: 'PROGRESSIVE',
-                        ScanTypeConversionMode: 'INTERLACED',
-                        NumberReferenceFrames: 3,
-                        Syntax: 'DEFAULT',
-                        Softness: 0,
-                        GopClosedCadence: 1,
-                        GopSize: 90,
-                        Slices: 1,
-                        GopBReference: 'DISABLED',
-                        SlowPal: 'DISABLED',
-                        EntropyEncoding: 'CABAC',
-                        FramerateControl: 'INITIALIZE_FROM_SOURCE',
-                        RateControlMode: 'CBR',
-                        CodecProfile: 'MAIN',
-                        Telecine: 'NONE',
-                        MinIInterval: 0,
-                        AdaptiveQuantization: 'AUTO',
-                        CodecLevel: 'AUTO',
-                        FieldEncoding: 'PAFF',
-                        SceneChangeDetect: 'ENABLED',
-                        QualityTuningLevel: 'SINGLE_PASS',
-                        FramerateConversionAlgorithm: 'DUPLICATE_DROP',
-                        UnregisteredSeiTimecode: 'DISABLED',
-                        GopSizeUnits: 'FRAMES',
-                        ParControl: 'INITIALIZE_FROM_SOURCE',
-                        NumberBFramesBetweenReferenceFrames: 2,
-                        RepeatPps: 'DISABLED',
-                        DynamicSubGop: 'STATIC',
-                        Bitrate: resolution * 800
-                      }
-                    },
+                    CodecSettings: codecSettings(),
                     AfdSignaling: 'NONE',
                     DropFrameTimecode: 'ENABLED',
                     RespondToAfd: 'NONE',

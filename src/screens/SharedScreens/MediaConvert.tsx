@@ -25,13 +25,15 @@ type MediaConvertProps = {
   mediaConvert: (val: Media) => void
   assetIds: Array<string>
   accountId: string
-  selectedAsset: string
+  selectedAsset: string,
+  mediaConversionLoading:boolean
 }
 const MediaConvert = ({
   mediaConvert,
   assetIds,
   accountId,
-  selectedAsset
+  selectedAsset,
+  mediaConversionLoading
 }: MediaConvertProps) => {
   const classes = useStyles()
   const [open, setOpen] = useState<any>(false)
@@ -79,9 +81,9 @@ const MediaConvert = ({
       desc: '(3840X2160)'
     },
     {
-      res: 2040,
+      res: 1440,
       type: '2k',
-      desc: '(2040X1080)'
+      desc: '(2560x1440)'
     },
     {
       res: 1080,
@@ -91,7 +93,7 @@ const MediaConvert = ({
     {
       res: 720,
       type: '720p',
-      desc: '720'
+      desc: '(1280×720)'
     }
   ]
 
@@ -360,11 +362,12 @@ const MediaConvert = ({
       {items.length ? (
         <GradiantButton
           className={classes.gradiantBtn}
+          loading={mediaConversionLoading}
           onClick={() =>
             mediaConvert(items)
           }
         >
-          Convert
+          {mediaConversionLoading?'Loading...':'Convert'}
         </GradiantButton>
       ) : null}
     </>

@@ -30,7 +30,12 @@ import {
 } from '../../utils/constants/colorsConstants'
 import clsx from 'clsx'
 import MediaConvert from './MediaConvert'
-import {convertMedia} from '../../apis/assets'
+import {
+  convertMedia,
+  getSingleAsset,
+  addProjectAssets
+} from '../../apis/assets'
+import { isTemplateLiteral } from 'typescript'
 
 const InvoicesClientScreen = (props: any) => {
   const classes = useStyles()
@@ -45,7 +50,8 @@ const InvoicesClientScreen = (props: any) => {
     (state: any) => state.clients.clientDetailData
   )
 
-  const [selectedAsset,selectAsset]=useState('')
+  const [selectedAsset, selectAsset] = useState('')
+  const [mediaConversionLoading,setMediaConversionLoading]=useState(false)
   useEffect(() => {
     dispatch(getInvoiceRequest(accId, props.match.params.id))
     dispatch(getAllInvoiceConversationRequest(accId, props.match.params.id))
@@ -143,15 +149,25 @@ const InvoicesClientScreen = (props: any) => {
     scrollToBottom()
   }, [invoiceData?.invoiceConversationData[props.match.params.id]?.length])
 
-  const mediaConvert=async (data:any)=>{
-    let res=await convertMedia(data)
-    console.log(res,"ressssttttttt")
-    // if(res){
-    //   if(res.status===200){
+  const mediaConvert = async (data: any) => {
+    setMediaConversionLoading(true)
+    let res: any = await convertMedia(data)
+    if (res.status === 200) {
+      var results = res.data.reduce(function (results: any, org: any) {
+        ;(results[org.id] = results[org.id] || []).push(org)
+        return results
+      }, {})
 
-    //   }
-    // }
-    // console.log(data,"dataaaaa")
+      for (let ele in results) {
+        let asset = await getSingleAsset(ele, accId)
+        let promises = results[ele].map(async (item: Types.MediaObject) => {
+          asset.files.push(item)
+          return await addProjectAssets(accId, asset)
+        })
+        await Promise.all(promises)
+      }
+      setMediaConversionLoading(false)
+    }
   }
 
   return (
@@ -211,12 +227,14 @@ const InvoicesClientScreen = (props: any) => {
 
               <Grid container>
                 <Grid item sm={8}></Grid>
-                <Grid item sm={4}><MediaConvert 
-                mediaConvert={mediaConvert} 
-                assetIds={projectDetails.videos} 
-                accountId={accId}
-                selectedAsset={selectedAsset}
-/>
+                <Grid item sm={4}>
+                  <MediaConvert
+                    mediaConvert={mediaConvert}
+                    mediaConversionLoading={mediaConversionLoading}
+                    assetIds={projectDetails.videos}
+                    accountId={accId}
+                    selectedAsset={selectedAsset}
+                  />
                 </Grid>
               </Grid>
               <Grid
