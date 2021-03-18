@@ -143,14 +143,16 @@ const InvoicesClientScreen = (props: any) => {
     scrollToBottom()
   }, [invoiceData?.invoiceConversationData[props.match.params.id]?.length])
 
-  const mediaConvert=(data:any)=>{
-    convertMedia(data)
-    console.log(data,"dataaaaa")
+  const mediaConvert=async (data:any)=>{
+    let res=await convertMedia(data)
+    console.log(res,"ressssttttttt")
+    // if(res){
+    //   if(res.status===200){
+
+    //   }
+    // }
+    // console.log(data,"dataaaaa")
   }
-
-  console.log(projectDetails,"vvvvvvvvvvvvvvvvvvvvvvvvv")
-
-console.log(selectedAsset,"selectedd")
 
   return (
     <div className={`${!accountData.isLoggedIn && classes.root}`}>

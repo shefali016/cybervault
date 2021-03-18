@@ -20,17 +20,6 @@ AWS.config.update({
 router.post('/convert', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      // const {
-      //   resolution,
-      //   ratio,
-      //   format,
-      //   container,
-      //   assetId,
-      //   fileName,
-      //   fileWidth,
-      //   fileHeight
-      // } = req.body
-      // videoArray = []
       let videoArray = req.body.data.map(async (item: any, i: number) => {
         return await resizeVideo(item)
       })
@@ -40,21 +29,6 @@ router.post('/convert', (req, res) => {
 
       // console.log(req.body, videoArray, 'bodyyyyyy')
 
-      // //   const customer = await stripe.customers.create({
-      // //     email,
-      // //     name
-      // //   });
-      // // return await getMedia(assetId, fileName)
-      // return await resizeVideo(
-      //   resolution,
-      //   ratio,
-      //   format,
-      //   container,
-      //   assetId,
-      //   fileName,
-      //   fileWidth,
-      //   fileHeight
-      // )
     } catch (error) {
       console.log('create_customer', error)
       return res.status(400).send(error)
@@ -219,7 +193,6 @@ const resizeVideo = async (item: any) => {
                       LanguageCodeControl: 'FOLLOW_INPUT'
                     }
                   ],
-                  NameModifier: `${resolution}`,
                   ContainerSettings: {
                     Container: 'MP4',
                     Mp4Settings: {
@@ -246,7 +219,6 @@ const resizeVideo = async (item: any) => {
       var createJonPromise = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
         .createJob(params)
         .promise()
-      console.log(await createJonPromise, 'nnnnnnnnnnnnnnnnnnnnnnnnn')
       createJonPromise.then(() => {
         resolve({
           height: resolution,

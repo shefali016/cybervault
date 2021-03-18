@@ -17,17 +17,18 @@ var s3 = new AWS.S3();
 
 const { server_url, domain } = require('../config.json')
 
-export const convertMedia = async (data: any) => {
-  const res = await axios.post<any>(
-    `${server_url}/api/v1/media/convert`,
-    {data:data}
-  )
-
-  if (res.status === 200) {
-    return res.data
-  } else {
-    throw Error('Failed to convert')
-  }
+export const convertMedia = (data: any) => {
+  return new Promise(function async (resolve, reject) {
+    axios.post<any>(
+      `${server_url}/api/v1/media/convert`,
+      {data:data}
+    ).then((res)=>{
+      resolve(res)
+    }).catch((err)=>{
+        reject(err)
+    })
+    
+  })
 }
 
 

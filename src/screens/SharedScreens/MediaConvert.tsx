@@ -68,7 +68,6 @@ const MediaConvert = ({
     setAsset(assets)
   }
 
-  console.log(asset, 'assetssss')
   const add = () => {
     setOpen(true)
   }
@@ -106,7 +105,6 @@ const MediaConvert = ({
     }
   }, [selectedAsset, asset])
 
-  console.log(activeAsset, 'activeee')
   const validate = () => {
     if (!state.resolution) {
       return 'Choose Resolution'
@@ -114,9 +112,7 @@ const MediaConvert = ({
       return 'Choose Format'
     } else if (!state.ratio) {
       return 'Choose Aspect Ratio'
-    } else if (!state.container) {
-      return 'Choose File Type'
-    }
+    } 
   }
 
   const validateRepeative = (assetId: string, resolution: number) => {
@@ -201,7 +197,7 @@ const MediaConvert = ({
             </Grid>
           </Grid>
         </div>
-        <div className={classes.section}>
+        {/* <div className={classes.section}>
           <Typography paragraph>Choose File Type</Typography>
           <Grid container justify='center'>
             <Grid item sm={8} container className={classes.box}>
@@ -221,7 +217,7 @@ const MediaConvert = ({
               </Grid>
             </Grid>
           </Grid>
-        </div>
+        </div> */}
         <div className={classes.section}>
           <Typography paragraph>Choose Resolution</Typography>
           <Grid container justify='center'>
@@ -355,7 +351,6 @@ const MediaConvert = ({
                       Ratio:{val.ratio.w}:{val.ratio.h}
                     </Typography>
                     <Typography>Format:{val.format}</Typography>
-                    <Typography>File Type:{val.container}</Typography>
                   </div>
                 )
               })
