@@ -134,7 +134,12 @@ const SideBarComponent = (props: Props) => {
       <ListItem
         button
         key={tab.text}
-        onClick={onClick}
+        onClick={() => {
+          if (isMobile) {
+            setOpen(false)
+            onClick()
+          }
+        }}
         className={clsx(classes.listItem, isActive ? classes.activeTab : '')}>
         <ListItemIcon style={{ opacity: isActive ? 1 : 0.7 }}>
           {tab.icon}
