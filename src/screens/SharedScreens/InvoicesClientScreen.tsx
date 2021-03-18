@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getInvoiceRequest,
   sendRevisionRequest,
-  getAllInvoiceConversationRequest
+  getAllInvoiceConversationRequest,
+  payInvoice
 } from '../../actions/invoiceActions'
 import { requestGetProjectDetails } from '../../actions/projectActions'
 import { getClientRequest } from '../../actions/clientActions'
@@ -30,6 +31,8 @@ import {
 } from '../../utils/constants/colorsConstants'
 import clsx from 'clsx'
 
+import { CardModal } from '../../components/Stripe/CardModal'
+
 const InvoicesClientScreen = (props: any) => {
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -42,7 +45,14 @@ const InvoicesClientScreen = (props: any) => {
   const clientDetails = useSelector(
     (state: any) => state.clients.clientDetailData
   )
+  const [isProjectOwner, setisProjectOwner] = useState(false)
+
   useEffect(() => {
+    console.log('############', props.location)
+    if (props.location && props.location.search) {
+      const isProjectOwner = props.location.search.split('=')[1]
+      setisProjectOwner(isProjectOwner ? true : false)
+    }
     dispatch(getInvoiceRequest(accId, props.match.params.id))
     dispatch(getAllInvoiceConversationRequest(accId, props.match.params.id))
   }, [])
@@ -57,6 +67,7 @@ const InvoicesClientScreen = (props: any) => {
   })
 
   const [message, setMessage] = useState('')
+  const [cardModalOpen, setCardModalOpen] = useState(false)
 
   const handleTextChange = (val: string) => {
     setMessage(val)
@@ -111,6 +122,10 @@ const InvoicesClientScreen = (props: any) => {
     }
   })
 
+  const handlePayInvoice = () => {
+    setCardModalOpen(true)
+  }
+
   const renderInvoiceAmmount = () => (
     <Grid container justify='flex-end' xs spacing={1}>
       <Grid container item alignItems='center' justify='flex-end'>
@@ -121,11 +136,17 @@ const InvoicesClientScreen = (props: any) => {
           ${invoiceData.invoiceData.price}
         </Typography>
       </Grid>
-      <Grid item>
-        <GradiantButton>
-          <Typography variant='button'>Pay Invoice</Typography>
-        </GradiantButton>
-      </Grid>
+      {!isProjectOwner ? (
+        <Grid item>
+          <GradiantButton
+            disabled={invoiceData.invoiceData.isPaid}
+            onClick={handlePayInvoice}>
+            <Typography variant='button'>
+              {invoiceData.invoiceData.isPaid ? 'Paid' : 'Pay Invoice'}
+            </Typography>
+          </GradiantButton>
+        </Grid>
+      ) : null}
     </Grid>
   )
 
@@ -137,7 +158,20 @@ const InvoicesClientScreen = (props: any) => {
 
   useEffect(() => {
     scrollToBottom()
-  }, [invoiceData?.invoiceConversationData[props.match.params.id]?.length])
+  }, [
+    invoiceData?.invoiceConversationData &&
+      invoiceData?.invoiceConversationData[props.match.params.id]?.length
+  ])
+
+  const handleCreateCharge = (token: any) => {
+    if (token) {
+      setCardModalOpen(false)
+      const amount: number = invoiceData.invoiceData.price * 100
+      const tokenId: string = token.id
+      const invoiceId: string = invoiceData.invoiceData.id
+      dispatch(payInvoice(amount, tokenId, invoiceId))
+    }
+  }
 
   return (
     <div className={`${!accountData.isLoggedIn && classes.root}`}>
@@ -246,6 +280,7 @@ const InvoicesClientScreen = (props: any) => {
 
               {!accountData.isLoggedIn ||
               (accountData.isLoggedIn &&
+                invoiceData?.invoiceConversationData &&
                 invoiceData?.invoiceConversationData[props.match.params.id]
                   ?.length) ? (
                 <Grid item sm={11} container justify='center'>
@@ -349,6 +384,13 @@ const InvoicesClientScreen = (props: any) => {
           </Grid>
         </Grid>
       </Grid>
+      <CardModal
+        open={cardModalOpen}
+        customerId={''}
+        onRequestClose={() => setCardModalOpen(false)}
+        directCheckout={true}
+        handleCreateCharge={handleCreateCharge}
+      />
     </div>
   )
 }

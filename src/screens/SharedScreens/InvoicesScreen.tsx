@@ -296,6 +296,12 @@ const InvoicesScreen = ({
                     tableContainerClassName={classes.table}
                     history={history}
                     accountId={account.id}
+                    setTotalBalance={(totalBalance: number) =>
+                      setState({
+                        ...state,
+                        totalBalance
+                      })
+                    }
                   />
                 </div>
               )}

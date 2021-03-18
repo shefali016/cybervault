@@ -141,16 +141,13 @@ router.post('/create_account', (req, res) => {
 
       console.log(req.body)
 
-      if (!country) {
-        throw Error('missing country')
-      }
       if (!email) {
         throw Error('missing email')
       }
 
       const account = await stripe.accounts.create({
         type: 'express',
-        country,
+        country: country ? country : 'us',
         email,
         capabilities: {
           card_payments: { requested: true },
@@ -398,7 +395,7 @@ router.post('/get_customer_invoices', (req, res) => {
     try {
       const { customerId } = req.body
       const invoices = await stripe.invoices.list({
-        customer: customerId,
+        customer: customerId
       })
       return res.json(invoices)
     } catch (error) {
@@ -418,6 +415,25 @@ router.post('/set_payment_method_to_default', (req, res) => {
         }
       })
       return res.json(customer)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
+router.post('/one_time_chechout', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { amount, token } = req.body
+
+      const charge = await stripe.charges.create({
+        amount: amount,
+        currency: 'usd',
+        description: 'Example charge',
+        source: token
+      })
+      return res.json(charge)
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)

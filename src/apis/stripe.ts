@@ -383,3 +383,15 @@ export const getCutomerInvoicesList = async (customerId: string) => {
     throw Error('Stripe customer invoice error')
   }
 }
+
+export const oneTimeCharge = async (amount: number, tokenId: string) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/one_time_chechout`,
+    { amount, token: tokenId }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe one time charge error')
+  }
+}

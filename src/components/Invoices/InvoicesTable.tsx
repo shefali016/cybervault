@@ -17,26 +17,31 @@ type Props = {
   tableContainerClassName?: string
   history: any
   accountId: string
+  setTotalBalance: (totalBalance: number) => void
 }
 
 export const InvoicesTable = ({
   invoices,
   tableContainerClassName,
   history,
-  accountId
+  accountId,
+  setTotalBalance
 }: Props) => {
   const classes = useStyles()
 
   const handleRowClick = (data: string) => {
-    history.push(`/clientInvoices/${accountId}/${data}`)
+    history.push(`/clientInvoices/${accountId}/${data}?isProjectOwner=true`)
   }
 
   const rows = useMemo(() => {
     let rows: Array<Row> = []
-
+    let totalBalance: number = 0
     invoices &&
       invoices.length &&
       invoices.forEach((inv: Invoice) => {
+        if (inv.isPaid) {
+          totalBalance += inv.price
+        }
         rows.push({
           row: [
             { title: inv.projectName, key: `${inv.id}projectName` },
@@ -58,7 +63,7 @@ export const InvoicesTable = ({
           key: `${inv.id}`
         })
       })
-
+    setTotalBalance(totalBalance)
     return rows
   }, [invoices])
 
