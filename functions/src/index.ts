@@ -34,7 +34,10 @@ export const myFunction = functions.firestore
       let newData = change.after.data()
       let oldData = change.before.data()
 
-      if (newData && Object.keys(newData).length && !oldData) {
+      if (
+        (!oldData && newData) ||
+        (oldData && newData && oldData.isPaid && !newData.isPaid)
+      ) {
         let projectId = newData.projectId
         admin
           .firestore()
@@ -46,14 +49,10 @@ export const myFunction = functions.firestore
             canInvoice: false
           })
       } else if (
-        newData &&
-        Object.keys(newData).length &&
-        newData.isPaid &&
-        oldData &&
-        Object.keys(oldData).length &&
-        !oldData.isPaid
+        (oldData && !newData) ||
+        (oldData && newData && !oldData.isPaid && newData.isPaid)
       ) {
-        let projectId = newData.projectId
+        let projectId = oldData.projectId
         admin
           .firestore()
           .collection('AccountData')

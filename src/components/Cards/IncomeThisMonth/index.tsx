@@ -1,5 +1,10 @@
 import React from 'react'
-import { LinearProgress, Card, CardContent } from '@material-ui/core'
+import {
+  LinearProgress,
+  Card,
+  CardContent,
+  Typography
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { CENTER } from '../../../utils/constants/stringConstants'
 import { BLACK_COLOR } from 'utils/constants/colorsConstants'
@@ -8,27 +13,28 @@ import { getCardHeight } from '../../../utils'
 function IncomeThisMonth(props: {
   unpaidAmount?: number
   paidAmount?: number
-  style?: {}
+  className?: string
 }) {
   const classes = useStyles()
   return (
-    <div style={props.style}>
+    <div className={props.className}>
       <Card className={classes.card}>
         <CardContent>
-          <h5 className={classes.title}> Income This Month</h5>
-          <h6 className={classes.bodyText}>
-            {' '}
+          <Typography variant='h6' className={classes.title}>
+            Income This Month
+          </Typography>
+          <Typography variant='subtitle1' className={classes.bodyText}>
             $ {props.unpaidAmount ? props.unpaidAmount : 0} Unpaid
-          </h6>
+          </Typography>
           <LinearProgress
             variant='determinate'
             className={classes.progressBar}
             value={props.unpaidAmount ? props.unpaidAmount : 50}
+            style={{ marginBottom: 8 }}
           />
-          <h6 className={classes.bodyText}>
-            {' '}
+          <Typography variant='subtitle1' className={classes.bodyText}>
             $ {props.paidAmount ? props.paidAmount : 0} Paid
-          </h6>
+          </Typography>
           <LinearProgress
             variant='determinate'
             className={classes.progressBar}
@@ -43,24 +49,23 @@ function IncomeThisMonth(props: {
 const useStyles = makeStyles((theme) => ({
   card: {
     minWidth: getCardHeight(theme),
-    height: '10rem',
-    borderRadius: 15
+    height: '12rem',
+    borderRadius: 15,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: 5
   },
   progressBar: {
     height: 18,
     borderRadius: 25,
-    alignSelf: CENTER,
-    marginTop: 8
+    alignSelf: CENTER
   },
   title: {
-    fontSize: '14px',
-    color: BLACK_COLOR,
     fontWeight: 600,
     margin: 0
   },
   bodyText: {
-    fontSize: '12px',
-    color: BLACK_COLOR,
     margin: 0,
     marginTop: 8
   }

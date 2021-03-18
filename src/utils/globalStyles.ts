@@ -2,9 +2,15 @@ import { makeStyles } from '@material-ui/core/styles'
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
-    '*': { outline: 'none' },
+    '*': { outline: 'none', selection: 'none' },
     body: {
       background: theme.palette.background.default
+    },
+    '.assetDeleteButton': {
+      position: 'absolute',
+      top: '5%',
+      right: '3%',
+      background: '#00000050'
     },
     '.splashScreen': {
       display: 'flex',
@@ -34,6 +40,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.flex': { flex: 1 },
     '.row': { display: 'flex', alignItems: 'center' },
     '.col': { display: 'flex', flexDirection: 'column' },
+    '.center': { justifyContent: 'center' },
     '.icon': { color: theme.palette.grey[400], fontSize: 20 },
     '.wrap': { flexWrap: 'wrap' },
     '.fullWidth': { width: '100%' },
@@ -43,9 +50,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       background: `linear-gradient(90deg, ${theme.palette.primary.light},  ${theme.palette.primary.dark})`,
       color: `#fff !important`,
       fontWeight: 'bold !important'
-    },
-    '.MuiTableCell-body': {
-      borderColor: theme.palette.background.surfaceHighlight
     },
     '.MuiTableCell-head': {
       borderColor: theme.palette.background.surfaceHighlight
@@ -121,16 +125,23 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.dashboardScreen': {
       paddingLeft: theme.spacing(5),
       paddingRight: theme.spacing(5),
+      color: theme.palette.text.background,
       [theme.breakpoints.down(530)]: {
         paddingLeft: theme.spacing(3),
         paddingRight: theme.spacing(3)
-      },
-      color: theme.palette.text.background
+      }
+    },
+    '.fullScreenNonInteractable': {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      left: 0,
+      bottom: 0
     },
     '.screenTopPadding': {
-      paddingTop: theme.spacing(5),
+      paddingTop: theme.spacing(6),
       [theme.breakpoints.down('sm')]: {
-        paddingTop: theme.spacing(3)
+        paddingTop: theme.spacing(4)
       }
     },
     '.screenContainer': {
@@ -245,12 +256,16 @@ export const useGlobalStyles = makeStyles((theme) => ({
         flexDirection: 'column'
       }
     },
+    '.tableHeader': {
+      fontWeight: 'bold',
+      marginBottom: theme.spacing(3)
+    },
     '.tableContainer': {
-      padding: theme.spacing(1),
-      paddingTop: theme.spacing(2),
+      padding: theme.spacing(3),
+      background: theme.palette.background.secondary,
+      borderRadius: theme.shape.borderRadius,
       flex: 1,
-      display: 'flex',
-      minHeight: 500
+      overflow: 'hidden'
     },
     '.table': {
       borderRadius: theme.shape.borderRadius
@@ -259,6 +274,13 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },
     '.backgroundText': { color: theme.palette.text.background },
+    '.twoLines': {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: 'vertical'
+    },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },

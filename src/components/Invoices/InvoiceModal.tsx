@@ -159,43 +159,47 @@ const InvoiceData = ({
       dateCreated: new Date().toLocaleString(),
       datePaid: null,
       projectId: projectData.id, // Id of the project being invoiced
-      projectName: projectData.campaignName,
+      accountId: account.id,
+      clientId: clientData.id,
       price:
         invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone(),
       milestones: milestones.filter((mile) => {
         return mile.check === true
       }), // will contain milestones being invoiced or null if invoicing total amount
-      clientEmail: clientData.email,
-      clientId: clientData.id,
-      campaignDeadLine: projectData.campaignDeadLine,
       isPaid: false,
-      userDetails: {
-        id: userInfo.id,
-        name: userInfo.name,
-        email: userInfo.email
-      },
-      status: InvoiceStatuses.PENDING // has client paid invoice or not
+      status: InvoiceStatuses.PENDING, // has client paid invoice or not
+      projectName: projectData.campaignName
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
   }
 
   const handleSendMail = () => {
     const invoiceId = generateUid()
+
+    const amount =
+      invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()
+
+    if (!amount) {
+      return toastContext.showToast({
+        title: 'Cannot send as this invoice is invalid'
+      })
+    }
+
     const mailPayload: Mail = {
-      to: clientData.email.trim() || '',
-      templateId: templateId.trim() || '',
+      to: clientData.email,
+      templateId: templateId,
       type: 'invoice',
       data: {
-        clientEmail: clientData.email.trim() || '',
-        projectName: projectData.campaignName || '',
-        invoiceId: invoiceId.trim() || '',
-        userEmail: userInfo.email || '',
+        clientEmail: clientData.email,
+        projectName: projectData.campaignName,
+        invoiceId,
+        userEmail: userInfo.email,
         amount:
           invoiceType === 'fullAmount'
             ? getFullAmount()
             : getAmountByMilestone() || '',
         subject: 'Creator Cloud Invoice',
-        link: `${window.location.origin}/clientInvoices/${account.id}/${invoiceId}`
+        link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}`
       }
     }
     dispatch(sendEmailRequest(mailPayload))

@@ -320,11 +320,11 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     paddingTop: theme.spacing(2),
     flex: 1,
-    display: 'flex',
-    minHeight: 500
+    display: 'flex'
   },
   table: {
-    borderRadius: theme.shape.borderRadius
+    borderRadius: theme.shape.borderRadius,
+    flex: 1
   },
   viewPayouts: {
     '&:hover': { background: theme.palette.common.black },

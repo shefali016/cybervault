@@ -6,11 +6,13 @@ import { InvoiceStatus } from 'utils/Interface'
 export const InvoiceStatusIndicator = ({
   status,
   size = 12,
-  className
+  className,
+  style = {}
 }: {
   status: InvoiceStatus
   size?: number
   className?: string
+  style?: {}
 }) => {
   const theme = useTheme()
 
@@ -26,7 +28,8 @@ export const InvoiceStatusIndicator = ({
         height: size,
         width: size,
         borderRadius: size / 2,
-        background
+        background,
+        ...style
       }}
       className={className}
     />

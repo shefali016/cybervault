@@ -27,5 +27,5 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(5)
   },
   icon: { marginRight: theme.spacing(1), fontSize: 40 },
-  title: { fontSize: 20 }
+  title: { fontSize: 20, textAlign: 'center' }
 }))

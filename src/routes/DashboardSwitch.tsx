@@ -308,10 +308,6 @@ const MainScreen = ({
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
-          <Route
-            path='/clientInvoices/:accId/:id'
-            component={InvoicesClientScreen}
-          />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
           <Route
             path='/portfolioFolder/:id'

@@ -56,13 +56,13 @@ export const PopoverButton = ({
         onClose={handleClose}
         anchorOrigin={
           anchorOrigin || {
-            vertical: 'top',
+            vertical: 'bottom',
             horizontal: 'right'
           }
         }
         transformOrigin={
           transformOrigin || {
-            vertical: 'bottom',
+            vertical: 'top',
             horizontal: 'left'
           }
         }>

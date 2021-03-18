@@ -15,10 +15,11 @@ import {
   DELETE_PROJECT_SUCCESS,
   DELETE_PROJECT_FAILURE
 } from 'actions/actionTypes'
-import { FaLessThanEqual } from 'react-icons/fa'
+
 import { createTransform } from 'redux-persist'
-import { getProductData } from 'utils'
+import { addArrayToCache, addToCache } from 'utils'
 import * as Types from '../utils/Interface'
+import { Project } from '../utils/Interface'
 
 export type State = {
   projectData: any
@@ -30,9 +31,9 @@ export type State = {
   updateLoading: boolean
   updateError: null | string
   updateSuccess: boolean
-  projectDetails: Object
   isProjectDetailsLoading: boolean
   updateProjectSuccess: boolean
+  projectCache: { [id: string]: Project }
 }
 
 export type Action = {
@@ -40,9 +41,9 @@ export type Action = {
   payload: Types.Project
   error: string
   projectData: Types.Project
-  newProjectData?: {}
-  allProjectsData?: {}
-  projectId?: string
+  newProjectData: Project
+  allProjectsData: Project[]
+  projectId: string
 }
 
 const initialState = {
@@ -55,10 +56,10 @@ const initialState = {
   updateLoading: false,
   updateSuccess: false,
   updateError: null,
-  projectDetails: getProductData(),
   isProjectDetailsLoading: false,
   updateProjectSuccess: false,
-  updateProjectFailure: null
+  updateProjectFailure: null,
+  projectCache: {}
 }
 
 const createNewProject = (state: State, action: Action) => ({
@@ -74,6 +75,7 @@ const createNewProjectSuccess = (state: State, action: Action) => {
     ...state,
     newProjectData: action.payload,
     allProjectsData: [action.payload, ...state.allProjectsData],
+    projectCache: addToCache(state.projectCache, action.payload),
     updateLoading: false,
     updateSuccess: true
   }
@@ -95,6 +97,7 @@ const getAllProjectsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     allProjectsData: action.allProjectsData,
+    projectCache: addArrayToCache(state.projectCache, action.allProjectsData),
     isLoading: false,
     updateSuccess: false
   }
@@ -116,15 +119,14 @@ const getProjectDetailsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     isProjectDetailsLoading: false,
-    projectDetails: action.payload,
+    projectCache: addToCache(state.projectCache, action.payload),
     allProjectsData: replaceProject(action.payload, state)
   }
 }
 
 const getProjectDetailsFailure = (state: State, action: Action) => ({
   ...state,
-  isProjectDetailsLoading: false,
-  projectDetails: {}
+  isProjectDetailsLoading: false
 })
 
 const updateProjectDetailsRequest = (state: State, action: Action) => ({
@@ -136,7 +138,7 @@ const updateProjectDetailsRequest = (state: State, action: Action) => ({
 
 const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
-  projectDetails: action.projectData,
+  projectCache: addToCache(state.projectCache, action.projectData),
   allProjectsData: replaceProject(action.projectData, state),
   updateProjectSuccess: true,
   updateProjectFailure: null,
@@ -160,9 +162,11 @@ const deleteProjectRequest = (state: State, action: Action) => {
 }
 
 const deleteProjectSuccess = (state: State, action: Action) => {
+  const { [action.projectId]: _, ...newCache } = state.projectCache
   return {
     ...state,
     deletingId: null,
+    projectCache: newCache,
     allProjectsData: state.allProjectsData.filter(
       (project) => project.id !== action.projectId
     )
