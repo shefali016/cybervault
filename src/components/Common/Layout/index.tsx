@@ -35,7 +35,7 @@ const Layout = (props: LayoutProps & ReduxProps) => {
     onProfileClick,
     user
   } = props
-  const [drawerOpen, setDrawerOpen] = useState(window.outerWidth > 500)
+  const [drawerOpen, setDrawerOpen] = useState(window.innerWidth > 768)
 
   const classes = useStyles()
   return (
@@ -46,6 +46,8 @@ const Layout = (props: LayoutProps & ReduxProps) => {
           onLogout,
           open: drawerOpen,
           setOpen: setDrawerOpen,
+          onOpen: () => setDrawerOpen(true),
+          onClose: () => setDrawerOpen(false),
           tabs,
           onTabPress,
           activeTab

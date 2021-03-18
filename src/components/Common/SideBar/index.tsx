@@ -4,12 +4,14 @@ import {
   Typography,
   Drawer,
   List,
+  SwipeableDrawer,
   ListItem,
   LinearProgress,
   Divider,
   ListItemIcon,
   ListItemText
 } from '@material-ui/core'
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
@@ -24,6 +26,7 @@ import {
 import { Link } from 'react-router-dom'
 import { Tab, ButtonConfig } from 'utils/Interface'
 import LogoutIcon from '@material-ui/icons/ExitToApp'
+import { useOnChange } from '../../../utils/hooks'
 
 const SHARED_TABS_LENTH = 2
 
@@ -35,6 +38,9 @@ type Props = {
   tabs: Array<Tab>
   onTabPress: (tab: Tab) => void
   activeTab: Tab
+  onOpen: () => void
+  onClose: () => void
+  width: any
 }
 
 const SideBarComponent = (props: Props) => {
@@ -45,9 +51,23 @@ const SideBarComponent = (props: Props) => {
     setOpen,
     tabs,
     onTabPress,
-    activeTab
+    activeTab,
+    onOpen,
+    onClose,
+    width
   } = props
   const classes = useStyles()
+
+  const isTablet = isWidthDown('sm', width)
+  const isMobile = isWidthDown('xs', width)
+
+  useOnChange(isTablet, (isTablet) => {
+    if (isTablet && open) {
+      setOpen(false)
+    } else if (!isTablet && !open) {
+      setOpen(true)
+    }
+  })
 
   const [topTabs, bottomTabs] = useMemo(() => {
     return [
@@ -133,91 +153,123 @@ const SideBarComponent = (props: Props) => {
   }
 
   return (
-    <Drawer
-      variant='permanent'
-      className={clsx(classes.drawer, {
-        [classes.drawerOpen]: open,
-        [classes.drawerClose]: !open
-      })}
-      classes={{
-        paper: clsx(classes.paper, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open
-        })
-      }}
-      anchor='left'>
+    <div
+      className={clsx({
+        [classes.root]: !isMobile,
+        [classes.mobileRoot]: isMobile
+      })}>
       <Button
-        className={classes.appIconContainer}
+        className={clsx(
+          classes.appIconContainer,
+          open ? classes.appIconHidden : ''
+        )}
         onClick={() => setOpen(!open)}>
         <PolymerSharpIcon className={classes.appIcon} />
       </Button>
-      <Button
-        variant='contained'
-        color='secondary'
-        className={classes.addProjectButton}
-        onClick={actionButtonConfig.onClick}
-        {...(actionButtonConfig.icon
-          ? { startIcon: actionButtonConfig.icon }
-          : {})}>
-        <Typography variant={'button'}>{actionButtonConfig.title}</Typography>
-      </Button>
-      <Divider className={classes.divider} />
-      <div>
-        {topTabs.map((tab, index) =>
-          renderListItem(tab, () => onTabPress(tab))
+      <SwipeableDrawer
+        transitionDuration={{ enter: 400, exit: 300 }}
+        variant={isMobile ? 'temporary' : 'permanent'}
+        className={clsx(
+          classes.drawer,
+          isMobile
+            ? {}
+            : {
+                [classes.drawerOpen]: open,
+                [classes.drawerClose]: !open
+              }
         )}
-      </div>
-      {renderStorageView()}
-      <Divider className={classes.divider} />
-      <div>
-        {bottomTabs.map((tab, index) =>
-          renderListItem(tab, () => onTabPress(tab))
-        )}
-      </div>
-      <Divider className={classes.divider} />
-      <div>
-        {renderListItem(
-          {
-            id: 'logout',
-            text: 'Log Out',
-            icon: <LogoutIcon className={classes.listIconStyle} />
-          },
-          handleLogout
-        )}
-      </div>
-      <Divider className={classes.divider} />
-      {renderTermsView()}
-    </Drawer>
+        classes={{
+          paper: clsx(
+            classes.paper,
+            isMobile
+              ? {}
+              : {
+                  [classes.drawerOpen]: open,
+                  [classes.drawerClose]: !open
+                }
+          )
+        }}
+        onOpen={onOpen}
+        onClose={onClose}
+        open={open}
+        anchor='left'>
+        <Button
+          className={classes.appIconContainer}
+          onClick={() => setOpen(!open)}>
+          <PolymerSharpIcon className={classes.appIcon} />
+        </Button>
+        <Button
+          variant='contained'
+          color='secondary'
+          className={classes.addProjectButton}
+          onClick={actionButtonConfig.onClick}
+          {...(actionButtonConfig.icon
+            ? { startIcon: actionButtonConfig.icon }
+            : {})}>
+          <Typography variant={'button'}>{actionButtonConfig.title}</Typography>
+        </Button>
+        <Divider className={classes.divider} />
+        <div>
+          {topTabs.map((tab, index) =>
+            renderListItem(tab, () => onTabPress(tab))
+          )}
+        </div>
+        {renderStorageView()}
+        <Divider className={classes.divider} />
+        <div>
+          {bottomTabs.map((tab, index) =>
+            renderListItem(tab, () => onTabPress(tab))
+          )}
+        </div>
+        <Divider className={classes.divider} />
+        <div>
+          {renderListItem(
+            {
+              id: 'logout',
+              text: 'Log Out',
+              icon: <LogoutIcon className={classes.listIconStyle} />
+            },
+            handleLogout
+          )}
+        </div>
+        <Divider className={classes.divider} />
+        {renderTermsView()}
+      </SwipeableDrawer>
+    </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: { display: 'flex', flexDirection: 'column' },
+  mobileRoot: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column'
+  },
   drawer: {
     width: SIDE_DRAWER_WIDTH,
     flexShrink: 0,
     whiteSpace: 'nowrap'
   },
+  paper: {
+    backgroundColor: theme.palette.background.default,
+    borderRightColor: BORDER_COLOR,
+    width: SIDE_DRAWER_WIDTH
+  },
   drawerOpen: {
     width: SIDE_DRAWER_WIDTH,
     transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
+      easing: theme.transitions.easing.easeInOut,
+      duration: 400
     })
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      easing: theme.transitions.easing.easeInOut,
+      duration: 300
     }),
     overflowX: 'hidden',
     width: theme.spacing(8)
-  },
-  paper: {
-    backgroundColor: theme.palette.background.default,
-    borderRightColor: BORDER_COLOR
-  },
-  root: {
-    display: 'flex'
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -229,12 +281,15 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     backgroundColor: BORDER_COLOR
   },
+  appIconHidden: { opacity: 0 },
   appIconContainer: {
-    alignItems: CENTER,
-    justifyContent: CENTER,
-    minHeight: theme.spacing(7),
+    transition: theme.transitions.create(['opacity'], { duration: 100 }),
+    height: theme.spacing(7),
     backgroundColor: theme.palette.background.secondary,
-    borderRadius: 0
+    borderRadius: 0,
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.palette.background.default
   },
   appIcon: {
     color: theme.palette.primary.light,
@@ -318,4 +373,4 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default SideBarComponent
+export default withWidth()(SideBarComponent)
