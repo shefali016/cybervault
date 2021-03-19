@@ -291,6 +291,22 @@ export const useGlobalStyles = makeStyles((theme) => ({
       fontSize: 25,
       marginLeft: 10
     },
+    '.assetListEmptyIcon': {
+      color: theme.palette.background.surfaceHighlight,
+      fontSize: 'min(10vw, 100px)',
+      position: 'absolute'
+    },
+    '.assetListEmptyIconSm': {
+      color: theme.palette.background.surfaceHighlight,
+      fontSize: 45,
+      position: 'absolute',
+      [theme.breakpoints.down('md')]: {
+        fontSize: 35,
+        [theme.breakpoints.down('sm')]: {
+          fontSize: 30
+        }
+      }
+    },
     // img
     '.circleImage': {
       minWidth: 60,

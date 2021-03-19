@@ -10,6 +10,7 @@ import clsx from 'clsx'
 import { CarouselButton } from './CarouselButton'
 import CloseIcon from '@material-ui/icons/Close'
 import { AppIconButton } from '../Core/AppIconButton'
+import ImageIcon from '@material-ui/icons/Image'
 
 export type Props = {
   isVideo?: boolean
@@ -189,6 +190,23 @@ export const FeatureAssetList = ({
     }
     return (
       <div className={classes.assetPickerInner}>
+        {assets && assets.length && (
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            <ImageIcon className={'assetListEmptyIconSm'} />
+            <div
+              className={clsx(
+                classes.assetPickerItemOuter,
+                classes.imgPlaceholder
+              )}
+            />
+          </div>
+        )}
         {assets.map((asset, index) => {
           const file = asset.files[0]
           const isCurrent = index === currentIndex ? -200 : 0
@@ -251,6 +269,7 @@ export const FeatureAssetList = ({
                         classes.imgPlaceholder
                       )}
                     />
+                    <ImageIcon className={'assetListEmptyIcon'} />
                   </div>
                 </div>
               )}
@@ -370,10 +389,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     marginLeft: theme.spacing(1.2),
     marginRight: theme.spacing(1.2),
-    [theme.breakpoints.down('sm')]: {
-      marginLeft: theme.spacing(0.8),
-      marginRight: theme.spacing(0.8)
-    },
     overflow: 'hidden',
     minWidth: theme.spacing(pickerHeightLg),
     height: theme.spacing(pickerHeightLg),
@@ -382,10 +397,13 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(pickerHeightMd),
       [theme.breakpoints.down('sm')]: {
         minWidth: theme.spacing(pickerHeightSm),
-        height: theme.spacing(pickerHeightSm)
+        height: theme.spacing(pickerHeightSm),
+        marginLeft: theme.spacing(0.8),
+        marginRight: theme.spacing(0.8)
       }
     }
   },
+  assetPickerEmpty: {},
   assetPickerItemPicked: {
     animation: `$isPicked 500ms ${theme.transitions.easing.easeOut}`,
     opacity: 0.2
@@ -466,6 +484,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
     margin: 0
   }
