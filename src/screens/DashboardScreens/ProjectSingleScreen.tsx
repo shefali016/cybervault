@@ -212,7 +212,6 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
-  console.log(state.projectData.videos, 'videosssss')
   const renderBody = () => {
     if (!state.projectData) {
       return null

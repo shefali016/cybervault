@@ -50,13 +50,11 @@ export const AssetUploadItem = ({ upload, lastItem, onDelete }: Props) => {
         />
       </div>
     )
-
-    return null
   }
 
   const handleDelete = () => {
     // Cancel task
-    task.cancel()
+    task.abort()
     onDelete(upload)
   }
 

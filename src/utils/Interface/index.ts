@@ -11,7 +11,7 @@ import {
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
-import firebase from 'firebase'
+import {S3} from "aws-sdk"
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -636,7 +636,7 @@ export interface Notification {
 export type UploadCache = { [assetId: string]: AssetUpload }
 export type AssetUpload = {
   asset: Asset
-  task: firebase.storage.UploadTask
+  task: S3.ManagedUpload
   status: UploadStatuses
   progress: number
 }

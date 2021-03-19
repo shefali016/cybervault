@@ -12,10 +12,12 @@ import { Account, Asset, AssetUpload, UploadCache } from 'utils/Interface'
 import { generateUid } from 'utils'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from './Toast'
-import firebase from 'firebase'
 import { UploadStatuses } from 'utils/enums'
 import { AssetUploadItem } from 'components/Assets/AssetUploadItem'
 import clsx from 'clsx'
+import { AWSError, S3 } from 'aws-sdk'
+
+const AWS = require('aws-sdk')
 
 export const AssetUploadContext = createContext({
   uploadFiles: (
@@ -79,7 +81,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
         throw Error('Not logged in')
       }
 
-      const task: firebase.storage.UploadTask = setMedia(asset.id, file)
+      const task: S3.ManagedUpload = setMedia(asset.id, file)
 
       setUploads((uploadCache: UploadCache) => ({
         ...uploadCache,
@@ -92,27 +94,26 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
       }))
       setWindowOpen(true)
 
-      task.on(
-        'state_changed',
-        (snapshot: any) => {
-          console.log('data', snapshot)
-          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          console.log('Upload is ' + progress + '% done')
-          updateUploadField(asset.id, 'progress', progress)
-        },
-        () => {
-          // Handle failure
-          updateUploadField(asset.id, 'status', UploadStatuses.FAILED)
-        },
-        async () => {
-          const url = await task.snapshot.ref.getDownloadURL()
+      task.on('httpUploadProgress', (Progress: S3.ManagedUpload.Progress) => {
+        const { loaded, total } = Progress
+        const progress = (loaded / total) * 100
+        console.log('Upload is ' + progress + '% done')
+        updateUploadField(asset.id, 'progress', progress)
+      })
+
+      task.send(async (err: AWSError, data: S3.ManagedUpload.SendData) => {
+        if (!err) {
+          const url = data.Location
           asset.files.push(getImageObject(file, url, asset.id))
           await addAsset(account.id, asset)
           updateUploadField(asset.id, 'status', UploadStatuses.COMPLETE)
           typeof assetUploadedCallback === 'function' &&
             assetUploadedCallback(asset)
+        } else {
+          console.log(err)
+          updateUploadField(asset.id, 'status', UploadStatuses.FAILED)
         }
-      )
+      })
     } catch (error) {
       console.log('Asset upload failed.', error)
       toastContext.showToast({
