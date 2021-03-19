@@ -4,13 +4,26 @@ import 'firebase/firestore'
 import { Asset } from '../utils/Interface'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
+var AWS = require('aws-sdk')
+AWS.config.update({
+  accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+  secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
+  region: `${process.env.REACT_APP_AWS_REGION}`
+})
+var s3 = new AWS.S3()
 
 export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
 }
 
 export const setMedia = (id: string, file: any) => {
-  return firebase.storage().ref(id).put(file)
+  var params = {
+    Body: file,
+    Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+    Key: `${id}${file.name}`,
+    ACL: 'public-read'
+  }
+  return s3.upload(params)
 }
 
 export const uploadMedia = (id: string, file: any) => {
