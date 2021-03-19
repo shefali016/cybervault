@@ -11,7 +11,7 @@ import { getWidgetCardHeight } from 'utils'
 import InvoiceModal from 'components/Invoices/InvoiceModal'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
-import { PopoverButton } from 'components/Common/PopoverButton'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 
 const ITEM_HEIGHT = 48
 
@@ -150,7 +150,7 @@ export const ProjectCard = ({
               />
             )}
 
-            <PopoverButton menuItems={popoverMenuItems} />
+            <PopoverMoreIconButton menuItems={popoverMenuItems} />
           </Grid>
         ) : null}
       </Card>
