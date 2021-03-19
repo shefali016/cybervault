@@ -15,6 +15,7 @@ type Props = {
   loading?: boolean
   itemHeight?: number
   EmptyComponent?: any
+  style?: {}
 }
 
 const Widget = ({
@@ -25,7 +26,8 @@ const Widget = ({
   tabletColumn,
   loading,
   itemHeight,
-  EmptyComponent
+  EmptyComponent,
+  style
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -53,7 +55,7 @@ const Widget = ({
         </Typography>
       )}
       <div
-        style={itemHeight ? { minHeight: itemHeight } : {}}
+        style={style}
         className={clsx(
           classes.wrapper,
           tabletColumn ? classes.tabletColumn : undefined,

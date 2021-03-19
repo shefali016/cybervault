@@ -157,7 +157,7 @@ export const ProjectSelectBar = ({
         style={{
           height: open
             ? projects.length * 73 +
-              (shouldRenderShare || shouldRenderPopover ? 50 : 0)
+              (shouldRenderShare || shouldRenderPopover ? 60 : 0)
             : 0,
           paddingTop: open ? undefined : 0,
           background: `linear-gradient(to right ,${gradiant1}, ${gradiant2})`
