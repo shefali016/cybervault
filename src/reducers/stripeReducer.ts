@@ -42,6 +42,8 @@ export type State = {
   billingHistoryLoading: boolean
   billingHistorySuccess: boolean
   billingHistoryError: null | string
+
+  customerTotalBalance: number
 }
 
 export type Action = {
@@ -57,6 +59,7 @@ export type Action = {
   storageSubscription: Subscription
   billingHistory: Array<Invoice>
   paymentMethodId: string
+  totalBalance: number
 }
 
 const initialState = {
@@ -96,7 +99,8 @@ const initialState = {
   billingHistory: null,
   billingHistoryLoading: false,
   billingHistorySuccess: false,
-  billingHistoryError: null
+  billingHistoryError: null,
+  customerTotalBalance: 0
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -305,7 +309,11 @@ const stripe = (state = initialState, action: Action) => {
         billingHistoryLoading: false,
         billingHistorySuccess: false
       }
-
+    case ActionTypes.GET_CUSTOMER_BALANCE_SUCCESS:
+      return {
+        ...state,
+        customerTotalBalance: action.totalBalance
+      }
     default:
       return state
   }

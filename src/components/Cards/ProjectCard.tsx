@@ -25,6 +25,7 @@ type Props = {
   userInfo?: any
   onDelete?: (projectId: string) => void
   deletingId?: string
+  customerId: any
 }
 
 export const ProjectCard = ({
@@ -36,10 +37,10 @@ export const ProjectCard = ({
   userInfo,
   clients,
   onDelete,
-  deletingId
+  deletingId,
+  customerId
 }: Props) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
-
   const startConfirmingDelete = () => setConfirmingDelete(true)
   const stopConfirmingDelete = () => setConfirmingDelete(false)
   const handleDelete = () =>
@@ -82,9 +83,9 @@ export const ProjectCard = ({
       title: 'Send Invoice',
       Icon: ReceiptIcon,
       onClick: () => sendInvoice(project.id),
-      disabled:
-        project.canInvoice === false ||
-        (account.stripe && !account.stripe.payoutsEnabled)
+      disabled: false
+      /*         project.canInvoice === false ||
+        (account.stripe && !account.stripe.payoutsEnabled) */
     },
     {
       title: 'Delete Project',
@@ -105,6 +106,7 @@ export const ProjectCard = ({
         account={account}
         client={client}
         userInfo={userInfo}
+        customerId={customerId}
       />
       <Card className={classes.card} elevation={5}>
         <div className={classes.imageWrapper} onClick={handleClick}>

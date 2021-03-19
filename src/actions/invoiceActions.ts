@@ -112,19 +112,27 @@ export function getAllInvoiceConversationError(error: string) {
   }
 }
 
-export function payInvoice(amount: number, tokenId: string, invoiceId: string) {
+export function payInvoice(
+  amount: number,
+  tokenId: string,
+  invoiceId: string,
+  account: string,
+  customerId: string
+) {
   return {
     type: ActionTypes.PAY_INVOICE,
     amount,
     tokenId,
-    invoiceId
+    invoiceId,
+    account,
+    customerId
   }
 }
 
-export function payInvoiceSuccess(data: any) {
+export function payInvoiceSuccess(invoiceId: string) {
   return {
     type: ActionTypes.PAY_INVOICE_SUCCESS,
-    payload: data
+    payload: invoiceId
   }
 }
 export function payInvoiceError(error: string) {

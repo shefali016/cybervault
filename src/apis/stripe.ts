@@ -384,14 +384,30 @@ export const getCutomerInvoicesList = async (customerId: string) => {
   }
 }
 
-export const oneTimeCharge = async (amount: number, tokenId: string) => {
+export const oneTimeCharge = async (
+  amount: number,
+  tokenId: string,
+  customerId: string
+) => {
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/one_time_chechout`,
-    { amount, token: tokenId }
+    { amount, token: tokenId, customerId }
   )
   if (res.status === 200) {
     return res.data
   } else {
     throw Error('Stripe one time charge error')
+  }
+}
+
+export const getCustomerBalance = async (customerId: string) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/get_customer_balance`,
+    { customerId }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe get Customer Balance error')
   }
 }

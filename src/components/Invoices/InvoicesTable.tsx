@@ -4,6 +4,7 @@ import InvoiceIcon from '@material-ui/icons/Receipt'
 import { AppTable } from 'components/Common/Core/AppTable'
 import { InvoiceStatusIndicator } from './InvoiceStatusIndicator'
 import { makeStyles } from '@material-ui/core/styles'
+import { capitalize } from '@material-ui/core'
 
 const headerCells = [
   { title: 'Project Name', key: 'name' },
@@ -17,15 +18,13 @@ type Props = {
   tableContainerClassName?: string
   history: any
   accountId: string
-  setTotalBalance: (totalBalance: number) => void
 }
 
 export const InvoicesTable = ({
   invoices,
   tableContainerClassName,
   history,
-  accountId,
-  setTotalBalance
+  accountId
 }: Props) => {
   const classes = useStyles()
 
@@ -35,13 +34,9 @@ export const InvoicesTable = ({
 
   const rows = useMemo(() => {
     let rows: Array<Row> = []
-    let totalBalance: number = 0
     invoices &&
       invoices.length &&
       invoices.forEach((inv: Invoice) => {
-        if (inv.isPaid) {
-          totalBalance += inv.price
-        }
         rows.push({
           row: [
             { title: inv.projectName, key: `${inv.id}projectName` },
@@ -54,7 +49,7 @@ export const InvoicesTable = ({
                     status={inv.status}
                     className={classes.status}
                   />
-                  {inv.status}
+                  {capitalize(inv.status)}
                 </div>
               ),
               key: `${inv.id}status`
@@ -63,7 +58,6 @@ export const InvoicesTable = ({
           key: `${inv.id}`
         })
       })
-    setTotalBalance(totalBalance)
     return rows
   }, [invoices])
 

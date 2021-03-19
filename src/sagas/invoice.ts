@@ -22,6 +22,7 @@ type Params = {
   conversation: InvoiceConversation
   tokenId: string
   amount: number
+  customerId: string
 }
 
 function* invoiceRequest({ account, project, invoice }: Params) {
@@ -90,23 +91,31 @@ function* allnvoiceConversation({ accountId, invoiceId }: Params) {
   }
 }
 
-function* payInvoice({ amount, tokenId, invoiceId }: Params) {
+function* payInvoice({
+  amount,
+  tokenId,
+  invoiceId,
+  account,
+  customerId
+}: Params) {
   try {
-    const accountId: any = yield select(
-      (state: ReduxState) => state.auth?.account?.id
+    const response = yield call(
+      StripeApis.oneTimeCharge,
+      amount,
+      tokenId,
+      customerId
     )
-    const response = yield call(StripeApis.oneTimeCharge, amount, tokenId)
-    yield put(InvoiceActions.payInvoiceSuccess({ [invoiceId]: response }))
     const invoiceData: any = {
       isPaid: true,
-      status: 'paid'
+      status: 'Paid'
     }
     const result = yield call(
       InvoiceApis.updateInvoice,
-      accountId,
+      account,
       invoiceId,
       invoiceData
     )
+    yield put(InvoiceActions.payInvoiceSuccess(invoiceId))
   } catch (error: any) {
     yield put(InvoiceActions.payInvoiceError(error?.message || 'default'))
   }

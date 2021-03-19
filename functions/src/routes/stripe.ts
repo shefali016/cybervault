@@ -1,4 +1,5 @@
 import * as express from 'express'
+import { constants } from '../constants'
 
 const { corsHandler } = require('../index')
 
@@ -422,15 +423,45 @@ router.post('/set_payment_method_to_default', (req, res) => {
   })
 })
 
+router.post('/get_customer_balance', (req, res) => {
+  return corsHandler(req, res, async () => {
+    try {
+      const { customerId } = req.body
+      const balanceTransactions = await stripe.customers.listBalanceTransactions(
+        customerId
+      )
+      let totalBalance: any
+      if (
+        balanceTransactions &&
+        balanceTransactions.data &&
+        balanceTransactions.data.length
+      ) {
+        totalBalance = balanceTransactions.data[0].ending_balance
+      }
+      return res.json(totalBalance)
+    } catch (error) {
+      console.log(error)
+      return res.status(400).send(error)
+    }
+  })
+})
+
 router.post('/one_time_chechout', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, token } = req.body
+      const { amount, token, customerId } = req.body
 
+      const stripeAmount = amount * (constants.commision / 100)
+      const customerAmount = amount - stripeAmount
+
+      await stripe.customers.createBalanceTransaction(customerId, {
+        amount: customerAmount,
+        currency: 'usd'
+      })
       const charge = await stripe.charges.create({
-        amount: amount,
+        amount: stripeAmount,
         currency: 'usd',
-        description: 'Example charge',
+        description: 'Invoice Pay',
         source: token
       })
       return res.json(charge)

@@ -13,7 +13,8 @@ import {
   SEND_REVISION_ERROR,
   GET_ALL_INVOICE_CONVERSATION_REQUEST,
   GET_ALL_INVOICE_CONVERSATION_ERROR,
-  GET_ALL_INVOICE_CONVERSATION_SUCCESS
+  GET_ALL_INVOICE_CONVERSATION_SUCCESS,
+  PAY_INVOICE_SUCCESS
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
@@ -42,6 +43,7 @@ export type State = {
 export type Action = {
   type: string
   payload: any
+  invoiceId: string
 }
 
 const initialState = {
@@ -176,6 +178,10 @@ const getAllInvoiceConversationSuccess = (state: State, action: Action) => ({
     ...action.payload
   }
 })
+const payInvoiceSuccess = (state: State, cache: { [id: string]: Invoice }) => ({
+  ...state,
+  cache: cache
+})
 const invoiceReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_INVOICE_REQUEST:
@@ -208,7 +214,12 @@ const invoiceReducer = (state = initialState, action: Action) => {
       return getAllInvoiceConversationSuccess(state, action)
     case GET_ALL_INVOICE_CONVERSATION_ERROR:
       return getAllInvoiceConversationError(state, action)
-
+    case PAY_INVOICE_SUCCESS:
+      const invoiceId: string = action.invoiceId
+      const cacheData: any = state.cache
+      cacheData.invoiceId.isPaid = true
+      cacheData.invoiceId.status = 'Paid'
+      return payInvoiceSuccess(state, cacheData)
     default:
       return state
   }
