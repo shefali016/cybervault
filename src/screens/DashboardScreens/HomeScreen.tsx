@@ -6,7 +6,7 @@ import {
 } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
-import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
+import { ProjectCard } from '../../components/Cards/ProjectCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
 import PendingInvoices from '../../components/Cards/PendingInvoices'
 import IncomeThisMonth from '../../components/Cards/IncomeThisMonth'
@@ -52,6 +52,7 @@ const HomeScreen = (props: any) => {
         emptyMessage={'No Active Projects'}
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
+        style={{ height: '70vw', maxHeight: 280 }}
         renderItem={(item) => (
           <ProjectCard
             clients={props.clients}
@@ -69,7 +70,11 @@ const HomeScreen = (props: any) => {
           />
         )}
       />
-      <div className={clsx(classes.invoicingWrapper, 'sectionContainer')}>
+      <div
+        className={clsx(
+          classes.invoicingWrapper,
+          'responsiveHorizontalPadding'
+        )}>
         <Typography variant={'body1'} className={classes.sectionTitle}>
           Invoicing and Analytics
         </Typography>
@@ -80,7 +85,7 @@ const HomeScreen = (props: any) => {
             className={classes.widgetItem}
             projectCount={allProjects.length}
           />
-          <IncomeThisMonth style={{ paddingRight: theme.spacing(3) }} />
+          <IncomeThisMonth className={classes.widgetItem} />
         </div>
       </div>
       <Widget
@@ -128,7 +133,8 @@ const useStyles = makeStyles((theme) => ({
   middleCardsWrapper: {
     display: FLEX,
     [theme.breakpoints.down('sm')]: {
-      flexDirection: COLUMN
+      flexDirection: COLUMN,
+      alignItems: 'stretch'
     }
   },
   sectionTitle: {
@@ -136,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.background
   },
   background: {
-    backgroundColor: '#24262B',
+    backgroundColoPr: '#24262B',
     height: '100%',
     width: '100%',
     overflowY: 'auto'
@@ -146,7 +152,8 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(3)
     },
     [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(3)
+      marginBottom: theme.spacing(3),
+      marginRight: theme.spacing(0)
     }
   },
   projectCardsUl: {

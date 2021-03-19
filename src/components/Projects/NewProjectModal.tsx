@@ -63,7 +63,10 @@ const NewProject = ({
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
-  const [projectData, setProjectData] = useState(project || getProductData())
+  const [projectData, setProjectData] = useState({
+    ...getProductData(),
+    ...(project || {})
+  })
   const [clientData, setClientData] = useState<Client | null>(null)
   const [haveError, setHaveError] = useState(false)
   const [addClient, setAddClient] = useState(false)
@@ -128,6 +131,7 @@ const NewProject = ({
       setIsLoading(true)
       let project = {
         ...projectData,
+
         clientId: clientData.id,
         id: generateUid()
       }

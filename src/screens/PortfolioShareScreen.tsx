@@ -24,6 +24,7 @@ import {
 import { ToastContext } from 'context/Toast'
 import { getAccount } from 'apis/account'
 import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
+import clsx from 'clsx'
 
 type StateProps = {
   account: Account
@@ -226,33 +227,37 @@ const PortfolioShareScreen = ({
         }}
       />
 
-      <div className={classes.contentHeader}>
-        <PortfolioTitle
-          className={classes.portfolioTitle}
-          portfolio={portfolio}
-          size={isWidthDown('sm', width) ? 38 : 50}
-        />
+      <div className={clsx('screenInner', 'col', 'flex')}>
+        <div className={clsx('responsivePadding', 'col', 'flex')}>
+          <div className={classes.contentHeader}>
+            <PortfolioTitle
+              className={classes.portfolioTitle}
+              portfolio={portfolio}
+              size={isWidthDown('sm', width) ? 38 : 50}
+            />
 
-        {!!senderAccount.settings.watermark && (
-          <img
-            src={senderAccount.settings.watermark}
-            alt='company-logo'
-            className={classes.contentHeaderLogo}
-          />
-        )}
-      </div>
+            {!!senderAccount.settings.watermark && (
+              <img
+                src={senderAccount.settings.watermark}
+                alt='company-logo'
+                className={classes.contentHeaderLogo}
+              />
+            )}
+          </div>
 
-      <div
-        className={classes.portfolioWrapper}
-        style={{ backgroundColor: foregroundColor }}>
-        {!selectedProjectData && (
-          <AppLoader className={classes.loader} color={textColor} />
-        )}
+          <div
+            className={classes.portfolioWrapper}
+            style={{ backgroundColor: foregroundColor }}>
+            {!selectedProjectData && (
+              <AppLoader className={classes.loader} color={textColor} />
+            )}
 
-        <PortfolioProjectDetails
-          project={selectedProjectData}
-          account={senderAccount}
-        />
+            <PortfolioProjectDetails
+              project={selectedProjectData}
+              account={senderAccount}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

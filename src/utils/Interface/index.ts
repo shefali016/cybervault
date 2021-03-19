@@ -7,9 +7,11 @@ import {
   SharingPrivacies,
   SubscriptionDurations,
   SubscriptionTypes,
+  UploadStatuses,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
+import {S3} from "aws-sdk"
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -49,13 +51,6 @@ export type ButtonConfig = {
 }
 
 export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
-
-export type Asset = {
-  id: string
-  width?: number
-  height?: number
-  original?: any
-}
 
 export type BankingDetails = {} // @todo R&D what details we need from user to deposit from Stripe
 
@@ -403,11 +398,11 @@ export type Account = {
 
 export type User = {
   id: string
-  email: string | null
+  email: string
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
   avatar?: string | undefined
-  name?: string | null
+  name: string
   birthday?: string
   company?: string | undefined
   instagram?: string | undefined
@@ -419,7 +414,7 @@ export type User = {
 
 export type AuthUser = {
   uid: string
-  email: string | null
+  email: string
   name?: string | null
 }
 
@@ -448,7 +443,7 @@ export type Milestone = {
   payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 
-export type MediaObject = {
+export type AssetFile = {
   id: string
   original?: boolean
   url: string
@@ -481,6 +476,7 @@ export type Project = {
 
 export type InvoiceConversation = {
   name: string
+  senderId: string
   sendersEmail: string
   message: string
   date: Date | string
@@ -495,24 +491,22 @@ export type InvoiceUserInfo = {
 }
 
 export type Invoice = {
-  id: String // Using generateId function
+  id: string // Using generateId function
   dateCreated: Date | string
+  projectName: string
   datePaid: Date | null
   projectId: string // Id of the project being invoiced
+  accountId: string
+  clientId: string
   price: number // Amount that the client must pay
   milestones: Array<Milestone> | null // will contain milestones being invoiced or null if invoicing total amount
-  clientEmail: String
   isPaid: Boolean
-  status: InvoiceStatus
-  projectName: string
-  campaignDeadLine: string
-  featuredImage?: string
+  status: InvoiceStatuses
   conversation?: Array<InvoiceConversation>
-  userDetails: InvoiceUserInfo
 }
 
 export type ProjectStatus =
-  | ProjectStatuses.PENDING
+  | ProjectStatuses.PROGRESS
   | ProjectStatuses.PAID
   | ProjectStatuses.ARCHIVED
 
@@ -521,9 +515,9 @@ export type InvoiceStatus =
   | InvoiceStatuses.VIEWED
   | InvoiceStatuses.PAID
 
-export interface ProjectAsset {
+export interface Asset {
   id: string
-  files: Array<MediaObject>
+  files: Array<AssetFile>
   fileName: string
   type: string
 }
@@ -637,4 +631,12 @@ export interface Notification {
   createdAt: number
   title: string
   isRead: boolean
+}
+
+export type UploadCache = { [assetId: string]: AssetUpload }
+export type AssetUpload = {
+  asset: Asset
+  task: S3.ManagedUpload
+  status: UploadStatuses
+  progress: number
 }

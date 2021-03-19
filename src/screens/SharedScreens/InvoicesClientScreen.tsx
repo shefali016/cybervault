@@ -1,4 +1,4 @@
-import { HtmlHTMLAttributes, useEffect, useState, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useMemo, useRef, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getInvoiceRequest,
@@ -16,45 +16,116 @@ import Editor from '../../components/Common/textEditor'
 import { GradiantButton } from '../../components/Common/Button/GradiantButton'
 import { generateUid } from '../../utils'
 import * as Types from '../../utils/Interface'
-import {
-  sendEmailRequest,
-  getAllMailTemplatesRequest
-} from '../../actions/mails'
+import { sendEmailRequest } from '../../actions/mails'
 import { ReduxState } from 'reducers/rootReducer'
-
-import {
-  PRIMARY_DARK_COLOR,
-  PRIMARY_COLOR,
-  SECONDARY_DARK_COLOR,
-  SECONDARY_COLOR
-} from '../../utils/constants/colorsConstants'
+import { SECONDARY_DARK_COLOR } from '../../utils/constants/colorsConstants'
 import clsx from 'clsx'
+import { Invoice, Project, Client, Account, User } from '../../utils/Interface'
+import { ToastContext } from 'context/Toast'
+import { getAccount } from 'apis/account'
+import { getUser } from 'apis/user'
+import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
+import Header from 'components/Common/Header/header'
 
-const InvoicesClientScreen = (props: any) => {
+const { revision } = require('sendGridTemplates.json')
+
+type State = {
+  ownerAccount: Account | null
+  project: Project | null
+  invoice: Invoice | null
+  client: Client | null
+}
+
+type Props = { history: any; match: any }
+
+const InvoicesClientScreen = (props: Props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const accId = props.match.params.accId
-  const accountData = useSelector((state: any) => state.auth)
-  const invoiceData = useSelector((state: any) => state.invoice)
-  const projectDetails = useSelector(
-    (state: any) => state.project.projectDetails
-  )
-  const clientDetails = useSelector(
-    (state: any) => state.clients.clientDetailData
-  )
-  useEffect(() => {
-    dispatch(getInvoiceRequest(accId, props.match.params.id))
-    dispatch(getAllInvoiceConversationRequest(accId, props.match.params.id))
-  }, [])
-  useOnChange(invoiceData.getInvoiceSuccess, (success: string | null) => {
-    if (success) {
-      dispatch(getClientRequest(accId, invoiceData.invoiceData.clientId))
-      dispatch(
-        requestGetProjectDetails(accId, invoiceData.invoiceData.projectId)
-      )
-      dispatch(getAllMailTemplatesRequest())
+
+  const toastContext = useContext(ToastContext)
+
+  const { invoiceId, ownerAccountId } = useMemo(() => {
+    const { params } = props.match
+    if (!(params && params.accId && params.id)) {
+      return { invoiceId: null, accoownerAccountIduntId: null }
     }
-  })
+    const { accId: ownerAccountId, id: invoiceId } = params
+    return { ownerAccountId, invoiceId }
+  }, [props.match.params])
+
+  // Select cache from state
+  const {
+    invoiceCache,
+    projectCache,
+    clientCache,
+    account,
+    user,
+    revisionSuccess,
+    revisionLoading,
+    invoiceConversationData
+  } = useSelector((state: ReduxState) => ({
+    invoiceCache: state.invoice.cache,
+    projectCache: state.project.projectCache,
+    clientCache: state.clients.cache,
+    account: state.auth.account,
+    user: state.auth.user,
+    revisionSuccess: state.invoice.revisionSuccess,
+    revisionLoading: state.invoice.revisionLoading,
+    invoiceConversationData: state.invoice.invoiceConversationData
+  }))
+
+  const [accountOwner, setAccountOwner] = useState<User | null>(null)
+  const isAccountOwner = !account || ownerAccountId === account.id
+
+  // Select objects from cache
+  const invoice = useMemo(() => {
+    const invoiceId = props.match.params?.id
+    return invoiceId ? invoiceCache[invoiceId] : null
+  }, [invoiceCache])
+  const client = useMemo(() => {
+    if (!invoice) {
+      return null
+    }
+    const clientId = invoice.clientId
+    return clientCache[clientId]
+  }, [invoice, clientCache])
+  const project = useMemo(() => {
+    if (!invoice) {
+      return null
+    }
+    const projectId = invoice.projectId
+    return projectCache[projectId]
+  }, [invoice, projectCache])
+
+  // Load invoice and conversations
+  useEffect(() => {
+    loadInitialData()
+  }, [])
+  const loadInitialData = async () => {
+    if (invoiceId && ownerAccountId) {
+      dispatch(getInvoiceRequest(ownerAccountId, invoiceId))
+      dispatch(getAllInvoiceConversationRequest(ownerAccountId, invoiceId))
+      const ownerAccount = await getAccount(ownerAccountId)
+      const accountOwner = await getUser(ownerAccount.owner)
+      setAccountOwner(accountOwner)
+    }
+  }
+  // Load client and project when invoice is loaded
+  useOnChange(
+    invoice,
+    (invoice: Invoice | null, prevInvoice: Invoice | null) => {
+      if (!invoice) {
+        return
+      }
+
+      if (prevInvoice?.clientId !== invoice.clientId) {
+        dispatch(getClientRequest(ownerAccountId, invoice.clientId))
+      }
+      if (prevInvoice?.projectId !== invoice.projectId) {
+        dispatch(requestGetProjectDetails(ownerAccountId, invoice.projectId))
+      }
+    }
+  )
 
   const [message, setMessage] = useState('')
 
@@ -62,46 +133,11 @@ const InvoicesClientScreen = (props: any) => {
     setMessage(val)
   }
 
-  const handleSendRevisoRequest = () => {
-    const payload = {
-      message: message,
-      date: new Date().toISOString(),
-      sendersEmail: accountData.isLoggedIn
-        ? invoiceData.invoiceData.userDetails.email
-        : clientDetails.email,
-      receiversEmail: accountData.isLoggedIn
-        ? clientDetails.email
-        : invoiceData.invoiceData.userDetails.email,
-      name: accountData.isLoggedIn
-        ? invoiceData.invoiceData.userDetails.name
-        : clientDetails.name,
-      id: generateUid()
-    }
-
-    dispatch(sendRevisionRequest(accId, invoiceData.invoiceData.id, payload))
-  }
-  const mailData = useSelector((state: ReduxState) => state.mail)
-
-  const getTemplateId = () => {
-    if (mailData.mailTemplatesData) {
-      let data: any
-      data = mailData.mailTemplatesData.find((tmp: Types.MailTemplate) => {
-        return tmp.type === 'revision'
-      })
-      return data?.templateId
-    }
-  }
-  const templateId = useMemo(() => {
-    return getTemplateId()
-  }, [mailData.mailTemplatesData])
-
-  useOnChange(invoiceData.revisionSuccess, (success: string | null) => {
-    if (success && templateId) {
+  useOnChange(revisionSuccess, (success: string | null) => {
+    if (success && accountOwner && client) {
       const mailPayload = {
-        to: accountData.isLoggedIn
-          ? clientDetails.email
-          : invoiceData.invoiceData.userDetails.email,
-        templateId: templateId.trim() || '',
+        to: isAccountOwner ? accountOwner.email : client.email,
+        templateId: revision,
         type: 'revision',
         data: {
           message: 'Message Received'
@@ -111,6 +147,45 @@ const InvoicesClientScreen = (props: any) => {
     }
   })
 
+  const messagesEndRef = useRef<any>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const conversation = invoiceConversationData[invoiceId]
+
+  const hasMounted = useRef(false)
+  useEffect(() => {
+    if (hasMounted.current) {
+      scrollToBottom()
+    }
+    hasMounted.current = true
+  }, [conversation?.length])
+
+  if (!(invoice && project && accountOwner && client)) {
+    return <FullScreenLoader />
+  }
+
+  const handleSendRevisonRequest = () => {
+    const senderId = isAccountOwner ? ownerAccountId : client.id
+    const sendersEmail = isAccountOwner ? accountOwner.email : client.email
+    const receiversEmail = isAccountOwner ? client.email : accountOwner.email
+    const name = isAccountOwner ? accountOwner.name : client.name
+
+    const payload = {
+      message: message,
+      date: new Date().toISOString(),
+      senderId,
+      sendersEmail,
+      receiversEmail,
+      name,
+      id: generateUid()
+    }
+
+    dispatch(sendRevisionRequest(ownerAccountId, invoice.id, payload))
+  }
+
   const renderInvoiceAmmount = () => (
     <Grid container justify='flex-end' xs spacing={1}>
       <Grid container item alignItems='center' justify='flex-end'>
@@ -118,7 +193,7 @@ const InvoicesClientScreen = (props: any) => {
           Invoice ammount:{' '}
         </Typography>
         <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-          ${invoiceData.invoiceData.price}
+          ${invoice.price}
         </Typography>
       </Grid>
       <Grid item>
@@ -129,226 +204,208 @@ const InvoicesClientScreen = (props: any) => {
     </Grid>
   )
 
-  const messagesEndRef = useRef<any>(null)
+  const handleBack = () => props.history.push('/invoices')
 
-  const scrollToBottom = () => {
-    messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' })
+  const renderHeader = () => {
+    if (!!user) {
+      return (
+        <Header
+          user={user}
+          renderAppIcon={true}
+          onLogoClick={handleBack}
+          history={props.history}
+        />
+      )
+    }
+    return null
   }
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [invoiceData?.invoiceConversationData[props.match.params.id]?.length])
-
   return (
-    <div className={`${!accountData.isLoggedIn && classes.root}`}>
-      <Grid container justify='center'>
-        <Grid item sm={11} container>
-          <Grid item sm={12} className={classes.headerSection}>
-            {projectDetails.campaignName}
-          </Grid>
-        </Grid>
-        <Grid item sm={11} className={classes.subHeaderSection}>
-          {projectDetails.campaignName} <div className={classes.dot}></div>
-        </Grid>
-        <Grid
-          item
-          container
-          justify='center'
-          sm={11}
-          className={classes.section}>
-          <Grid item sm={11} className={classes.mAuto}>
-            <Card className={classes.clientInvoiceWrapper}>
-              <Grid container className={classes.paddedContainer}>
-                <Grid item xs>
-                  <Typography variant={'h4'} className={classes.heading}>
-                    {projectDetails.campaignName}
-                  </Typography>
-                </Grid>
-                {renderInvoiceAmmount()}
-              </Grid>
+    <div className={'screenContainer'}>
+      {renderHeader()}
 
-              <Grid
-                container
-                className={classes.campaignWrapper}
-                spacing={5}
-                alignItems='center'>
-                <Grid item sm={7}>
-                  <div className={classes.wrapper}>
-                    <div className={clsx(classes.carousel)}>
-                      <AssetCarousel
-                        assetIds={projectDetails.videos}
-                        accountId={accId}
-                        isVideo={true}
-                      />
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item sm={5}>
-                  <Typography paragraph variant={'h5'}>
-                    Campaign Description
-                  </Typography>
-                  <Typography variant='body1'>
-                    {projectDetails.description}
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                className={classes.campaignWrapper}
-                alignItems='center'
-                spacing={5}>
-                <Grid item sm={7}>
-                  <div className={clsx(classes.carousel)}>
-                    <FeatureAssetList
-                      assetIds={projectDetails.images}
-                      accountId={accId}
-                      isVideo={false}
-                      innerImageClassName={classes.image}
-                      assetContainerMinHeight={160}
-                      // onFeatureSelect={onFeatureSelect}
-                      // featuredAsset={featuredAsset}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={5}>
-                  <Typography paragraph variant={'h5'}>
-                    Project Details
-                  </Typography>
-                  <Grid container alignItems='center'>
-                    <Typography
-                      className={classes.subHeading}
-                      variant='subtitle1'>
-                      Campaign Objective:
-                    </Typography>
-                    <Typography className={classes.field} variant='body1'>
-                      {projectDetails.campaignObjective}
+      <div className={classes.subHeaderSection}>
+        {project.campaignName} <div className={classes.dot}></div>
+      </div>
+
+      {/* <Grid item sm={11} container>
+            <Grid item sm={12} className={classes.headerSection}>
+              {project.campaignName}
+            </Grid>
+          </Grid> */}
+      <div className={'screenInner'}>
+        <div className={clsx('responsivePadding', 'screenTopPadding')}>
+          <Grid item container className={classes.section}>
+            <Grid item sm={11} className={classes.mAuto}>
+              <Card
+                className={clsx('screenChild', classes.clientInvoiceWrapper)}>
+                <Grid container className={classes.paddedContainer}>
+                  <Grid item xs>
+                    <Typography variant={'h4'} className={classes.heading}>
+                      {project.campaignName}
                     </Typography>
                   </Grid>
-                  <Grid container alignItems='center'>
-                    <Typography
-                      className={classes.subHeading}
-                      variant='subtitle1'>
-                      Campaign Deadline:
+                  {renderInvoiceAmmount()}
+                </Grid>
+
+                <Grid
+                  container
+                  className={classes.campaignWrapper}
+                  spacing={5}
+                  alignItems='center'>
+                  <Grid item sm={7}>
+                    <div className={classes.wrapper}>
+                      <div className={clsx(classes.carousel)}>
+                        <AssetCarousel
+                          assetIds={project.videos}
+                          accountId={ownerAccountId}
+                          isVideo={true}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                  <Grid item sm={5}>
+                    <Typography paragraph variant={'h5'}>
+                      Campaign Description
                     </Typography>
                     <Typography variant='body1'>
-                      {projectDetails.campaignDeadLine}
+                      {project.description}
                     </Typography>
                   </Grid>
                 </Grid>
-              </Grid>
-
-              <Grid
-                container
-                justify='flex-end'
-                className={classes.paddedContainer}>
-                {renderInvoiceAmmount()}
-              </Grid>
-
-              {!accountData.isLoggedIn ||
-              (accountData.isLoggedIn &&
-                invoiceData?.invoiceConversationData[props.match.params.id]
-                  ?.length) ? (
-                <Grid item sm={11} container justify='center'>
-                  <div className={classes.editorSection}>
-                    <Typography
-                      paragraph
-                      color='textSecondary'
-                      className={classes.revisionHeading}>
-                      Revision Requests
+                <Grid
+                  container
+                  className={classes.campaignWrapper}
+                  alignItems='center'
+                  spacing={5}>
+                  <Grid item sm={7}>
+                    <div className={clsx(classes.carousel)}>
+                      <FeatureAssetList
+                        assetIds={project.images}
+                        accountId={ownerAccountId}
+                        isVideo={false}
+                        innerImageClassName={classes.image}
+                        assetContainerMinHeight={160}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid item sm={5}>
+                    <Typography paragraph variant={'h5'}>
+                      Project Details
                     </Typography>
+                    <Grid container alignItems='center'>
+                      <Typography
+                        className={classes.subHeading}
+                        variant='subtitle1'>
+                        Campaign Objective:
+                      </Typography>
+                      <Typography className={classes.field} variant='body1'>
+                        {project.campaignObjective}
+                      </Typography>
+                    </Grid>
+                    <Grid container alignItems='center'>
+                      <Typography
+                        className={classes.subHeading}
+                        variant='subtitle1'>
+                        Campaign Deadline:
+                      </Typography>
+                      <Typography variant='body1'>
+                        {project.campaignDeadLine}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
 
-                    <Grid container className={classes.conversationWrapper}>
-                      {invoiceData?.invoiceConversationData[
-                        props.match.params.id
-                      ]?.length
-                        ? invoiceData.invoiceConversationData[
-                            props.match.params.id
-                          ]
-                            .sort((a: any, b: any) => {
-                              return (
-                                new Date(a.date).valueOf() -
-                                new Date(b.date).valueOf()
-                              )
-                            })
-                            .map(
-                              (chat: Types.InvoiceConversation, i: number) => {
+                {(!isAccountOwner || !!conversation?.length) && (
+                  <Grid item sm={11} container justify='center'>
+                    <div className={classes.editorSection}>
+                      <Typography
+                        paragraph
+                        color='textSecondary'
+                        className={classes.revisionHeading}>
+                        Revision Requests
+                      </Typography>
+
+                      <Grid container className={classes.conversationWrapper}>
+                        {conversation?.length
+                          ? conversation
+                              .sort((a: any, b: any) => {
                                 return (
-                                  <Grid
-                                    item
-                                    sm={12}
-                                    container
-                                    key={chat.id}
-                                    justify={
-                                      accountData.isLoggedIn
-                                        ? invoiceData.invoiceData.userDetails
-                                            .email === chat.sendersEmail
-                                          ? 'flex-end'
-                                          : 'flex-start'
-                                        : invoiceData.invoiceData
-                                            .clientEmail === chat.sendersEmail
-                                        ? 'flex-end'
-                                        : 'flex-start'
-                                    }>
+                                  new Date(a.date).valueOf() -
+                                  new Date(b.date).valueOf()
+                                )
+                              })
+                              .map(
+                                (
+                                  chat: Types.InvoiceConversation,
+                                  i: number
+                                ) => {
+                                  return (
                                     <Grid
                                       item
-                                      sm={5}
-                                      className={classes.messageDateWrapper}>
-                                      <div className={classes.messageWrapper}>
-                                        <Typography
-                                          className={`${classes.textBold} ${classes.name}`}>
-                                          {accountData.isLoggedIn
-                                            ? invoiceData.invoiceData
-                                                .userDetails.email !==
-                                              chat.sendersEmail
-                                              ? chat.name
-                                              : ''
-                                            : invoiceData.invoiceData
-                                                .clientEmail !==
-                                              chat.sendersEmail
-                                            ? chat.name
-                                            : ''}
+                                      sm={12}
+                                      container
+                                      key={chat.id}
+                                      justify={
+                                        user && chat.senderId === user.id
+                                          ? 'flex-start'
+                                          : 'flex-end'
+                                      }>
+                                      <Grid
+                                        item
+                                        sm={5}
+                                        className={classes.messageDateWrapper}>
+                                        <div className={classes.messageWrapper}>
+                                          <Typography
+                                            className={`${classes.textBold} ${classes.name}`}>
+                                            {isAccountOwner
+                                              ? accountOwner.name
+                                              : client.name}
+                                          </Typography>
+                                          <Typography
+                                            className={classes.message}
+                                            dangerouslySetInnerHTML={{
+                                              __html: chat.message
+                                            }}></Typography>
+                                        </div>
+                                        <Typography className={classes.date}>
+                                          {new Date(chat.date).toLocaleString()}
                                         </Typography>
-                                        <Typography
-                                          className={classes.message}
-                                          dangerouslySetInnerHTML={{
-                                            __html: chat.message
-                                          }}></Typography>
-                                      </div>
-                                      <Typography className={classes.date}>
-                                        {new Date(chat.date).toLocaleString()}
-                                      </Typography>
+                                      </Grid>
                                     </Grid>
-                                  </Grid>
-                                )
-                              }
-                            )
-                        : null}
-                      <Grid item sm={12} ref={messagesEndRef}></Grid>
-                    </Grid>
-                    <Editor
-                      handleTextChange={handleTextChange}
-                      placeholder={'Add a note to request a revision'}
-                      resetValue={invoiceData.revisionSuccess}
-                    />
-                    <Grid container justify='flex-end'>
-                      <GradiantButton
-                        className={classes.gradiantBtn}
-                        onClick={handleSendRevisoRequest}
-                        loading={invoiceData.revisionLoading}
-                        disabled={invoiceData.revisionLoading}>
-                        {!invoiceData.revisionLoading &&
-                          (accountData.isLoggedIn
-                            ? 'Reply'
-                            : 'Send Revision Request')}
-                      </GradiantButton>
-                    </Grid>
-                  </div>
-                </Grid>
-              ) : null}
-            </Card>
+                                  )
+                                }
+                              )
+                          : null}
+                        <Grid item sm={12} ref={messagesEndRef}></Grid>
+                      </Grid>
+                      <Editor
+                        handleTextChange={handleTextChange}
+                        placeholder={'Add a note to request a revision'}
+                        resetValue={revisionSuccess}
+                      />
+                      <Grid container justify='flex-end'>
+                        <GradiantButton
+                          className={classes.gradiantBtn}
+                          onClick={handleSendRevisonRequest}
+                          loading={revisionLoading}
+                          disabled={revisionLoading}>
+                          <Typography>
+                            {!revisionLoading &&
+                              (isAccountOwner
+                                ? 'Reply'
+                                : 'Send Revision Request')}
+                          </Typography>
+                        </GradiantButton>
+                      </Grid>
+                    </div>
+                  </Grid>
+                )}
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   )
 }
@@ -356,13 +413,9 @@ const InvoicesClientScreen = (props: any) => {
 const useStyles = makeStyles((theme) => ({
   paddedContainer: { padding: theme.spacing(4) },
   clientInvoiceWrapper: {
-    background: '#272726',
-    border: `1px solid ${theme.palette.primary.light}`,
+    border: `1px solid ${theme.palette.primary.light}75`,
     color: '#fff',
-    padding: theme.spacing(2),
-    boxShadow: `0 0 10px ${theme.palette.primary.light}`,
-    marginBottom: theme.spacing(6),
-    marginTop: theme.spacing(5)
+    boxShadow: `0 0 15px 3px ${theme.palette.primary.light}75`
   },
   heading: {
     fontWeight: 800
@@ -439,32 +492,34 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '12px'
   },
   section: {
-    backgroundColor: theme.palette.background.secondary,
     color: '#fff'
   },
   mAuto: {
     margin: 'auto'
   },
   headerSection: {
-    backgroundColor: '#272726',
+    backgroundColor: '#ff0000',
     color: '#fff',
     padding: theme.spacing(3)
   },
   subHeaderSection: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: theme.palette.primary.light,
-    padding: '10px',
+    padding: theme.spacing(2),
     textAlign: 'center',
     color: '#fff',
-    fontSize: '12px',
+    fontSize: 14,
     position: 'relative'
   },
   dot: {
     position: 'absolute',
     backgroundColor: '#fff',
     borderRadius: '50%',
-    bottom: '3px',
-    width: '4px',
-    height: '4px',
+    bottom: 7,
+    width: 5,
+    height: 5,
     left: '50%'
   },
   carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' },

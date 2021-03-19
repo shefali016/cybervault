@@ -54,7 +54,7 @@ export const getAllProjectsRequest = async (account: Account) => {
 /**
  * @getSingleProjectDetails
  */
-export const getProjectDetailsRequest = async (
+export const getProject = async (
   accountId: string,
   projectId: string | undefined
 ) => {

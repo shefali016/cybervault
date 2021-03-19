@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardContent } from '@material-ui/core'
+import { Card, CardContent, Typography } from '@material-ui/core'
 // @ts-ignore
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -25,21 +25,21 @@ export default function ProfitExpenses(props: any) {
   return (
     <Card className={clsx(classes.card, props.className)}>
       <CardContent>
-        <div className={classes.inner}>
-          <div className={classes.header}>
-            <h5 className={classes.title}>Profit/Expenses</h5>
-            <div className={classes.root}>
-              <CustomTabs
-                value={value}
-                onChange={handleChange}
-                aria-label='ant example'>
-                <CustomTab label='This Year' />
-                <CustomTab label='This Month' />
-              </CustomTabs>
-            </div>
+        <div className={classes.header}>
+          <Typography variant='h6' className={classes.title}>
+            Profit/Expenses
+          </Typography>
+          <div className={classes.root}>
+            <CustomTabs
+              value={value}
+              onChange={handleChange}
+              aria-label='ant example'>
+              <CustomTab label='This Year' />
+              <CustomTab label='This Month' />
+            </CustomTabs>
           </div>
-          <Chart />
         </div>
+        <Chart />
       </CardContent>
     </Card>
   )
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   inner: {
     display: FLEX,
     flexDirection: COLUMN,
-    justifyContent: 'space-between'
+    justifyContent: 'center'
   },
   header: {
     display: 'flex',
@@ -57,24 +57,20 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
   },
   card: {
-    [theme.breakpoints.down('sm')]: {
-      minWidth: getCardHeight(theme),
-      height: '12rem'
-    },
-    minWidth: '18rem',
-    height: '10rem',
-    borderRadius: 15
+    minWidth: getCardHeight(theme),
+    height: '12rem',
+    borderRadius: 15,
+    padding: 5,
+    display: FLEX,
+    flexDirection: COLUMN,
+    justifyContent: 'center'
   },
   title: {
-    fontSize: '14px',
-    color: BLACK_COLOR,
     fontWeight: BOLD,
-    margin: 2,
-    paddingBottom: 5,
+    margin: 0,
     [theme.breakpoints.up('sm')]: { paddingRight: 20, paddingBottom: 0 }
   },
   bodyText: {
-    fontSize: 8,
     margin: 0,
     padding: 0
   },
