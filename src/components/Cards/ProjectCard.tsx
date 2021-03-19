@@ -185,8 +185,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: CENTER
   },
   card: {
-    width: getWidgetCardHeight(theme),
-    height: getWidgetCardHeight(theme),
+    width: '70vw',
+    height: '70vw',
+    maxWidth: 280,
+    maxHeight: 280,
     borderRadius: 15,
     display: FLEX,
     flexDirection: COLUMN,

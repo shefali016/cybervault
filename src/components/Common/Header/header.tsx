@@ -1,6 +1,6 @@
 import React from 'react'
 import { IconButton, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
 import { FLEX } from 'utils/constants/stringConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
@@ -8,6 +8,7 @@ import { User } from 'utils/Interface'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { AccountTabIds } from 'routes/DashboardSwitch'
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -22,10 +23,14 @@ type Props = {
   onLogoClick?: () => void
   renderHeaderContent?: () => React.ReactElement
   history?: any
+  width: any
 }
 
 function Toolbar(props: Props) {
   const classes = useStyles()
+  const theme = useTheme()
+
+  const isMobile = isWidthDown('xs', props.width)
 
   const handleProfileClick = () => {
     if (props.onProfileClick) {
@@ -46,7 +51,13 @@ function Toolbar(props: Props) {
         </div>
       )}
 
-      <div style={{ marginLeft: 25, display: FLEX, flex: 1 }}>
+      <div
+        style={{
+          marginLeft:
+            isMobile && !props.renderAppIcon ? theme.spacing(8) + 10 : 25,
+          display: FLEX,
+          flex: 1
+        }}>
         <Typography variant='h6' className={classes.title}>
           {props.headerTitle}
         </Typography>
@@ -80,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     fontWeight: 'normal',
     [theme.breakpoints.down('sm')]: {
-      fontSize: 14
+      fontSize: 18
     }
   },
   backIconContainer: {
@@ -119,4 +130,4 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default Toolbar
+export default withWidth()(Toolbar)

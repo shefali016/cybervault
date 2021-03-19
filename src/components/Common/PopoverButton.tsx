@@ -91,11 +91,13 @@ export const PopoverButton = ({
                   }}>
                   {!!Icon && (
                     <Icon
-                      style={{ marginRight: theme.spacing(1) }}
+                      style={{ marginRight: theme.spacing(1), marginBottom: 2 }}
                       fontSize='small'
                     />
                   )}
-                  <Typography>{title}</Typography>
+                  <Typography variant={'subtitle1'} style={{ margin: 0 }}>
+                    {title}
+                  </Typography>
                 </div>
               </MenuItem>
             )
