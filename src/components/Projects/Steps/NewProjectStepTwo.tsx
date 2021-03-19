@@ -85,6 +85,7 @@ const NewProjectStepTwo = (props: any) => {
               onChange={(e: InputChangeEvent) =>
                 handleTaskChange(e, 'title', index)
               }
+              error={haveError && data.title === '' ? true : false}
             />
           </div>
           <div style={{ flex: 0.2, marginRight: leftInputMargin }}>
@@ -95,6 +96,7 @@ const NewProjectStepTwo = (props: any) => {
               onChange={(e: InputChangeEvent) =>
                 handleTaskChange(e, 'startDate', index)
               }
+              error={haveError && data.startDate === '' ? true : false}
             />
           </div>
           <div style={{ flex: 0.2 }}>
@@ -105,6 +107,7 @@ const NewProjectStepTwo = (props: any) => {
               onChange={(e: InputChangeEvent) =>
                 handleTaskChange(e, 'endDate', index)
               }
+              error={haveError && data.endDate === '' ? true : false}
             />
           </div>
 

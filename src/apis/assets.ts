@@ -1,8 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Asset, Project, ProjectAsset } from '../utils/Interface'
-import { generateUid } from 'utils'
+import { Asset } from '../utils/Interface'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 var AWS = require('aws-sdk')
@@ -53,10 +52,7 @@ export const getDownloadUrl = async (id: string) => {
   })
 }
 
-export const addProjectAssets = async (
-  accountId: string,
-  asset: ProjectAsset
-) => {
+export const addAsset = async (accountId: string, asset: Asset) => {
   try {
     return firebase
       .firestore()
@@ -66,7 +62,7 @@ export const addProjectAssets = async (
       .doc(asset.id)
       .set(asset)
   } catch (error) {
-    console.log('>>>>>>>>>>>Error', error)
+    console.log('addAsset', error)
     return error
   }
 }
@@ -74,7 +70,7 @@ export const addProjectAssets = async (
 export const getAssets = async (
   ids: Array<string>,
   accountId: string
-): Promise<Array<ProjectAsset>> => {
+): Promise<Array<Asset>> => {
   const assetRequests = ids.map((id: string) =>
     firebase
       .firestore()
@@ -84,7 +80,7 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        return snapshot.data() as ProjectAsset
+        return snapshot.data() as Asset
       })
   )
   return await (await Promise.all(assetRequests)).filter((asset) => !!asset)

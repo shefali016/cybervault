@@ -7,9 +7,11 @@ import {
   SharingPrivacies,
   SubscriptionDurations,
   SubscriptionTypes,
+  UploadStatuses,
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
+import firebase from 'firebase'
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -49,13 +51,6 @@ export type ButtonConfig = {
 }
 
 export type Tab = { id: string; icon?: any; text: string; onPress?: () => void }
-
-export type Asset = {
-  id: string
-  width?: number
-  height?: number
-  original?: any
-}
 
 export type BankingDetails = {} // @todo R&D what details we need from user to deposit from Stripe
 
@@ -235,6 +230,132 @@ export interface Subscription {
   trial_start: null
 }
 
+export interface StripeInvoice {
+  id: string
+  object: Object
+  account_country: string
+  account_name: string
+  account_tax_ids: null
+  amount_due: number
+  amount_paid: number
+  amount_remaining: number
+  application_fee_amount: null
+  attempt_count: number
+  attempted: boolean
+  auto_advance: boolean
+  billing_reason: string
+  charge: string
+  collection_method: string
+  created: number
+  currency: string
+  custom_fields: null
+  customer: string
+  customer_address: null
+  customer_email: string
+  customer_name: string
+  customer_phone: null
+  customer_shipping: null
+  customer_tax_exempt: null
+  customer_tax_ids: Array<string>
+  default_payment_method: null
+  default_source: null
+  default_tax_rates: Array<string>
+  description: null
+  discount: null
+  discounts: Array<string>
+  due_date: null
+  ending_balance: number
+  footer: null
+  hosted_invoice_url: string
+  lines: {
+    data: [
+      {
+        id: string
+        object: string
+        amount: number
+        currency: number
+        description: number
+        discount_amounts: Array<string>
+        discountable: boolean
+        discounts: Array<string>
+        livemode: boolean
+        metadata: Object
+        period: {
+          end: number
+          start: number
+        }
+        price: {
+          id: string
+          object: Object
+          active: boolean
+          billing_scheme: string
+          created: number
+          currency: string
+          livemode: boolean
+          lookup_key: null
+          metadata: Object
+          nickname: null
+          product: string
+          recurring: {
+            aggregate_usage: null
+            interval: string
+            interval_count: number
+            usage_type: string
+          }
+          tiers_mode: null
+          transform_quantity: null
+          type: string
+          unit_amount: number
+          unit_amount_decimal: number
+        }
+        proration: boolean
+        quantity: number
+        subscription: string
+        subscription_item: string
+        tax_amounts: Array<string>
+        tax_rates: Array<string>
+        type: string
+      }
+    ]
+    has_more: boolean
+    object: string
+    url: string
+  }
+  livemode: boolean
+  metadata: object
+  next_payment_attempt: null
+  number: number
+  on_behalf_of: null
+  paid: boolean
+  payment_intent: string
+  payment_settings: {
+    payment_method_options: null
+    payment_method_types: null
+  }
+  period_end: number
+  period_start: number
+  post_payment_credit_notes_amount: number
+  pre_payment_credit_notes_amount: number
+  receipt_number: null
+  starting_balance: number
+  statement_descriptor: null
+  status: string
+  status_transitions: {
+    finalized_at: number
+    marked_uncollectible_at: null
+    paid_at: number
+    voided_at: null
+  }
+  subscription: string
+  subtotal: number
+  tax: null
+  total: number
+  total_discount_amounts: Array<string>
+  total_tax_amounts: Array<string>
+  transfer_data: null
+  webhooks_delivered_at: null
+}
+
 export type Account = {
   id: string
   owner: string // id of user
@@ -277,11 +398,11 @@ export type Account = {
 
 export type User = {
   id: string
-  email: string | null
+  email: string
   accounts: Array<string> // ids of accounts,
   mainAccount: string // Id of user's main account
   avatar?: string | undefined
-  name?: string | null
+  name: string
   birthday?: string
   company?: string | undefined
   instagram?: string | undefined
@@ -293,7 +414,7 @@ export type User = {
 
 export type AuthUser = {
   uid: string
-  email: string | null
+  email: string
   name?: string | null
 }
 
@@ -319,11 +440,10 @@ export type Expense = {
 export type Milestone = {
   id: string
   title: string
-  cost: number
   payment: number //added as in fireabase when creating milestone payment key is used for cost
 }
 
-export type MediaObject = {
+export type AssetFile = {
   id: string
   original?: boolean
   url: string
@@ -356,6 +476,7 @@ export type Project = {
 
 export type InvoiceConversation = {
   name: string
+  senderId: string
   sendersEmail: string
   message: string
   date: Date | string
@@ -370,24 +491,22 @@ export type InvoiceUserInfo = {
 }
 
 export type Invoice = {
-  id: String // Using generateId function
+  id: string // Using generateId function
   dateCreated: Date | string
+  projectName: string
   datePaid: Date | null
   projectId: string // Id of the project being invoiced
+  accountId: string
+  clientId: string
   price: number // Amount that the client must pay
   milestones: Array<Milestone> | null // will contain milestones being invoiced or null if invoicing total amount
-  clientEmail: String
   isPaid: Boolean
-  status: InvoiceStatus
-  projectName: string
-  campaignDeadLine: string
-  featuredImage?: string
+  status: InvoiceStatuses
   conversation?: Array<InvoiceConversation>
-  userDetails: InvoiceUserInfo
 }
 
 export type ProjectStatus =
-  | ProjectStatuses.PENDING
+  | ProjectStatuses.PROGRESS
   | ProjectStatuses.PAID
   | ProjectStatuses.ARCHIVED
 
@@ -396,9 +515,9 @@ export type InvoiceStatus =
   | InvoiceStatuses.VIEWED
   | InvoiceStatuses.PAID
 
-export interface ProjectAsset {
+export interface Asset {
   id: string
-  files: Array<MediaObject>
+  files: Array<AssetFile>
   fileName: string
   type: string
 }
@@ -512,4 +631,12 @@ export interface Notification {
   createdAt: number
   title: string
   isRead: boolean
+}
+
+export type UploadCache = { [assetId: string]: AssetUpload }
+export type AssetUpload = {
+  asset: Asset
+  task: firebase.storage.UploadTask
+  status: UploadStatuses
+  progress: number
 }

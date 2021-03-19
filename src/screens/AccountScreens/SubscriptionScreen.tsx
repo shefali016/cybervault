@@ -10,7 +10,8 @@ import {
   User,
   SubscriptionType,
   StripePlans,
-  Product
+  Product,
+  Invoice
 } from 'utils/Interface'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
@@ -22,6 +23,7 @@ import { CardModal } from 'components/Stripe/CardModal'
 import {
   cancelPlanSubscription,
   createAmountSubscription,
+  getCustomerInvoices,
   getStripPlanList,
   planSubscription,
   requestPaymentMethods,
@@ -42,6 +44,7 @@ type StateProps = {
   subscriptionLoading: boolean
   subscriptionPlans: Array<StripePlans> | null
   storagePurchaseLoading: boolean
+  billingHistory: Array<Invoice> | any
 }
 type DispatchProps = {
   getPaymentMethods: (customerId: string) => void
@@ -63,6 +66,7 @@ type DispatchProps = {
     productId: string
   ) => void
   getPlanList: () => void
+  getCustomerInvoices: () => void
 }
 type ReduxProps = StateProps & DispatchProps
 type Props = { history: any; location: any }
@@ -84,13 +88,16 @@ const SubscriptionScreen = ({
   getPlanList,
   subscriptionPlans,
   subscriptionLoading,
-  storagePurchaseLoading
+  storagePurchaseLoading,
+  getCustomerInvoices,
+  billingHistory
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
   useEffect(() => {
     getPaymentMethods(user.customerId)
     getPlanList()
+    getCustomerInvoices()
   }, [])
 
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState<boolean>(
@@ -110,6 +117,7 @@ const SubscriptionScreen = ({
   const toggleCardModal = (open: boolean) => () => setCardModalOpen(open)
 
   const navigateToPaymentMethodsScreen = () => history.push('paymentmethods')
+  const navigateToBillingHistoryScreen = () => history.push('billing')
 
   return (
     <div className={'screenContainer'}>
@@ -159,7 +167,7 @@ const SubscriptionScreen = ({
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>
+                      <Typography variant='body1'>
                         {!!accountSubscription
                           ? `${
                               getSubscriptionDetails(
@@ -199,7 +207,7 @@ const SubscriptionScreen = ({
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      <Typography variant='subtitle1'>Your Storage</Typography>
+                      <Typography variant='body1'>Your Storage</Typography>
                       <Typography variant='caption'>
                         Add storage to account to upload more content
                       </Typography>
@@ -230,7 +238,7 @@ const SubscriptionScreen = ({
                           />
                         </div>
                       ) : (
-                        <Typography variant='subtitle1'>
+                        <Typography variant='body1'>
                           You haven't added a payment method
                         </Typography>
                       )}
@@ -268,15 +276,51 @@ const SubscriptionScreen = ({
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
-                      {false ? (
-                        <div></div> // @todo fetch most recent billing history item
+                      {!!accountSubscription ? (
+                        <div>
+                          <Typography variant='body1'>Most Recent</Typography>
+                          {billingHistory && billingHistory.length ? (
+                            <Typography variant='caption'>
+                              <div style={{ flex: 1 }}>
+                                <Typography
+                                  style={{ marginRight: 20 }}
+                                  variant='caption'>
+                                  Date:{' '}
+                                  {new Date(
+                                    billingHistory[0].created * 1000
+                                  ).toDateString()}
+                                </Typography>
+                                <Typography
+                                  style={{ marginRight: 20 }}
+                                  variant='caption'>
+                                  Item Type:{' '}
+                                  {
+                                    billingHistory[0].lines.data[0].metadata
+                                      .type
+                                  }
+                                </Typography>
+                                <Typography
+                                  style={{ marginRight: 20 }}
+                                  variant='caption'>
+                                  Amount: ${billingHistory[0].amount_paid / 100}
+                                </Typography>
+                              </div>
+                            </Typography>
+                          ) : (
+                            <Typography variant='caption'>
+                              No recent charges
+                            </Typography>
+                          )}
+                        </div> // @todo fetch most recent billing history item
                       ) : (
                         <Typography variant='subtitle1'>
                           You are not subscribed
                         </Typography>
                       )}
                     </div>,
-                    <GradiantButton>
+                    <GradiantButton
+                      onClick={navigateToBillingHistoryScreen}
+                      disabled={!accountSubscription}>
                       <div className={'row'}>
                         <Typography style={{ marginRight: 5 }}>
                           View History
@@ -345,7 +389,8 @@ const mapState = (state: ReduxState): StateProps => ({
   subscriptionLoading: state.stripe.subscriptionLoading,
   subscriptionPlans: state.stripe
     .subscriptionPlans as Array<StripePlans> | null,
-  storagePurchaseLoading: state.stripe.storagePurchaseLoading
+  storagePurchaseLoading: state.stripe.storagePurchaseLoading,
+  billingHistory: state.stripe.billingHistory as Array<Invoice>
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({
@@ -372,7 +417,8 @@ const mapDispatch = (dispatch: any): DispatchProps => ({
     dispatch(
       createAmountSubscription(price, paymentMethodId, extraStorage, productId)
     ),
-  getPlanList: () => dispatch(getStripPlanList())
+  getPlanList: () => dispatch(getStripPlanList()),
+  getCustomerInvoices: () => dispatch(getCustomerInvoices())
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

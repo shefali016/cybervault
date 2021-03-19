@@ -2,6 +2,42 @@ import { Theme } from '@material-ui/core/styles'
 import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
 
+export const addArrayToCache = (
+  cache: {},
+  arr: any[],
+  key: string | undefined = 'id'
+) => {
+  const newCache: { [id: string]: any } = { ...cache }
+  arr.forEach((item: any) => {
+    newCache[item[key]] = item
+  })
+  return newCache
+}
+
+export const addToCache = (
+  cache: {},
+  item: any,
+  key: string | undefined = 'id'
+) => {
+  return { ...cache, [item[key]]: item }
+}
+
+export const replaceOrAdd = (
+  arr: any[],
+  item: any,
+  compare: (item: any) => boolean
+) => {
+  const index = arr.findIndex((item: any) => compare(item))
+
+  if (index > -1) {
+    const newArr = [...arr]
+    newArr[index] = item
+    return newArr
+  } else {
+    return [...arr, item]
+  }
+}
+
 export const sortByCreatedAt = (arr: Array<any>) => {
   return arr.sort((a, b) =>
     b.createdAt && a.createdAt ? b.createdAt - a.createdAt : 0
@@ -9,11 +45,11 @@ export const sortByCreatedAt = (arr: Array<any>) => {
 }
 
 export function getWidgetCardHeight(theme: Theme) {
-  return Math.min(window.outerWidth - theme.spacing(8) - 100, 200)
+  return Math.min(window.outerWidth - theme.spacing(8) - 100, 275)
 }
 
 export function getCardHeight(theme: Theme) {
-  return Math.min(window.outerWidth - theme.spacing(16), 300)
+  return Math.min(window.outerWidth - theme.spacing(8), 350)
 }
 
 export function generateUid() {
@@ -41,7 +77,7 @@ export const getProductData = (): Project => {
     id: '',
     images: [],
     videos: [],
-    status: ProjectStatuses.PENDING
+    status: ProjectStatuses.PROGRESS
   }
 }
 

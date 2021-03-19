@@ -1,7 +1,7 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { StripePlans, Subscription } from 'utils/Interface'
+import { Invoice, StripePlans, Subscription } from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -13,6 +13,10 @@ export type State = {
 
   attachError: null | string
   attachSuccess: boolean
+
+  setAsDefaultError: null | string
+  setAsDefaultSuccess: boolean
+  setAsDefaultLoadingId: null | string
 
   accountSubscription: null | Object | any
   storageSubscription: null | Object | any
@@ -33,6 +37,11 @@ export type State = {
   storagePurchaseLoading: boolean
   storagePurchaseSuccess: boolean
   storagePurchaseError: null | string
+
+  billingHistory: Array<Invoice> | null
+  billingHistoryLoading: boolean
+  billingHistorySuccess: boolean
+  billingHistoryError: null | string
 }
 
 export type Action = {
@@ -46,6 +55,8 @@ export type Action = {
   planId: string
   plans: Array<StripePlans>
   storageSubscription: Subscription
+  billingHistory: Array<Invoice>
+  paymentMethodId: string
 }
 
 const initialState = {
@@ -54,6 +65,10 @@ const initialState = {
   paymentMethods: [],
   detachError: null,
   detachSuccess: false,
+
+  setAsDefaultError: null,
+  setAsDefaultSuccess: false,
+  setAsDefaultLoadingId: null,
 
   attachError: null,
   attachSuccess: false,
@@ -76,7 +91,12 @@ const initialState = {
 
   storagePurchaseLoading: false,
   storagePurchaseSuccess: false,
-  storagePurchaseError: null
+  storagePurchaseError: null,
+
+  billingHistory: null,
+  billingHistoryLoading: false,
+  billingHistorySuccess: false,
+  billingHistoryError: null
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -235,6 +255,55 @@ const stripe = (state = initialState, action: Action) => {
         ...state,
         storagePurchaseLoading: false,
         storagePurchaseError: action.error
+      }
+    case ActionTypes.SET_DEFAULT_PAYMENT_METHOD:
+      return {
+        ...state,
+        setAsDefaultLoadingId: action.paymentMethodId
+      }
+    case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_SUCCESS:
+      const paymentMethodsData = [...state.paymentMethods]
+      const index = paymentMethodsData.findIndex(
+        (item: any) => item.id === action.paymentMethodId
+      )
+      const defultPaymentMethod = paymentMethodsData[index]
+      paymentMethodsData.splice(index, 1)
+      paymentMethodsData.push(defultPaymentMethod)
+
+      return {
+        ...state,
+        customer: action.customer,
+        setAsDefaultSuccess: true,
+        setAsDefaultLoadingId: null,
+        paymentMethods: paymentMethodsData
+      }
+    case ActionTypes.SET_DEFAULT_PAYMENT_METHOD_FAILURE:
+      return {
+        ...state,
+        setAsDefaultError: action.error,
+        setAsDefaultLoadingId: null
+      }
+    case ActionTypes.GET_CUSTOMER_INVOICE:
+      return {
+        ...state,
+        billingHistoryLoading: true,
+        billingHistorySuccess: false,
+        billingHistoryError: null
+      }
+    case ActionTypes.GET_CUSTOMER_INVOICE_SUCCESS:
+      return {
+        ...state,
+        billingHistory: action.billingHistory,
+        billingHistoryLoading: false,
+        billingHistorySuccess: true,
+        billingHistoryError: null
+      }
+    case ActionTypes.GET_CUSTOMER_INVOICE_FAILURE:
+      return {
+        ...state,
+        billingHistoryError: action.error,
+        billingHistoryLoading: false,
+        billingHistorySuccess: false
       }
 
     default:

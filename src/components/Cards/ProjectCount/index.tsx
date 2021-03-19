@@ -12,7 +12,7 @@ function ProjectCount(props: Props) {
   return (
     <Card className={clsx(classes.card, props.className)}>
       <CardContent className={classes.content}>
-        <Typography variant={'h1'} className={classes.title}>
+        <Typography variant={'caption'} className={classes.title}>
           Projects This Month
         </Typography>
         <Typography variant={'h2'} className={classes.countText}>
@@ -24,10 +24,11 @@ function ProjectCount(props: Props) {
 }
 const useStyles = makeStyles((theme) => ({
   card: {
-    minWidth: '10rem',
-    height: '10rem',
+    minWidth: '12rem',
+    height: '12rem',
     borderRadius: 15,
-    display: FLEX
+    display: FLEX,
+    padding: 5
   },
   content: {
     display: FLEX,
@@ -37,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: CENTER
   },
   title: {
-    fontSize: '12px',
-    color: BLACK_COLOR,
     fontWeight: 600
   },
   countText: {

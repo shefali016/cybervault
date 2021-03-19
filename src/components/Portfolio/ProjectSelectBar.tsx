@@ -105,9 +105,9 @@ export const ProjectSelectBar = ({
   }
 
   return (
-    <div>
+    <div className={classes.projectBarContainer}>
       <div
-        className={classes.projectBarContainer}
+        className={classes.projectBar}
         style={{
           background: `linear-gradient(to right ,${gradiant1}, ${gradiant2})`
         }}>

@@ -1,5 +1,4 @@
 import {
-  Icon,
   SvgIconTypeMap,
   Table,
   TableBody,
@@ -14,6 +13,7 @@ import clsx from 'clsx'
 import { EmptyIcon } from 'components/EmptyIcon'
 import React from 'react'
 import { Cell, Row } from 'utils/Interface'
+import { AppLoader } from './AppLoader'
 
 interface Props {
   headerCells: Array<Cell>
@@ -25,6 +25,7 @@ interface Props {
     Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>
     title: string
   }
+  loading?: boolean
 }
 
 export const AppTable = ({
@@ -33,55 +34,66 @@ export const AppTable = ({
   tableContainerClassName,
   emptyProps,
   handleRowClick,
+  loading,
   ...rest
 }: Props) => {
   const classes = useStyles()
 
-  const renderCell = ({ renderer, title, cellProps, key }: Cell) => (
-    <TableCell {...cellProps} className={clsx(classes.cellWrapper)}>
+  console.log(emptyProps, rows)
+
+  const renderCell = (
+    { renderer, title, cellProps, key }: Cell,
+    lastCell: boolean
+  ) => (
+    <TableCell
+      {...cellProps}
+      className={clsx(classes.cellWrapper)}
+      classes={{ root: lastCell ? classes.lastRow : classes.row }}>
       {typeof renderer === 'function' ? renderer() : title}
     </TableCell>
   )
 
   return (
-    <TableContainer
-      className={clsx(classes.tableContainer, tableContainerClassName)}>
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {headerCells.map((cell: Cell) => renderCell(cell))}
-          </TableRow>
-        </TableHead>
-
-        {rows.length === 0 && !!Icon && (
-          <div className={classes.emptyContainer}>
-            <EmptyIcon {...emptyProps} />
-          </div>
-        )}
-
-        <TableBody>
-          {rows.map((row: Row, index) => (
-            <TableRow
-              key={`table-row-${row.key}`}
-              onClick={() => handleRowClick(row.key)}>
-              {row.row.map((cell: Cell) => renderCell(cell))}
+    <div className={clsx(classes.tableContainer, tableContainerClassName)}>
+      <TableContainer>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              {headerCells.map((cell: Cell) => renderCell(cell, false))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+
+          <TableBody>
+            {rows.map((row: Row, index) => (
+              <TableRow
+                key={`table-row-${row.key}`}
+                onClick={() => handleRowClick(row.key)}>
+                {row.row.map((cell: Cell) =>
+                  renderCell(cell, index === rows.length - 1)
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {rows.length === 0 && !!emptyProps.Icon && (
+        <div className={classes.emptyContainer}>
+          {loading ? <AppLoader /> : <EmptyIcon {...emptyProps} />}
+        </div>
+      )}
+    </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: { background: theme.palette.background.surface },
-  table: { position: 'relative' },
+  table: { position: 'relative', flex: 1 },
   emptyContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 0,
-    left: 0
+    justifyContent: 'center'
   },
-  cellWrapper: { color: '#fff' }
+  cellWrapper: { color: '#fff' },
+  row: { borderColor: theme.palette.background.surfaceHighlight },
+  lastRow: { borderColor: 'transparent' }
 }))

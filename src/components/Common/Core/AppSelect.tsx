@@ -37,7 +37,7 @@ const AppSelect = ({ items, className, ...rest }: Props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
-  item: { fontSize: 12 }
+  item: { fontSize: 16 }
 }))
 
 export default AppSelect

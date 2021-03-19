@@ -13,6 +13,7 @@ import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
 import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
+import BillingHistoryScreen from 'screens/Stripe/BillingHistoryScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -43,8 +44,6 @@ import SubscriptionIcon from '@material-ui/icons/LocalActivity'
 
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
-// import BankingScreen from 'screens/SharedScreens/BankingScreen'
-import PaymentsScreen from 'screens/SharedScreens/PaymentsScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
 import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 
@@ -80,7 +79,8 @@ export const ChildTabs = {
 
 export const SharedTabIds = {
   subscription: 'subscription',
-  security: 'security'
+  security: 'security',
+  billing: 'billing'
 }
 
 export const ScreenViews = {
@@ -119,7 +119,8 @@ const MainScreen = ({
   user,
   account,
   allProjectsData,
-  accountSubscription
+  accountSubscription,
+  location
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -373,16 +374,13 @@ const MainScreen = ({
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
-          <Route
-            path='/clientInvoices/:accId/:id'
-            component={InvoicesClientScreen}
-          />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
           <Route
             path='/portfolioFolder/:id'
             component={PortfolioFolderScreen}
           />
           <Route path='/paymentmethods' component={PaymentMethodsScreen} />
+          <Route path='/billing' component={BillingHistoryScreen} />
           <Route
             path='/refresh_account_link/:id'
             component={AccountLinkRefreshScreen}

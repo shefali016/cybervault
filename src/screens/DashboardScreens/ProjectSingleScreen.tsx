@@ -8,12 +8,12 @@ import React, {
 import { connect } from 'react-redux'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { COLUMN, FLEX, FLEX_END } from '../../utils/constants/stringConstants'
+import { COLUMN, FLEX } from '../../utils/constants/stringConstants'
 import {
   requestGetProjectDetails,
   requestUpdateProjectDetails
 } from '../../actions/projectActions'
-import { RenderClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
+import { ClientDetails } from '../../components/Common/Widget/ClientDetailsWidget'
 import { RenderTaskDetails } from '../../components/Common/Widget/TaskDetailsWidget'
 import { RenderProjectDetails } from '../../components/Common/Widget/ProjectDetailWidget'
 import { RenderExpenseDetails } from '../../components/Common/Widget/ExpenseDetailsWidget'
@@ -21,16 +21,17 @@ import { RenderMilestonesDetails } from '../../components/Common/Widget/Mileston
 import { RenderBudgetDetails } from '../../components/Common/Widget/BudgetDetailsWidget'
 import ProjectModal from 'components/Projects/NewProjectModal'
 import ProjectStatusIndicator from '../../components/Common/ProjectStatusIndicator'
-import { addProjectAssets, setMedia } from '../../apis/assets'
-import { generateUid } from '../../utils/index'
-import { getImageObject } from 'utils/helpers'
-import { ToastContext } from 'context/Toast'
 import { AssetUploadDisplay } from '../../components/Assets/UploadMedia'
-import { Project, ProjectAsset } from 'utils/Interface'
+import { Asset, Project } from 'utils/Interface'
 import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
 import * as Types from '../../utils/Interface'
+import Header from 'components/Common/Header/header'
+import clsx from 'clsx'
+import { AppLoader } from 'components/Common/Core/AppLoader'
+import { AssetUploadContext } from 'context/AssetUpload'
+import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -40,31 +41,27 @@ type EditProjectStates = {
   isCampaignEdit: boolean | undefined
   isTaskEdit: boolean | undefined
   isBudgetEdit: boolean | undefined
-  imagesLoading: string[]
-  videosLoading: string[]
-  showTostify: boolean
-  account: Types.Account
 }
 
 const EditProjectScreen = (props: any) => {
   const classes = useStyles()
-  const toastContext = useContext(ToastContext)
-
-  const client = useGetClient(props.clients, props.projectDetails)
+  const assetUploadContext = useContext(AssetUploadContext)
 
   const [state, setState] = useState<EditProjectStates>({
-    projectData: props.projectDetails,
+    projectData: props.projectCache[props.match.params.id],
     editProjectModalOpen: false,
     currentStep: 0,
     isExpensesEdit: false,
     isCampaignEdit: false,
     isTaskEdit: false,
-    isBudgetEdit: false,
-    imagesLoading: [],
-    videosLoading: [],
-    showTostify: false,
-    account: props.account
+    isBudgetEdit: false
   })
+
+  const [confirmDeleteAsset, setConfirmDeleteAsset] = useState<Asset | null>(
+    null
+  )
+
+  const client = useGetClient(props.clients, state.projectData)
 
   const openEditProjectModal = (
     currentStep: number,
@@ -89,26 +86,10 @@ const EditProjectScreen = (props: any) => {
     []
   )
 
-  useOnChange(props.isUpdatedSuccess, (success) => {
-    if (success) {
-      toastContext.showToast({
-        title: 'Project updated',
-        type: 'success'
-      })
-    }
-  })
-
-  useOnChange(props.projectUpdateError, (error) => {
-    if (error) {
-      toastContext.showToast({
-        title: 'Failed to update project'
-      })
-    }
-  })
-
-  useOnChange(props.projectDetails, (projectData: Project | null) => {
-    if (projectData) {
-      setState({ ...state, projectData })
+  useOnChange(props.projectCache, (projectCache: { [id: string]: Project }) => {
+    const project = projectCache[props.match.params.id]
+    if (project) {
+      setState((state) => ({ ...state, projectData: project }))
     }
   })
 
@@ -120,94 +101,50 @@ const EditProjectScreen = (props: any) => {
   }, [])
 
   const uploadFiles = (type: 'image' | 'video') => async (files: File[]) => {
-    files.map((file: File) => handleAssetUpload(file, type))
+    assetUploadContext.uploadFiles(files, type, addAssetToProject)
   }
 
-  const handleAssetUpload = async (file: File, type: 'image' | 'video') => {
-    const { account } = props
-
-    const asset: ProjectAsset = {
-      type,
-      files: [],
-      fileName: file.name,
-      id: generateUid()
-    }
-
-    setState(
-      Object.assign(
-        state,
-        'image' ? { videosLoading: [...state.videosLoading, asset.id] } : {},
-        'video' ? { imagesLoading: [...state.imagesLoading, asset.id] } : {}
-      )
+  const addAssetToProject = async (asset: Asset) => {
+    const project = Object.assign(
+      state.projectData,
+      asset.type === 'image'
+        ? { images: [...state.projectData.images, asset.id] }
+        : { videos: [...state.projectData.videos, asset.id] }
     )
 
+    setState((state) => ({ ...state, projectData: project }))
+
+    props.updateProjectDetails(project)
+  }
+
+  const confirmAssetDelete = (asset: Asset) => {
+    setConfirmDeleteAsset(asset)
+  }
+
+  const handleAssetDelete = async (asset: Asset) => {
+    setConfirmDeleteAsset(null)
     try {
-      console.log("--------------------------------")
-      const downloadUrl = await setMedia(asset.id, file)
-      console.log(downloadUrl,"jjjjjjjjjjjjjjjjjjjjjjj")
-
-      if (typeof downloadUrl === 'string') {
-        asset.files.push(getImageObject(file, downloadUrl, asset.id))
-        await addProjectAssets(account.id, asset)
-
-        const project = Object.assign(
-          state.projectData,
-          type === 'image'
-            ? { images: [...state.projectData.images, asset.id] }
-            : { videos: [...state.projectData.videos, asset.id] }
-        )
-
-        setState((state) =>
-          Object.assign(
-            state,
-            { projectData: project },
-            'image'
-              ? {
-                  videosLoading: state.videosLoading.filter(
-                    (a) => a !== asset.id
-                  )
-                }
-              : {},
-            'video'
-              ? {
-                  imagesLoading: state.imagesLoading.filter(
-                    (a) => a !== asset.id
-                  )
-                }
-              : {}
-          )
-        )
-
-        props.updateProjectDetails(project)
-      } else {
-        throw Error('Download url is not a string')
-      }
-    } catch (error) {
-      setState((state) =>
-        Object.assign(
-          state,
-          'image'
-            ? {
-                videosLoading: state.videosLoading.filter((a) => a !== asset.id)
-              }
-            : {},
-          'video'
-            ? {
-                imagesLoading: state.imagesLoading.filter((a) => a !== asset.id)
-              }
-            : {}
-        )
-      )
-      console.log('Asset upload failed.', error)
-      toastContext.showToast({ title: `Failed to upload ${type}` })
-    }
+    } catch (error) {}
   }
 
   const renderHeader = () => {
+    if (!state.projectData) {
+      return (
+        <div className={clsx('row', 'center')}>
+          <AppLoader />
+        </div>
+      )
+    }
+
     return (
-      <div className={classes.headText}>
-        <Typography> Status : {'In Progress'}</Typography>
-        <ProjectStatusIndicator status={'In progress'} />
+      <div className={clsx('row', 'headerContainer')}>
+        <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
+          {state.projectData.campaignName}
+        </Typography>
+        <div className={classes.projectStatus}>
+          <Typography>Status: {state.projectData.status}</Typography>
+          <ProjectStatusIndicator status={state.projectData.status} />
+        </div>
       </div>
     )
   }
@@ -224,7 +161,6 @@ const EditProjectScreen = (props: any) => {
 
   //submit project details update
   const handleUpdateProject = async (projectData: Project) => {
-    console.log('IU')
     setState({
       ...state,
       projectData,
@@ -236,43 +172,37 @@ const EditProjectScreen = (props: any) => {
   const renderProjectDetails = () => {
     return (
       <div>
-        <RenderClientDetails
+        <ClientDetails
           clientData={client}
           editInfo
           onEdit={() => openEditProjectModal(1)}
+          hideInfo={true}
         />
+
         <RenderProjectDetails
           projectData={state.projectData}
           editInfo
           onEdit={() => openEditProjectModal(2, false, true, false, false)}
         />
-        {state.projectData &&
-        state.projectData.tasks &&
-        state.projectData.tasks.length > 0 ? (
-          <RenderTaskDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(2, true, false, false, false)}
-          />
-        ) : null}
-        {state.projectData &&
-        state.projectData.expenses &&
-        state.projectData.expenses.length > 0 ? (
-          <RenderExpenseDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(3, false, false, true, false)}
-          />
-        ) : null}
-        {state.projectData &&
-        state.projectData.milestones &&
-        state.projectData.milestones.length > 0 ? (
-          <RenderMilestonesDetails
-            projectData={state.projectData}
-            editInfo
-            onEdit={() => openEditProjectModal(4)}
-          />
-        ) : null}
+
+        <RenderTaskDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(2, true, false, false, false)}
+        />
+
+        <RenderExpenseDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(3, false, false, true, false)}
+        />
+
+        <RenderMilestonesDetails
+          projectData={state.projectData}
+          editInfo
+          onEdit={() => openEditProjectModal(4)}
+        />
+
         <RenderBudgetDetails
           projectData={state.projectData}
           editInfo
@@ -282,8 +212,11 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
-  console.log(state.projectData.videos,"videosssss")
+  console.log(state.projectData.videos, 'videosssss')
   const renderBody = () => {
+    if (!state.projectData) {
+      return null
+    }
     return (
       <div className={classes.detailsWrapper}>
         <Fragment>
@@ -295,9 +228,9 @@ const EditProjectScreen = (props: any) => {
               onUpload: uploadFiles('video'),
               assetIds: state.projectData.videos,
               accountId: props.account.id,
-              isLoading: !!state.videosLoading.length,
               title: 'Upload Video Content',
-              isVideo: true
+              isVideo: true,
+              onDeleteAsset: confirmAssetDelete
             }}
           />
           <AppDivider spacing={6} />
@@ -307,10 +240,10 @@ const EditProjectScreen = (props: any) => {
               onUpload: uploadFiles('image'),
               assetIds: state.projectData.images,
               accountId: props.account.id,
-              isLoading: !!state.imagesLoading.length,
               title: 'Upload Image Content',
               onFeatureSelect: handleFeaturedImageSelect,
-              featuredAsset: state.projectData.featuredImage
+              featuredAsset: state.projectData.featuredImage,
+              onDeleteAsset: confirmAssetDelete
             }}
           />
         </Fragment>
@@ -334,13 +267,36 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  const handleBack = () => props.history.push('/dashboard')
+
   return (
-    <div>
-      {renderEditProjectModel()}
-      <div className={classes.dashboardContainer}>
-        <div className={classes.wrapper}>
-          {renderHeader()}
-          {renderBody()}
+    <div className={clsx('screenContainer', 'fullHeight')}>
+      <Header
+        user={props.user}
+        renderAppIcon={true}
+        onLogoClick={handleBack}
+        history={props.history}
+      />
+
+      <div className={'screenInner'}>
+        <div className={clsx('responsivePadding', 'screenTopPadding')}>
+          <div className={'screenChild'}>
+            {renderHeader()}
+            {renderBody()}
+            {renderEditProjectModel()}
+            <ConfirmationDialog
+              title={'Delete Project Asset'}
+              message={
+                'Are you sure you want to remove this asset from the project? This cannot be undone'
+              }
+              isOpen={!!confirmDeleteAsset}
+              onYes={() =>
+                confirmDeleteAsset && handleAssetDelete(confirmDeleteAsset)
+              }
+              onNo={() => setConfirmDeleteAsset(null)}
+              onClose={() => setConfirmDeleteAsset(null)}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -348,12 +304,12 @@ const EditProjectScreen = (props: any) => {
 }
 
 const mapStateToProps = (state: any) => ({
+  user: state.auth.user as Types.User,
   isLoggedIn: state.auth.isLoggedIn,
   newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
-  isUpdatedSuccess: state.project.isUpdatedSuccess,
+  projectCache: state.project.projectCache,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
-  projectUpdateError: state.project.projectUpdateError,
   account: state.auth.account,
   clients: state.clients.clientsData
 })
@@ -368,6 +324,12 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  projectStatus: {
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(1)
+    }
+  },
   divider: {
     backgroundColor: theme.palette.background.surfaceHighlight,
     marginTop: theme.spacing(6),
@@ -386,11 +348,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(6),
     marginBottom: theme.spacing(5)
   },
-  headText: {
-    display: FLEX,
-    justifyContent: FLEX_END,
-    color: 'white'
-  },
+  header: {},
   detailsWrapper: {
     color: theme.palette.text.background,
     marginTop: 30

@@ -3,8 +3,13 @@ import { Router } from 'react-router-dom'
 import Routes from './routes/navigationRoutes'
 import history from './services/history'
 import React from 'react'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider
+} from '@material-ui/core/styles'
 import { ToastProvider } from 'context/Toast'
+import AssetUploadProvider from 'context/AssetUpload'
 import { StripeProvider } from 'react-stripe-elements'
 import { stripe_public_key } from 'config.json'
 import ToastHandler from 'components/ToastHandler'
@@ -20,8 +25,10 @@ const theme = createMuiTheme({
     }
   },
   palette: {
+    // action: { hoverOpacity: 0.3 },
     primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
     background: {
+      shadow: '#101010',
       default: '#181818',
       secondary: '#202020',
       surface: '#272726',
@@ -30,10 +37,10 @@ const theme = createMuiTheme({
     },
     text: {
       primary: '#24262b',
-      secondary: '#e6e6e6',
+      secondary: '#e3e3e3',
       background: '#ffffff',
       paper: '#24262b',
-      meta: '#999999'
+      meta: '#A3A5A9'
     },
     border: '#e6e6e6',
     status: {
@@ -42,8 +49,14 @@ const theme = createMuiTheme({
       archived: '#f44336'
     }
   },
-  shape: { borderRadius: 12 }
+  shape: { borderRadius: 12 },
+  typography: {
+    body1: { fontSize: 18 },
+    caption: { fontSize: 13 }
+  }
 })
+
+const responsiveTheme = responsiveFontSizes(theme)
 
 initFirebase()
 
@@ -51,12 +64,14 @@ function App() {
   return (
     <Router history={history}>
       <StripeProvider apiKey={stripe_public_key}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={responsiveTheme}>
           <ToastProvider>
-            <React.Fragment>
-              <Routes />
-              <ToastHandler />
-            </React.Fragment>
+            <AssetUploadProvider>
+              <React.Fragment>
+                <Routes />
+                <ToastHandler />
+              </React.Fragment>
+            </AssetUploadProvider>
           </ToastProvider>
         </ThemeProvider>
       </StripeProvider>

@@ -6,7 +6,7 @@ import {
 } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
-import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
+import { ProjectCard } from '../../components/Cards/ProjectCard'
 import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
 import PendingInvoices from '../../components/Cards/PendingInvoices'
 import IncomeThisMonth from '../../components/Cards/IncomeThisMonth'
@@ -17,6 +17,7 @@ import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
 import * as Types from '../../utils/Interface'
+import clsx from 'clsx'
 
 const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
@@ -68,7 +69,11 @@ const HomeScreen = (props: any) => {
           />
         )}
       />
-      <div className={classes.invoicingWrapper}>
+      <div
+        className={clsx(
+          classes.invoicingWrapper,
+          'responsiveHorizontalPadding'
+        )}>
         <Typography variant={'body1'} className={classes.sectionTitle}>
           Invoicing and Analytics
         </Typography>
@@ -79,7 +84,7 @@ const HomeScreen = (props: any) => {
             className={classes.widgetItem}
             projectCount={allProjects.length}
           />
-          <IncomeThisMonth style={{ paddingRight: theme.spacing(3) }} />
+          <IncomeThisMonth className={classes.widgetItem} />
         </div>
       </div>
       <Widget
@@ -120,8 +125,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const useStyles = makeStyles((theme) => ({
   invoicingWrapper: {
-    marginBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(5),
     flexWrap: 'nowrap',
     overflowX: 'auto',
     whiteSpace: 'nowrap'
@@ -129,7 +132,8 @@ const useStyles = makeStyles((theme) => ({
   middleCardsWrapper: {
     display: FLEX,
     [theme.breakpoints.down('sm')]: {
-      flexDirection: COLUMN
+      flexDirection: COLUMN,
+      alignItems: 'stretch'
     }
   },
   sectionTitle: {
@@ -137,7 +141,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.background
   },
   background: {
-    backgroundColor: '#24262B',
+    backgroundColoPr: '#24262B',
     height: '100%',
     width: '100%',
     overflowY: 'auto'
@@ -147,7 +151,8 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(3)
     },
     [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(3)
+      marginBottom: theme.spacing(3),
+      marginRight: theme.spacing(0)
     }
   },
   projectCardsUl: {

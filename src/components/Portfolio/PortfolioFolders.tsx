@@ -83,33 +83,35 @@ const PortfolioFolders = ({
   return (
     <Fragment>
       {!loading ? (
-        folderList && !!folderList.length ? (
-          folderList.map((folder: PortfolioFolder, index: number) => {
-            const portFolios: Array<Portfolio> = portfolios.filter(
-              (item: any) => item.folderId === folder.id
-            )
+        folderList &&
+        !!folderList.length &&
+        folderList.map((folder: PortfolioFolder, index: number) => {
+          const portFolios: Array<Portfolio> = portfolios.filter(
+            (item: any) => item.folderId === folder.id
+          )
 
-            const popoverMenuItems = [
-              {
-                title: 'Add portfolio',
-                onClick: () => createPortfolioForFolder(folder),
-                Icon: AddIcon
-              },
-              {
-                title: 'Edit folder',
-                onClick: () => handleEditFolderDetail(folder),
-                Icon: EditIcon
-              },
-              {
-                title: 'Delete folder',
-                onClick: () => startConfirmingDelete(folder.id),
-                Icon: DeleteIcon,
-                desctructive: true
-              }
-            ]
+          const popoverMenuItems = [
+            {
+              title: 'Add portfolio',
+              onClick: () => createPortfolioForFolder(folder),
+              Icon: AddIcon
+            },
+            {
+              title: 'Edit folder',
+              onClick: () => handleEditFolderDetail(folder),
+              Icon: EditIcon
+            },
+            {
+              title: 'Delete folder',
+              onClick: () => startConfirmingDelete(folder.id),
+              Icon: DeleteIcon,
+              desctructive: true
+            }
+          ]
 
-            return (
-              <div key={index} className={classes.portfolioFolder}>
+          return (
+            <div key={index}>
+              <div className={'responsiveHorizontalPadding'}>
                 <div className={classes.portfolioFolderTitle}>
                   <FolderIcon
                     className={classes.uploadFolderIcon}
@@ -152,40 +154,40 @@ const PortfolioFolders = ({
                     </AppButton>
                   )}
                 </div>
-
-                <Widget
-                  data={portFolios.slice(0, 5)}
-                  EmptyComponent={
-                    <div
-                      onClick={() => createPortfolioForFolder(folder)}
-                      className={clsx(
-                        classes.portfolioBoxWrap,
-                        classes.portfoliosCard
-                      )}
-                      style={{ margin: 0 }}>
-                      <AddIcon className={classes.addIcon} />
-                      <Typography variant='body1' style={{ fontSize: 18 }}>
-                        Add a portfolio
-                      </Typography>
-                    </div>
-                  }
-                  itemHeight={theme.spacing(10)}
-                  renderItem={(data: Portfolio) => (
-                    <div style={{ paddingRight: theme.spacing(3) }}>
-                      <PortfolioItem
-                        responsiveWidth={false}
-                        portfolio={data}
-                        onClick={(portfolio: Portfolio) =>
-                          handlePortfolioView(portfolio.id)
-                        }
-                      />
-                    </div>
-                  )}
-                />
               </div>
-            )
-          })
-        ) : null
+
+              <Widget
+                data={portFolios.slice(0, 5)}
+                EmptyComponent={
+                  <div
+                    onClick={() => createPortfolioForFolder(folder)}
+                    className={clsx(
+                      classes.portfolioBox,
+                      classes.portfoliosCard
+                    )}
+                    style={{ margin: 0 }}>
+                    <AddIcon className={classes.addIcon} />
+                    <Typography variant='body1' style={{ fontSize: 18 }}>
+                      Add a portfolio
+                    </Typography>
+                  </div>
+                }
+                itemHeight={theme.spacing(10)}
+                renderItem={(data: Portfolio) => (
+                  <div style={{ paddingRight: theme.spacing(3) }}>
+                    <PortfolioItem
+                      responsiveWidth={false}
+                      portfolio={data}
+                      onClick={(portfolio: Portfolio) =>
+                        handlePortfolioView(portfolio.id)
+                      }
+                    />
+                  </div>
+                )}
+              />
+            </div>
+          )
+        })
       ) : (
         <div className={classes.screenloader}>
           <ReactLoading

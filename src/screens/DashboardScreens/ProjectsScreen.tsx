@@ -1,13 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { logout } from '../../actions/authActions'
-import { createNewProjectRequest } from '../../actions/projectActions'
 import { useTheme } from '@material-ui/core/styles'
-import ProjectCard from '../../components/Cards/ProjectDescriptionCard'
+import { ProjectCard } from '../../components/Cards/ProjectCard'
 import ProjectArchives from '../../components/Cards/ProjectArchives'
 import Widget from '../../components/Common/Widget'
 import { useTabletLayout } from '../../utils/hooks'
-import * as Types from '../../utils/Interface'
 
 const PROJECT_DATA = [
   {
