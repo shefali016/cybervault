@@ -203,7 +203,14 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     overflow: 'hidden',
     cursor: 'pointer',
-    boxShadow: `0 0 10px 4px ${theme.palette.grey[400]}`
+    boxShadow: `0 0 10px 4px ${theme.palette.grey[400]}`,
+    transition: theme.transitions.create(['transform'], {
+      duration: 500,
+      easing: theme.transitions.easing.easeOut
+    }),
+    '&:hover': {
+      transform: `scale(1.02)`
+    }
   },
   image: {
     height: '100%',
