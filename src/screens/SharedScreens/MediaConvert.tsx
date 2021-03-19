@@ -25,8 +25,8 @@ type MediaConvertProps = {
   mediaConvert: (val: Media) => void
   assetIds: Array<string>
   accountId: string
-  selectedAsset: string,
-  mediaConversionLoading:boolean
+  selectedAsset: string
+  mediaConversionLoading: boolean
 }
 const MediaConvert = ({
   mediaConvert,
@@ -37,17 +37,16 @@ const MediaConvert = ({
 }: MediaConvertProps) => {
   const classes = useStyles()
   const [open, setOpen] = useState<any>(false)
-  const [state, setState] = useState<any>({})
+  const [state, setState] = useState<any>({
+    format: 'h.264',
+    resolution: 720,
+    ratio: {
+      w: 9,
+      h: 16
+    }
+  })
   const [items, setItems] = useState<any>([])
   const [error, setError] = useState('')
-  // {
-  //   format: '',
-  //   resolution: 0,
-  //   ratio: {
-  //     w: 0,
-  //     h: 0
-  //   }
-  // }
 
   const chooseSize = (type: string, value: any) => {
     setState({
@@ -114,7 +113,7 @@ const MediaConvert = ({
       return 'Choose Format'
     } else if (!state.ratio) {
       return 'Choose Aspect Ratio'
-    } 
+    }
   }
 
   const validateRepeative = (assetId: string, resolution: number) => {
@@ -136,8 +135,8 @@ const MediaConvert = ({
   }
   const save = () => {
     const err = validateRepeative(selectedAsset, state.resolution)
-    const originalFile=activeAsset.files.filter((file:any,i:number)=>{
-        return file.original
+    const originalFile = activeAsset.files.filter((file: any, i: number) => {
+      return file.original
     })
     if (!err) {
       setItems([
@@ -146,11 +145,10 @@ const MediaConvert = ({
           id: selectedAsset,
           fileName: activeAsset.fileName,
           fileHeight: originalFile[0].height,
-          fileWidth:originalFile[0].width,
+          fileWidth: originalFile[0].width,
           ...state
         }
       ])
-      setState({})
       onRequestClose()
     } else {
       setError(err)
@@ -160,7 +158,6 @@ const MediaConvert = ({
   const onRequestClose = () => {
     setOpen(false)
   }
-
 
   const Modal = () => {
     return (
@@ -172,7 +169,9 @@ const MediaConvert = ({
               <Grid
                 item
                 sm={6}
-                className={classes.tab}
+                className={`${classes.tab} ${
+                  state.format === 'prores' && classes.selectedTab
+                }`}
                 onClick={() => chooseSize('format', 'prores')}>
                 <Typography>Pro-Res</Typography>
                 <Typography className={classes.desc}>
@@ -185,7 +184,9 @@ const MediaConvert = ({
               <Grid
                 item
                 sm={6}
-                className={classes.tab}
+                className={`${classes.tab} ${
+                  state.format === 'h.264' && classes.selectedTab
+                }`}
                 onClick={() => chooseSize('format', 'h.264')}>
                 <Typography>H.264</Typography>
                 <Typography className={classes.desc}>
@@ -199,27 +200,7 @@ const MediaConvert = ({
             </Grid>
           </Grid>
         </div>
-        {/* <div className={classes.section}>
-          <Typography paragraph>Choose File Type</Typography>
-          <Grid container justify='center'>
-            <Grid item sm={8} container className={classes.box}>
-              <Grid
-                item
-                sm={6}
-                className={classes.tab}
-                onClick={() => chooseSize('container', 'webM')}>
-                <Typography>WebM</Typography>
-              </Grid>
-              <Grid
-                item
-                sm={6}
-                className={classes.tab}
-                onClick={() => chooseSize('container', 'MP4')}>
-                <Typography>MP4</Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </div> */}
+
         <div className={classes.section}>
           <Typography paragraph>Choose Resolution</Typography>
           <Grid container justify='center'>
@@ -235,7 +216,9 @@ const MediaConvert = ({
                     <Grid
                       item
                       sm={3}
-                      className={classes.tab}
+                      className={`${classes.tab} ${
+                        state.resolution === item.res && classes.selectedTab
+                      }`}
                       onClick={() =>
                         originalFile.height > item.res &&
                         chooseSize('resolution', item.res)
@@ -264,7 +247,11 @@ const MediaConvert = ({
               <Grid
                 item
                 sm={3}
-                className={classes.tab}
+                className={`${classes.tab} ${
+                  state?.ratio?.w === 9 &&
+                  state?.ratio?.h === 16 &&
+                  classes.selectedTab
+                }`}
                 onClick={() => chooseSize('ratio', { w: 9, h: 16 })}>
                 <Typography>9:16</Typography>
                 <Typography className={classes.desc}>
@@ -274,7 +261,11 @@ const MediaConvert = ({
               <Grid
                 item
                 sm={3}
-                className={classes.tab}
+                className={`${classes.tab} ${
+                  state?.ratio?.w === 16 &&
+                  state?.ratio?.h === 9 &&
+                  classes.selectedTab
+                }`}
                 onClick={() => chooseSize('ratio', { w: 16, h: 9 })}>
                 <Typography>16:9</Typography>
                 <Typography className={classes.desc}>
@@ -284,7 +275,11 @@ const MediaConvert = ({
               <Grid
                 item
                 sm={3}
-                className={classes.tab}
+                className={`${classes.tab} ${
+                  state?.ratio?.w === 1 &&
+                  state?.ratio?.h === 1 &&
+                  classes.selectedTab
+                }`}
                 onClick={() => chooseSize('ratio', { w: 1, h: 1 })}>
                 <Typography>1:1</Typography>
                 <Typography className={classes.desc}>
@@ -294,7 +289,11 @@ const MediaConvert = ({
               <Grid
                 item
                 sm={3}
-                className={classes.tab}
+                className={`${classes.tab} ${
+                  state?.ratio?.w === 4 &&
+                  state?.ratio?.h === 5 &&
+                  classes.selectedTab
+                }`}
                 onClick={() => chooseSize('ratio', { w: 4, h: 5 })}>
                 <Typography>4:5</Typography>
                 <Typography className={classes.desc}>
@@ -363,11 +362,8 @@ const MediaConvert = ({
         <GradiantButton
           className={classes.gradiantBtn}
           loading={mediaConversionLoading}
-          onClick={() =>
-            mediaConvert(items)
-          }
-        >
-          {mediaConversionLoading?'Loading...':'Convert'}
+          onClick={() => mediaConvert(items)}>
+          {mediaConversionLoading ? 'Loading...' : 'Convert'}
         </GradiantButton>
       ) : null}
     </>
@@ -375,11 +371,7 @@ const MediaConvert = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  box: {
-    border: `1px solid ${theme.palette.primary.light}`,
-    borderRadius: '20px',
-    padding: '20px'
-  },
+  box: {},
   desc: {
     fontSize: '13px'
   },
@@ -409,12 +401,20 @@ const useStyles = makeStyles((theme) => ({
     color: `${theme.palette.primary.light}`
   },
   tab: {
+    border: `1px solid ${theme.palette.primary.light}`,
+    // borderRadius: '20px',
     cursor: 'pointer',
-    padding: '0 10px',
-    borderRight: `1px solid ${theme.palette.primary.light}`,
+    padding: '12px',
+    // borderRight: `1px solid ${theme.palette.primary.light}`,
     '&:last-child': {
-      border: 'none'
+      borderRadius: '0 20px 20px 0'
+    },
+    '&:first-child': {
+      borderRadius: '20px 0 0 20px'
     }
+  },
+  selectedTab: {
+    backgroundColor: theme.palette.primary.light
   },
   section: {
     marginBottom: '30px',

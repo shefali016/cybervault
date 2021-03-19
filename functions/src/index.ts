@@ -2,7 +2,6 @@ import * as functions from 'firebase-functions'
 import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
-import axios from 'axios'
 import { generateUid } from './utils'
 import { Mail } from './utils/interfaces'
 import templates from './sendGridTemplates.json'
@@ -11,15 +10,6 @@ import config from './config.json'
 const sgMail = require('@sendgrid/mail')
 
 // const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
-var AWS = require('aws-sdk')
-AWS.config.update({
-  accessKeyId: 'AKIAIP2UOWNJHVDDZDFQ',
-  secretAccessKey: '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',
-  region: 'us-east-2',
-  // endpoint: 'https://wa11sy9gb.mediaconvert.us-east-2.amazonaws.com'
-})
-// var fs = require('fs');
-var s3 = new AWS.S3()
 
 const app = express()
 
@@ -29,14 +19,13 @@ app.use(corsHandler)
 
 // Routes
 const stripeRoute = require('./routes/stripe')
-const mediaConvert=require('./routes/mediaConvert')
+const mediaConvert = require('./routes/mediaConvert')
 app.use('/api/v1/stripe', stripeRoute)
-app.use('/api/v1/media',mediaConvert)
+app.use('/api/v1/media', mediaConvert)
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
-  databaseURL: 'https://cybervault-8cfe9.firebaseio.com',
-  storageBucket: 'cybervault-8cfe9.appspot.com'
+  databaseURL: 'https://cybervault-8cfe9.firebaseio.com'
 })
 const runtimeOpts = {
   timeoutSeconds: 300
@@ -189,72 +178,5 @@ export const handleNotificationCreated = functions.firestore
     } catch (error) {
       console.log(error, 'error occurs')
       return false
-    }
-  })
-
-
-  export const uploadMedia = functions.firestore
-  .document(`AccountData/{accId}/Assets/{assetId}`)
-  .onWrite((change, context) => {
-    try {
-      let newData = change.after.data()
-      let oldData = change.before.data()
-      console.log(
-        '-------------------------------here-----------------------------'
-      )
-      console.log(newData, oldData, newData?.files[0], 'newwwwdatattaattttt')
-
-      if (
-        !oldData &&
-        newData && 
-        newData?.files?.length &&
-        newData.files[0].url
-      ) {
-        // let bucket=admin.storage().bucket()
-        // upload(newData.files[0].file)
-        axios
-          .get(newData.files[0].url, {
-            responseType: 'arraybuffer'
-          })
-          .then((response) => {
-            console.log(response, 'resssponseeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
-            s3.putObject(
-              {
-                Body: response.data,
-                Bucket: 'cybervault-bucket',
-                Key: `${newData?.files[0].id}${newData?.fileName}`
-              },
-              (err: any) => {
-                console.log(err,"errorrrrrrrrfffffffffffffffffffff")
-              }
-            )
-          })
-          .catch((err) => {
-            console.log(err, 'errorrrrrrrr')
-          })
-
-        // if(newData.files[0].height > newData.requestedHeight){
-        //     resizeVideo()
-        // }
-        // let file=bucket.file(`${newData.path}`)
-        // file..then((res)=>{
-        //     console.log(res[0],"resssssssssssssssssssssssssss")
-        // })
-        // const url = firebase.storage().refFromURL(newData.files[0].url)
-        // console.log(newData.files[0], 'pppppppppppppppppppppppp')
-        // url
-        //   .getMetadata()
-        //   .then((res) => {
-        //     console.log(res.size, 'ressssssssssssssssssssssssssssssss')
-        //     if (res.size > 2000) {
-        //       resizeVideo(res)
-        //     }
-        //   })
-        //   .catch((err) => {
-        //     console.log(err, 'error occurs')
-        //   })
-      }
-    } catch (error) {
-      console.log(error, 'error occurs')
     }
   })

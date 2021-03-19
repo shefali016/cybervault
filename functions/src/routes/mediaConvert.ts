@@ -15,6 +15,8 @@ AWS.config.update({
   endpoint: 'https://wa11sy9gb.mediaconvert.us-east-2.amazonaws.com'
 })
 
+console.log(process.env, 'envvvvvvvvvvvvvvvvvvvv')
+
 // var s3 = new AWS.S3()
 
 router.post('/convert', (req, res) => {
@@ -28,7 +30,6 @@ router.post('/convert', (req, res) => {
       return await res.status(200).send(result)
 
       // console.log(req.body, videoArray, 'bodyyyyyy')
-
     } catch (error) {
       console.log('create_customer', error)
       return res.status(400).send(error)
@@ -37,7 +38,7 @@ router.post('/convert', (req, res) => {
 })
 
 const resizeVideo = async (item: any) => {
-  return new Promise(async ( resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const {
       resolution,
       ratio,
@@ -49,24 +50,28 @@ const resizeVideo = async (item: any) => {
       fileHeight
     } = item
 
-    const name=fileName.replace(/ /g,"")
-  
+    const name = fileName.replace(/ /g, '')
+    const urlFileName = name.split('.').slice(0, -1).join('.')
+
     const originalRatio = fileWidth / fileHeight //1280 x 720
     const newRatio = ratio.w / ratio.h // 0.5625
-  
+
     // original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
-    const cropWidth = originalRatio > newRatio ? newRatio * fileHeight : fileWidth
-  
+    const cropWidth = newRatio * resolution
+
     // //That gives us `width` and `height` for cropping params
-  
+
     // // Now we have crop frame but we need to center it.
     // // Since we are cropping width we will be centering with X.
     const croppedWidth =
       originalRatio > newRatio ? Math.ceil((fileWidth - cropWidth) / 2) * 2 : 2 // This is amount of px being cut
-    const croppedHeight = 2
+    const croppedHeight =
+      newRatio > originalRatio
+        ? Math.ceil((fileHeight - resolution) / 2) * 2
+        : 2
     const X = originalRatio > newRatio ? croppedWidth / 2 : 0 // Even spacing on both sides of video
-    const Y = 0
-  
+    const Y = newRatio > originalRatio ? croppedHeight / 2 : 0
+
     console.log(
       originalRatio,
       newRatio,
@@ -76,23 +81,22 @@ const resizeVideo = async (item: any) => {
       Y,
       'hhhhhhhhhhhhhhhhh'
     )
-    const codecSettings=()=>{
-      if(format==='prores'){
-          return {
-            Codec: 'PRORES',
-            ProresSettings: {
-              CodecProfile: "APPLE_PRORES_422",
-              FramerateControl: "INITIALIZE_FROM_SOURCE",
-              FramerateConversionAlgorithm: "DUPLICATE_DROP",
-              InterlaceMode: "PROGRESSIVE",
-              ParControl: "INITIALIZE_FROM_SOURCE",
-              ScanTypeConversionMode: "INTERLACED",
-              SlowPal: "DISABLED",
-              Telecine: "NONE"
-            },
+    const codecSettings = () => {
+      if (format === 'prores') {
+        return {
+          Codec: 'PRORES',
+          ProresSettings: {
+            CodecProfile: 'APPLE_PRORES_422',
+            FramerateControl: 'INITIALIZE_FROM_SOURCE',
+            FramerateConversionAlgorithm: 'DUPLICATE_DROP',
+            InterlaceMode: 'PROGRESSIVE',
+            ParControl: 'INITIALIZE_FROM_SOURCE',
+            ScanTypeConversionMode: 'INTERLACED',
+            SlowPal: 'DISABLED',
+            Telecine: 'NONE'
           }
-      }
-      else{
+        }
+      } else {
         return {
           Codec: 'H_264',
           H264Settings: {
@@ -125,6 +129,32 @@ const resizeVideo = async (item: any) => {
             RepeatPps: 'DISABLED',
             DynamicSubGop: 'STATIC',
             Bitrate: resolution * 800
+          }
+        }
+      }
+    }
+
+    const containerSettings = () => {
+      if (format === 'prores') {
+        return {
+          container: 'MOV',
+          MovSettings: {
+            ClapAtom: 'INCLUDE',
+            CslgAtom: 'INCLUDE',
+            Mpeg2FourCCControl: 'XDCAM',
+            PaddingControl: 'OMNEON',
+            Reference: 'SELF_CONTAINED'
+          }
+        }
+      } else {
+        return {
+          Container: 'MP4',
+          Mp4Settings: {
+            CslgAtom: 'INCLUDE',
+            CttsVersion: 0,
+            FreeSpaceBox: 'EXCLUDE',
+            MoovPlacement: 'PROGRESSIVE_DOWNLOAD',
+            AudioDuration: 'DEFAULT_CODEC_DURATION'
           }
         }
       }
@@ -213,16 +243,7 @@ const resizeVideo = async (item: any) => {
                       LanguageCodeControl: 'FOLLOW_INPUT'
                     }
                   ],
-                  ContainerSettings: {
-                    Container: 'MP4',
-                    Mp4Settings: {
-                      CslgAtom: 'INCLUDE',
-                      CttsVersion: 0,
-                      FreeSpaceBox: 'EXCLUDE',
-                      MoovPlacement: 'PROGRESSIVE_DOWNLOAD',
-                      AudioDuration: 'DEFAULT_CODEC_DURATION'
-                    }
-                  }
+                  ContainerSettings: containerSettings()
                 }
               ]
             }
@@ -235,21 +256,25 @@ const resizeVideo = async (item: any) => {
         Role:
           'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role'
       }
-  
+
       var createJonPromise = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
         .createJob(params)
         .promise()
-      createJonPromise.then(() => {
-        resolve({
-          height: resolution,
-          width: cropWidth,
-          original: false,
-          id: id,
-          url: `https://cybervault-bucket.s3.us-east-2.amazonaws.com/${id}/${resolution}/${id}${name}`
+      createJonPromise
+        .then(() => {
+          resolve({
+            height: resolution,
+            width: cropWidth,
+            original: false,
+            id: id,
+            url: `https://cybervault-bucket.s3.us-east-2.amazonaws.com/${id}/${resolution}/${id}${urlFileName}${
+              format === 'prores' ? '.mov' : '.mp4'
+            }`
+          })
         })
-      }).catch((error:any) => {
-        reject(error)
-      })
+        .catch((error: any) => {
+          reject(error)
+        })
     } catch (error) {
       console.log(error, '=========')
       reject(error)
