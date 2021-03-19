@@ -14,21 +14,27 @@ import { Client, Row } from 'utils/Interface'
 import { AppTable } from 'components/Common/Core/AppTable'
 import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import Section from 'components/Common/Section'
+import AppTextField from 'components/Common/Core/AppTextField'
+import { AppIconButton } from 'components/Common/Core/AppIconButton'
+import AddIcon from '@material-ui/icons/Add'
+import { PopoverHover } from 'components/Common/PopoverHover'
 
 type Props = {
   clients: Array<Client>
   tableContainerClassName?: string
   history: any
   accountId: string
+  value: string
 }
 
 const ClientsScreen = ({
   clients,
   tableContainerClassName,
   history,
-  accountId
+  accountId,
+  value
 }: Props) => {
-  const [allProjects, setAllProjects] = useState([])
+  const [searchTerm, setSearchTerm] = useState([])
   const classes = useStyles()
   const theme = useTheme()
 
@@ -48,30 +54,44 @@ const ClientsScreen = ({
     // TO DO - Open Modal
   }
 
+  const onChange = () => {}
+
+  const onKeyUp = () => {}
+
+  const handleSearchTermChange = () => {}
+
+  const onClick = () => {}
+
   const renderHeader = () => {
     return (
       <div className={classes.sectionHeader}>
+        <AppTextField
+          darkStyle={true}
+          onChange={onChange}
+          value={value}
+          style={{ maxWidth: 400 }}
+          label={'Search for client'}
+        />
         <div className={classes.sectionTitleContainer}></div>
+        <PopoverHover className={classes.temp} label={'Add Client'}>
+          <AppIconButton
+            Icon={AddIcon}
+            className={classes.iconContainer}
+            style={{}}
+            onClick={onClick}
+            iconClass={classes.iconButton}
+          />
+        </PopoverHover>
       </div>
     )
   }
 
   return (
     <div className={'screenContainer'}>
-      <Section className={classes.section}>
-        <div className={classes.sectionInner}>{renderHeader()}</div>
-      </Section>
       <div className={'screenInner'}>
         <div className={'responsivePadding'}>
-          <div className={'screenChild'}>
-            <AppTable
-              rows={rows}
-              headerCells={headerCells}
-              tableContainerClassName={'table'}
-              emptyProps={{ Icon: AccountBoxIcon, title: 'No Clients' }}
-              handleRowClick={handleRowClick}
-            />
-          </div>
+          {renderHeader()}
+          <div className={'screenChild'}></div>
         </div>
       </div>
     </div>
@@ -160,7 +180,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     padding: theme.spacing(2),
     paddingTop: 0
-  }
+  },
+  iconButton: {
+    height: 40,
+    width: 40
+  },
+  iconContainer: {},
+  temp: {}
 }))
 
 export default ClientsScreen

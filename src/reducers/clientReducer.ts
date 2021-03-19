@@ -10,7 +10,7 @@ import {
   ADD_CLIENT_ERROR
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
-import { replaceOrAdd } from 'utils'
+import { addArrayToCache, addToCache, replaceOrAdd } from 'utils'
 import * as Types from '../utils/Interface'
 import { Client } from '../utils/Interface'
 
@@ -26,11 +26,12 @@ export type State = {
   clientDetailSuccess: boolean
   clientDetailError: boolean
   clientDetailData: Types.Client | {}
+  cache: { [clientId: string]: Client }
 }
 
 export type Action = {
   type: string
-  payload: {}
+  payload: any
   client: Client
   error: string
 }
@@ -46,7 +47,8 @@ const initialState: State = {
   clientDetailLoading: false,
   clientDetailSuccess: false,
   clientDetailError: false,
-  clientDetailData: {}
+  clientDetailData: {},
+  cache: {}
 }
 
 const getAllClientsRequest = (state: State, action: Action) => ({
@@ -60,6 +62,7 @@ const getAllClientsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     clientsData: action.payload,
+    cache: addArrayToCache(state.cache, action.payload),
     loading: false,
     success: true,
     error: false
@@ -90,7 +93,8 @@ const newClientSuccess = (state: State, action: Action) => {
       state.clientsData,
       action.client,
       (client: Client) => client.id === action.client.id
-    )
+    ),
+    cache: addToCache(state.cache, action.client)
   }
 }
 
@@ -112,6 +116,7 @@ const getClientSuccess = (state: State, action: Action) => {
   return {
     ...state,
     clientDetailData: action.payload,
+    cache: addToCache(state.cache, action.payload),
     clientDetailLoading: false,
     clientDetailSuccess: true,
     clientDetailError: false

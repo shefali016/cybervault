@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { AssetCarousel } from 'components/Common/Carousel/Carousel'
 import { DragAndDropUploader } from 'components/Common/DragAndDropFileUpload'
+import { Asset } from 'utils/Interface'
 
 type AssetUploadDisplayProps = {
   containerClassName?: string
@@ -16,6 +17,7 @@ type AssetUploadDisplayProps = {
   title?: string
   isVideo?: boolean
   disableUpload?: boolean
+  onDeleteAsset?: (asset: Asset) => void
 }
 
 export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
@@ -30,7 +32,8 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
     accountId,
     title,
     isVideo,
-    disableUpload
+    disableUpload,
+    onDeleteAsset
   } = props
 
   const classes = useStyles()
@@ -50,6 +53,7 @@ export const AssetUploadDisplay = (props: AssetUploadDisplayProps) => {
             assetIds={assetIds}
             accountId={accountId}
             isVideo={isVideo}
+            onDeleteAsset={onDeleteAsset}
           />
         </div>
         {!disableUpload && !!onUpload && (

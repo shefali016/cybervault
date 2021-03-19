@@ -2,6 +2,7 @@ import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { DragAndDropUploader } from 'components/Common/DragAndDropFileUpload'
+import { Asset } from 'utils/Interface'
 import { FeatureAssetList } from '../Common/Carousel/FeatureAssetList'
 
 type AssetUploadDisplayProps = {
@@ -18,6 +19,7 @@ type AssetUploadDisplayProps = {
   onFeatureSelect?: (id: string) => void
   featuredAsset?: string
   disableUpload?: boolean
+  onDeleteAsset?: (asset: Asset) => void
 }
 
 export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
@@ -34,7 +36,8 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
     isVideo,
     onFeatureSelect,
     featuredAsset,
-    disableUpload
+    disableUpload,
+    onDeleteAsset
   } = props
 
   const classes = useStyles()
@@ -56,6 +59,7 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
             isVideo={isVideo}
             onFeatureSelect={onFeatureSelect}
             featuredAsset={featuredAsset}
+            onDeleteAsset={onDeleteAsset}
           />
         </div>
         {!disableUpload && !!onUpload && (
@@ -102,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       paddingLeft: 0,
       padding: 0,
-      paddingTop: theme.spacing(3)
+      paddingTop: theme.spacing(5)
     }
   },
   title: { marginBottom: theme.spacing(3) }

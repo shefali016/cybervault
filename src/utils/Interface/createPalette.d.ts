@@ -24,6 +24,7 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 
   export interface TypeBackground {
+    shadow: string,
     default: string
     secondary: string
     paper: string

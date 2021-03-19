@@ -1,34 +1,29 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Asset, Project, ProjectAsset } from '../utils/Interface'
-import { generateUid } from 'utils'
+import { Asset } from '../utils/Interface'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
+var AWS = require('aws-sdk')
+AWS.config.update({
+  accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+  secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
+  region: `${process.env.REACT_APP_AWS_REGION}`
+})
+var s3 = new AWS.S3()
 
 export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
 }
 
 export const setMedia = (id: string, file: any) => {
-  return new Promise((resolve, reject) => {
-    const uploadTask = firebase.storage().ref(id).put(file)
-    uploadTask.on(
-      'state_changed',
-      (snapshot: any) => {
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        console.log('Upload is ' + progress + '% done')
-      },
-      () => reject(),
-      () => {
-        uploadTask.snapshot.ref
-          .getDownloadURL()
-          .then(function (downloadURL: string) {
-            resolve(downloadURL)
-          })
-      }
-    )
-  })
+  var params = {
+    Body: file,
+    Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+    Key: `${id}${file.name}`,
+    ACL: 'public-read'
+  }
+  return s3.upload(params)
 }
 
 export const uploadMedia = (id: string, file: any) => {
@@ -47,10 +42,7 @@ export const getDownloadUrl = async (id: string) => {
   })
 }
 
-export const addProjectAssets = async (
-  accountId: string,
-  asset: ProjectAsset
-) => {
+export const addAsset = async (accountId: string, asset: Asset) => {
   try {
     return firebase
       .firestore()
@@ -60,7 +52,7 @@ export const addProjectAssets = async (
       .doc(asset.id)
       .set(asset)
   } catch (error) {
-    console.log('>>>>>>>>>>>Error', error)
+    console.log('addAsset', error)
     return error
   }
 }
@@ -68,7 +60,7 @@ export const addProjectAssets = async (
 export const getAssets = async (
   ids: Array<string>,
   accountId: string
-): Promise<Array<ProjectAsset>> => {
+): Promise<Array<Asset>> => {
   const assetRequests = ids.map((id: string) =>
     firebase
       .firestore()
@@ -78,7 +70,7 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        return snapshot.data() as ProjectAsset
+        return snapshot.data() as Asset
       })
   )
   return await (await Promise.all(assetRequests)).filter((asset) => !!asset)

@@ -15,7 +15,7 @@ const StatusIndicator = (props: { status: string }) => {
         alignSelf: CENTER,
         marginLeft: 10,
         backgroundColor:
-          props.status === ProjectStatuses.PENDING
+          props.status === ProjectStatuses.PROGRESS
             ? theme.palette.status.inProgress
             : props.status === ProjectStatuses.PAID
             ? theme.palette.status.completed

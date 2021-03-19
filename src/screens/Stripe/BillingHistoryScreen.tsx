@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { StripeInvoice } from 'utils/Interface'
-import { BillingHistory } from 'components/Billing'
+import BillingHistory from 'components/Billing'
 import { getCustomerInvoices } from 'actions/stripeActions'
 import { Typography } from '@material-ui/core'
+import clsx from 'clsx'
 
 type StateProps = {
   billingHistory: Array<StripeInvoice> | null
@@ -31,8 +32,8 @@ const BillingHistoryScreen = ({
     <div className={'screenContainer'}>
       <div className={'screenInner'}>
         <div className={'responsivePadding'}>
-          <div className={'screenChild'}>
-            <Typography variant={'h5'} className={'bold'}>
+          <div className={'tableContainer'}>
+            <Typography variant={'h5'} className={'tableHeader'}>
               Billing History
             </Typography>
             <BillingHistory
