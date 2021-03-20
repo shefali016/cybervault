@@ -190,7 +190,7 @@ export const FeatureAssetList = ({
     }
     return (
       <div className={classes.assetPickerInner}>
-        {assets && assets.length && (
+        {!(assets && assets.length) && (
           <div
             style={{
               position: 'relative',
