@@ -250,7 +250,31 @@ const InvoicesClientScreen = (props: Props) => {
     }
   }
 
-  const handleAddAsset = (data: any) => {}
+  const handleAddAsset = async (data: any) => {
+    var results = data.reduce(function (results: any, org: any) {
+      ;(results[org.assetId] = results[org.assetId] || []).push(org)
+      return results
+    }, {})
+
+    for (let ele in results) {
+      let asset = await getSingleAsset(ele, ownerAccountId)
+
+      let filesData = [...asset.files]
+      results[ele].forEach((item: any, i: number) => {
+        const newRatio = item.ratio.w / item.ratio.h
+        const cropWidth = Math.ceil((newRatio * item.resolution) / 2) * 2
+        filesData.push({
+          assetId: item.assetId,
+          id: item.id,
+          height: item.resolution,
+          width: cropWidth,
+          status: 'pending',
+          url: ''
+        })
+      })
+      await addAsset(ownerAccountId, { ...asset, files: filesData })
+    }
+  }
 
   const mediaConvert = async (data: any) => {
     setMediaConversionLoading(true)
@@ -264,11 +288,10 @@ const InvoicesClientScreen = (props: Props) => {
 
       for (let ele in results) {
         let asset = await getSingleAsset(ele, ownerAccountId)
-        let promises = results[ele].map(async (item: AssetFile) => {
-          asset.files.push(item)
-          return await addAsset(ownerAccountId, asset)
-        })
-        await Promise.all(promises)
+        let newFileData = asset.files.map(
+          (obj) => results[ele].find((o: AssetFile) => o.id === obj.id) || obj
+        )
+        await addAsset(ownerAccountId, { ...asset, files: newFileData })
       }
       setMediaConversionLoading(false)
     }
@@ -314,6 +337,7 @@ const InvoicesClientScreen = (props: Props) => {
                           assetIds={project.videos}
                           accountId={ownerAccountId}
                           isVideo={true}
+                          selectAsset={selectAsset}
                         />
                       </div>
                     </div>
