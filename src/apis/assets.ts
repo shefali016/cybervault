@@ -1,19 +1,17 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Asset, Project, ProjectAsset } from '../utils/Interface'
-import { generateUid } from 'utils';
+import { Asset } from '../utils/Interface'
 import axios from 'axios';
-import { DataExchange } from 'aws-sdk';
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 var AWS = require('aws-sdk')
 AWS.config.update({
   accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
   secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
-  region:`${process.env.REACT_APP_AWS_REGION}`,
+  region: `${process.env.REACT_APP_AWS_REGION}`
 })
-var s3 = new AWS.S3();
+var s3 = new AWS.S3()
 
 
 const { server_url, domain } = require('../config.json')
@@ -36,26 +34,15 @@ export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
 }
 
-export const setMedia = async (id: string, file:any) => {
-  return new Promise(function (resolve, reject) {
-    const fileName=file.name.replace(/ /g,"")
-    var params = { 
-      Body: file,
-      Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-      Key:`${id}${fileName}`,
-      ACL: 'public-read'
-     };
-     s3.upload(params, function(err:any, data:any) {    
-      if (err) {
-        reject(err)
-      }
-      else {
-      resolve(data.Location)
-      }
-    })
-  })
+export const setMedia = (id: string, file: any) => {
+  var params = {
+    Body: file,
+    Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+    Key: `${id}${file.name}`,
+    ACL: 'public-read'
+  }
+  return s3.upload(params)
 }
-
 
 export const uploadMedia = (id: string, file: any) => {
   const childRef = firebase.storage().ref().child(buildAssetPath(id))
@@ -73,32 +60,25 @@ export const getDownloadUrl = async (id: string) => {
   })
 }
 
-export const addProjectAssets = async (
-  accountId: string,
-  asset: ProjectAsset
-) => {
-  console.log(asset,"assetttt")
-  return new Promise(async (resolve,reject)=>{
-    try {
-      let data= firebase
-        .firestore()
-        .collection('AccountData')
-        .doc(accountId)
-        .collection('Assets')
-        .doc(asset.id)
-        .set(asset)
-        resolve(data)
-    } catch (error) {
-      console.log('>>>>>>>>>>>Error', error)
-      reject(error)
-    }
-  })
+export const addAsset = async (accountId: string, asset: Asset) => {
+  try {
+    return firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(accountId)
+      .collection('Assets')
+      .doc(asset.id)
+      .set(asset)
+  } catch (error) {
+    console.log('addAsset', error)
+    return error
+  }
 }
 
 export const getAssets = async (
   ids: Array<string>,
   accountId: string
-): Promise<Array<ProjectAsset>> => {
+): Promise<Array<Asset>> => {
   const assetRequests = ids.map((id: string) =>
     firebase
       .firestore()
@@ -108,7 +88,7 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        return snapshot.data() as ProjectAsset
+        return snapshot.data() as Asset
       })
   )
   return await (await Promise.all(assetRequests)).filter((asset) => !!asset)
@@ -126,5 +106,5 @@ export const getSingleAsset = async (
       .collection('Assets')
       .doc(id)
       .get()
-      return assetRequest.data() as ProjectAsset
+      return assetRequest.data() as Asset
 }

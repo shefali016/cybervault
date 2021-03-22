@@ -45,8 +45,8 @@ export const ToastProvider = ({
         {!!toast && (
           <div
             style={{
-              position: 'absolute',
-              top: 0,
+              position: 'fixed',
+              top: 20,
               left: 0,
               right: 0,
               bottom: 0,

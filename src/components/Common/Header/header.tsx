@@ -1,11 +1,15 @@
 import React from 'react'
 import { IconButton, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
 import { FLEX } from 'utils/constants/stringConstants'
 import NotificationIcon from '@material-ui/icons/Notifications'
 import { User } from 'utils/Interface'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
+import { AccountTabIds } from 'routes/DashboardSwitch'
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
+
 type Props = {
   isNotificationIcon?: boolean
   profilePictureIcon?: any
@@ -18,21 +22,42 @@ type Props = {
   renderAppIcon?: boolean
   onLogoClick?: () => void
   renderHeaderContent?: () => React.ReactElement
+  history?: any
+  width: any
 }
 
 function Toolbar(props: Props) {
   const classes = useStyles()
+  const theme = useTheme()
+
+  const isMobile = isWidthDown('xs', props.width)
+
+  const handleProfileClick = () => {
+    if (props.onProfileClick) {
+      return props.onProfileClick()
+    }
+
+    if (props.history) {
+      props.history.replace(`/${AccountTabIds.profile}`)
+    }
+  }
 
   return (
     <div className={classes.Toolbar}>
       {props.renderAppIcon && (
-        <PolymerSharpIcon
-          className={classes.appIcon}
-          onClick={props.onLogoClick}
-        />
+        <div className={classes.backIconContainer} onClick={props.onLogoClick}>
+          <ArrowBackIosIcon className={'backIcon'} />
+          <PolymerSharpIcon className={classes.appIcon} />
+        </div>
       )}
 
-      <div style={{ marginLeft: 25, display: FLEX, flex: 1 }}>
+      <div
+        style={{
+          marginLeft:
+            isMobile && !props.renderAppIcon ? theme.spacing(8) + 10 : 25,
+          display: FLEX,
+          flex: 1
+        }}>
         <Typography variant='h6' className={classes.title}>
           {props.headerTitle}
         </Typography>
@@ -49,7 +74,7 @@ function Toolbar(props: Props) {
         ) : null}
         <IconButton
           style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-          onClick={props.onProfileClick}>
+          onClick={handleProfileClick}>
           <img
             src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
             style={{ borderRadius: 20, height: 33, width: 33 }}
@@ -66,11 +91,17 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     fontWeight: 'normal',
     [theme.breakpoints.down('sm')]: {
-      fontSize: 14
+      fontSize: 18
     }
+  },
+  backIconContainer: {
+    display: 'flex',
+    cursor: 'pointer',
+    alignItems: 'center'
   },
   notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
+    alignSelf: 'stetch',
     height: theme.spacing(7),
     background: theme.palette.background.secondary,
     display: 'flex',
@@ -84,7 +115,6 @@ const useStyles = makeStyles((theme) => ({
   appIcon: {
     color: theme.palette.primary.light,
     fontSize: 43,
-    marginLeft: theme.spacing(2),
     cursor: 'pointer'
   },
   portfolioHeader: {
@@ -100,4 +130,4 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default Toolbar
+export default withWidth()(Toolbar)

@@ -16,7 +16,6 @@ import {
   WatermarkStyles
 } from 'utils/enums'
 import { createStripeCustomer } from './stripe'
-import { ErrorRounded } from '@material-ui/icons'
 
 export const getUserWithAccount = async (
   id: string
@@ -102,6 +101,10 @@ export const googleLoginRequest = async () => {
     .auth()
     .signInWithPopup(googleProvider)
   if (authUser) {
+    if (!authUser.email) {
+      throw Error('Insuffiencient login information')
+    }
+
     let userData = {
       name: authUser.displayName,
       email: authUser.email,
@@ -114,7 +117,7 @@ export const googleLoginRequest = async () => {
       if (error?.message === 'user_not_found') {
         return createAccount(userData)
       }
-      throw error
+      throw Error(error)
     }
   } else {
     throw Error('Failed to authenticate google user')
@@ -166,7 +169,7 @@ export const createAccount = (
     accounts: [account.id],
     mainAccount: account.id,
     email: authUser.email,
-    name: authUser.name,
+    name: authUser.name || 'Account Owner',
     customerId: ''
   }
 

@@ -112,7 +112,7 @@ const ManageAccountScreen = ({
             <Section title={'Invoicing Currency'} className={classes.section}>
               <div className={classes.sectionInner}>
                 <div className={classes.sectionTextArea}>
-                  <Typography variant='subtitle1'>
+                  <Typography variant='body1'>
                     Choose the currency in which you are invoicing clients
                   </Typography>
                   <Typography variant='caption'>
@@ -131,7 +131,7 @@ const ManageAccountScreen = ({
             <Section title={'Sharing Permissions'} className={classes.section}>
               <div className={classes.sectionInner}>
                 <div className={classes.sectionTextArea}>
-                  <Typography variant='subtitle1'>
+                  <Typography variant='body1'>
                     Clients can share project preview links with others
                   </Typography>
                   <Typography variant='caption'>
@@ -170,7 +170,7 @@ const ManageAccountScreen = ({
                   className={classes.sectionInner}
                   style={{ marginBottom: theme.spacing(4) }}>
                   <div className={classes.sectionTextArea}>
-                    <Typography variant='subtitle1'>
+                    <Typography variant='body1'>
                       Watermark appearance
                     </Typography>
                     <Typography variant='caption'>
@@ -187,7 +187,7 @@ const ManageAccountScreen = ({
 
                 <div className={classes.sectionInner}>
                   <div className={classes.sectionTextArea}>
-                    <Typography variant='subtitle1'>
+                    <Typography variant='body1'>
                       Require watermark on all external links
                     </Typography>
                     <Typography variant='caption'>

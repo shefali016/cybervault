@@ -18,6 +18,7 @@ import {
 import { useStyles } from 'components/Portfolio/style'
 import FolderIcon from '@material-ui/icons/Folder'
 import { Typography } from '@material-ui/core'
+import clsx from 'clsx'
 
 type StateProps = {
   folderList: Array<PortfolioFolder>
@@ -205,11 +206,14 @@ const PortfoliosScreen = ({
     })
 
   return (
-    <div>
-      <div className={classes.portfolioBoxMainWrap}>
+    <div className={'screenContainer'}>
+      <div className={'screenInner'}>
         <div
           onClick={() => handleModalRequest({ type: 'folder' })}
-          className={classes.portfolioBoxWrap}>
+          className={clsx(
+            classes.portfolioBoxWrap,
+            'responsiveHorizontalPadding'
+          )}>
           <div className={classes.portfolioBox}>
             <FolderIcon className={classes.uploadFolderIcon} />
             <Typography variant='h6'>Create Folder</Typography>
@@ -236,9 +240,9 @@ const PortfoliosScreen = ({
           }
           clients={clients}
         />
-      </div>
 
-      {renderPortfolioFolderModal()}
+        {renderPortfolioFolderModal()}
+      </div>
     </div>
   )
 }

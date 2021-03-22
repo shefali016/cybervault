@@ -1,31 +1,53 @@
-import { Project } from 'utils/Interface'
+import { Expense, Milestone, Project, Task } from 'utils/Interface'
 import moment from 'moment'
 
 export default function validate(
   step: number,
-  projectData: any,
+  projectData: Project,
   clientData: any
 ) {
+  const invalidString = (str: string) => str.trim() === ''
+
   switch (step) {
     case 1:
-      if (clientData.id.trim() === '') {
+      if (invalidString(clientData.id)) {
         return true
       }
       break
     case 2:
       if (
-        projectData.campaignName.trim() === '' ||
-        projectData.campaignDate.trim() === '' ||
-        projectData.campaignObjective.trim() === '' ||
-        projectData.campaignDeadLine.trim() === ''
+        invalidString(projectData.campaignName) ||
+        invalidString(projectData.campaignDate) ||
+        invalidString(projectData.campaignObjective) ||
+        invalidString(projectData.campaignDeadLine) ||
+        !!projectData.tasks.find(
+          ({ title, startDate, endDate }: Task) =>
+            invalidString(title) ||
+            invalidString(startDate) ||
+            invalidString(endDate)
+        )
       ) {
         return true
       }
       break
     case 3:
       if (
-        projectData.campaignBudget.trim() === '' ||
-        projectData.campaignExpenses.trim() === ''
+        invalidString(projectData.campaignBudget.toString()) ||
+        invalidString(projectData.campaignExpenses.toString()) ||
+        !!projectData.expenses.find(
+          ({ title, cost }: Expense) =>
+            invalidString(title) || invalidString(cost.toString())
+        )
+      ) {
+        return true
+      }
+      break
+    case 4:
+      if (
+        !!projectData.milestones.find(
+          ({ title, payment }: Milestone) =>
+            invalidString(title) || invalidString(payment.toString())
+        )
       ) {
         return true
       }
@@ -35,8 +57,9 @@ export default function validate(
   }
 }
 
-export const getImageObject = (file: any, url: string,width:number,height:number,id: string) => {
+export const getImageObject = (file: any, url: string,width:number,height:number,assetId: string,id:string) => {
   return {
+    assetId:assetId,
     id: id,
     original: true,
     url: url,

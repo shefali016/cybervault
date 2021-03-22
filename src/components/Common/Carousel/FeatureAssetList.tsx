@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { IconButton } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { ProjectAsset } from 'utils/Interface'
-import ImagePreview from '../../../assets/imagePreview.png'
+import { Asset } from 'utils/Interface'
 import { getAssets } from 'apis/assets'
 import Star from '@material-ui/icons/Star'
 import StarOutline from '@material-ui/icons/StarOutline'
 import clsx from 'clsx'
 import { CarouselButton } from './CarouselButton'
+import CloseIcon from '@material-ui/icons/Close'
+import { AppIconButton } from '../Core/AppIconButton'
+import ImageIcon from '@material-ui/icons/Image'
 
 export type Props = {
   isVideo?: boolean
@@ -19,14 +21,15 @@ export type Props = {
   accountId: string
   innerImageClassName?: string
   assetContainerMinHeight?: string | number
+  onDeleteAsset?: (asset: Asset) => void
 }
 
 type State = {
   currentIndex: number
   renderTopAsset: boolean
-  topAsset: ProjectAsset | null
-  bottomAsset: ProjectAsset | null
-  assets: Array<ProjectAsset>
+  topAsset: Asset | null
+  bottomAsset: Asset | null
+  assets: Array<Asset>
 }
 
 export const FeatureAssetList = ({
@@ -36,7 +39,8 @@ export const FeatureAssetList = ({
   featuredAsset,
   onFeatureSelect,
   innerImageClassName,
-  assetContainerMinHeight
+  assetContainerMinHeight,
+  onDeleteAsset
 }: Props) => {
   const theme = useTheme()
 
@@ -58,7 +62,7 @@ export const FeatureAssetList = ({
   }, [assetIds])
 
   const loadAssets = async (ids: Array<string>) => {
-    const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
+    const assets: Array<Asset> = await getAssets(ids, accountId)
     const featureIndex = assets.findIndex((asset) => asset.id === featuredAsset)
     const currentIndex = featureIndex >= 0 ? featureIndex : 0
 
@@ -114,9 +118,7 @@ export const FeatureAssetList = ({
   }
 
   const hasAsset: boolean = !!topAsset || !!bottomAsset
-  const currentAsset: ProjectAsset | null = renderTopAsset
-    ? topAsset
-    : bottomAsset
+  const currentAsset: Asset | null = renderTopAsset ? topAsset : bottomAsset
 
   const renderCurrentAsset = ({
     visible,
@@ -124,10 +126,10 @@ export const FeatureAssetList = ({
     style = {}
   }: {
     visible: boolean
-    asset: ProjectAsset | null
+    asset: Asset | null
     style?: {}
   }) => {
-    if (!currentAsset) {
+    if (!asset) {
       return null
     }
 
@@ -140,24 +142,43 @@ export const FeatureAssetList = ({
           pointerEvents: visible ? 'auto' : 'none'
         }}>
         <div className={classes.currentAssetInner}>
-          {!!asset && (
-            <img
-              src={asset.files[0].url}
-              alt={asset.fileName}
-              className={clsx(classes.img, innerImageClassName)}
-            />
-          )}
-          {!!asset && typeof onFeatureSelect === 'function' && (
-            <IconButton
-              className={classes.featureButton}
-              onClick={() => onFeatureSelect(asset.id)}>
-              {asset.id === featuredAsset ? (
-                <Star className={classes.featureIcon} />
-              ) : (
-                <StarOutline className={classes.featureIcon} />
-              )}
-            </IconButton>
-          )}
+          <div
+            style={{
+              position: 'relative',
+              height: '100%',
+              width: 'auto',
+              objectFit: 'cover',
+              borderRadius: 10
+            }}>
+            {!!asset && (
+              <img
+                src={asset.files[0].url}
+                alt={asset.fileName}
+                className={clsx(classes.img, innerImageClassName)}
+              />
+            )}
+            {!!asset && typeof onFeatureSelect === 'function' && (
+              <IconButton
+                className={classes.featureButton}
+                onClick={() => onFeatureSelect(asset.id)}>
+                {asset.id === featuredAsset ? (
+                  <Star className={classes.featureIcon} />
+                ) : (
+                  <StarOutline className={classes.featureIcon} />
+                )}
+              </IconButton>
+            )}
+            {typeof onDeleteAsset === 'function' && (
+              <AppIconButton
+                Icon={CloseIcon}
+                onClick={(e: any) => {
+                  e.stopPropagation()
+                  onDeleteAsset(asset)
+                }}
+                className={'assetDeleteButton'}
+              />
+            )}
+          </div>
         </div>
       </div>
     )
@@ -169,6 +190,23 @@ export const FeatureAssetList = ({
     }
     return (
       <div className={classes.assetPickerInner}>
+        {assets && assets.length && (
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            <ImageIcon className={'assetListEmptyIconSm'} />
+            <div
+              className={clsx(
+                classes.assetPickerItemOuter,
+                classes.imgPlaceholder
+              )}
+            />
+          </div>
+        )}
         {assets.map((asset, index) => {
           const file = asset.files[0]
           const isCurrent = index === currentIndex ? -200 : 0
@@ -179,8 +217,7 @@ export const FeatureAssetList = ({
               <div
                 onClick={() => handleAssetClick(index)}
                 style={{
-                  zIndex: 1000 - index,
-                  pointerEvents: isCurrent ? 'none' : 'auto'
+                  zIndex: 100 - index
                 }}
                 className={clsx(
                   classes.assetPickerItemOuter,
@@ -232,6 +269,7 @@ export const FeatureAssetList = ({
                         classes.imgPlaceholder
                       )}
                     />
+                    <ImageIcon className={'assetListEmptyIcon'} />
                   </div>
                 </div>
               )}
@@ -287,6 +325,13 @@ const pickerHeightMd = 12
 const pickerHeightSm = 8
 
 const useStyles = makeStyles((theme) => ({
+  deleteButton: {
+    position: 'absolute',
+    top: '5%',
+    right: '5%',
+    background: '#00000050'
+  },
+
   largeSwitchButton: { [theme.breakpoints.down('sm')]: { display: 'none' } },
   smallSwitchContainer: {
     display: 'inline-flex',
@@ -306,14 +351,13 @@ const useStyles = makeStyles((theme) => ({
 
   featureButton: {
     position: 'absolute',
-    right: '5%',
+    left: '3%',
     top: '5%',
     background: 'rgba(0,0,0,0.2)'
   },
   featureIcon: { color: 'gold' },
 
   assetPickerContainer: {
-    zIndex: 100,
     position: 'relative',
     height: theme.spacing(pickerHeightLg),
     marginLeft: theme.spacing(11),
@@ -337,7 +381,6 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'auto'
   },
   assetPickerItemOuter: {
-    zIndex: 200,
     position: 'relative',
     transition: theme.transitions.create(['transform', 'opacity', 'width'], {
       duration: pickerTransitionDuration
@@ -346,10 +389,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     marginLeft: theme.spacing(1.2),
     marginRight: theme.spacing(1.2),
-    [theme.breakpoints.down('sm')]: {
-      marginLeft: theme.spacing(0.8),
-      marginRight: theme.spacing(0.8)
-    },
     overflow: 'hidden',
     minWidth: theme.spacing(pickerHeightLg),
     height: theme.spacing(pickerHeightLg),
@@ -358,10 +397,13 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(pickerHeightMd),
       [theme.breakpoints.down('sm')]: {
         minWidth: theme.spacing(pickerHeightSm),
-        height: theme.spacing(pickerHeightSm)
+        height: theme.spacing(pickerHeightSm),
+        marginLeft: theme.spacing(0.8),
+        marginRight: theme.spacing(0.8)
       }
     }
   },
+  assetPickerEmpty: {},
   assetPickerItemPicked: {
     animation: `$isPicked 500ms ${theme.transitions.easing.easeOut}`,
     opacity: 0.2
@@ -390,14 +432,9 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'cover'
   },
   img: {
-    display: 'block',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    objectFit: 'cover',
-    minHeight: '100%',
+    height: '100%',
     maxWidth: '100%',
-    transform: 'translate(-50%, -50%)',
+    objectFit: 'cover',
     borderRadius: 10
   },
   buttonImage: {
@@ -406,8 +443,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     height: 30,
-    width: 30,
-    zIndex: 2000
+    width: 30
   },
   assetContainer: {
     flex: 1,
@@ -440,14 +476,15 @@ const useStyles = makeStyles((theme) => ({
       duration: currentAssetTransitionDuration
     }),
     borderRadius: 10,
-    zIndex: 3000,
     overflow: 'hidden'
   },
   currentAssetInner: {
     flex: 1,
     alignSelf: 'stretch',
     position: 'relative',
-    display: 'inline-block',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
     margin: 0
   }

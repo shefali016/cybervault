@@ -2,26 +2,35 @@ import React, { useEffect, useState } from 'react'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { makeStyles } from '@material-ui/core/styles'
 import { VideoComponent } from '../Video'
-import { ProjectAsset } from 'utils/Interface'
-import ImagePreview from '../../../assets/imagePreview.png'
+import { Asset } from 'utils/Interface'
 import { getAssets } from 'apis/assets'
 import { CarouselButton } from './CarouselButton'
 import clsx from 'clsx'
+import { AppIconButton } from '../Core/AppIconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import VideoLibraryIcon from '@material-ui/icons/VideoLibrary'
 
 export type Props = {
   isVideo?: boolean
   assetIds: Array<string>
   isAssetLoading?: boolean | undefined
   accountId: string
-  selectAsset?:(id:string)=>void
+  selectAsset?: (id: string) => void
+  onDeleteAsset?: (asset: Asset) => void
 }
 
-export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Props) => {
+export const AssetCarousel = ({
+  isVideo,
+  assetIds,
+  accountId,
+  selectAsset,
+  onDeleteAsset
+}: Props) => {
   const classes = useStyles()
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const [assets, setAssets] = useState<Array<ProjectAsset>>([])
+  const [assets, setAssets] = useState<Array<Asset>>([])
 
   useEffect(() => {
     if (Array.isArray(assetIds) && assetIds) {
@@ -30,13 +39,16 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
   }, [assetIds])
 
   const loadAssets = async (ids: Array<string>) => {
-    const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
+    const assets: Array<Asset> = await getAssets(ids, accountId)
     setAssets(assets)
-    assets.length && selectAsset&& selectAsset(assets[0].id)
+    assets.length && selectAsset && selectAsset(assets[0].id)
   }
 
   const next = () => {
-    const selectedIndex=Math.min(currentIndex + 1, Math.max(assets.length - 1, 0))
+    const selectedIndex = Math.min(
+      currentIndex + 1,
+      Math.max(assets.length - 1, 0)
+    )
     setCurrentIndex(selectedIndex)
     selectAsset && selectAsset(assets[selectedIndex].id)
   }
@@ -45,10 +57,9 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
     const selectedIndex = Math.max(currentIndex - 1, 0)
     setCurrentIndex(selectedIndex)
     selectAsset && selectAsset(assets[selectedIndex].id)
-
   }
 
-  const handleAssetClick = (index: number,assetId:string) => {
+  const handleAssetClick = (index: number, assetId: string) => {
     setCurrentIndex(index)
     selectAsset && selectAsset(assetId)
   }
@@ -66,7 +77,15 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
         className={classes.largeSwitchButton}
       />
 
-      <div className={classes.assetContainer}>
+      <div
+        className={classes.assetContainer}
+        style={
+          assets && assets.length
+            ? {
+                marginRight: `${Math.min(3, assets.length - 1) * 1}%`
+              }
+            : {}
+        }>
         <div
           style={{
             position: 'relative',
@@ -78,15 +97,16 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
             <div className={classes.assetOuter}>
               <div className={classes.assetInner}>
                 <div className={clsx(classes.img, classes.imgPlaceholder)} />
+                <VideoLibraryIcon className={'assetListEmptyIcon'} />
               </div>
             </div>
           ) : (
-            assets.map((asset: ProjectAsset, index: number) => {
+            assets.map((asset: Asset, index: number) => {
               const file = asset.files[0]
               const position = index - currentIndex
               return (
                 <div
-                  onClick={() => handleAssetClick(index,asset.id)}
+                  onClick={() => handleAssetClick(index, asset.id)}
                   key={index.toString()}
                   className={classes.assetOuter}
                   style={{
@@ -107,7 +127,14 @@ export const AssetCarousel = ({ isVideo, assetIds, accountId,selectAsset }: Prop
                     className={classes.assetInner}
                     style={{ pointerEvents: position === 0 ? 'auto' : 'none' }}>
                     {isVideo ? (
-                      <VideoComponent url={file.url} />
+                      <VideoComponent
+                        url={file.url}
+                        onDelete={
+                          typeof onDeleteAsset === 'function'
+                            ? () => onDeleteAsset(asset)
+                            : null
+                        }
+                      />
                     ) : (
                       <img
                         src={file.url}
@@ -208,7 +235,6 @@ const useStyles = makeStyles((theme) => ({
   },
   assetOuter: {
     display: 'flex',
-    flex: 1,
     transition: theme.transitions.create(['transform', 'opacity'], {
       duration: 600
     }),
@@ -217,13 +243,15 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '56.25%'
   },
   assetInner: {
-    flex: 1,
     position: 'absolute',
     top: 0,
     right: 0,
     left: 0,
     bottom: 0,
-    display: 'inline-block',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
     margin: 0,
     borderRadius: 10

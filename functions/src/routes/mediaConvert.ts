@@ -1,5 +1,5 @@
 import * as express from 'express'
-
+import config from '../config.json'
 const { corsHandler } = require('../index')
 
 const router = express.Router()
@@ -44,6 +44,7 @@ const resizeVideo = async (item: any) => {
       ratio,
       format,
       // container,
+      assetId,
       id,
       fileName,
       fileWidth,
@@ -57,30 +58,54 @@ const resizeVideo = async (item: any) => {
     const newRatio = ratio.w / ratio.h // 0.5625
 
     // original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
-    const cropWidth = newRatio * resolution
+    const cropWidth = Math.ceil((newRatio * resolution) / 2) * 2
 
     // //That gives us `width` and `height` for cropping params
 
     // // Now we have crop frame but we need to center it.
     // // Since we are cropping width we will be centering with X.
-    const croppedWidth =
-      originalRatio > newRatio ? Math.ceil((fileWidth - cropWidth) / 2) * 2 : 2 // This is amount of px being cut
-    const croppedHeight =
-      newRatio > originalRatio
-        ? Math.ceil((fileHeight - resolution) / 2) * 2
-        : 2
-    const X = originalRatio > newRatio ? croppedWidth / 2 : 0 // Even spacing on both sides of video
-    const Y = newRatio > originalRatio ? croppedHeight / 2 : 0
+    const croppedHeight = 2
+    const croppedWidth = Math.ceil((fileWidth - cropWidth) / 2) * 2 // This is amount of px being cut
+    const X = Math.ceil(croppedWidth / 2 / 2) * 2 // Even spacing on both sides of video
+    const Y = 0
 
-    console.log(
-      originalRatio,
-      newRatio,
-      croppedWidth,
-      croppedHeight,
-      X,
-      Y,
-      'hhhhhhhhhhhhhhhhh'
-    )
+    const getVideoDescription = () => {
+      if (originalRatio > newRatio) {
+        return {
+          ScalingBehavior: 'DEFAULT',
+          TimecodeInsertion: 'DISABLED',
+          AntiAlias: 'ENABLED',
+          Sharpness: 50,
+          CodecSettings: codecSettings(),
+          AfdSignaling: 'NONE',
+          DropFrameTimecode: 'ENABLED',
+          RespondToAfd: 'NONE',
+          ColorMetadata: 'INSERT',
+          Crop: {
+            X: X,
+            Y: Y,
+            Width: croppedWidth,
+            Height: croppedHeight
+          },
+          Width: cropWidth,
+          Height: resolution
+        }
+      } else {
+        return {
+          ScalingBehavior: 'DEFAULT',
+          TimecodeInsertion: 'DISABLED',
+          AntiAlias: 'ENABLED',
+          Sharpness: 50,
+          CodecSettings: codecSettings(),
+          AfdSignaling: 'NONE',
+          DropFrameTimecode: 'ENABLED',
+          RespondToAfd: 'NONE',
+          ColorMetadata: 'INSERT',
+          Width: cropWidth,
+          Height: resolution
+        }
+      }
+    }
     const codecSettings = () => {
       if (format === 'prores') {
         return {
@@ -137,11 +162,10 @@ const resizeVideo = async (item: any) => {
     const containerSettings = () => {
       if (format === 'prores') {
         return {
-          container: 'MOV',
+          Container: 'MOV',
           MovSettings: {
             ClapAtom: 'INCLUDE',
             CslgAtom: 'INCLUDE',
-            Mpeg2FourCCControl: 'XDCAM',
             PaddingControl: 'OMNEON',
             Reference: 'SELF_CONTAINED'
           }
@@ -184,7 +208,7 @@ const resizeVideo = async (item: any) => {
                   ProgramSelection: 1
                 }
               },
-              FileInput: `s3://cybervault-bucket/${id}${name}`
+              FileInput: `s3://${config.bucketName}/${assetId}${name}`
             }
           ],
           OutputGroups: [
@@ -193,7 +217,7 @@ const resizeVideo = async (item: any) => {
               OutputGroupSettings: {
                 Type: 'FILE_GROUP_SETTINGS',
                 FileGroupSettings: {
-                  Destination: `s3://cybervault-bucket/${id}/${resolution}/`,
+                  Destination: `s3://${config.bucketName}/${assetId}/${id}/`,
                   DestinationSettings: {
                     S3Settings: {
                       AccessControl: {
@@ -205,25 +229,7 @@ const resizeVideo = async (item: any) => {
               },
               Outputs: [
                 {
-                  VideoDescription: {
-                    ScalingBehavior: 'DEFAULT',
-                    TimecodeInsertion: 'DISABLED',
-                    AntiAlias: 'ENABLED',
-                    Sharpness: 50,
-                    CodecSettings: codecSettings(),
-                    AfdSignaling: 'NONE',
-                    DropFrameTimecode: 'ENABLED',
-                    RespondToAfd: 'NONE',
-                    ColorMetadata: 'INSERT',
-                    // Crop: {
-                    //   X: X,
-                    //   Y: Y,
-                    //   Width: croppedWidth,
-                    //   Height: croppedHeight
-                    // },
-                    Width: cropWidth,
-                    Height: resolution
-                  },
+                  VideoDescription: getVideoDescription(),
                   AudioDescriptions: [
                     {
                       AudioTypeControl: 'FOLLOW_INPUT',
@@ -267,7 +273,9 @@ const resizeVideo = async (item: any) => {
             width: cropWidth,
             original: false,
             id: id,
-            url: `https://cybervault-bucket.s3.us-east-2.amazonaws.com/${id}/${resolution}/${id}${urlFileName}${
+            assetId:assetId,
+            status:'complete',
+            url: `https://${config.bucketName}.s3.us-east-2.amazonaws.com/${assetId}/${id}/${id}${urlFileName}${
               format === 'prores' ? '.mov' : '.mp4'
             }`
           })

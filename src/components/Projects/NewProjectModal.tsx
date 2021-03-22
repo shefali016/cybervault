@@ -16,7 +16,7 @@ import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
 import { ToastContext } from 'context/Toast'
 import { Client } from '../../utils/Interface'
-import AWS from 'aws-sdk';
+import AWS from 'aws-sdk'
 import { Typography } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
@@ -39,6 +39,7 @@ type NewProjectProps = {
   onUpdate?: (project: Types.Project) => void
   isBeyondLimit?: boolean
   onUpgradeSubscription?: () => void
+  onClientAdded?: () => void
 }
 
 const NewProject = ({
@@ -58,11 +59,15 @@ const NewProject = ({
   initialStep = 1,
   onUpdate,
   isBeyondLimit,
-  onUpgradeSubscription
+  onUpgradeSubscription,
+  onClientAdded
 }: NewProjectProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
-  const [projectData, setProjectData] = useState(project || getProductData())
+  const [projectData, setProjectData] = useState({
+    ...getProductData(),
+    ...(project || {})
+  })
   const [clientData, setClientData] = useState<Client | null>(null)
   const [haveError, setHaveError] = useState(false)
   const [addClient, setAddClient] = useState(false)
@@ -101,13 +106,21 @@ const NewProject = ({
     if (typeof onUpdate !== 'function') {
       return
     }
-    const projectUpdate = { ...projectData }
 
-    if (clientData) {
-      projectUpdate.clientId = clientData.id
+    const isError = validate(currentStep, projectData, clientData)
+    if (isError) {
+      setHaveError(true)
+    } else {
+      setHaveError(false)
+
+      const projectUpdate = { ...projectData }
+
+      if (clientData) {
+        projectUpdate.clientId = clientData.id
+      }
+
+      onUpdate(projectUpdate)
     }
-
-    onUpdate(projectUpdate)
   }
 
   const onSubmitData = async () => {
@@ -119,6 +132,7 @@ const NewProject = ({
       setIsLoading(true)
       let project = {
         ...projectData,
+
         clientId: clientData.id,
         id: generateUid()
       }
@@ -133,6 +147,7 @@ const NewProject = ({
 
   const renderStepsView = () => {
     const props = {
+      onClientAdded,
       isLoading,
       projectData,
       haveError,
@@ -252,6 +267,7 @@ type NewProjectModalProps = {
   onUpdate?: (project: Types.Project) => void
   isBeyondLimit?: boolean
   onUpgradeSubscription?: () => void
+  onClientAdded?: () => void
 }
 
 const NewProjectModal = ({
@@ -270,16 +286,18 @@ const NewProjectModal = ({
   initialStep,
   onUpdate,
   isBeyondLimit,
-  onUpgradeSubscription
+  onUpgradeSubscription,
+  onClientAdded
 }: NewProjectModalProps & StateProps) => {
   const newClientSuccess = useSelector(
     (state: any) => state.clients.newClientSuccess
   )
   const newClientData = useSelector((state: any) => state.clients.newClientData)
-    console.log(AWS,"awssssssss")
+  console.log(AWS, 'awssssssss')
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject
+        onClientAdded={onClientAdded}
         onUpgradeSubscription={onUpgradeSubscription}
         initialStep={initialStep}
         onRequestClose={onRequestClose}

@@ -14,6 +14,7 @@ import {
   UPDATE_PORTFOLIO_FOLDER_SUCCESS,
   UPDATE_PORTFOLIO_SUCCESS
 } from 'actions/actionTypes'
+import { createTransform } from 'redux-persist'
 import * as Types from '../utils/Interface'
 import { Portfolio, PortfolioFolder } from '../utils/Interface'
 
@@ -222,5 +223,19 @@ const portfoliosReducer = (state = initialState, action: Action) => {
       return state
   }
 }
+
+export const portfolioTransform = createTransform(
+  (inboundState: State) => {
+    return inboundState
+  },
+  (outboundState: State) => ({
+    ...initialState,
+    folders: outboundState.folders,
+    portfolios: outboundState.portfolios,
+    folderCache: outboundState.folderCache,
+    portfolioCache: outboundState.portfolioCache
+  }),
+  { whitelist: ['portfolio'] }
+)
 
 export default portfoliosReducer

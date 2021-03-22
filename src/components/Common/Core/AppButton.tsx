@@ -1,8 +1,10 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
 
-type Props = { children: React.ReactElement } & any
+type Props = { children: React.ReactElement; disabled?: boolean } & any
 
-export const AppButton = ({ children, ...rest }: Props) => (
-  <Button {...rest}>{children}</Button>
+export const AppButton = ({ disabled, children, ...rest }: Props) => (
+  <Button disabled={disabled} {...rest}>
+    {children}
+  </Button>
 )

@@ -2,11 +2,12 @@ import react, { useState, useEffect } from 'react'
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core'
 import { GradiantButton } from '../../components/Common/Button/GradiantButton'
-import { ProjectAsset } from 'utils/Interface'
+import { Asset } from 'utils/Interface'
 import { getAssets } from 'apis/assets'
 import CloseButton from '../../components/Common/Button/CloseButton'
 import AppModal from 'components/Common/Modal'
 import { createNull } from 'typescript'
+import { generateUid } from 'utils'
 
 type Media = {
   format: string
@@ -65,7 +66,7 @@ const MediaConvert = ({
   }, [assetIds])
 
   const loadAssets = async (ids: Array<string>) => {
-    const assets: Array<ProjectAsset> = await getAssets(ids, accountId)
+    const assets: Array<Asset> = await getAssets(ids, accountId)
     setAsset(assets)
   }
 
@@ -99,7 +100,7 @@ const MediaConvert = ({
   useEffect(() => {
     if (selectedAsset && asset.length) {
       setActiveAsset(
-        asset.filter((ass: ProjectAsset, i: number) => {
+        asset.filter((ass: Asset, i: number) => {
           return ass.id === selectedAsset
         })[0]
       )
@@ -142,7 +143,8 @@ const MediaConvert = ({
       setItems([
         ...items,
         {
-          id: selectedAsset,
+          assetId: selectedAsset,
+          id: generateUid(),
           fileName: activeAsset.fileName,
           fileHeight: originalFile[0].height,
           fileWidth: originalFile[0].width,
@@ -342,7 +344,7 @@ const MediaConvert = ({
         {items?.length
           ? items
               .filter((item: any, i: number) => {
-                return item.id === selectedAsset
+                return item.assetId === selectedAsset
               })
               .map((val: any, i: number) => {
                 return (

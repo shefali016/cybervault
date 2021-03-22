@@ -8,6 +8,7 @@ export type MenuItem = {
   onClick: () => void
   Icon?: any
   desctructive?: boolean
+  disabled?: boolean
 }
 type Props = {
   menuItems: Array<MenuItem>
@@ -41,13 +42,7 @@ export const PopoverButton = ({
 
   return (
     <div className={className} style={style}>
-      <IconButton
-        aria-owns={id}
-        onClick={handleClick}
-        style={{
-          color: theme.palette.background.surfaceHighlight,
-          backgroundColor: 'rgba(0,0,0,0.2)'
-        }}>
+      <IconButton aria-owns={id} onClick={handleClick} className={'iconButton'}>
         <MoreVertIcon
           style={{ color: theme.palette.grey[100] }}
           fontSize='small'
@@ -61,47 +56,53 @@ export const PopoverButton = ({
         onClose={handleClose}
         anchorOrigin={
           anchorOrigin || {
-            vertical: 'top',
+            vertical: 'bottom',
             horizontal: 'right'
           }
         }
         transformOrigin={
           transformOrigin || {
-            vertical: 'bottom',
+            vertical: 'top',
             horizontal: 'left'
           }
         }>
-        {menuItems.map(({ title, onClick, Icon, desctructive }: MenuItem) => {
-          return (
-            <MenuItem
-              key={title}
-              style={{
-                fontSize: 12,
-                padding: `${theme.spacing(1.5)}px ${theme.spacing(2.5)}px`
-              }}
-              onClick={() => {
-                handleClose()
-                onClick()
-              }}>
-              <div
+        {menuItems.map(
+          ({ title, onClick, Icon, desctructive, disabled }: MenuItem) => {
+            return (
+              <MenuItem
+                key={title}
                 style={{
-                  display: 'flex',
-                  color: desctructive
-                    ? theme.palette.error.main
-                    : theme.palette.text.paper,
-                  alignItems: 'center'
+                  fontSize: 12,
+                  padding: `${theme.spacing(1.5)}px ${theme.spacing(2.5)}px`,
+                  opacity: disabled ? 0.5 : 1
+                }}
+                onClick={() => {
+                  if (disabled) return
+                  handleClose()
+                  onClick()
                 }}>
-                {!!Icon && (
-                  <Icon
-                    style={{ marginRight: theme.spacing(1) }}
-                    fontSize='small'
-                  />
-                )}
-                <Typography>{title}</Typography>
-              </div>
-            </MenuItem>
-          )
-        })}
+                <div
+                  style={{
+                    display: 'flex',
+                    color: desctructive
+                      ? theme.palette.error.main
+                      : theme.palette.text.paper,
+                    alignItems: 'center'
+                  }}>
+                  {!!Icon && (
+                    <Icon
+                      style={{ marginRight: theme.spacing(1), marginBottom: 2 }}
+                      fontSize='small'
+                    />
+                  )}
+                  <Typography variant={'subtitle1'} style={{ margin: 0 }}>
+                    {title}
+                  </Typography>
+                </div>
+              </MenuItem>
+            )
+          }
+        )}
       </Popover>
     </div>
   )

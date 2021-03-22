@@ -15,6 +15,7 @@ type Props = {
   loading?: boolean
   itemHeight?: number
   EmptyComponent?: any
+  style?: {}
 }
 
 const Widget = ({
@@ -25,7 +26,8 @@ const Widget = ({
   tabletColumn,
   loading,
   itemHeight,
-  EmptyComponent
+  EmptyComponent,
+  style
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -46,15 +48,18 @@ const Widget = ({
   return (
     <div className={clsx(classes.root)}>
       {!!title && (
-        <Typography variant={'body1'} className={classes.title}>
+        <Typography
+          variant={'body1'}
+          className={clsx(classes.title, 'responsiveHorizontalPadding')}>
           {title}
         </Typography>
       )}
       <div
-        style={itemHeight ? { minHeight: itemHeight } : {}}
+        style={style}
         className={clsx(
           classes.wrapper,
-          tabletColumn ? classes.tabletColumn : undefined
+          tabletColumn ? classes.tabletColumn : undefined,
+          'responsiveHorizontalPadding'
         )}>
         {data && data.length > 0 ? (
           data.map(renderItem)
@@ -83,9 +88,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    overflowX: 'auto',
+    overflowX: 'scroll',
     whiteSpace: 'nowrap',
-    paddingLeft: theme.spacing(5)
+    paddingTop: 15,
+    paddingBottom: 15
   },
   tabletColumn: {
     [theme.breakpoints.down('sm')]: {
@@ -95,7 +101,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(4),
     color: theme.palette.text.background
   },
   loader: {}

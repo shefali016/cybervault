@@ -11,7 +11,6 @@ import { getTextColor } from 'utils/helpers'
 import Header from '../../../components/Common/Header/header'
 import { AccountTabIds } from 'screens/MainScreen'
 import { AppLoader } from 'components/Common/Core/AppLoader'
-import clsx from 'clsx'
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import { MenuItem } from 'components/Common/PopoverButton'
 import ProjectIcon from '@material-ui/icons/Collections'
@@ -23,6 +22,7 @@ import { PortfolioShareModal } from 'components/Portfolio/PortfolioShareModal'
 import { PortfolioTitle } from 'components/Portfolio/PortfolioTitle'
 import { ProjectSelectBar } from 'components/Portfolio/ProjectSelectBar'
 import { PortfolioProjectDetails } from 'components/Portfolio/PortfolioDetails'
+import clsx from 'clsx'
 
 type StateProps = {
   portfolio: Portfolio
@@ -171,7 +171,10 @@ const PortfolioSingleScreen = ({
   const handleProfileNavigation = () =>
     history.replace(`/${AccountTabIds.profile}`)
 
-  const handleBack = () => history.push('/portfolio')
+  const handleBack = () => {
+    console.log(history)
+    history.push('/portfolio')
+  }
 
   const getDefaultMessage = () => {
     let imageCount = 0
@@ -191,7 +194,7 @@ const PortfolioSingleScreen = ({
 
   return (
     <div
-      className={classes.screen}
+      className={clsx('screenContainer', 'fullHeight')}
       style={{ backgroundColor, color: textColor }}>
       <Header
         user={user}
@@ -214,33 +217,36 @@ const PortfolioSingleScreen = ({
         }}
       />
 
-      <div className={classes.contentHeader}>
-        <PortfolioTitle
-          className={classes.portfolioTitle}
-          portfolio={portfolio}
-          size={isWidthDown('sm', width) ? 38 : 50}
-        />
+      <div className={clsx('screenInner', 'col', 'flex')}>
+        <div className={clsx('responsivePadding', 'col', 'flex')}>
+          <div className={classes.contentHeader}>
+            <PortfolioTitle
+              className={classes.portfolioTitle}
+              portfolio={portfolio}
+              size={isWidthDown('sm', width) ? 38 : 50}
+            />
 
-        {!!account.settings.watermark && (
-          <img
-            src={account.settings.watermark}
-            alt='company-logo'
-            className={classes.contentHeaderLogo}
-          />
-        )}
-      </div>
+            {!!account.settings.watermark && (
+              <img
+                src={account.settings.watermark}
+                alt='company-logo'
+                className={classes.contentHeaderLogo}
+              />
+            )}
+          </div>
+          <div
+            className={clsx('screenChild', 'flex')}
+            style={{ backgroundColor: foregroundColor }}>
+            {!selectedProjectData && (
+              <AppLoader className={classes.loader} color={textColor} />
+            )}
 
-      <div
-        className={classes.portfolioWrapper}
-        style={{ backgroundColor: foregroundColor }}>
-        {!selectedProjectData && (
-          <AppLoader className={classes.loader} color={textColor} />
-        )}
-
-        <PortfolioProjectDetails
-          project={selectedProjectData}
-          account={account}
-        />
+            <PortfolioProjectDetails
+              project={selectedProjectData}
+              account={account}
+            />
+          </div>
+        </div>
       </div>
 
       <PortfolioModal

@@ -9,16 +9,14 @@ import {
 } from 'utils/constants/stringConstants'
 
 export const useStyles = makeStyles((theme) => ({
+  campaignTitle: { color: 'inherit' },
+
   contentHeader: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginLeft: theme.spacing(5),
-    marginRight: theme.spacing(5),
     padding: `${theme.spacing(2)}px ${theme.spacing(0)}px`,
     [theme.breakpoints.down('md')]: {
-      marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(2),
       padding: `${theme.spacing(2)}px ${theme.spacing(0)}px`
     }
   },
@@ -28,12 +26,16 @@ export const useStyles = makeStyles((theme) => ({
   },
   portfolioTitle: {},
 
+  projectName: { [theme.breakpoints.down('sm')]: { fontSize: 25 } },
+
   activeDot: { position: 'absolute', left: '50%', bottom: 6 },
 
   screen: { minHeight: '100vh', display: 'flex', flexDirection: 'column' },
-  screenloader: { alignSelf: 'center' },
+  screenloader: { justifyContent: 'center', display: 'flex' },
 
-  projectBarContainer: {
+  projectBarContainer: { alignSelf: 'stretch' },
+
+  projectBar: {
     display: 'flex',
     alignItems: 'center',
     padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
@@ -100,7 +102,6 @@ export const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     flexDirection: 'column',
     maxWidth: 1500,
-    alignSelf: 'center',
     borderRadius: 20,
     marginLeft: theme.spacing(5),
     marginRight: theme.spacing(5),
@@ -116,7 +117,7 @@ export const useStyles = makeStyles((theme) => ({
   assetsOuter: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: theme.spacing(14)
+    marginBottom: theme.spacing(10)
   },
   assetsInner: {
     alignSelf: 'center',
@@ -156,7 +157,6 @@ export const useStyles = makeStyles((theme) => ({
       duration: 500
     })
   },
-  portfolioBoxMainWrap: {},
   portfolioFolder: {
     color: '#fff',
     marginBottom: theme.spacing(6)
@@ -179,10 +179,9 @@ export const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box'
   },
   portfolioFolderTitle: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
     display: 'flex',
-    alignItems: 'center',
-    marginLeft: theme.spacing(5)
+    alignItems: 'center'
   },
   portfolioLogo: {
     height: 80,
@@ -226,7 +225,32 @@ export const useStyles = makeStyles((theme) => ({
     }
   },
   folderDescription: { color: theme.palette.text.meta },
-  portfolioBox: {},
+  portfolioBox: {
+    marginBottom: theme.spacing(6),
+    padding: theme.spacing(3),
+    borderRadius: '18px',
+    border: '2px dashed #9ea0a28c',
+    textAlign: 'center',
+    cursor: 'pointer',
+    color: theme.palette.text.meta,
+    transition: theme.transitions.create(
+      ['border', 'background', 'color', 'opacity'],
+      {
+        duration: 500
+      }
+    ),
+    '&:hover': {
+      border: `2px dashed ${theme.palette.grey[600]}`,
+      color: theme.palette.common.white,
+      background: 'rgba(0,0,0,0.1)',
+      '& $uploadFolderIcon': {
+        opacity: 1
+      },
+      '& $addIcon': {
+        opacity: 1
+      }
+    }
+  },
   portfolioLogoImg: {
     height: 80,
     borderRadius: 40,
@@ -263,38 +287,13 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: '500px'
   },
-  portfolioBoxWrap: {
-    marginBottom: theme.spacing(6),
-    margin: `0 ${theme.spacing(5)}px`,
-    padding: theme.spacing(3),
-    borderRadius: '18px',
-    border: '2px dashed #9ea0a28c',
-    textAlign: 'center',
-    cursor: 'pointer',
-    color: theme.palette.text.meta,
-    transition: theme.transitions.create(
-      ['border', 'background', 'color', 'opacity'],
-      {
-        duration: 500
-      }
-    ),
-    '&:hover': {
-      border: `2px dashed ${theme.palette.grey[600]}`,
-      color: theme.palette.common.white,
-      background: 'rgba(0,0,0,0.1)',
-      '& $uploadFolderIcon': {
-        opacity: 1
-      },
-      '& $addIcon': {
-        opacity: 1
-      }
-    }
-  },
+  portfolioBoxWrap: {},
   portfolioModalHead: {
     margin: 0
   },
   loader: {
     textAlign: CENTER,
+    alignSelf: 'center',
     margin: theme.spacing(5)
   },
   image: {},
