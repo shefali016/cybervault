@@ -1,3 +1,4 @@
+import * as functions from 'firebase-functions'
 import * as express from 'express'
 import config from '../config.json'
 const { corsHandler } = require('../index')
@@ -18,8 +19,11 @@ AWS.config.update({
 let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 
 // var s3 = new AWS.S3()
+console.log(functions.config(),"yyyyyyyyyyyyyyyyyyyy")
 
 router.post('/convert', (req, res) => {
+
+  
   return corsHandler(req, res, async () => {
     try {
       let videoArray = req.body.data.map(async (item: any, i: number) => {
