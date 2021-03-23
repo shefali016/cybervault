@@ -71,24 +71,23 @@ const HomeScreen = (props: any) => {
           />
         )}
       />
-      <div
-        className={clsx(
-          classes.invoicingWrapper,
-          'responsiveHorizontalPadding'
-        )}>
-        <Typography variant={'body1'} className={classes.sectionTitle}>
+
+      <div className={'widgetOuter'}>
+        <Typography variant={'h6'} className={'widgetTitle'}>
           Invoicing and Analytics
         </Typography>
-        <div className={classes.middleCardsWrapper}>
-          <PendingInvoices className={classes.widgetItem} />
-          <ProfitsExpenses className={classes.widgetItem} />
-          <ProjectCount
-            className={classes.widgetItem}
-            projectCount={allProjects.length}
-          />
-          <IncomeThisMonth className={classes.widgetItem} />
+        <div
+          className={clsx(
+            'widgetResponsiveInner',
+            'responsiveHorizontalPadding'
+          )}>
+          <PendingInvoices />
+          <ProfitsExpenses />
+          <ProjectCount projectCount={allProjects.length} />
+          <IncomeThisMonth />
         </div>
       </div>
+
       <Widget
         title={'Unpaid Invoices'}
         data={UNPAID_INVOICES_DATA}
@@ -133,41 +132,17 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap'
   },
   middleCardsWrapper: {
-    display: FLEX,
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    overflowX: 'scroll',
+    whiteSpace: 'nowrap',
+    paddingTop: 15,
+    paddingBottom: 15,
     [theme.breakpoints.down('sm')]: {
       flexDirection: COLUMN,
       alignItems: 'stretch'
     }
-  },
-  sectionTitle: {
-    marginBottom: theme.spacing(1),
-    color: theme.palette.text.background
-  },
-  background: {
-    backgroundColoPr: '#24262B',
-    height: '100%',
-    width: '100%',
-    overflowY: 'auto'
-  },
-  widgetItem: {
-    [theme.breakpoints.up('sm')]: {
-      marginRight: theme.spacing(3)
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(3),
-      marginRight: theme.spacing(0)
-    }
-  },
-  projectCardsUl: {
-    margin: 0,
-    padding: 0,
-    overflow: 'hidden',
-    listStyle: 'none'
-  },
-  projectCardsli: {
-    float: 'left',
-    margin: '0 0 20px 0',
-    width: '25%'
   }
 }))
 
