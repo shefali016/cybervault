@@ -57,7 +57,7 @@ export default function validate(
   }
 }
 
-export const getImageObject = (file: any, url: string,width:number,height:number,assetId: string,id:string) => {
+export const getImageObject = (file: any, url: string,height:number,width:number,assetId: string,id:string) => {
   return {
     assetId:assetId,
     id: id,

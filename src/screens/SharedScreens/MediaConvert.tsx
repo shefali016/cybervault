@@ -40,7 +40,7 @@ const MediaConvert = ({
   const [open, setOpen] = useState<any>(false)
   const [state, setState] = useState<any>({
     format: 'h.264',
-    resolution: 720,
+    resolution: 0,
     ratio: {
       w: 9,
       h: 16
@@ -222,10 +222,10 @@ const MediaConvert = ({
                         state.resolution === item.res && classes.selectedTab
                       }`}
                       onClick={() =>
-                        originalFile.height > item.res &&
+                        originalFile.height >= item.res &&
                         chooseSize('resolution', item.res)
                       }>
-                      {originalFile.height > item.res ? (
+                      {originalFile.height >= item.res ? (
                         <>
                           <Typography>{item.type}</Typography>
                           <Typography className={classes.desc}>

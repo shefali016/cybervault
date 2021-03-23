@@ -15,7 +15,7 @@ AWS.config.update({
   endpoint: 'https://wa11sy9gb.mediaconvert.us-east-2.amazonaws.com'
 })
 
-console.log(process.env, 'envvvvvvvvvvvvvvvvvvvv')
+let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 
 // var s3 = new AWS.S3()
 
@@ -25,7 +25,7 @@ router.post('/convert', (req, res) => {
       let videoArray = req.body.data.map(async (item: any, i: number) => {
         return await resizeVideo(item)
       })
-      console.log(videoArray)
+      // console.log(videoArray)
       let result = await Promise.all(videoArray)
       return await res.status(200).send(result)
 
@@ -64,10 +64,10 @@ const resizeVideo = async (item: any) => {
 
     // // Now we have crop frame but we need to center it.
     // // Since we are cropping width we will be centering with X.
-    const croppedHeight = 2
     const croppedWidth = Math.ceil((fileWidth - cropWidth) / 2) * 2 // This is amount of px being cut
     const X = Math.ceil(croppedWidth / 2 / 2) * 2 // Even spacing on both sides of video
     const Y = 0
+
 
     const getVideoDescription = () => {
       if (originalRatio > newRatio) {
@@ -84,8 +84,8 @@ const resizeVideo = async (item: any) => {
           Crop: {
             X: X,
             Y: Y,
-            Width: croppedWidth,
-            Height: croppedHeight
+            Width: cropWidth,
+            Height: resolution
           },
           Width: cropWidth,
           Height: resolution
@@ -263,22 +263,33 @@ const resizeVideo = async (item: any) => {
           'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role'
       }
 
-      var createJonPromise = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
-        .createJob(params)
-        .promise()
+      let createJonPromise = mediaConvert.createJob(params).promise()
       createJonPromise
-        .then(() => {
-          resolve({
-            height: resolution,
-            width: cropWidth,
-            original: false,
-            id: id,
-            assetId:assetId,
-            status:'complete',
-            url: `https://${config.bucketName}.s3.us-east-2.amazonaws.com/${assetId}/${id}/${id}${urlFileName}${
-              format === 'prores' ? '.mov' : '.mp4'
-            }`
-          })
+        .then((res: any) => {
+          console.log(res, 'bbbbbbbbbbbbbbbbbbbbb')
+
+          // getJobDetails(res.Job.Id)
+          //   .then((jobDetails: any) => {
+          //     console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
+          //     console.log(jobDetails)
+          //     console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
+              resolve({
+                height: resolution,
+                width: cropWidth,
+                original: false,
+                id: id,
+                assetId: assetId,
+                status: 'complete',
+                url: `https://${
+                  config.bucketName
+                }.s3.us-east-2.amazonaws.com/${assetId}/${id}/${assetId}${urlFileName}${
+                  format === 'prores' ? '.mov' : '.mp4'
+                }`
+              })
+            // })
+            // .catch((error: any) => {
+            //   reject(error)
+            // })
         })
         .catch((error: any) => {
           reject(error)
@@ -289,5 +300,39 @@ const resizeVideo = async (item: any) => {
     }
   })
 }
+
+// async function getJobDetails(Id: any) {
+//   return new Promise(async (resolve: any, reject: any) => {
+//     try {
+//       let status = ''
+//       let result
+//       while (status == 'PROGRESSING' || status == '') {
+//         result = await mediaConvert.getJob({
+//           Id: Id
+//         })
+//         console.log('4444444444444444444444444444444444444444444444444444')
+//         console.log(result,"resulttttttttttttttt")
+//         console.log('4444444444444444444444444444444444444444444444444444')
+
+//         status = result.Job.Status
+//         await sleep(5)
+//         console.log("---------------------",status)
+//       }
+//       console.log('===============================')
+//       console.log(result)
+//       console.log('===============================')
+//       resolve(result)
+//     } catch (error) {
+//       console.log("eurrorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
+//       console.log(error);
+//       console.log("errorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
+//       reject(error)
+//     }
+//   })
+// }
+
+// async function sleep(second: any) {
+//   return new Promise((resolve) => setTimeout(resolve, second))
+// }
 
 module.exports = router

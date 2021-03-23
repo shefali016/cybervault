@@ -110,6 +110,11 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
           source.setAttribute('src', `${url}`)
           video.appendChild(source)
           video.onloadedmetadata = async () => {
+            console.log(
+              video.videoHeight,
+              video.videoWidth,
+              'uuuuuuuuuuuuuuuuuu'
+            )
             asset.files.push(
               getImageObject(
                 file,

@@ -35,10 +35,11 @@ export const createAsset = async (asset: Asset) => {
 }
 
 export const setMedia = (id: string, file: any) => {
+  const name = file.name.replace(/ /g, '')
   var params = {
     Body: file,
     Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-    Key: `${id}${file.name}`,
+    Key: `${id}${name}`,
     ACL: 'public-read'
   }
   return s3.upload(params)
