@@ -53,7 +53,7 @@ const MainSwitch = ({
     }
   }, [])
 
-  if (!(userRestored && accountRestored)) {
+  if (!(userRestored && accountRestored && customerRestored)) {
     return <FullScreenLoader />
   }
 

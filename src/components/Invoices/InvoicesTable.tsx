@@ -29,7 +29,7 @@ export const InvoicesTable = ({
   const classes = useStyles()
 
   const handleRowClick = (data: string) => {
-    history.push(`/clientInvoices/${data}/${accountId}?isProjectOwner=true`)
+    history.push(`/clientInvoices/${data}/${accountId}`)
   }
 
   const rows = useMemo(() => {

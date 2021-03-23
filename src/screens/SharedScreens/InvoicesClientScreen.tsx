@@ -46,23 +46,17 @@ const InvoicesClientScreen = (props: Props) => {
 
   const toastContext = useContext(ToastContext)
 
-  const { invoiceId, ownerAccountId, ownerCustomerId } = useMemo(() => {
+  const { invoiceId, ownerAccountId } = useMemo(() => {
     const { params } = props.match
-    console.log('paramsparams', params)
 
     if (!(params && params.accId && params.id)) {
       return {
         invoiceId: null,
-        accoownerAccountIduntId: null,
-        ownerCustomerId: null
+        ownerAccountId: null
       }
     }
-    const {
-      accId: ownerAccountId,
-      id: invoiceId,
-      customerId: ownerCustomerId
-    } = params
-    return { ownerAccountId, invoiceId, ownerCustomerId }
+    const { accId: ownerAccountId, id: invoiceId } = params
+    return { ownerAccountId, invoiceId }
   }, [props.match.params])
 
   // Select cache from state
@@ -86,7 +80,11 @@ const InvoicesClientScreen = (props: Props) => {
     invoiceConversationData: state.invoice.invoiceConversationData
   }))
 
-  const [accountOwner, setAccountOwner] = useState<User | null>(null)
+  const [ownerData, setOwnerData] = useState<{
+    account: Account | null
+    user: User | null
+  }>({ account: null, user: null })
+  const { account: ownerAccount, user: ownerUser } = ownerData
   const isAccountOwner = !account || ownerAccountId === account.id
 
   // Select objects from cache
@@ -109,14 +107,9 @@ const InvoicesClientScreen = (props: Props) => {
     return projectCache[projectId]
   }, [invoice, projectCache])
 
-  const [isProjectOwner, setisProjectOwner] = useState(false)
   const [cardModalOpen, setCardModalOpen] = useState(false)
   // Load invoice and conversations
   useEffect(() => {
-    if (props.location && props.location.search) {
-      const isProjectOwner = props.location.search.split('=')[1]
-      setisProjectOwner(isProjectOwner ? true : false)
-    }
     loadInitialData()
   }, [])
   const loadInitialData = async () => {
@@ -125,7 +118,7 @@ const InvoicesClientScreen = (props: Props) => {
       dispatch(getAllInvoiceConversationRequest(ownerAccountId, invoiceId))
       const ownerAccount = await getAccount(ownerAccountId)
       const accountOwner = await getUser(ownerAccount.owner)
-      setAccountOwner(accountOwner)
+      setOwnerData({ user: accountOwner, account: ownerAccount })
     }
   }
   // Load client and project when invoice is loaded
@@ -152,9 +145,9 @@ const InvoicesClientScreen = (props: Props) => {
   }
 
   useOnChange(revisionSuccess, (success: string | null) => {
-    if (success && accountOwner && client) {
+    if (success && ownerUser && client) {
       const mailPayload = {
-        to: isAccountOwner ? accountOwner.email : client.email,
+        to: isAccountOwner ? ownerUser.email : client.email,
         templateId: revision,
         type: 'revision',
         data: {
@@ -181,15 +174,15 @@ const InvoicesClientScreen = (props: Props) => {
     hasMounted.current = true
   }, [conversation?.length])
 
-  if (!(invoice && project && accountOwner && client)) {
+  if (!(invoice && project && ownerUser && client)) {
     return <FullScreenLoader />
   }
 
   const handleSendRevisonRequest = () => {
     const senderId = isAccountOwner ? ownerAccountId : client.id
-    const sendersEmail = isAccountOwner ? accountOwner.email : client.email
-    const receiversEmail = isAccountOwner ? client.email : accountOwner.email
-    const name = isAccountOwner ? accountOwner.name : client.name
+    const sendersEmail = isAccountOwner ? ownerUser.email : client.email
+    const receiversEmail = isAccountOwner ? client.email : ownerUser.email
+    const name = isAccountOwner ? ownerUser.name : client.name
 
     const payload = {
       message: message,
@@ -214,7 +207,7 @@ const InvoicesClientScreen = (props: Props) => {
           ${invoice.price}
         </Typography>
       </Grid>
-      {!isProjectOwner ? (
+      {!isAccountOwner ? (
         <Grid item>
           <GradiantButton disabled={invoice.isPaid} onClick={handlePayInvoice}>
             <Typography variant='button'>
@@ -245,13 +238,13 @@ const InvoicesClientScreen = (props: Props) => {
     setCardModalOpen(true)
   }
   const handleCreateCharge = (token: any) => {
-    if (token) {
+    if (token && ownerUser && ownerUser.customerId) {
       setCardModalOpen(false)
       const amount: number = invoice.price * 100
       const tokenId: string = token.id
       const invoiceId: string = invoice.id
       const account: string = ownerAccountId
-      const customerId: string = ownerCustomerId
+      const customerId: string = ownerUser.customerId
       dispatch(payInvoice(amount, tokenId, invoiceId, account, customerId))
     }
   }
@@ -393,7 +386,7 @@ const InvoicesClientScreen = (props: Props) => {
                                           <Typography
                                             className={`${classes.textBold} ${classes.name}`}>
                                             {isAccountOwner
-                                              ? accountOwner.name
+                                              ? ownerUser.name
                                               : client.name}
                                           </Typography>
                                           <Typography
