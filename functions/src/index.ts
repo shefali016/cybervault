@@ -32,8 +32,6 @@ const runtimeOpts = {
 }
 
 export const httpsRequests = functions.runWith(runtimeOpts).https.onRequest(app)
-console.log(functions.config(),"zzzzzzzzzzzzzzzzzzzzzz")
-
 
 export const myFunction = functions.firestore
   .document(`AccountData/{accountId}/Invoices/{invoiceId}`)
