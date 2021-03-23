@@ -251,35 +251,42 @@ const InvoicesClientScreen = (props: Props) => {
   }
 
   const handleAddAsset = async (data: any) => {
-    var results = data.reduce(function (results: any, org: any) {
-      ;(results[org.assetId] = results[org.assetId] || []).push(org)
-      return results
-    }, {})
+    return new Promise(async (resolve, reject) => {
+      try {
+        var results = data.reduce(function (results: any, org: any) {
+          ;(results[org.assetId] = results[org.assetId] || []).push(org)
+          return results
+        }, {})
 
-    for (let ele in results) {
-      let asset = await getSingleAsset(ele, ownerAccountId)
-
-      let filesData = [...asset.files]
-      results[ele].forEach((item: any, i: number) => {
-        const newRatio = item.ratio.w / item.ratio.h
-        const cropWidth = Math.ceil((newRatio * item.resolution) / 2) * 2
-        filesData.push({
-          assetId: item.assetId,
-          id: item.id,
-          height: item.resolution,
-          width: cropWidth,
-          status: 'pending',
-          url: ''
-        })
-      })
-      await addAsset(ownerAccountId, { ...asset, files: filesData })
-    }
+        for (let ele in results) {
+          let asset = await getSingleAsset(ele, ownerAccountId)
+          let filesData = [...asset.files]
+          results[ele].forEach((item: any, i: number) => {
+            const newRatio = item.ratio.w / item.ratio.h
+            const cropWidth = Math.ceil((newRatio * item.resolution) / 2) * 2
+            filesData.push({
+              assetId: item.assetId,
+              id: item.id,
+              height: item.resolution,
+              width: cropWidth,
+              status: 'pending',
+              url: ''
+            })
+          })
+          resolve(
+            await addAsset(ownerAccountId, { ...asset, files: filesData })
+          )
+        }
+      } catch (err: any) {
+        reject(err)
+      }
+    })
   }
 
   const mediaConvert = async (data: any) => {
     setMediaConversionLoading(true)
+    await handleAddAsset(data)
     let res: any = await convertMedia(data)
-    handleAddAsset(data)
     if (res.status === 200) {
       var results = res.data.reduce(function (results: any, org: any) {
         ;(results[org.assetId] = results[org.assetId] || []).push(org)

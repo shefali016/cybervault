@@ -40,7 +40,7 @@ import SubscriptionIcon from '@material-ui/icons/LocalActivity'
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
-import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
+import PortfolioFolderScreen from '../screens/DashboardScreens/PortfolioFolderScreen'
 
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
 import { ReduxState } from 'reducers/rootReducer'

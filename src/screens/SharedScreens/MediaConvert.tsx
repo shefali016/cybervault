@@ -222,10 +222,10 @@ const MediaConvert = ({
                         state.resolution === item.res && classes.selectedTab
                       }`}
                       onClick={() =>
-                        originalFile.height >= item.res &&
+                        originalFile?.height >= item.res &&
                         chooseSize('resolution', item.res)
                       }>
-                      {originalFile.height >= item.res ? (
+                      {originalFile?.height >= item.res ? (
                         <>
                           <Typography>{item.type}</Typography>
                           <Typography className={classes.desc}>
