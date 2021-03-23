@@ -201,7 +201,7 @@ const InvoiceData = ({
             ? getFullAmount()
             : getAmountByMilestone() || '',
         subject: 'Creator Cloud Invoice',
-        link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}/${customerId}`
+        link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}`
       }
     }
     dispatch(sendEmailRequest(mailPayload))

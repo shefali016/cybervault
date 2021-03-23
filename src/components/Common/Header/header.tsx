@@ -17,13 +17,14 @@ type Props = {
   onProfileClick?: () => void
   isEditInfoScreen?: boolean
   projectName?: string
-  user: User
+  user?: User | undefined | null
   onEditProject?: boolean
   renderAppIcon?: boolean
   onLogoClick?: () => void
   renderHeaderContent?: () => React.ReactElement
   history?: any
   width: any
+  hideBackArrow?: boolean
 }
 
 function Toolbar(props: Props) {
@@ -46,8 +47,11 @@ function Toolbar(props: Props) {
     <div className={classes.Toolbar}>
       {props.renderAppIcon && (
         <div className={classes.backIconContainer} onClick={props.onLogoClick}>
-          <ArrowBackIosIcon className={'backIcon'} />
-          <PolymerSharpIcon className={classes.appIcon} />
+          {!props.hideBackArrow && <ArrowBackIosIcon className={'backIcon'} />}
+          <PolymerSharpIcon
+            className={classes.appIcon}
+            style={{ marginLeft: props.hideBackArrow ? 10 : 0 }}
+          />
         </div>
       )}
 
@@ -66,22 +70,25 @@ function Toolbar(props: Props) {
           props.renderHeaderContent()}
       </div>
 
-      <div>
-        {!props.isNotificationIcon ? (
-          <IconButton style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
-            <NotificationIcon className={classes.notificationIcon} />
+      {props.user && (
+        <div>
+          {!props.isNotificationIcon ? (
+            <IconButton
+              style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
+              <NotificationIcon className={classes.notificationIcon} />
+            </IconButton>
+          ) : null}
+          <IconButton
+            style={{ borderRadius: 100, width: 45, marginRight: 22 }}
+            onClick={handleProfileClick}>
+            <img
+              src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
+              style={{ borderRadius: 20, height: 33, width: 33 }}
+              alt={'img'}
+            />
           </IconButton>
-        ) : null}
-        <IconButton
-          style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-          onClick={handleProfileClick}>
-          <img
-            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
-            style={{ borderRadius: 20, height: 33, width: 33 }}
-            alt={'img'}
-          />
-        </IconButton>
-      </div>
+        </div>
+      )}
     </div>
   )
 }

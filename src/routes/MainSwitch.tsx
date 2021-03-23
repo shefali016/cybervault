@@ -7,7 +7,7 @@ import { createNewProjectRequest } from 'actions/projectActions'
 import { getUser } from 'actions/user'
 import { getAccount } from 'actions/account'
 import { ReduxState } from 'reducers/rootReducer'
-import { getCustomer, getSubscription } from 'actions/stripeActions'
+import { getCustomer } from 'actions/stripeActions'
 import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 import Dashboard from './DashboardSwitch'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
@@ -18,7 +18,6 @@ type DispatchProps = {
   getUser: (id: string) => void
   getAccount: (id: string) => void
   getCustomer: () => void
-  getSubscription: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -81,8 +80,7 @@ const mapDispatchToProps: DispatchProps = {
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
   getAccount: (id: string) => getAccount(id),
-  getCustomer: () => getCustomer(),
-  getSubscription: () => getSubscription()
+  getCustomer: () => getCustomer()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainSwitch)

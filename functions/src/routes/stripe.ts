@@ -1,5 +1,4 @@
 import * as express from 'express'
-import { constants } from '../constants'
 
 const { corsHandler } = require('../index')
 
@@ -446,25 +445,20 @@ router.post('/get_customer_balance', (req, res) => {
   })
 })
 
-router.post('/one_time_chechout', (req, res) => {
+router.post('/one_time_checkout', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, token, customerId } = req.body
+      const { amount, token, stripeAccountId, transactionFee } = req.body
 
-      const stripeAmount = amount * (constants.commision / 100)
-      const customerAmount = amount - stripeAmount
+      if(!(amount && token && stripeAccountId && transactionFee)) {
+        throw Error("invalid params")
+      }
 
-      await stripe.customers.createBalanceTransaction(customerId, {
-        amount: customerAmount,
-        currency: 'usd'
-      })
-      const charge = await stripe.charges.create({
-        amount: stripeAmount,
-        currency: 'usd',
-        description: 'Invoice Pay',
-        source: token
-      })
-      return res.json(charge)
+      // const customerAmount = amount -  (amount * (commission / 100))
+
+     // todo create payment intent and set up transfer to account owner's stripe account (https://stripe.com/docs/connect/charges-transfers)
+
+      return res.json()
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)

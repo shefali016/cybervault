@@ -30,7 +30,6 @@ const Editor = ({ handleTextChange, placeholder, resetValue }: editorProps) => {
       value={value}
       onChange={onChange}
       className={classes.textEditor}
-      autoFocus={true}
       placeholder={placeholder}
     />
   )

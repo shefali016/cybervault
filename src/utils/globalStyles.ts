@@ -64,11 +64,18 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modal': {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 5000
+    },
     '.modalContentWrapper': {
       outline: 'none',
       borderRadius: theme.shape.borderRadius * 2,
       overflow: 'hidden',
-      position: 'relative'
+      position: 'relative',
+      zIndex: 5000
     },
     '.modalContent': {
       color: theme.palette.text.paper,
@@ -332,7 +339,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
       overflow: 'hidden'
     },
     '.table': {
-      borderRadius: theme.shape.borderRadius
+      flex: 1,
+      background:  theme.palette.background.surface,
+      borderRadius: theme.shape.borderRadius,
+      overflow: "hidden"
     },
     // Text
     '.metaText': { color: theme.palette.text.meta },

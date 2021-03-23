@@ -47,13 +47,12 @@ import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
 import PortfoliosScreen from 'screens/DashboardScreens/PortfolioScreen'
 import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 
-import StripeScreen from 'screens/SharedScreens/StripeScreen'
 import AccountLinkRefreshScreen from 'screens/Stripe/AccountLinkRefreshScreen'
 import { getUser } from '../../actions/user'
 import { getAccount } from '../../actions/account'
 import { ReduxState } from '../../reducers/rootReducer'
 import { AppLoader } from '../../components/Common/Core/AppLoader'
-import { getCustomer, getSubscription } from 'actions/stripeActions'
+import { getCustomer } from 'actions/stripeActions'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import { findProjectLimit } from 'utils/helpers'
 import { SubscriptionItem } from 'components/Subscription/SubscriptionItem'
@@ -93,7 +92,6 @@ type DispatchProps = {
   getUser: (id: string) => void
   getAccount: (id: string) => void
   getCustomer: () => void
-  getSubscription: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -115,12 +113,10 @@ const MainScreen = ({
   getUser,
   getAccount,
   getCustomer,
-  getSubscription,
   user,
   account,
   allProjectsData,
-  accountSubscription,
-  location
+  accountSubscription
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -336,7 +332,6 @@ const MainScreen = ({
     if (!customerRestored) {
       getCustomer()
     }
-    // getSubscription()
   }, [])
 
   if (!(userRestored && accountRestored)) {
@@ -434,8 +429,7 @@ const mapDispatchToProps: DispatchProps = {
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
   getAccount: (id: string) => getAccount(id),
-  getCustomer: () => getCustomer(),
-  getSubscription: () => getSubscription()
+  getCustomer: () => getCustomer()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

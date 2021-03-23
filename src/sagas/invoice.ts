@@ -1,8 +1,7 @@
-import { all, call, put, takeLatest, select } from 'redux-saga/effects'
+import { all, call, put, takeLatest } from 'redux-saga/effects'
 import * as ActionTypes from '../actions/actionTypes'
 import * as InvoiceApis from '../apis/invoiceApi'
 import * as InvoiceActions from '../actions/invoiceActions'
-import { getAllProjectsRequest } from '../actions/projectActions'
 import {
   Account,
   Project,
@@ -10,7 +9,7 @@ import {
   InvoiceConversation
 } from '../utils/Interface'
 import * as StripeApis from '../apis/stripe'
-import { ReduxState } from 'reducers/rootReducer'
+import {InvoiceStatuses} from "../utils/enums";
 
 type Params = {
   account: Account
@@ -23,6 +22,8 @@ type Params = {
   tokenId: string
   amount: number
   customerId: string
+  stripeAccountId: string
+  transactionFee: number
 }
 
 function* invoiceRequest({ account, project, invoice }: Params) {
@@ -95,21 +96,22 @@ function* payInvoice({
   amount,
   tokenId,
   invoiceId,
-  account,
-  customerId
+  account, stripeAccountId,
+                       transactionFee
 }: Params) {
   try {
-    const response = yield call(
+    yield call(
       StripeApis.oneTimeCharge,
       amount,
       tokenId,
-      customerId
+        stripeAccountId,
+        transactionFee
     )
     const invoiceData: any = {
       isPaid: true,
-      status: 'Paid'
+      status: InvoiceStatuses.PAID
     }
-    const result = yield call(
+    yield call(
       InvoiceApis.updateInvoice,
       account,
       invoiceId,
