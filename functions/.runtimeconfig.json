@@ -1,0 +1,17 @@
+{
+  "aws_config": {
+    "access_key_id": "AKIAIP2UOWNJHVDDZDFQ",
+    "secret_acces_key": "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",
+    "region": "us-east-2",
+    "endpoint": "https://wa11sy9gb.mediaconvert.us-east-2.amazonaws.com"
+  },
+  "from_email": {
+    "key": "no-reply@employeelinkapp.com"
+  },
+  "someservice": {
+    "key": "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"
+  },
+  "sendgrid": {
+    "key": "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"
+  }
+}

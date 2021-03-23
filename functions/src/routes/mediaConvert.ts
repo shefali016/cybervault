@@ -10,16 +10,15 @@ var AWS = require('aws-sdk')
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
 AWS.config.update({
-  accessKeyId: 'AKIAIP2UOWNJHVDDZDFQ',
-  secretAccessKey: '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',
-  region: 'us-east-2',
-  endpoint: 'https://wa11sy9gb.mediaconvert.us-east-2.amazonaws.com'
+  accessKeyId: functions.config().aws_config.access_key_id,
+  secretAccessKey:functions.config().aws_config.secret_acces_key,
+  region:functions.config().aws_config.region,
+  endpoint:functions.config().aws_config.endpoint
 })
 
 let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 
 // var s3 = new AWS.S3()
-console.log(functions.config(),"yyyyyyyyyyyyyyyyyyyy")
 
 router.post('/convert', (req, res) => {
 
