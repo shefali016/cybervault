@@ -13,7 +13,7 @@ import IncomeThisMonth from '../../components/Cards/IncomeThisMonth'
 import ProjectCount from '../../components/Cards/ProjectCount'
 import ProfitsExpenses from '../../components/Cards/ProfitsExpenses'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { COLUMN, FLEX } from 'utils/constants/stringConstants'
+import { COLUMN } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
 import * as Types from '../../utils/Interface'
@@ -72,7 +72,9 @@ const HomeScreen = (props: any) => {
       />
 
       <div className={'widgetOuter'}>
-        <Typography variant={'h6'} className={'widgetTitle'}>
+        <Typography
+          variant={'h6'}
+          className={clsx('widgetTitle', 'responsiveHorizontalPadding')}>
           Invoicing and Analytics
         </Typography>
         <div

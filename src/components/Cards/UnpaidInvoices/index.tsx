@@ -61,9 +61,7 @@ const useStyles = makeStyles((theme) => ({
     height: '4rem',
     minWidth: 200,
     background: SECONDARY_COLOR,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10
+    borderRadius: 10
   },
   imgWrapper: {
     backgroundColor: WHITE_COLOR,

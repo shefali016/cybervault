@@ -11,7 +11,7 @@ function ProjectCount(props: Props) {
   const classes = useStyles()
   return (
     <div className={'widgetItemResponsiveOuter'}>
-      <Card className={'widgetItem'}>
+      <Card className={'widgetItemSmall'}>
         <CardContent className={classes.content}>
           <Typography variant={'caption'} className={classes.title}>
             Projects This Month
