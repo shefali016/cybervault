@@ -32,6 +32,13 @@ import clsx from 'clsx'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { AssetUploadContext } from 'context/AssetUpload'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+import {
+  MenuItem,
+  PopoverButton
+} from 'components/Common/Popover/PopoverButton'
+import { AppButton } from 'components/Common/Core/AppButton'
+import { ProjectStatuses } from 'utils/enums'
+import { getToggledArchiveStatus } from 'utils/projects'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -56,6 +63,7 @@ const EditProjectScreen = (props: any) => {
     isTaskEdit: false,
     isBudgetEdit: false
   })
+  const { projectData } = state
 
   const [confirmDeleteAsset, setConfirmDeleteAsset] = useState<Asset | null>(
     null
@@ -127,8 +135,15 @@ const EditProjectScreen = (props: any) => {
     } catch (error) {}
   }
 
+  const handleToggleArchived = () => {
+    props.updateProjectDetails({
+      ...projectData,
+      status: getToggledArchiveStatus(projectData)
+    })
+  }
+
   const renderHeader = () => {
-    if (!state.projectData) {
+    if (!projectData) {
       return (
         <div className={clsx('row', 'center')}>
           <AppLoader />
@@ -136,15 +151,38 @@ const EditProjectScreen = (props: any) => {
       )
     }
 
+    const isProjectArchived = projectData.status === ProjectStatuses.ARCHIVED
+
+    const popoverMenuItems: Array<MenuItem> = [
+      {
+        title: isProjectArchived ? 'Activate' : 'Archive',
+        onClick: handleToggleArchived
+      }
+    ]
+
     return (
       <div className={clsx('row', 'headerContainer')}>
         <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
-          {state.projectData.campaignName}
+          {projectData.campaignName}
         </Typography>
-        <div className={classes.projectStatus}>
-          <Typography>Status: {state.projectData.status}</Typography>
-          <ProjectStatusIndicator status={state.projectData.status} />
-        </div>
+        <PopoverButton menuItems={popoverMenuItems}>
+          {({
+            onClick,
+            id
+          }: {
+            onClick: (e: any) => void
+            id: string | undefined
+          }) => (
+            <AppButton onClick={onClick} aria-owns={id}>
+              <div className={classes.projectStatus}>
+                <Typography className={classes.statusText}>
+                  Status: {projectData.status}
+                </Typography>
+                <ProjectStatusIndicator status={projectData.status} />
+              </div>
+            </AppButton>
+          )}
+        </PopoverButton>
       </div>
     )
   }
@@ -323,6 +361,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  statusText: { color: theme.palette.text.background },
   projectStatus: {
     display: 'flex',
     [theme.breakpoints.down('sm')]: {

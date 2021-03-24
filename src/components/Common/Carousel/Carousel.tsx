@@ -8,6 +8,7 @@ import { CarouselButton } from './CarouselButton'
 import clsx from 'clsx'
 import { AppIconButton } from '../Core/AppIconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import VideoLibraryIcon from '@material-ui/icons/VideoLibrary'
 
 export type Props = {
   isVideo?: boolean
@@ -85,6 +86,7 @@ export const AssetCarousel = ({
             <div className={classes.assetOuter}>
               <div className={classes.assetInner}>
                 <div className={clsx(classes.img, classes.imgPlaceholder)} />
+                <VideoLibraryIcon className={'assetListEmptyIcon'} />
               </div>
             </div>
           ) : (

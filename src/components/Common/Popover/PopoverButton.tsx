@@ -9,13 +9,22 @@ export type MenuItem = {
   Icon?: any
   desctructive?: boolean
   disabled?: boolean
+  After?: React.ReactElement | null
+  Before?: React.ReactElement | null
 }
-type Props = {
+export type Props = {
   menuItems: Array<MenuItem>
   className?: string
   style?: {}
   anchorOrigin?: any
   transformOrigin?: any
+  children: ({
+    onClick,
+    id
+  }: {
+    onClick: (e: any) => void
+    id: string | undefined
+  }) => React.ReactElement
 }
 
 export const PopoverButton = ({
@@ -23,7 +32,8 @@ export const PopoverButton = ({
   className,
   style,
   anchorOrigin,
-  transformOrigin
+  transformOrigin,
+  children
 }: Props) => {
   const theme = useTheme()
 
@@ -42,12 +52,7 @@ export const PopoverButton = ({
 
   return (
     <div className={className} style={style}>
-      <IconButton aria-owns={id} onClick={handleClick} className={'iconButton'}>
-        <MoreVertIcon
-          style={{ color: theme.palette.grey[100] }}
-          fontSize='small'
-        />
-      </IconButton>
+      {children({ onClick: handleClick, id })}
 
       <Popover
         id={id}
@@ -67,7 +72,15 @@ export const PopoverButton = ({
           }
         }>
         {menuItems.map(
-          ({ title, onClick, Icon, desctructive, disabled }: MenuItem) => {
+          ({
+            title,
+            onClick,
+            Icon,
+            desctructive,
+            disabled,
+            Before = null,
+            After = null
+          }: MenuItem) => {
             return (
               <MenuItem
                 key={title}
@@ -89,6 +102,7 @@ export const PopoverButton = ({
                       : theme.palette.text.paper,
                     alignItems: 'center'
                   }}>
+                  {Before}
                   {!!Icon && (
                     <Icon
                       style={{ marginRight: theme.spacing(1), marginBottom: 2 }}
@@ -98,6 +112,7 @@ export const PopoverButton = ({
                   <Typography variant={'subtitle1'} style={{ margin: 0 }}>
                     {title}
                   </Typography>
+                  {After}
                 </div>
               </MenuItem>
             )

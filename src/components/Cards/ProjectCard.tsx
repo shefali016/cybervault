@@ -11,7 +11,7 @@ import { getWidgetCardHeight } from 'utils'
 import InvoiceModal from 'components/Invoices/InvoiceModal'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
-import { PopoverButton } from 'components/Common/PopoverButton'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 
 const ITEM_HEIGHT = 48
 
@@ -106,7 +106,7 @@ export const ProjectCard = ({
         client={client}
         userInfo={userInfo}
       />
-      <Card className={classes.card} elevation={5}>
+      <Card className={'widgetItem'} elevation={5}>
         <div className={classes.imageWrapper} onClick={handleClick}>
           {!!clientLogo && (
             <img src={clientLogo} alt='client-logo' className={classes.image} />
@@ -150,7 +150,7 @@ export const ProjectCard = ({
               />
             )}
 
-            <PopoverButton menuItems={popoverMenuItems} />
+            <PopoverMoreIconButton menuItems={popoverMenuItems} />
           </Grid>
         ) : null}
       </Card>
