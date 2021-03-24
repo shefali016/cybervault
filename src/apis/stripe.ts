@@ -399,10 +399,10 @@ export const oneTimeCharge = async (
   }
 }
 
-export const getCustomerBalance = async (customerEmail: string) => {
+export const getCustomerBalance = async (stripeAccountId: string) => {
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/get_customer_balance`,
-    { customerEmail }
+    { stripeAccountId }
   )
   if (res.status === 200) {
     return res.data

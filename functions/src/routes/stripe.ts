@@ -425,17 +425,9 @@ router.post('/set_payment_method_to_default', (req, res) => {
 router.post('/get_customer_balance', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { customerEmail } = req.body
-      const stripeAccounts = await stripe.accounts.list()
-      let accontData: any
-      for (let index = 0; index < stripeAccounts.data.length; index++) {
-        const element = stripeAccounts.data[index]
-        if (element.email === customerEmail) {
-          accontData = element
-        }
-      }
+      const { stripeAccountId } = req.body
       const balance = await stripe.balance.retrieve({
-        stripe_account: accontData.id
+        stripe_account: stripeAccountId
       })
 
       let totalBalance: any, balanceAvailable: any, balancePending: any
@@ -453,12 +445,7 @@ router.post('/get_customer_balance', (req, res) => {
 router.post('/one_time_checkout', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const {
-        amount,
-        token,
-        transactionFee,
-        stripeAccountId
-      } = req.body
+      const { amount, token, transactionFee, stripeAccountId } = req.body
       if (!(amount && token && stripeAccountId && transactionFee)) {
         throw Error('invalid params')
       }
