@@ -17,8 +17,8 @@ function IncomeThisMonth(props: {
 }) {
   const classes = useStyles()
   return (
-    <div className={props.className}>
-      <Card className={classes.card}>
+    <div className={'widgetItemResponsiveOuter'}>
+      <Card className={'widgetItemWide'}>
         <CardContent>
           <Typography variant='h6' className={classes.title}>
             Income This Month
@@ -47,15 +47,6 @@ function IncomeThisMonth(props: {
 }
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    minWidth: getCardHeight(theme),
-    height: '12rem',
-    borderRadius: 15,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    padding: 5
-  },
   progressBar: {
     height: 18,
     borderRadius: 25,

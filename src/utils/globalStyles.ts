@@ -244,6 +244,88 @@ export const useGlobalStyles = makeStyles((theme) => ({
         alignItems: 'flex-start'
       }
     },
+    // Widget
+    '.widgetOuter': { marginBottom: theme.spacing(6) },
+    '.widgetInner': {
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'nowrap',
+      overflowX: 'scroll',
+      whiteSpace: 'nowrap',
+      paddingTop: 15,
+      paddingBottom: 15
+    },
+    '.widgetResponsiveInner': {
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'nowrap',
+      overflowX: 'scroll',
+      whiteSpace: 'nowrap',
+      paddingTop: 15,
+      paddingBottom: 15,
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column !important',
+        alignItems: 'stretch'
+      }
+    },
+    '.widgetItemOuter': { marginRight: theme.spacing(3) },
+    '.widgetItemResponsiveOuter': {
+      marginRight: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        marginRight: 0,
+        marginBottom: theme.spacing(3)
+      }
+    },
+    '.widgetItem': {
+      width: '70vw',
+      height: '70vw',
+      maxWidth: 280,
+      maxHeight: 280,
+      borderRadius: 15,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      '&:hover': {
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+      }
+    },
+    '.widgetItemSmall': {
+      width: '70vw',
+      height: '12rem',
+      maxWidth: 280,
+      maxHeight: '12rem',
+      borderRadius: 15,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      '&:hover': {
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      },
+    },
+    '.widgetItemWide': {
+      width: '70vw',
+      maxWidth: 350,
+      maxHeight: '12rem',
+      minHeight: '12rem',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      borderRadius: 15,
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      },
+      '&:hover': {
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+      }
+    },
     // Section
     '.sectionInner': {
       background: theme.palette.common.white,
@@ -282,6 +364,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       WebkitBoxOrient: 'vertical',
       whiteSpace: 'normal'
     },
+    '.widgetTitle': { color: theme.palette.text.background },
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
@@ -290,6 +373,22 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: theme.palette.grey[500],
       fontSize: 25,
       marginLeft: 10
+    },
+    '.assetListEmptyIcon': {
+      color: theme.palette.background.surfaceHighlight,
+      fontSize: 'min(10vw, 100px)',
+      position: 'absolute'
+    },
+    '.assetListEmptyIconSm': {
+      color: theme.palette.background.surfaceHighlight,
+      fontSize: 45,
+      position: 'absolute',
+      [theme.breakpoints.down('md')]: {
+        fontSize: 35,
+        [theme.breakpoints.down('sm')]: {
+          fontSize: 30
+        }
+      }
     },
     // img
     '.circleImage': {

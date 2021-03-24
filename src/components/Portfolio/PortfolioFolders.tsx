@@ -11,7 +11,7 @@ import { useStyles } from './style'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import Widget from '../../components/Common/Widget'
 import { useTheme } from '@material-ui/core/styles'
-import { PopoverButton } from 'components/Common/PopoverButton'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 import clsx from 'clsx'
 import { AppButton } from 'components/Common/Core/AppButton'
 import { PortfolioItem } from 'components/Portfolio/PortfolioItem'
@@ -131,7 +131,7 @@ const PortfolioFolders = ({
                       {folder.description}
                     </Typography>
                   </Typography>
-                  <PopoverButton menuItems={popoverMenuItems} />
+                  <PopoverMoreIconButton menuItems={popoverMenuItems} />
                   {portFolios.length > 4 && (
                     <AppButton
                       style={{

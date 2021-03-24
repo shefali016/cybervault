@@ -49,7 +49,7 @@ const Widget = ({
     <div className={clsx(classes.root)}>
       {!!title && (
         <Typography
-          variant={'body1'}
+          variant={'h6'}
           className={clsx(classes.title, 'responsiveHorizontalPadding')}>
           {title}
         </Typography>
@@ -100,7 +100,6 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   title: {
-    marginBottom: theme.spacing(1),
     color: theme.palette.text.background
   },
   loader: {}

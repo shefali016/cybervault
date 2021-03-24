@@ -24,10 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     marginBottom: theme.spacing(1.2),
-    padding: '2px 0',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column'
-    }
+    padding: '2px 0'
   },
   label: {
     fontWeight: 'bold',

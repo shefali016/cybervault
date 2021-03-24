@@ -3,7 +3,8 @@ import { useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { AppButton } from 'components/Common/Core/AppButton'
 import { Dot } from 'components/Common/Dot'
-import { MenuItem, PopoverButton } from 'components/Common/PopoverButton'
+import { MenuItem } from 'components/Common/Popover/PopoverButton'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 import React, { useState } from 'react'
 import { useOnChange } from 'utils/hooks'
 import { Project } from 'utils/Interface'
@@ -91,7 +92,7 @@ export const ProjectSelectBar = ({
     return (
       !!popoverMenuItems &&
       !!popoverMenuItems.length && (
-        <PopoverButton
+        <PopoverMoreIconButton
           menuItems={popoverMenuItems}
           style={style}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
