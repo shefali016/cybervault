@@ -46,7 +46,7 @@ const InvoicesClientScreen = (props: Props) => {
 
   const toastContext = useContext(ToastContext)
 
-  const { invoiceId, ownerAccountId, ownerCustomerId } = useMemo(() => {
+  const { invoiceId, ownerAccountId, ownerCustomerEmail } = useMemo(() => {
     const { params } = props.match
     console.log('paramsparams', params)
 
@@ -54,15 +54,15 @@ const InvoicesClientScreen = (props: Props) => {
       return {
         invoiceId: null,
         accoownerAccountIduntId: null,
-        ownerCustomerId: null
+        ownerCustomerEmail: null
       }
     }
     const {
       accId: ownerAccountId,
       id: invoiceId,
-      customerId: ownerCustomerId
+      customerEmail: ownerCustomerEmail
     } = params
-    return { ownerAccountId, invoiceId, ownerCustomerId }
+    return { ownerAccountId, invoiceId, ownerCustomerEmail }
   }, [props.match.params])
 
   // Select cache from state
@@ -251,8 +251,8 @@ const InvoicesClientScreen = (props: Props) => {
       const tokenId: string = token.id
       const invoiceId: string = invoice.id
       const account: string = ownerAccountId
-      const customerId: string = ownerCustomerId
-      dispatch(payInvoice(amount, tokenId, invoiceId, account, customerId))
+      const customerEmail: string = ownerCustomerEmail
+      dispatch(payInvoice(amount, tokenId, invoiceId, account, customerEmail))
     }
   }
   return (

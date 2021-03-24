@@ -426,19 +426,24 @@ router.post('/set_payment_method_to_default', (req, res) => {
 router.post('/get_customer_balance', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { customerId } = req.body
-      const balanceTransactions = await stripe.customers.listBalanceTransactions(
-        customerId
-      )
-      let totalBalance: any
-      if (
-        balanceTransactions &&
-        balanceTransactions.data &&
-        balanceTransactions.data.length
-      ) {
-        totalBalance = balanceTransactions.data[0].ending_balance
+      const { customerEmail } = req.body
+      const stripeAccounts = await stripe.accounts.list()
+      let accontData: any
+      for (let index = 0; index < stripeAccounts.data.length; index++) {
+        const element = stripeAccounts.data[index]
+        if (element.email === customerEmail) {
+          accontData = element
+        }
       }
-      return res.json(totalBalance)
+      const balance = await stripe.balance.retrieve({
+        stripe_account: accontData.id
+      })
+
+      let totalBalance: any, balanceAvailable: any, balancePending: any
+      ;(balanceAvailable = balance.available[0].amount),
+        (balancePending = balance.pending[0].amount),
+        (totalBalance = balanceAvailable + balancePending)
+      return res.json({ totalBalance, balancePending, balanceAvailable })
     } catch (error) {
       console.log(error)
       return res.status(400).send(error)
@@ -449,20 +454,28 @@ router.post('/get_customer_balance', (req, res) => {
 router.post('/one_time_chechout', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, token, customerId } = req.body
+      const { amount, token, customerEmail } = req.body
 
       const stripeAmount = amount * (constants.commision / 100)
       const customerAmount = amount - stripeAmount
-
-      await stripe.customers.createBalanceTransaction(customerId, {
-        amount: customerAmount,
-        currency: 'usd'
-      })
+      const stripeAccounts = await stripe.accounts.list()
+      let accontData: any
+      for (let index = 0; index < stripeAccounts.data.length; index++) {
+        const element = stripeAccounts.data[index]
+        if (element.email === customerEmail) {
+          accontData = element
+        }
+      }
       const charge = await stripe.charges.create({
         amount: stripeAmount,
         currency: 'usd',
         description: 'Invoice Pay',
         source: token
+      })
+      await stripe.transfers.create({
+        amount: customerAmount,
+        currency: 'usd',
+        destination: accontData.id
       })
       return res.json(charge)
     } catch (error) {

@@ -33,7 +33,7 @@ type InvoiceProps = {
   account: Account
   client: Client
   userInfo: any
-  customerId?: string
+  customerEmail?: string
 }
 type MilestoneProps = {
   id: string
@@ -48,7 +48,7 @@ const InvoiceData = ({
   account,
   client,
   userInfo,
-  customerId
+  customerEmail
 }: InvoiceProps) => {
   const hasMilestones = project.milestones && project.milestones.length
 
@@ -201,7 +201,7 @@ const InvoiceData = ({
             ? getFullAmount()
             : getAmountByMilestone() || '',
         subject: 'Creator Cloud Invoice',
-        link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}/${customerId}`
+        link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}/${customerEmail}`
       }
     }
     dispatch(sendEmailRequest(mailPayload))
@@ -325,7 +325,7 @@ type InvoiceModalProps = {
   account: Account
   client: Client | undefined
   userInfo: any
-  customerId?: string
+  customerEmail?: string
 }
 
 const InvoiceModal = ({
@@ -335,7 +335,7 @@ const InvoiceModal = ({
   account,
   client,
   userInfo,
-  customerId
+  customerEmail
 }: InvoiceModalProps) => {
   if (!client) {
     return null
@@ -349,7 +349,7 @@ const InvoiceModal = ({
         account={account}
         client={client}
         userInfo={userInfo}
-        customerId={customerId}
+        customerEmail={customerEmail}
       />
     </AppModal>
   )

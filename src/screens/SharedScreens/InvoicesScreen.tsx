@@ -36,11 +36,11 @@ type StateProps = {
   invoices: Array<Invoice>
   user: User
   customerTotalBalance: number
+  availableBalance: number
 }
 type Props = { history: any } & StateProps & DispatchProps
 type State = {
   monthBalance: number
-  availableBalance: number
   numberOfInvoicesThisMonth: number
   creatingAccount: boolean
   stripeAccount: StripeAccount | null | undefined
@@ -53,7 +53,8 @@ const InvoicesScreen = ({
   invoices,
   history,
   user,
-  customerTotalBalance
+  customerTotalBalance,
+  availableBalance
 }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
@@ -61,7 +62,6 @@ const InvoicesScreen = ({
   const dispatch = useDispatch()
   const [state, setState] = useState<State>({
     monthBalance: 0,
-    availableBalance: 0,
     numberOfInvoicesThisMonth: 0,
     creatingAccount: false,
     stripeAccount: null,
@@ -70,7 +70,6 @@ const InvoicesScreen = ({
 
   const {
     monthBalance,
-    availableBalance,
     numberOfInvoicesThisMonth,
     creatingAccount,
     stripeAccount,
@@ -435,7 +434,8 @@ const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
   invoices: state.invoice.allInvoicesData,
   user: state.auth.user as User,
-  customerTotalBalance: state.stripe.customerTotalBalance as number
+  customerTotalBalance: state.stripe.customerTotalBalance as number,
+  availableBalance: state.stripe.customerAvailableBalance as number
 })
 
 const mapDispatch: DispatchProps = { updateAccount }

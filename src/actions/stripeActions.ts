@@ -176,9 +176,9 @@ export const getCustomerInvoicesFailure = (error: any) => ({
 export const getCustomerBalance = () => ({
   type: ActionTypes.GET_CUSTOMER_BALANCE
 })
-export const getCustomerBalanceSuccess = (totalBalance: number) => ({
+export const getCustomerBalanceSuccess = (balances: any) => ({
   type: ActionTypes.GET_CUSTOMER_BALANCE_SUCCESS,
-  totalBalance
+  balances
 })
 export const getCustomerBalanceFailure = (error: any) => ({
   type: ActionTypes.GET_CUSTOMER_BALANCE_FAILURE,

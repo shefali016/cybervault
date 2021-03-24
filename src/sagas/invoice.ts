@@ -22,7 +22,7 @@ type Params = {
   conversation: InvoiceConversation
   tokenId: string
   amount: number
-  customerId: string
+  customerEmail: string
 }
 
 function* invoiceRequest({ account, project, invoice }: Params) {
@@ -96,14 +96,14 @@ function* payInvoice({
   tokenId,
   invoiceId,
   account,
-  customerId
+  customerEmail
 }: Params) {
   try {
     const response = yield call(
       StripeApis.oneTimeCharge,
       amount,
       tokenId,
-      customerId
+      customerEmail
     )
     const invoiceData: any = {
       isPaid: true,

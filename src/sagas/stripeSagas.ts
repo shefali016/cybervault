@@ -209,8 +209,8 @@ function* getCustomerInvoices() {
 
 function* getCustomerTotalBalance() {
   try {
-    const customerId = yield select((state) => state.auth.user.customerId)
-    const totalBalance = yield call(StripeApis.getCustomerBalance, customerId)
+    const customerEmail = yield select((state) => state.auth.user.email)
+    const totalBalance = yield call(StripeApis.getCustomerBalance, customerEmail)
     yield put(StripeActions.getCustomerBalanceSuccess(totalBalance))
   } catch (error: any) {
     yield put(

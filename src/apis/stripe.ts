@@ -387,11 +387,11 @@ export const getCutomerInvoicesList = async (customerId: string) => {
 export const oneTimeCharge = async (
   amount: number,
   tokenId: string,
-  customerId: string
+  customerEmail: string
 ) => {
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/one_time_chechout`,
-    { amount, token: tokenId, customerId }
+    { amount, token: tokenId, customerEmail }
   )
   if (res.status === 200) {
     return res.data
@@ -400,10 +400,10 @@ export const oneTimeCharge = async (
   }
 }
 
-export const getCustomerBalance = async (customerId: string) => {
+export const getCustomerBalance = async (customerEmail: string) => {
   const res = await axios.post<Array<StripePlans>>(
     `${server_url}/api/v1/stripe/get_customer_balance`,
-    { customerId }
+    { customerEmail }
   )
   if (res.status === 200) {
     return res.data
