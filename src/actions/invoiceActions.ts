@@ -117,7 +117,8 @@ export function payInvoice(
   tokenId: string,
   invoiceId: string,
   account: string,
-  customerEmail: string
+  stripeAccountId: string,
+  transactionFee: number
 ) {
   return {
     type: ActionTypes.PAY_INVOICE,
@@ -125,7 +126,8 @@ export function payInvoice(
     tokenId,
     invoiceId,
     account,
-    customerEmail
+    stripeAccountId,
+    transactionFee
   }
 }
 

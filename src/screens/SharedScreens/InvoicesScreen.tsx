@@ -60,6 +60,7 @@ const InvoicesScreen = ({
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
   const dispatch = useDispatch()
+
   const [state, setState] = useState<State>({
     monthBalance: 0,
     numberOfInvoicesThisMonth: 0,
@@ -297,7 +298,6 @@ const InvoicesScreen = ({
                 <div className={classes.tableContainer}>
                   <InvoicesTable
                     invoices={invoices}
-                    tableContainerClassName={classes.table}
                     history={history}
                     accountId={account.id}
                   />
@@ -319,10 +319,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(2),
     flex: 1,
     display: 'flex'
-  },
-  table: {
-    borderRadius: theme.shape.borderRadius,
-    flex: 1
   },
   viewPayouts: {
     '&:hover': { background: theme.palette.common.black },

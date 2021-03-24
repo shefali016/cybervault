@@ -15,21 +15,21 @@ const headerCells = [
 
 type Props = {
   invoices: Array<Invoice>
-  tableContainerClassName?: string
+  className?: string
   history: any
   accountId: string
 }
 
 export const InvoicesTable = ({
   invoices,
-  tableContainerClassName,
+  className,
   history,
   accountId
 }: Props) => {
   const classes = useStyles()
 
   const handleRowClick = (data: string) => {
-    history.push(`/clientInvoices/${data}/${accountId}?isProjectOwner=true`)
+    history.push(`/clientInvoices/${data}/${accountId}`)
   }
 
   const rows = useMemo(() => {
@@ -65,7 +65,7 @@ export const InvoicesTable = ({
     <AppTable
       rows={rows}
       headerCells={headerCells}
-      tableContainerClassName={tableContainerClassName}
+      className={className}
       emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
       handleRowClick={handleRowClick}
     />

@@ -1,5 +1,4 @@
 import * as express from 'express'
-import { constants } from '../constants'
 
 const { corsHandler } = require('../index')
 
@@ -451,21 +450,20 @@ router.post('/get_customer_balance', (req, res) => {
   })
 })
 
-router.post('/one_time_chechout', (req, res) => {
+router.post('/one_time_checkout', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      const { amount, token, customerEmail } = req.body
-
-      const stripeAmount = amount * (constants.commision / 100)
-      const customerAmount = amount - stripeAmount
-      const stripeAccounts = await stripe.accounts.list()
-      let accontData: any
-      for (let index = 0; index < stripeAccounts.data.length; index++) {
-        const element = stripeAccounts.data[index]
-        if (element.email === customerEmail) {
-          accontData = element
-        }
+      const {
+        amount,
+        token,
+        transactionFee,
+        stripeAccountId
+      } = req.body
+      if (!(amount && token && stripeAccountId && transactionFee)) {
+        throw Error('invalid params')
       }
+      const stripeAmount = amount * (transactionFee / 100)
+      const customerAmount = amount - stripeAmount
       const charge = await stripe.charges.create({
         amount: stripeAmount,
         currency: 'usd',
@@ -475,7 +473,7 @@ router.post('/one_time_chechout', (req, res) => {
       await stripe.transfers.create({
         amount: customerAmount,
         currency: 'usd',
-        destination: accontData.id
+        destination: stripeAccountId
       })
       return res.json(charge)
     } catch (error) {

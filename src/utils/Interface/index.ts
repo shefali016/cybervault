@@ -11,7 +11,7 @@ import {
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
-import {S3} from "aws-sdk"
+import { S3 } from 'aws-sdk'
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -150,7 +150,7 @@ export interface SubscriptionDetails {
   extraFeatures?: Array<string>
   storage: number
   numProjects: number
-  transactionFee: string
+  transactionFee: number
 }
 
 export interface Subscription {
@@ -472,6 +472,7 @@ export type Project = {
   canInvoice: Boolean
   status: ProjectStatus
   featuredImage?: string
+  isPaid?: boolean
 }
 
 export type InvoiceConversation = {

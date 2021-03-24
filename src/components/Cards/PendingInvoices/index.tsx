@@ -20,39 +20,36 @@ type Props = {
 function PendingInvoices(props: Props) {
   const classes = useStyles()
   return (
-    <Card className={clsx(classes.card, props.className)}>
-      <CardContent>
-        <Typography variant='h6' className={classes.Title}>
-          Invoices Pending
-        </Typography>
-        <Typography variant='subtitle1' className={classes.BodyText}>
-          $ {props.unpaidAmount ? props.unpaidAmount : 0} Unpaid
-        </Typography>
-        <LinearProgress
-          className={classes.progressBar}
-          variant='determinate'
-          value={props.unpaidAmount ? props.unpaidAmount : 50}
-          style={{ marginBottom: 8 }}
-        />
-        <Typography variant='subtitle1' className={classes.BodyText}>
-          $ {props.paidAmount ? props.paidAmount : 0} Paid
-        </Typography>
-        <LinearProgress
-          className={classes.progressBar}
-          variant='determinate'
-          value={props.paidAmount ? props.paidAmount : 50}
-        />
-      </CardContent>
-    </Card>
+    <div className={'widgetItemResponsiveOuter'}>
+      <Card className={'widgetItemWide'}>
+        <CardContent>
+          <Typography variant='h6' className={classes.Title}>
+            Invoices Pending
+          </Typography>
+          <Typography variant='subtitle1' className={classes.BodyText}>
+            $ {props.unpaidAmount ? props.unpaidAmount : 0} Unpaid
+          </Typography>
+          <LinearProgress
+            className={classes.progressBar}
+            variant='determinate'
+            value={props.unpaidAmount ? props.unpaidAmount : 50}
+            style={{ marginBottom: 8 }}
+          />
+          <Typography variant='subtitle1' className={classes.BodyText}>
+            $ {props.paidAmount ? props.paidAmount : 0} Paid
+          </Typography>
+          <LinearProgress
+            className={classes.progressBar}
+            variant='determinate'
+            value={props.paidAmount ? props.paidAmount : 50}
+          />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 const useStyles = makeStyles((theme) => ({
   card: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    minWidth: getCardHeight(theme),
-    height: '12rem',
     borderRadius: 15,
     padding: 5
   },

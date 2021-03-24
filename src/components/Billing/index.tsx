@@ -23,18 +23,13 @@ const mobileHeaderCells = [
 
 type Props = {
   invoices: Array<Invoice> | any
-  tableContainerClassName?: string
+  className?: string
   isBilling?: boolean
   loading?: boolean
   width: any
 }
 
-const BillingHistory = ({
-  invoices,
-  tableContainerClassName,
-  loading,
-  width
-}: Props) => {
+const BillingHistory = ({ invoices, className, loading, width }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -92,7 +87,7 @@ const BillingHistory = ({
     <AppTable
       rows={rows}
       headerCells={isMobile ? mobileHeaderCells : headerCells}
-      tableContainerClassName={tableContainerClassName}
+      className={className}
       emptyProps={{ Icon: InvoiceIcon, title: 'You have not been charged' }}
       handleRowClick={handleRowClick}
       loading={loading}
