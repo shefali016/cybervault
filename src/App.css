@@ -22,6 +22,5 @@ select:-webkit-autofill:focus {
   /*border: 1px solid green;*/
   -webkit-text-fill-color: #fff;
   -webkit-box-shadow: 0 0 0px 1000px rgba(88, 176, 253, 0.1) inset;
-  border-radius: 20px !important;
   transition: background-color 5000s ease-in-out 0s;
 }

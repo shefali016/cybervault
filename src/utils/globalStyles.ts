@@ -306,7 +306,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('sm')]: {
         width: 'auto',
         maxWidth: '100%'
-      },
+      }
     },
     '.widgetItemWide': {
       width: '70vw',
@@ -419,6 +419,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       )
     },
     // Color
-    '.lightGrey': { color: theme.palette.grey[100] }
+    '.lightGrey': { color: theme.palette.grey[100] },
   }
 }))
