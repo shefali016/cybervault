@@ -212,6 +212,9 @@ function* getCustomerTotalBalance() {
     const stripeAccountId = yield select(
       (state) => state.auth.account.stripe.accountId
     )
+    if(!stripeAccountId) {
+      throw Error("User does not have a stripe account")
+    }
     const totalBalance = yield call(
       StripeApis.getCustomerBalance,
       stripeAccountId
