@@ -83,9 +83,9 @@ export const ProjectCard = ({
       title: 'Send Invoice',
       Icon: ReceiptIcon,
       onClick: () => sendInvoice(project.id),
-      disabled: false
-      /*         project.canInvoice === false ||
-        (account.stripe && !account.stripe.payoutsEnabled) */
+      disabled:
+        project.canInvoice === false ||
+        (account.stripe && !account.stripe.payoutsEnabled)
     },
     {
       title: 'Delete Project',
