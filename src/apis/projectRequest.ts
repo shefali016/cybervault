@@ -22,7 +22,6 @@ export const createNewProjectRequest = async (
   newProjectData: Project,
   account: Account
 ) => {
-  newProjectData.createdAt = new Date().toUTCString()
   await firebase
     .firestore()
     .collection('AccountData')
