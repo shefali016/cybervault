@@ -1,10 +1,5 @@
 // Take array of clients, renders list of clients, returns client item component
 import React, { useEffect, useState, useMemo } from 'react'
-import { connect } from 'react-redux'
-import {
-  deleteProjectRequest,
-  getAllProjectsRequest
-} from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -12,20 +7,29 @@ import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import * as Types from '../../utils/Interface'
 import clsx from 'clsx'
 import { Client, Row } from 'utils/Interface'
-import { AppTable } from 'components/Common/Core/AppTable'
+import ClientItem from 'components/Clients/ClientItem'
+import { EmptyIcon } from 'components/EmptyIcon'
 import AccountBoxIcon from '@material-ui/icons/AccountBox'
-import Section from 'components/Common/Section'
 
-export const ClientList = ({}) => {
+type Props = {
+  clients: Array<Client>
+  onClick: (client: Client) => void
+  className?: string
+}
+
+export const ClientList = ({ clients, onClick, className }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
   return (
-    <div className={'screenContainer'}>
-      <div className={'screenInner'}>
-        <div className={'responsivePadding'}>
-          <div className={'screenChild'}></div>
-        </div>
+    <div className={className}>
+      <div className={'listStyle'}>
+        {clients.length == 0 && (
+          <EmptyIcon Icon={AccountBoxIcon} title={'No clients found'} />
+        )}
+        {clients.map((client: Client) => (
+          <ClientItem client={client} onClick={onClick} />
+        ))}
       </div>
     </div>
   )

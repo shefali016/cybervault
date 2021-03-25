@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 type Props = {
   children: React.ReactElement
   label: string
-  className: string
+  className?: string
 }
 
 export const PopoverHover = ({ children, label, className }: Props) => {

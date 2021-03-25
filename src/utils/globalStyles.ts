@@ -419,6 +419,16 @@ export const useGlobalStyles = makeStyles((theme) => ({
       )
     },
     // Color
-    '.lightGrey': { color: theme.palette.grey[100] }
+    '.lightGrey': { color: theme.palette.grey[100] },
+    // Lists
+    '.listStyle': {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 0.5fr))',
+      gap: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: 'repeat(auto-fit, minmax(100%, max-content))',
+      }
+    }
+    
   }
 }))

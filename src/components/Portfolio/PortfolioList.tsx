@@ -22,7 +22,7 @@ export const PortfolioList = ({ portfolios, onClick, className }: Props) => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 0.5fr))',
           gap: theme.spacing(3)
         }}>
         {portfolios.map((portfolio: Portfolio) => (

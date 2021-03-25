@@ -22,17 +22,18 @@ import { setMedia } from 'apis/assets'
 
 type AddClientProps = {
   isEdit: boolean
-  onBack: () => void
+  onBack?: () => void
   onUpdate?: () => void
   account: Account
   showStep?: boolean
   stepText?: string
   client?: Client | undefined
   onSuccess?: (client: Client) => void
+  showBackButton?: boolean
 }
 
 export const AddClient = (props: AddClientProps) => {
-  const { isEdit, onBack, account, client } = props
+  const { isEdit, onBack, account, client, showBackButton } = props
 
   const [clientData, setClientData] = useState<Client>(
     !!client && isEdit ? client : getClientData()
@@ -226,7 +227,7 @@ export const AddClient = (props: AddClientProps) => {
         addClient={true}
         isLoading={isLoading}
         isEdit={isEdit}
-        persistBackButton={true}
+        persistBackButton={showBackButton}
       />
     </>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { connect } from 'react-redux'
 import {
   deleteProjectRequest,
@@ -10,7 +10,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { COLUMN, FLEX } from 'utils/constants/stringConstants'
 import * as Types from '../../utils/Interface'
 import clsx from 'clsx'
-import { Client, Row } from 'utils/Interface'
+import { Client, Row, Account } from 'utils/Interface'
 import { AppTable } from 'components/Common/Core/AppTable'
 import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import Section from 'components/Common/Section'
@@ -18,9 +18,15 @@ import AppTextField from 'components/Common/Core/AppTextField'
 import { AppIconButton } from 'components/Common/Core/AppIconButton'
 import AddIcon from '@material-ui/icons/Add'
 import { PopoverHover } from 'components/Common/PopoverHover'
+import ClientList from 'components/Clients/ClientList'
+import ClientModal from 'components/Common/Modal/ClientModal'
+
+type stateProps = {
+  clients: Array<Client>
+  account: Account
+}
 
 type Props = {
-  clients: Array<Client>
   tableContainerClassName?: string
   history: any
   accountId: string
@@ -29,45 +35,50 @@ type Props = {
 
 const ClientsScreen = ({
   clients,
-  tableContainerClassName,
   history,
-  accountId,
-  value
-}: Props) => {
-  const [searchTerm, setSearchTerm] = useState([])
+  value,
+  account
+}: Props & stateProps) => {
+  const [addClientModalOpen, setAddClientModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
   const classes = useStyles()
   const theme = useTheme()
 
-  const headerCells = [
-    { title: 'Client Name', key: 'name' },
-    { title: 'Email', key: 'email' }
-    // { title: 'Company', key: 'company'}
-  ]
-
-  const rows = useMemo(() => {
-    let rows: Array<Row> = []
-
-    return rows
-  }, [])
-
-  const handleRowClick = (data: string) => {
-    // TO DO - Open Modal
+  const handleSearchTermChange = (event: any) => {
+    setSearchTerm(event.target.value)
   }
 
-  const onChange = () => {}
-
-  const onKeyUp = () => {}
-
-  const handleSearchTermChange = () => {}
+  const filteredClients = useMemo(
+    () =>
+      clients.filter((client) =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [clients, searchTerm]
+  )
 
   const onClick = () => {}
+
+  const goToClient = (client: Client) => {
+    history.push(`/client/${client.id}`)
+  }
+
+  const handleAddClientModalShow = () => {
+    openAddClientModal()
+    console.log('hello from handleAddClientModalShow')
+  }
+
+  const openAddClientModal = useCallback(() => setAddClientModalOpen(true), [])
+  const closeAddClientModal = useCallback(
+    () => setAddClientModalOpen(false),
+    []
+  )
 
   const renderHeader = () => {
     return (
       <div className={classes.sectionHeader}>
         <AppTextField
           darkStyle={true}
-          onChange={onChange}
+          onChange={handleSearchTermChange}
           value={value}
           style={{ maxWidth: 400 }}
           label={'Search for client'}
@@ -77,8 +88,8 @@ const ClientsScreen = ({
           <AppIconButton
             Icon={AddIcon}
             className={classes.iconContainer}
-            style={{}}
-            onClick={onClick}
+            style={{ paddingRight: '1px' }}
+            onClick={handleAddClientModalShow}
             iconClass={classes.iconButton}
           />
         </PopoverHover>
@@ -89,22 +100,27 @@ const ClientsScreen = ({
   return (
     <div className={'screenContainer'}>
       <div className={'screenInner'}>
-        <div className={'responsivePadding'}>
-          {renderHeader()}
-          <div className={'screenChild'}></div>
+        <div className={'responsivePadding'}>{renderHeader()}</div>
+
+        <div className={'screenInner'}>
+          <ClientList
+            clients={filteredClients}
+            onClick={goToClient}
+            className='responsivePadding'
+          />
         </div>
       </div>
+
+      <ClientModal
+        open={addClientModalOpen}
+        onRequestClose={closeAddClientModal}
+      />
     </div>
   )
 }
 
 const mapStateToProps = (state: any) => ({
-  newProjectData: state.project.newProjectData,
-  allProjectsData: state.project.allProjectsData,
-  activeProjectsLoading: state.project.isLoading,
-  userData: state.auth,
-  clients: state.clients.clientsData,
-  deletingProjectId: state.project.deletingId
+  clients: state.clients.clientsData
 })
 const mapDispatchToProps = (dispatch: any) => ({
   getAllProjectsData: (account: Types.Account) => {
@@ -150,8 +166,8 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionHeader: {
     display: 'flex',
-    alignItems: 'center',
-    paddingLeft: theme.spacing(1.5)
+    alignItems: 'center'
+    // paddingLeft: theme.spacing(1.5)
   },
   sectionTitleContainer: { flex: 1 },
   projectCardsUl: {
@@ -189,4 +205,4 @@ const useStyles = makeStyles((theme) => ({
   temp: {}
 }))
 
-export default ClientsScreen
+export default connect(mapStateToProps)(ClientsScreen)

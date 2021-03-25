@@ -42,8 +42,7 @@ const NewProjectFooter = ({
   currentStep,
   buttonText,
   disabled,
-  isEdit,
-  persistBackButton
+  isEdit
 }: Props) => {
   const classes = useStyles()
 
@@ -82,8 +81,9 @@ const NewProjectFooter = ({
           </div>
         )}
 
-        {((!isEdit && typeof onBack === 'function' && currentStep !== 1) ||
-          persistBackButton) &&
+        {!isEdit &&
+          typeof onBack === 'function' &&
+          currentStep !== 1 &&
           renderBackButton()}
 
         {!isEdit && !!title && (
