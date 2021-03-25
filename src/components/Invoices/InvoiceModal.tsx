@@ -17,7 +17,7 @@ import {
 } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
-import { getAllProjectsRequest } from '../../actions/projectActions'
+import { getAllProjects } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
 import { InvoiceStatuses } from 'utils/enums'
 import {
@@ -121,7 +121,7 @@ const InvoiceData = ({
   }
   const handleDoneClick = () => {
     onRequestClose()
-    dispatch(getAllProjectsRequest(account))
+    dispatch(getAllProjects())
   }
 
   useEffect(() => {

@@ -2,7 +2,6 @@ import { all, call, put, takeLatest, select } from 'redux-saga/effects'
 import * as ActionTypes from '../actions/actionTypes'
 import * as InvoiceApis from '../apis/invoiceApi'
 import * as InvoiceActions from '../actions/invoiceActions'
-import {getAllProjectsRequest} from '../actions/projectActions'
 import { Account ,Project,Invoice,InvoiceConversation} from '../utils/Interface'
 
 
@@ -12,7 +11,6 @@ function* invoiceRequest({ account,project,invoice}: Params) {
   try {
     const invoiceData = yield call(InvoiceApis.newInvoice, account,project,invoice);
     yield put(InvoiceActions.generateNewInvoiceSuccess(invoiceData));
-    // yield put(getAllProjectsRequest(account));
   } catch (error: any) {
     yield put(InvoiceActions.generateNewInvoiceError(error?.message || 'default'))
   }

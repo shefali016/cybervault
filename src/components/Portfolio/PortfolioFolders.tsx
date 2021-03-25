@@ -24,7 +24,7 @@ type Props = {
   deletefolder: (folderId: string) => void
   handleModalRequest: ({ type, folder }: any) => void
   handleSubmit: (portfolio: Portfolio) => void
-  projectList: Array<Project>
+  projects: Array<Project>
   portfolios: Map<string, Portfolio> | any
   handlePortfolioView: (portfolioId: string) => void
   clients: Array<Client>
@@ -39,7 +39,7 @@ const PortfolioFolders = ({
   handleEditFolderDetail,
   deletefolder,
   handleSubmit,
-  projectList,
+  projects,
   updatePortfolioLoading,
   updatePortfolioError,
   updatePortfolioSuccess,
@@ -71,7 +71,7 @@ const PortfolioFolders = ({
         open={!!creatingPortfolioForFolder}
         onRequestClose={() => createPortfolioForFolder(null)}
         onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
-        projectList={projectList}
+        projects={projects}
         loading={updatePortfolioLoading}
         error={updatePortfolioError}
         success={updatePortfolioSuccess}

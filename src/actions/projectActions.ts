@@ -1,5 +1,29 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
+import { GetProjectParams } from 'utils/Interface/api'
+import { ProjectFilters } from 'utils/enums'
+
+export const getProjects = (
+  params: GetProjectParams,
+  filter: ProjectFilters
+) => ({
+  type: ActionTypes.GET_PROJECTS,
+  params,
+  filter
+})
+export const getProjectsSuccess = (
+  projects: Array<Types.Project>,
+  filter: ProjectFilters
+) => ({
+  type: ActionTypes.GET_PROJECTS_SUCCESS,
+  projects,
+  filter
+})
+export const getProjectsFailure = (error: string, filter: ProjectFilters) => ({
+  type: ActionTypes.GET_PROJECTS_FAILURE,
+  error,
+  filter
+})
 
 export function createNewProjectRequest(newProjectData: Types.Project) {
   return {
@@ -22,35 +46,34 @@ export function createNewProjectFailure(error: string) {
   }
 }
 
-export function getAllProjectsRequest(account: Types.Account) {
+export function getAllProjects() {
   return {
-    type: ActionTypes.GET_ALL_PROJECT_REQUEST,
-    account
+    type: ActionTypes.GET_ALL_PROJECT_REQUEST
   }
 }
 
-export function getAllProjectsRequestSuccess(
-  allProjectsData: Types.AllProjects
-) {
+export function getAllProjectsSuccess(allProjectsData: Types.AllProjects) {
   return {
     type: ActionTypes.GET_ALL_PROJECT_SUCCESS,
     allProjectsData
   }
 }
 
-export function getAllProjectsRequestFailure(error: string) {
+export function getAllProjectsFailure(error: string) {
   return {
     type: ActionTypes.GET_ALL_PROJECT_FAILURE,
     error
   }
 }
 
-export function requestGetProjectDetails(accountId:string,projectId: string | undefined) {
+export function requestGetProjectDetails(
+  accountId: string,
+  projectId: string | undefined
+) {
   return {
     type: ActionTypes.GET_PROJECT_DETAILS_REQUEST,
     accountId,
-    projectId,
-    
+    projectId
   }
 }
 

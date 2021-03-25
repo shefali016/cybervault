@@ -46,3 +46,8 @@ export enum UploadStatuses {
   FAILED = 'Failed',
   COMPLETE = 'Complete'
 }
+
+export enum ProjectFilters {
+  RECENT = 'recent',
+  ACTIVE = 'active'
+}

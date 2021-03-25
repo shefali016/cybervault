@@ -1,6 +1,6 @@
 import React, { createContext, useState, useMemo, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { addAsset, setMedia } from 'apis/assets'
+import { addAsset, handleMediaUpload } from 'apis/assets'
 import { Typography } from '@material-ui/core'
 import ArrowDown from '@material-ui/icons/KeyboardArrowDown'
 import ArrowUp from '@material-ui/icons/KeyboardArrowUp'
@@ -81,7 +81,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
         throw Error('Not logged in')
       }
 
-      const task: S3.ManagedUpload = setMedia(asset.id, file)
+      const task: S3.ManagedUpload = handleMediaUpload(asset.id, file)
 
       setUploads((uploadCache: UploadCache) => ({
         ...uploadCache,

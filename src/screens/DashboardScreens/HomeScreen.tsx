@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import {
-  deleteProjectRequest,
-  getAllProjectsRequest
-} from '../../actions/projectActions'
+import { deleteProjectRequest, getProjects } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import { ProjectCard } from '../../components/Cards/ProjectCard'
@@ -20,27 +17,18 @@ import * as Types from '../../utils/Interface'
 import clsx from 'clsx'
 import { EmptyIcon } from 'components/EmptyIcon'
 import ProjectIcon from '@material-ui/icons/Collections'
+import { GetProjectParams } from 'utils/Interface/api'
+import { activeProjects } from 'utils/selectors'
+import { ProjectFilters } from 'utils/enums'
 
 const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
+type Props = { projects: Array<Types.Project> }
+
 const HomeScreen = (props: any) => {
-  const [allProjects, setAllProjects] = useState([])
-
-  useEffect(() => {
-    if (props.allProjectsData && props.allProjectsData !== allProjects) {
-      setAllProjects(props.allProjectsData)
-    }
-  }, [
-    props.isLoggedIn,
-    props.newProjectData,
-    props.allProjectsData,
-    props,
-    allProjects
-  ])
-
   useEffect(() => {
     props.getClientsRequest(props.userData.account)
-    props.getAllProjectsData(props.userData.account)
+    props.getProjects({}, ProjectFilters.ACTIVE)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const classes = useStyles()
@@ -49,7 +37,7 @@ const HomeScreen = (props: any) => {
   return (
     <div>
       <Widget
-        data={allProjects}
+        data={props.projects}
         title={'Active Projects'}
         EmptyComponent={
           <EmptyIcon
@@ -92,7 +80,7 @@ const HomeScreen = (props: any) => {
           )}>
           <PendingInvoices />
           <ProfitsExpenses />
-          <ProjectCount projectCount={allProjects.length} />
+          <ProjectCount projectCount={props.projects.length} />
           <IncomeThisMonth />
         </div>
       </div>
@@ -115,15 +103,15 @@ const HomeScreen = (props: any) => {
 
 const mapStateToProps = (state: any) => ({
   newProjectData: state.project.newProjectData,
-  allProjectsData: state.project.allProjectsData,
+  projects: activeProjects,
   activeProjectsLoading: state.project.isLoading,
   userData: state.auth,
   clients: state.clients.clientsData,
   deletingProjectId: state.project.deletingId
 })
 const mapDispatchToProps = (dispatch: any) => ({
-  getAllProjectsData: (account: Types.Account) => {
-    return dispatch(getAllProjectsRequest(account))
+  getProjects: (params: GetProjectParams, filter: ProjectFilters) => {
+    return dispatch(getProjects(params, filter))
   },
   getClientsRequest: (account: Types.Account) => {
     return dispatch(getAllClientsRequest(account))

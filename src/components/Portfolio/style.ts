@@ -252,8 +252,9 @@ export const useStyles = makeStyles((theme) => ({
     }
   },
   portfolioLogoImg: {
-    height: 80,
-    borderRadius: 40,
+    height: '100%',
+    minWidth: '100%',
+    objectFit: 'cover',
     position: POSITION_ABSOLUTE
   },
   addLogoText: {

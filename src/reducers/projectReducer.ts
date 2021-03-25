@@ -18,11 +18,13 @@ import {
 
 import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
+import { ProjectFilters } from 'utils/enums'
 import * as Types from '../utils/Interface'
 import { Project } from '../utils/Interface'
 
 export type State = {
   projectData: any
+  filteredIds: { [key in ProjectFilters]: Array<string> }
   success: boolean
   error: string | null
   newProjectData: any
@@ -47,6 +49,7 @@ export type Action = {
 }
 
 const initialState = {
+  filteredIds: { [ProjectFilters.ACTIVE]: [], [ProjectFilters.RECENT]: [] },
   projectData: null,
   success: false,
   error: null,

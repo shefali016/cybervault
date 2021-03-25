@@ -89,7 +89,7 @@ export const AddClient = (props: AddClientProps) => {
 
       try {
         if (logoFile) {
-          logo = await setMedia(`ClientLogos/${clientId}`, logoFile)
+          logo = await setMedia(`client_logos/${clientId}`, logoFile)
         }
 
         const client: Client = {

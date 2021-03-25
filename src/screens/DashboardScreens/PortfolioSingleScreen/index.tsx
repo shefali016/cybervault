@@ -256,7 +256,7 @@ const PortfolioSingleScreen = ({
           setModalState({ open: false, editingProjects: false })
         }
         onSubmit={(portfolio: Portfolio) => updatePortfolio(portfolio)}
-        projectList={projects}
+        projects={projects}
         loading={updatePortfolioLoading}
         error={updatePortfolioError}
         success={updatePortfolioSuccess}

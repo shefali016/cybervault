@@ -2,9 +2,10 @@ import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
 import { Asset } from '../utils/Interface'
+import AWS, { AWSError, S3 } from 'aws-sdk'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
-var AWS = require('aws-sdk')
+
 AWS.config.update({
   accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
   secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
@@ -16,7 +17,7 @@ export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
 }
 
-export const setMedia = (id: string, file: any) => {
+export const handleMediaUpload = (id: string, file: any) => {
   var params = {
     Body: file,
     Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
@@ -24,6 +25,29 @@ export const setMedia = (id: string, file: any) => {
     ACL: 'public-read'
   }
   return s3.upload(params)
+}
+
+export const setMedia = (id: string, file: any) => {
+  var params = {
+    Body: file,
+    Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+    Key: `${id}${file.name}`,
+    ACL: 'public-read'
+  }
+
+  return new Promise((resolve, reject) => {
+    s3.upload(params).send(
+      async (err: AWSError, data: S3.ManagedUpload.SendData) => {
+        if (!err) {
+          const url = data.Location
+          resolve(url)
+        } else {
+          console.log('Set media failed', err)
+          reject(err)
+        }
+      }
+    )
+  })
 }
 
 export const uploadMedia = (id: string, file: any) => {
