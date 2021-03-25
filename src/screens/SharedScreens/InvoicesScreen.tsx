@@ -266,7 +266,7 @@ const InvoicesScreen = ({
                   </Typography>
                   <Typography variant={'caption'} className={'metaText'}>
                     {getCurrencySymbol()}
-                    {availableBalance.toFixed(2)} available
+                    {(availableBalance / 100).toFixed(2)} available
                   </Typography>
                 </div>
               </div>
