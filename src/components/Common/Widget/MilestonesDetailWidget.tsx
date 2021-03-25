@@ -5,6 +5,7 @@ import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
 import { EditButton } from '../Button/EditButton'
 import { CostItem } from 'components/Projects/CostItem'
+import clsx from 'clsx'
 
 export const RenderMilestonesDetails = (props: any) => {
   const classes = useStyles()
@@ -26,7 +27,9 @@ export const RenderMilestonesDetails = (props: any) => {
   return (
     <div className={classes.clientDetailsContainer}>
       <div className={classes.innerDiv}>
-        <Typography variant={'h5'} className={classes.title}>
+        <Typography
+          variant={'h5'}
+          className={clsx(classes.title, props.headerClassName)}>
           Milestones Details
         </Typography>
         {props.editInfo ? <EditButton onClick={props.onEdit} /> : null}

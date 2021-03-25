@@ -65,9 +65,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     '.modal': {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       zIndex: 5000
     },
     '.modalContentWrapper': {
@@ -312,7 +312,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.widgetItemSmall': {
       width: '70vw',
       height: '12rem',
-      maxWidth: 280,
+      maxWidth: 230,
       maxHeight: '12rem',
       borderRadius: 15,
       display: 'flex',
@@ -370,9 +370,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.table': {
       flex: 1,
-      background:  theme.palette.background.surface,
+      background: theme.palette.background.surface,
       borderRadius: theme.shape.borderRadius,
-      overflow: "hidden"
+      overflow: 'hidden'
     },
     // Text
     '.metaText': { color: theme.palette.text.meta },
@@ -426,6 +426,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
         height: '100%',
         objectFit: 'cover'
       }
+    },
+    '.coverImage': {
+      height: '100%',
+      minWidth: '100%',
+      objectFit: 'cover',
+      position: 'absolute'
     },
     // Buttons
     '.iconButton': {

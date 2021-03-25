@@ -31,7 +31,7 @@ const NewProjectStepFive = (props: any) => {
           {!!clientData.logo && (
             <img
               src={clientData.logo}
-              className={classes.clientLogoImg}
+              className={'coverImage'}
               alt={'client-logo'}
             />
           )}
@@ -45,21 +45,36 @@ const NewProjectStepFive = (props: any) => {
       <div className={classes.middleView}>
         <ClientDetails clientData={clientData} />
 
-        <RenderProjectDetails projectData={projectData} />
+        <RenderProjectDetails
+          projectData={projectData}
+          headerClassName={classes.headerClassName}
+        />
 
         {projectData?.tasks?.length > 0 && (
-          <RenderTaskDetails projectData={projectData} />
+          <RenderTaskDetails
+            projectData={projectData}
+            headerClassName={classes.headerClassName}
+          />
         )}
 
         {projectData?.expenses?.length > 0 && (
-          <RenderExpenseDetails projectData={projectData} />
+          <RenderExpenseDetails
+            projectData={projectData}
+            headerClassName={classes.headerClassName}
+          />
         )}
 
         {projectData?.milestones?.length > 0 && (
-          <RenderMilestonesDetails projectData={projectData} />
+          <RenderMilestonesDetails
+            projectData={projectData}
+            headerClassName={classes.headerClassName}
+          />
         )}
 
-        <RenderBudgetDetails projectData={projectData} />
+        <RenderBudgetDetails
+          projectData={projectData}
+          headerClassName={classes.headerClassName}
+        />
       </div>
     )
   }
@@ -67,7 +82,7 @@ const NewProjectStepFive = (props: any) => {
   return (
     <div className={classes.container}>
       <NewProjectTitle title={'New Project'} subtitle={'Review Details'} />
-      {renderClientLogoView()}
+      {/* {renderClientLogoView()} */}
       {renderMiddleView()}
       <NewProjectFooter
         title={'Step 5 of 5'}
@@ -82,6 +97,7 @@ const NewProjectStepFive = (props: any) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  headerClassName: { color: theme.palette.text.paper, fontWeight: 'normal' },
   container: {
     display: FLEX,
     flex: 1,
@@ -106,13 +122,8 @@ const useStyles = makeStyles((theme) => ({
     height: 80,
     width: 80,
     borderRadius: 40,
-    backgroundColor: TRANSPARENT
-  },
-  clientLogoImg: {
-    height: 80,
-    width: 80,
-    borderRadius: 40,
-    position: POSITION_ABSOLUTE
+    backgroundColor: TRANSPARENT,
+    overflow: 'hidden'
   },
   detailsHeaderTitle: {
     fontSize: 20,
@@ -122,6 +133,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     display: FLEX,
     flexDirection: COLUMN,
+    paddingTop: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
       paddingBottom: 30
     }
