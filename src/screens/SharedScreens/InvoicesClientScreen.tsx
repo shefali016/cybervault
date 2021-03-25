@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getInvoiceRequest,
   sendRevisionRequest,
-  getAllInvoiceConversationRequest
+  getAllInvoiceConversationRequest,
+  payInvoice
 } from '../../actions/invoiceActions'
 import { requestGetProjectDetails } from '../../actions/projectActions'
 import { getClientRequest } from '../../actions/clientActions'
 import { useOnChange } from '../../utils/hooks'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { Grid, Card, Typography } from '@material-ui/core'
 import { AssetCarousel } from '../../components/Common/Carousel/Carousel'
 import { FeatureAssetList } from '../../components/Common/Carousel/FeatureAssetList'
@@ -26,6 +27,11 @@ import { getAccount } from 'apis/account'
 import { getUser } from 'apis/user'
 import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 import Header from 'components/Common/Header/header'
+import { CardModal } from '../../components/Stripe/CardModal'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import { getSubscription } from '../../apis/stripe'
+import { SubscriptionTypes } from '../../utils/enums'
+import { getSubscriptionDetails } from '../../utils/subscription'
 
 const { revision } = require('sendGridTemplates.json')
 
@@ -36,18 +42,23 @@ type State = {
   client: Client | null
 }
 
-type Props = { history: any; match: any }
+type Props = { history: any; match: any; location: any }
 
 const InvoicesClientScreen = (props: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
   const dispatch = useDispatch()
 
   const toastContext = useContext(ToastContext)
 
   const { invoiceId, ownerAccountId } = useMemo(() => {
     const { params } = props.match
+
     if (!(params && params.accId && params.id)) {
-      return { invoiceId: null, accoownerAccountIduntId: null }
+      return {
+        invoiceId: null,
+        ownerAccountId: null
+      }
     }
     const { accId: ownerAccountId, id: invoiceId } = params
     return { ownerAccountId, invoiceId }
@@ -74,8 +85,14 @@ const InvoicesClientScreen = (props: Props) => {
     invoiceConversationData: state.invoice.invoiceConversationData
   }))
 
-  const [accountOwner, setAccountOwner] = useState<User | null>(null)
-  const isAccountOwner = !account || ownerAccountId === account.id
+  const [state, setState] = useState<{
+    account: Account | null
+    user: User | null
+    transactionFee: number | any
+    loadingError: null | string
+  }>({ account: null, user: null, transactionFee: 0, loadingError: null })
+  const { account: ownerAccount, user: ownerUser, transactionFee } = state
+  const isAccountOwner = account && ownerAccountId === account.id
 
   // Select objects from cache
   const invoice = useMemo(() => {
@@ -97,6 +114,7 @@ const InvoicesClientScreen = (props: Props) => {
     return projectCache[projectId]
   }, [invoice, projectCache])
 
+  const [cardModalOpen, setCardModalOpen] = useState(false)
   // Load invoice and conversations
   useEffect(() => {
     loadInitialData()
@@ -105,9 +123,36 @@ const InvoicesClientScreen = (props: Props) => {
     if (invoiceId && ownerAccountId) {
       dispatch(getInvoiceRequest(ownerAccountId, invoiceId))
       dispatch(getAllInvoiceConversationRequest(ownerAccountId, invoiceId))
-      const ownerAccount = await getAccount(ownerAccountId)
-      const accountOwner = await getUser(ownerAccount.owner)
-      setAccountOwner(accountOwner)
+
+      try {
+        const ownerAccount = await getAccount(ownerAccountId)
+        if (!ownerAccount) throw Error('No account')
+
+        const accountOwner = await getUser(ownerAccount.owner)
+        if (!accountOwner) throw Error('No account owner')
+
+        const subscriptions = await getSubscription(accountOwner.customerId)
+        if (!(subscriptions && subscriptions.length))
+          throw Error('No subscription')
+
+        const accountSubscription = subscriptions.find(
+          (sub) => sub.metadata.type !== SubscriptionTypes.STORAGE
+        )
+        if (!accountSubscription) throw Error('No account subscription')
+
+        const { transactionFee } = getSubscriptionDetails(
+          accountSubscription.metadata.type
+        )
+
+        setState((state) => ({
+          ...state,
+          user: accountOwner,
+          account: ownerAccount,
+          transactionFee
+        }))
+      } catch (error) {
+        setState((state) => ({ ...state, loadingError: error }))
+      }
     }
   }
   // Load client and project when invoice is loaded
@@ -134,9 +179,9 @@ const InvoicesClientScreen = (props: Props) => {
   }
 
   useOnChange(revisionSuccess, (success: string | null) => {
-    if (success && accountOwner && client) {
+    if (success && ownerUser && client) {
       const mailPayload = {
-        to: isAccountOwner ? accountOwner.email : client.email,
+        to: isAccountOwner ? ownerUser.email : client.email,
         templateId: revision,
         type: 'revision',
         data: {
@@ -155,23 +200,26 @@ const InvoicesClientScreen = (props: Props) => {
 
   const conversation = invoiceConversationData[invoiceId]
 
-  const hasMounted = useRef(false)
-  useEffect(() => {
-    if (hasMounted.current) {
-      scrollToBottom()
-    }
-    hasMounted.current = true
-  }, [conversation?.length])
+  if (state.loadingError) {
+    return (
+      <div className={clsx('screenContainer', 'centerContent', 'fullHeight')}>
+        <Typography variant={'h4'}>Oops, something went wrong</Typography>
+        <Typography variant={'subtitle1'}>
+          Could not load invoice. Please try again or contact support
+        </Typography>
+      </div>
+    )
+  }
 
-  if (!(invoice && project && accountOwner && client)) {
+  if (!(invoice && project && ownerUser && client)) {
     return <FullScreenLoader />
   }
 
   const handleSendRevisonRequest = () => {
     const senderId = isAccountOwner ? ownerAccountId : client.id
-    const sendersEmail = isAccountOwner ? accountOwner.email : client.email
-    const receiversEmail = isAccountOwner ? client.email : accountOwner.email
-    const name = isAccountOwner ? accountOwner.name : client.name
+    const sendersEmail = isAccountOwner ? ownerUser.email : client.email
+    const receiversEmail = isAccountOwner ? client.email : ownerUser.email
+    const name = isAccountOwner ? ownerUser.name : client.name
 
     const payload = {
       message: message,
@@ -186,8 +234,8 @@ const InvoicesClientScreen = (props: Props) => {
     dispatch(sendRevisionRequest(ownerAccountId, invoice.id, payload))
   }
 
-  const renderInvoiceAmmount = () => (
-    <Grid container justify='flex-end' xs spacing={1}>
+  const renderInvoiceAmount = () => (
+    <Grid container item justify='flex-end' xs spacing={1}>
       <Grid container item alignItems='center' justify='flex-end'>
         <Typography variant='h6' className={classes.subHeading}>
           Invoice ammount:{' '}
@@ -196,43 +244,77 @@ const InvoicesClientScreen = (props: Props) => {
           ${invoice.price}
         </Typography>
       </Grid>
-      <Grid item>
-        <GradiantButton>
-          <Typography variant='button'>Pay Invoice</Typography>
-        </GradiantButton>
-      </Grid>
+      {!!invoice.isPaid && (
+        <div className={'row'} style={{ color: theme.palette.primary.main }}>
+          <Typography variant={'body1'}>Invoice paid</Typography>
+          <CheckCircleIcon style={{ fontSize: 22, marginLeft: 5 }} />
+        </div>
+      )}
+      {!isAccountOwner && !invoice.isPaid ? (
+        <Grid item>
+          <GradiantButton onClick={handlePayInvoice}>
+            <Typography variant='button'>{'Pay Invoice'}</Typography>
+          </GradiantButton>
+        </Grid>
+      ) : null}
     </Grid>
   )
 
-  const handleBack = () => props.history.push('/invoices')
+  const handleBack = () =>
+    props.history.push(isAccountOwner ? '/invoices' : '/')
 
   const renderHeader = () => {
-    if (!!user) {
-      return (
-        <Header
-          user={user}
-          renderAppIcon={true}
-          onLogoClick={handleBack}
-          history={props.history}
-        />
-      )
-    }
-    return null
+    return (
+      <Header
+        user={user}
+        renderAppIcon={true}
+        onLogoClick={handleBack}
+        history={props.history}
+        hideBackArrow={!user}
+      />
+    )
   }
+  const handlePayInvoice = () => {
+    setCardModalOpen(true)
+  }
+  const handleCreateCharge = (token: any) => {
+    if (
+      token &&
+      ownerAccount &&
+      ownerAccount.stripe &&
+      ownerAccount.stripe.accountId &&
+      transactionFee
+    ) {
+      setCardModalOpen(false)
+      const amount: number = invoice.price * 100
+      const tokenId: string = token.id
+      const invoiceId: string = invoice.id
+      const account: string = ownerAccountId
+      const stripeAccountId: string = ownerAccount.stripe.accountId
 
+      dispatch(
+        payInvoice(
+          amount,
+          tokenId,
+          invoiceId,
+          account,
+          stripeAccountId,
+          transactionFee
+        )
+      )
+    } else {
+      toastContext.showToast({
+        title: 'Could not pay invoice. Please try again or contact support.'
+      })
+    }
+  }
   return (
     <div className={'screenContainer'}>
       {renderHeader()}
-
       <div className={classes.subHeaderSection}>
         {project.campaignName} <div className={classes.dot}></div>
       </div>
 
-      {/* <Grid item sm={11} container>
-            <Grid item sm={12} className={classes.headerSection}>
-              {project.campaignName}
-            </Grid>
-          </Grid> */}
       <div className={'screenInner'}>
         <div className={clsx('responsivePadding', 'screenTopPadding')}>
           <Grid item container className={classes.section}>
@@ -245,7 +327,7 @@ const InvoicesClientScreen = (props: Props) => {
                       {project.campaignName}
                     </Typography>
                   </Grid>
-                  {renderInvoiceAmmount()}
+                  {renderInvoiceAmount()}
                 </Grid>
 
                 <Grid
@@ -359,7 +441,7 @@ const InvoicesClientScreen = (props: Props) => {
                                           <Typography
                                             className={`${classes.textBold} ${classes.name}`}>
                                             {isAccountOwner
-                                              ? accountOwner.name
+                                              ? ownerUser.name
                                               : client.name}
                                           </Typography>
                                           <Typography
@@ -406,6 +488,13 @@ const InvoicesClientScreen = (props: Props) => {
           </Grid>
         </div>
       </div>
+      <CardModal
+        open={cardModalOpen}
+        customerId={''}
+        onRequestClose={() => setCardModalOpen(false)}
+        directCheckout={true}
+        handleCreateCharge={handleCreateCharge}
+      />
     </div>
   )
 }

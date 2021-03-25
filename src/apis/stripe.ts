@@ -321,9 +321,7 @@ export const getSubscription = async (customerId: string) => {
       throw Error('Invalid subscription data')
     }
 
-    const subscriptionList = data.data
-
-    return subscriptionList[0]
+    return data.data
   } else {
     throw Error('Failed to fetch subscription')
   }
@@ -381,5 +379,34 @@ export const getCutomerInvoicesList = async (customerId: string) => {
     return res.data
   } else {
     throw Error('Stripe customer invoice error')
+  }
+}
+
+export const oneTimeCharge = async (
+  amount: number,
+  token: string,
+  stripeAccountId: string,
+  transactionFee: number
+) => {
+  const res = await axios.post<any>(
+    `${server_url}/api/v1/stripe/one_time_checkout`,
+    { amount, token, stripeAccountId, transactionFee}
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe one time charge error')
+  }
+}
+
+export const getCustomerBalance = async (stripeAccountId: string) => {
+  const res = await axios.post<Array<StripePlans>>(
+    `${server_url}/api/v1/stripe/get_customer_balance`,
+    { stripeAccountId }
+  )
+  if (res.status === 200) {
+    return res.data
+  } else {
+    throw Error('Stripe get Customer Balance error')
   }
 }

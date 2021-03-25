@@ -14,14 +14,14 @@ const headerCells = [
 
 type Props = {
   invoices: Array<Invoice>
-  tableContainerClassName?: string
+  className?: string
   history: any
   accountId: string
 }
 
 export const InvoicesTable = ({
   invoices,
-  tableContainerClassName,
+  className,
   history,
   accountId
 }: Props) => {
@@ -33,7 +33,6 @@ export const InvoicesTable = ({
 
   const rows = useMemo(() => {
     let rows: Array<Row> = []
-
     invoices &&
       invoices.length &&
       invoices.forEach((inv: Invoice) => {
@@ -58,7 +57,6 @@ export const InvoicesTable = ({
           key: `${inv.id}`
         })
       })
-
     return rows
   }, [invoices])
 
@@ -66,7 +64,7 @@ export const InvoicesTable = ({
     <AppTable
       rows={rows}
       headerCells={headerCells}
-      tableContainerClassName={tableContainerClassName}
+      className={className}
       emptyProps={{ Icon: InvoiceIcon, title: 'No invoices' }}
       handleRowClick={handleRowClick}
     />
