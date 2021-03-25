@@ -449,10 +449,10 @@ router.post('/one_time_checkout', (req, res) => {
       if (!(amount && token && stripeAccountId && transactionFee)) {
         throw Error('invalid params')
       }
-      const stripeAmount = amount * (transactionFee / 100)
-      const customerAmount = amount - stripeAmount
+
+      const customerAmount = amount - amount * (transactionFee / 100)
       const charge = await stripe.charges.create({
-        amount: stripeAmount,
+        amount: amount,
         currency: 'usd',
         description: 'Invoice Pay',
         source: token
