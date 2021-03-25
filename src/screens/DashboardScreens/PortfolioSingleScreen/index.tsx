@@ -23,6 +23,7 @@ import { PortfolioTitle } from 'components/Portfolio/PortfolioTitle'
 import { ProjectSelectBar } from 'components/Portfolio/ProjectSelectBar'
 import { PortfolioProjectDetails } from 'components/Portfolio/PortfolioDetails'
 import clsx from 'clsx'
+import { EmptyIcon } from 'components/EmptyIcon'
 
 type StateProps = {
   portfolio: Portfolio
@@ -237,7 +238,14 @@ const PortfolioSingleScreen = ({
           <div
             className={clsx('screenChild', 'flex')}
             style={{ backgroundColor: foregroundColor }}>
-            {!selectedProjectData && (
+            {portfolio.projects.length === 0 && (
+              <EmptyIcon
+                Icon={ProjectIcon}
+                title='No projects added'
+                className={'flex center'}
+              />
+            )}
+            {portfolio.projects.length > 0 && !selectedProjectData && (
               <AppLoader className={classes.loader} color={textColor} />
             )}
 
