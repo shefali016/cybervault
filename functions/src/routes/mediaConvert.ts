@@ -21,10 +21,10 @@ let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 // var s3 = new AWS.S3()
 
 router.post('/convert', (req, res) => {
-
-  
   return corsHandler(req, res, async () => {
     try {
+      console.log("==============================================")
+      
       let videoArray = req.body.data.map(async (item: any, i: number) => {
         return await resizeVideo(item)
       })
@@ -271,11 +271,11 @@ const resizeVideo = async (item: any) => {
         .then((res: any) => {
           console.log(res, 'bbbbbbbbbbbbbbbbbbbbb')
 
-          // getJobDetails(res.Job.Id)
-          //   .then((jobDetails: any) => {
-          //     console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
-          //     console.log(jobDetails)
-          //     console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
+          getJobDetails(res.Job.Id)
+            .then((jobDetails: any) => {
+              console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
+              console.log(jobDetails)
+              console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
               resolve({
                 height: resolution,
                 width: cropWidth,
@@ -289,10 +289,10 @@ const resizeVideo = async (item: any) => {
                   format === 'prores' ? '.mov' : '.mp4'
                 }`
               })
-            // })
-            // .catch((error: any) => {
-            //   reject(error)
-            // })
+            })
+            .catch((error: any) => {
+              reject(error)
+            })
         })
         .catch((error: any) => {
           reject(error)
@@ -304,38 +304,38 @@ const resizeVideo = async (item: any) => {
   })
 }
 
-// async function getJobDetails(Id: any) {
-//   return new Promise(async (resolve: any, reject: any) => {
-//     try {
-//       let status = ''
-//       let result
-//       while (status == 'PROGRESSING' || status == '') {
-//         result = await mediaConvert.getJob({
-//           Id: Id
-//         })
-//         console.log('4444444444444444444444444444444444444444444444444444')
-//         console.log(result,"resulttttttttttttttt")
-//         console.log('4444444444444444444444444444444444444444444444444444')
+async function getJobDetails(Id: any) {
+  return new Promise(async (resolve: any, reject: any) => {
+    try {
+      let status = ''
+      let result
+      while (status == 'PROGRESSING' || status == '') {
+        result = await mediaConvert.getJob({
+          Id: Id
+        }).promise()
+        console.log('4444444444444444444444444444444444444444444444444444')
+        console.log(result,"resulttttttttttttttt")
+        console.log('4444444444444444444444444444444444444444444444444444')
 
-//         status = result.Job.Status
-//         await sleep(5)
-//         console.log("---------------------",status)
-//       }
-//       console.log('===============================')
-//       console.log(result)
-//       console.log('===============================')
-//       resolve(result)
-//     } catch (error) {
-//       console.log("eurrorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
-//       console.log(error);
-//       console.log("errorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
-//       reject(error)
-//     }
-//   })
-// }
+        status = result.Job.Status
+        await sleep(60)
+        console.log("---------------------",status)
+      }
+      console.log('===============================')
+      console.log(result)
+      console.log('===============================')
+      resolve(result)
+    } catch (error) {
+      console.log("eurrorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
+      console.log(error);
+      console.log("errorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
+      reject(error)
+    }
+  })
+}
 
-// async function sleep(second: any) {
-//   return new Promise((resolve) => setTimeout(resolve, second))
-// }
+async function sleep(second: any) {
+  return new Promise((resolve) => setTimeout(resolve, second))
+}
 
 module.exports = router

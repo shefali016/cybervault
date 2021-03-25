@@ -16,6 +16,7 @@ import { UploadStatuses } from 'utils/enums'
 import { AssetUploadItem } from 'components/Assets/AssetUploadItem'
 import clsx from 'clsx'
 import { AWSError, S3 } from 'aws-sdk'
+// import FFMPEG from "react-ffmpeg";
 
 const AWS = require('aws-sdk')
 
@@ -111,10 +112,20 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
           video.appendChild(source)
           video.onloadedmetadata = async () => {
             console.log(
-              video.videoHeight,
-              video.videoWidth,
+              // video.videoHeight,
+              video.dataset,
               'uuuuuuuuuuuuuuuuuu'
             )
+
+            // await FFMPEG.process(
+            //   file,
+            //   '-metadata location="" -metadata location-eng="" -metadata author="" -c:v copy -c:a copy',
+            //   function (e:any) {
+            //     const vid = e.result;
+            //     console.log(vid,"tttttttttttttt");
+            //   }.bind(this)
+            // );
+
             asset.files.push(
               getImageObject(
                 file,

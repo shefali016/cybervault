@@ -32,6 +32,7 @@ import clsx from 'clsx'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { AssetUploadContext } from 'context/AssetUpload'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
+var ffmpeg = require('ffmpeg')
 
 type EditProjectStates = {
   projectData: Object | any
@@ -212,6 +213,25 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
+  const checkVideo = () => {
+    try {
+      var process = new ffmpeg(
+        'https://cybervault-bucket.s3.us-east-2.amazonaws.com/8f3e8411ed1d3efe/51186357a5771402/8f3e8411ed1d3efevideoplayback.mp4'
+      )
+      process.then(
+        function (video: any) {
+          console.log(video, 'The video is ready to be processed')
+        },
+        function (err: any) {
+          console.log('Error: ' + err)
+        }
+      )
+    } catch (e) {
+      console.log(e.code, 'nnnnnnnnnnnnn')
+      console.log(e.msg, 'nnnnnnnnnnnnnnnn')
+    }
+  }
+
   const renderBody = () => {
     if (!state.projectData) {
       return null
@@ -220,7 +240,7 @@ const EditProjectScreen = (props: any) => {
       <div className={classes.detailsWrapper}>
         <Fragment>
           {renderProjectDetails()}
-
+          {checkVideo()}
           <AppDivider spacing={6} />
           <AssetUploadDisplay
             {...{

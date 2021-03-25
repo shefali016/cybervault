@@ -7,17 +7,26 @@ import axios from 'axios';
 const buildAssetPath = (id: string) => `${id}/${id}-original`
 var AWS = require('aws-sdk')
 AWS.config.update({
+  cloudwatchevents: '2015-10-07',
   accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
   secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
   region: `${process.env.REACT_APP_AWS_REGION}`
 })
 var s3 = new AWS.S3()
+var cloudwatchevents = new AWS.CloudWatchEvents();
 
 
 const { server_url, domain } = require('../config.json')
 
 export const convertMedia = (data: any) => {
   return new Promise(function async (resolve, reject) {
+    // var params = {
+    //   Name: 'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role'
+    // };
+    // cloudwatchevents.describeEventBus(params, function(err:any, data:any) {
+    //   if (err) console.log(err, err.stack,"cloudwatchhhh"); // an error occurred
+    //   else     console.log(data,"cloudwatchhhhdata");           // successful response
+    // });
     axios.post<any>(
       `${server_url}/api/v1/media/convert`,
       {data:data}

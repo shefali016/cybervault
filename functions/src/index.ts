@@ -6,8 +6,12 @@ import { generateUid } from './utils'
 import { Mail } from './utils/interfaces'
 import templates from './sendGridTemplates.json'
 import config from './config.json'
+import axios from 'axios'
+var ffmpeg = require('fluent-ffmpeg');
 
+const fs = require('fs')
 const sgMail = require('@sendgrid/mail')
+var path=require('path')
 
 // const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 
@@ -27,8 +31,57 @@ admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: 'https://cybervault-8cfe9.firebaseio.com'
 })
+
 const runtimeOpts = {
   timeoutSeconds: 300
+}
+
+const rootPath=path.join('./tmp/test.mp4')
+functions.logger.log(rootPath,"rooooooooooooooooooooooooooo")
+
+
+const getFileMetaData = async (url: string) => {
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      functions.logger.log("datatttttttttttttttttttttt")
+
+      let data = await axios.get(`${url}`)
+      // var dir = './tmp'
+      // if (!fs.existsSync(dir)) {
+      //   fs.mkdirSync(dir)
+      // }
+      const rootPath=path.join(`../tmp/test.webm`)
+      console.log(rootPath,"pathhhhhhhhhhhhhhhhhhhhhhh")
+      fs.writeFile(rootPath, data.data, async(err: any) =>{
+        console.log(err,"rrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+        if(err){
+          reject(err)
+        }
+        let video = getDetails()
+        console.log(video, '777777777777777777777777777777777777777777777')
+        resolve(video)
+      })
+    } catch (err) {
+      console.log(err,"errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+      reject(err)
+    }
+  })
+}
+const getDetails = () => {
+  try {
+    ffmpeg.ffprobe(`../tmp/test.webm`,function(err:any, metadata:any) {
+      console.log(metadata,"metttttttttttttttttttt")
+      console.log(err,"ffffffffffffffffffffffffffffffffffffff")
+      return metadata
+    });
+    // var process = await new ffmpeg(`../tmp/test.webm`)
+    // console.log(process,"processssssssssssssssssssssssssss")
+  } catch (e) {
+    console.log(e.code,"codeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    console.log(e.msg,"msssssssssssssssssssssssssssssssssssss")
+    return e
+  }
 }
 
 export const httpsRequests = functions.runWith(runtimeOpts).https.onRequest(app)
@@ -93,6 +146,60 @@ export const sendEmail = functions.firestore
       }
     } catch (error) {
       console.log('sendEmail error', error)
+    }
+  })
+
+export const addCodec = functions.firestore
+  .document(`AccountData/{accountId}/Assets/{assetId}`)
+  .onWrite(async (change, context) => {
+    try {
+      let newData = change.after.data()
+      let oldData = change.before.data()
+      let accId = context.params.accountId
+      let assetId = context.params.accountId
+
+      if (
+        !oldData &&
+        newData &&
+        newData &&
+        newData?.files?.length &&
+        newData?.type === 'video'
+      ) {
+       
+        const originalFileData = newData.files.find((file: any, i: number) => {
+          return file.original
+        })
+        const videoMetaData: any = await getFileMetaData(originalFileData.url)
+        console.log(videoMetaData,assetId,"nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        originalFileData.codec =
+          videoMetaData
+
+        const filesData: any = newData.files.map((file: any, i: number) => {
+          if (file.id === originalFileData.id) {
+            return originalFileData
+          } else {
+            return file
+          }
+        })
+
+        console.log(
+          filesData,
+          originalFileData,
+          '0000000000000000000000000000000'
+        )
+
+        admin
+          .firestore()
+          .collection('AccountData')
+          .doc(accId)
+          .collection('Assets')
+          .doc(assetId)
+          .update({
+            files: filesData
+          })
+      }
+    } catch (error) {
+      console.log('add codec ', error)
     }
   })
 
