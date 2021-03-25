@@ -158,8 +158,3 @@ export const findProjectLimit = (allProjectsData: Array<Project>) => {
   }
   return curentMonthProjects.length
 }
-
-export const capitalize = (word: string) => {
-  const lower = word.toLowerCase()
-  return word.charAt(0).toUpperCase() + lower.slice(1)
-}

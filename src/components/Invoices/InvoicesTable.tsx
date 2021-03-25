@@ -4,7 +4,6 @@ import InvoiceIcon from '@material-ui/icons/Receipt'
 import { AppTable } from 'components/Common/Core/AppTable'
 import { InvoiceStatusIndicator } from './InvoiceStatusIndicator'
 import { makeStyles } from '@material-ui/core/styles'
-import { capitalize } from '@material-ui/core'
 
 const headerCells = [
   { title: 'Project Name', key: 'name' },
@@ -49,7 +48,7 @@ export const InvoicesTable = ({
                     status={inv.status}
                     className={classes.status}
                   />
-                  {capitalize(inv.status)}
+                  {inv.status}
                 </div>
               ),
               key: `${inv.id}status`

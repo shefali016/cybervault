@@ -40,7 +40,7 @@ export const CardInputElement = injectStripe(
       const cardElement = elements.getElement('card')
       if (directCheckout) {
         stripe
-          .createToken({ type: 'card', name: 'Jenny Rosen' })
+          .createToken({ type: 'card' })
           .then((result: any) => {
             if (result.error) {
               // Show error to your customer.

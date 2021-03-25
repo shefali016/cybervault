@@ -144,6 +144,9 @@ router.post('/create_account', (req, res) => {
       if (!email) {
         throw Error('missing email')
       }
+      if (!country) {
+        throw Error('missing country')
+      }
 
       const account = await stripe.accounts.create({
         type: 'express',

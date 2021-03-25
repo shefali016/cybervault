@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import { useTheme } from '@material-ui/core/styles'
 import { InvoiceStatuses } from 'utils/enums'
 import { InvoiceStatus } from 'utils/Interface'
-import { capitalize } from '@material-ui/core'
 
 export const InvoiceStatusIndicator = ({
   status,
@@ -19,7 +18,7 @@ export const InvoiceStatusIndicator = ({
 
   let background = theme.palette.status.inProgress
 
-  if (capitalize(status) === InvoiceStatuses.PAID) {
+  if (status === InvoiceStatuses.PAID) {
     background = theme.palette.status.completed
   }
 
