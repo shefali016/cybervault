@@ -59,7 +59,7 @@ export function generateUid() {
   return S4() + S4() + S4() + S4()
 }
 
-export const getProductData = (): Project => {
+export const getProjectData = (): Partial<Project> => {
   const currentDate = new Date().toISOString().slice(0, 10)
   return {
     campaignName: '',
@@ -77,7 +77,8 @@ export const getProductData = (): Project => {
     id: '',
     images: [],
     videos: [],
-    status: ProjectStatuses.PROGRESS
+    status: ProjectStatuses.PROGRESS,
+    
   }
 }
 

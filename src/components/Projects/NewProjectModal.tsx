@@ -89,18 +89,6 @@ const NewProject = ({
     }
   })
 
-  // useEffect(() => {
-  // if (addClientSuccess && addClient && currentStep == 1 && newClientData) {
-  //   if (project) {
-  //     setAddClient(false)
-  //   } else {
-  //     setClientData(newClientData)
-  //     setCurrentStep((step) => step + 1)
-  //     setAddClient(false)
-  //   }
-  // }
-  // }, [addClientSuccess])
-
   const onUpdateData = () => {
     if (typeof onUpdate !== 'function') {
       return
@@ -131,7 +119,8 @@ const NewProject = ({
       setIsLoading(true)
       let project = {
         ...projectData,
-
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
         clientId: clientData.id,
         id: generateUid()
       }
