@@ -60,8 +60,7 @@ export const CardInputElement = injectStripe(
         stripe
           .createPaymentMethod({
             type: 'card',
-            card: cardElement,
-            billing_details: { name: 'Jenny Rosen' }
+            card: cardElement
           })
           .then(({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
             if (paymentMethod && paymentMethod.id) {

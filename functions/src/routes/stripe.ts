@@ -150,7 +150,7 @@ router.post('/create_account', (req, res) => {
 
       const account = await stripe.accounts.create({
         type: 'express',
-        country: country ? country : 'us',
+        country: country,
         email,
         capabilities: {
           card_payments: { requested: true },
