@@ -268,6 +268,18 @@ export const useGlobalStyles = makeStyles((theme) => ({
         alignItems: 'stretch'
       }
     },
+    '.widgetEmptyIcon': {
+      flex: 1,
+      background: theme.palette.background.secondary,
+      alignSelf: 'stretch',
+      maxWidth: 270,
+      borderRadius: 15,
+      justifyContent: 'center',
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      }
+    },
     '.widgetItemOuter': { marginRight: theme.spacing(3) },
     '.widgetItemResponsiveOuter': {
       marginRight: theme.spacing(3),
@@ -419,6 +431,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       )
     },
     // Color
-    '.lightGrey': { color: theme.palette.grey[100] },
+    '.lightGrey': { color: theme.palette.grey[100] }
   }
 }))

@@ -18,6 +18,8 @@ import Widget from '../../components/Common/Widget'
 import { getWidgetCardHeight } from '../../utils'
 import * as Types from '../../utils/Interface'
 import clsx from 'clsx'
+import { EmptyIcon } from 'components/EmptyIcon'
+import ProjectIcon from '@material-ui/icons/Collections'
 
 const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
@@ -49,7 +51,13 @@ const HomeScreen = (props: any) => {
       <Widget
         data={allProjects}
         title={'Active Projects'}
-        emptyMessage={'No Active Projects'}
+        EmptyComponent={
+          <EmptyIcon
+            title={'No recent projects'}
+            Icon={ProjectIcon}
+            className={'widgetEmptyIcon'}
+          />
+        }
         loading={props.activeProjectsLoading}
         itemHeight={getWidgetCardHeight(theme)}
         style={{ height: '70vw', maxHeight: 280 }}

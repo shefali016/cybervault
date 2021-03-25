@@ -5,6 +5,8 @@ import { ProjectCard } from '../../components/Cards/ProjectCard'
 import ProjectArchives from '../../components/Cards/ProjectArchives'
 import Widget from '../../components/Common/Widget'
 import { useTabletLayout } from '../../utils/hooks'
+import { EmptyIcon } from 'components/EmptyIcon'
+import ProjectIcon from '@material-ui/icons/Collections'
 
 const PROJECT_DATA = [
   {
@@ -66,7 +68,13 @@ export const ProjectsScreen = (props: any) => {
             style={{ paddingRight: theme.spacing(3) }}
           />
         )}
-        emptyMessage={'No Projects found'}
+        EmptyComponent={
+          <EmptyIcon
+            title={'No recent projects'}
+            Icon={ProjectIcon}
+            className={'widgetEmptyIcon'}
+          />
+        }
       />
       <Widget
         title={'Projects Archives'}
