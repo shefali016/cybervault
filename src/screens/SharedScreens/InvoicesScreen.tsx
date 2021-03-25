@@ -228,14 +228,17 @@ const InvoicesScreen = ({
             <div className='row'>
               <Typography variant='body1'>Connect with</Typography>
               <img src={stripeLogo} height={40} />
+              {creatingAccount && (
+                <AppLoader
+                  color={theme.palette.primary.light}
+                  className={classes.loader}
+                  type='spinningBubbles'
+                  height={35}
+                  width={35}
+                />
+              )}
             </div>
           </GradiantButton>
-          {creatingAccount && (
-            <AppLoader
-              color={theme.palette.primary.light}
-              className={classes.loader}
-            />
-          )}
         </div>
       </div>
     )
@@ -384,7 +387,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center'
   },
-  loader: { position: 'absolute', bottom: -80 },
+  loader: { marginLeft: theme.spacing(1) },
   balanceSection: {
     display: 'flex',
     backgroundColor: theme.palette.background.default,
