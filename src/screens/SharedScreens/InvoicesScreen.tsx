@@ -221,7 +221,8 @@ const InvoicesScreen = ({
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            padding: theme.spacing(4)
           }}>
           <GradiantButton onClick={handleConnectStripeAccount}>
             <div className='row'>
