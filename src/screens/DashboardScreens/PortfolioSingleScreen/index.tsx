@@ -238,16 +238,18 @@ const PortfolioSingleScreen = ({
           <div
             className={clsx('screenChild', 'flex')}
             style={{ backgroundColor: foregroundColor }}>
-            {portfolio.projects.length === 0 && (
+            {(!portfolio.projects || portfolio.projects.length === 0) && (
               <EmptyIcon
                 Icon={ProjectIcon}
                 title='No projects added'
                 className={'flex center'}
               />
             )}
-            {portfolio.projects.length > 0 && !selectedProjectData && (
-              <AppLoader className={classes.loader} color={textColor} />
-            )}
+            {portfolio.projects &&
+              portfolio.projects.length > 0 &&
+              !selectedProjectData && (
+                <AppLoader className={classes.loader} color={textColor} />
+              )}
 
             <PortfolioProjectDetails
               project={selectedProjectData}

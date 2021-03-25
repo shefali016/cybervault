@@ -431,6 +431,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       )
     },
     // Color
-    '.lightGrey': { color: theme.palette.grey[100] }
+    '.lightGrey': { color: theme.palette.grey[100] },
+    '.shadowLight': {
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+    }
   }
 }))
