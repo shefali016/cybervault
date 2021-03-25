@@ -18,6 +18,7 @@ import {
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
+import { InvoiceStatuses } from 'utils/enums'
 import { Invoice, InvoiceConversation } from '../utils/Interface'
 
 export type State = {
@@ -178,10 +179,23 @@ const getAllInvoiceConversationSuccess = (state: State, action: Action) => ({
     ...action.payload
   }
 })
-const payInvoiceSuccess = (state: State, cache: { [id: string]: Invoice }) => ({
-  ...state,
-  cache: cache
-})
+
+const payInvoiceSuccess = (state: State, action: Action) => {
+  const invoiceId: string = action.invoiceId
+
+  return {
+    ...state,
+    cache: {
+      ...state,
+      [invoiceId]: {
+        ...state.cache[invoiceId],
+        isPaid: true,
+        status: InvoiceStatuses.PAID
+      }
+    }
+  }
+}
+
 const invoiceReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_INVOICE_REQUEST:
@@ -215,11 +229,7 @@ const invoiceReducer = (state = initialState, action: Action) => {
     case GET_ALL_INVOICE_CONVERSATION_ERROR:
       return getAllInvoiceConversationError(state, action)
     case PAY_INVOICE_SUCCESS:
-      const invoiceId: string = action.invoiceId
-      const cacheData: any = state.cache
-      cacheData.invoiceId.isPaid = true
-      cacheData.invoiceId.status = 'Paid'
-      return payInvoiceSuccess(state, cacheData)
+      return payInvoiceSuccess(state, action)
     default:
       return state
   }
