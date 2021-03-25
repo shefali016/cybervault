@@ -56,7 +56,7 @@ export const AddPortfolio = ({
   success,
   clients,
   folderId,
-  portfolio = {},
+  portfolio,
   isEditingProject
 }: AddPortfolioProps) => {
   let imageInputRef: any = useRef()
@@ -73,7 +73,7 @@ export const AddPortfolio = ({
         projects: [],
         folderId: folderId || ''
       },
-      portfolio
+      portfolio || {}
     ),
     iconFile: '',
     isChooseProject: !!isEditingProject,

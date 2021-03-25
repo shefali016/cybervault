@@ -297,6 +297,24 @@ export const useGlobalStyles = makeStyles((theme) => ({
         boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
       }
     },
+    '.widgetItemSmall': {
+      width: '70vw',
+      height: '12rem',
+      maxWidth: 280,
+      maxHeight: '12rem',
+      borderRadius: 15,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      '&:hover': {
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      },
+    },
     '.widgetItemWide': {
       width: '70vw',
       maxWidth: 350,
