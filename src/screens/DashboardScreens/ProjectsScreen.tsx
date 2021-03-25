@@ -63,7 +63,6 @@ export const ProjectsScreen = (props: any) => {
           <ProjectCard
             account={props.userData.account} //added as Project card is expecting account data
             project={item}
-            customerEmail={props.customerEmail}
             style={{ paddingRight: theme.spacing(3) }}
           />
         )}
@@ -90,8 +89,7 @@ export const ProjectsScreen = (props: any) => {
 
 const mapStateToProps = (state: any) => ({
   projects: state.project,
-  userData: state.auth,
-  customerEmail: state.auth.user.email
+  userData: state.auth
 })
 
 export default connect(mapStateToProps)(ProjectsScreen)

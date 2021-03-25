@@ -33,7 +33,6 @@ type InvoiceProps = {
   account: Account
   client: Client
   userInfo: any
-  customerEmail?: string
 }
 type MilestoneProps = {
   id: string
@@ -47,8 +46,7 @@ const InvoiceData = ({
   project,
   account,
   client,
-  userInfo,
-  customerEmail
+  userInfo
 }: InvoiceProps) => {
   const hasMilestones = project.milestones && project.milestones.length
 
@@ -325,7 +323,6 @@ type InvoiceModalProps = {
   account: Account
   client: Client | undefined
   userInfo: any
-  customerEmail?: string
 }
 
 const InvoiceModal = ({
@@ -334,8 +331,7 @@ const InvoiceModal = ({
   onRequestClose,
   account,
   client,
-  userInfo,
-  customerEmail
+  userInfo
 }: InvoiceModalProps) => {
   if (!client) {
     return null
@@ -349,7 +345,6 @@ const InvoiceModal = ({
         account={account}
         client={client}
         userInfo={userInfo}
-        customerEmail={customerEmail}
       />
     </AppModal>
   )

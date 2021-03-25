@@ -25,7 +25,6 @@ type Props = {
   userInfo?: any
   onDelete?: (projectId: string) => void
   deletingId?: string
-  customerEmail: any
 }
 
 export const ProjectCard = ({
@@ -37,8 +36,7 @@ export const ProjectCard = ({
   userInfo,
   clients,
   onDelete,
-  deletingId,
-  customerEmail
+  deletingId
 }: Props) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const startConfirmingDelete = () => setConfirmingDelete(true)
@@ -106,7 +104,6 @@ export const ProjectCard = ({
         account={account}
         client={client}
         userInfo={userInfo}
-        customerEmail={customerEmail}
       />
       <Card className={'widgetItem'} elevation={5}>
         <div className={classes.imageWrapper} onClick={handleClick}>

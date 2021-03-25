@@ -56,7 +56,6 @@ const HomeScreen = (props: any) => {
         renderItem={(item) => (
           <ProjectCard
             clients={props.clients}
-            customerEmail={props.customerEmail}
             project={item}
             isPopover={true}
             key={`project-card-${item.id}`}
@@ -111,7 +110,6 @@ const mapStateToProps = (state: any) => ({
   allProjectsData: state.project.allProjectsData,
   activeProjectsLoading: state.project.isLoading,
   userData: state.auth,
-  customerEmail: state.auth.user.email,
   clients: state.clients.clientsData,
   deletingProjectId: state.project.deletingId
 })
