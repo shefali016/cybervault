@@ -18,7 +18,7 @@ import { AppLoader } from './AppLoader'
 interface Props {
   headerCells: Array<Cell>
   rows: Array<Row>
-  tableContainerClassName: string | undefined
+  className?: string | undefined
   rest?: any
   handleRowClick: (row: any) => void
   emptyProps: {
@@ -31,7 +31,7 @@ interface Props {
 export const AppTable = ({
   headerCells,
   rows,
-  tableContainerClassName,
+  className,
   emptyProps,
   handleRowClick,
   loading,
@@ -54,7 +54,7 @@ export const AppTable = ({
   )
 
   return (
-    <div className={clsx(classes.tableContainer, tableContainerClassName)}>
+    <div className={clsx('table', className)}>
       <TableContainer>
         <Table className={classes.table}>
           <TableHead>
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center'
   },
-  cellWrapper: { color: '#fff' },
+  cellWrapper: { color: '#fff', cursor: 'pointer' },
   row: { borderColor: theme.palette.background.surfaceHighlight },
   lastRow: { borderColor: 'transparent' }
 }))

@@ -39,7 +39,6 @@ export const ProjectCard = ({
   deletingId
 }: Props) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
-
   const startConfirmingDelete = () => setConfirmingDelete(true)
   const stopConfirmingDelete = () => setConfirmingDelete(false)
   const handleDelete = () =>

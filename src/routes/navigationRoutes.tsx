@@ -22,7 +22,7 @@ const Routes = (props: Props): JSX.Element => {
       <Route path='/' exact component={LandingScreen} />
       <Route path='/pricing' exact component={PricingScreen} />
       <Route
-        path='/clientInvoices/:id/:accId'
+        path='/clientInvoices/:id/:accId/'
         component={InvoicesClientScreen}
       />
       <Route path='/portfolioShare/:id' component={PortfolioShareScreen} />

@@ -111,3 +111,35 @@ export function getAllInvoiceConversationError(error: string) {
     error
   }
 }
+
+export function payInvoice(
+  amount: number,
+  tokenId: string,
+  invoiceId: string,
+  account: string,
+  stripeAccountId: string,
+  transactionFee: number
+) {
+  return {
+    type: ActionTypes.PAY_INVOICE,
+    amount,
+    tokenId,
+    invoiceId,
+    account,
+    stripeAccountId,
+    transactionFee
+  }
+}
+
+export function payInvoiceSuccess(invoiceId: string) {
+  return {
+    type: ActionTypes.PAY_INVOICE_SUCCESS,
+    payload: invoiceId
+  }
+}
+export function payInvoiceError(error: string) {
+  return {
+    type: ActionTypes.PAY_INVOICE_FAILURE,
+    error
+  }
+}

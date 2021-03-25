@@ -150,7 +150,7 @@ export interface SubscriptionDetails {
   extraFeatures?: Array<string>
   storage: number
   numProjects: number
-  transactionFee: string
+  transactionFee: number
 }
 
 export interface Subscription {

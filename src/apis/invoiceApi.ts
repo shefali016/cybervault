@@ -79,3 +79,18 @@ export const allInvoiceConversation = async (
   }
   return invoiceConversation
 }
+
+export const updateInvoice = async (
+  accountId: any,
+  invoiceId: string,
+  invoiceData: any
+) => {
+  await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(accountId)
+    .collection('Invoices')
+    .doc(`${invoiceId}`)
+    .update(invoiceData)
+  return invoiceData
+}

@@ -39,7 +39,6 @@ const BillingHistoryScreen = ({
             <BillingHistory
               invoices={billingHistory}
               loading={billingHistoryLoading}
-              tableContainerClassName={'table'}
             />
           </div>
         </div>
