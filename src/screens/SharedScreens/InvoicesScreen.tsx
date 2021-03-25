@@ -83,8 +83,8 @@ const InvoicesScreen = ({
       account?.stripe?.accountId
     ) {
       _verifyStripeAccount()
+      dispatch(getCustomerBalance())
     }
-    dispatch(getCustomerBalance())
     dispatch(getAllInvoiceRequest(account))
   }, [])
 
