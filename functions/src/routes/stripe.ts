@@ -433,10 +433,10 @@ router.post('/get_customer_balance', (req, res) => {
         stripe_account: stripeAccountId
       })
 
-      let totalBalance: any, balanceAvailable: any, balancePending: any
-      ;(balanceAvailable = balance.available[0].amount),
-        (balancePending = balance.pending[0].amount),
-        (totalBalance = balanceAvailable + balancePending)
+      let totalBalance: any, balanceAvailable: any, balancePending: any;
+      balanceAvailable = balance.available[0].amount
+      balancePending = balance.pending[0].amount
+      totalBalance = balanceAvailable + balancePending
       return res.json({ totalBalance, balancePending, balanceAvailable })
     } catch (error) {
       console.log(error)
