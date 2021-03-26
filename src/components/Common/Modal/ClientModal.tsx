@@ -21,7 +21,7 @@ type StateProps = {
 type Props = {
   open: boolean
   onRequestClose: () => void
-  client?: Client
+  client?: Client | null | undefined
 }
 
 const onBack = () => {}
@@ -51,7 +51,12 @@ const ClientModal = ({
             right: 10
           }}
         />
-        <AddClient isEdit={!!client} account={account} showBackButton={false} />
+        <AddClient
+          isEdit={!!client}
+          account={account}
+          showBackButton={false}
+          client={client}
+        />
       </div>
     </AppModal>
   )

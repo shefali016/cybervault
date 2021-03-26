@@ -24,6 +24,7 @@ import ClientModal from 'components/Common/Modal/ClientModal'
 type stateProps = {
   clients: Array<Client>
   account: Account
+  client: Client
 }
 
 type Props = {
@@ -31,18 +32,27 @@ type Props = {
   history: any
   accountId: string
   value: string
+  onEdit?: (client: Client) => void
 }
 
 const ClientsScreen = ({
   clients,
   history,
   value,
-  account
+  account,
+  onEdit
 }: Props & stateProps) => {
   const [addClientModalOpen, setAddClientModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [currentClient, setCurrentClient] = useState<Client | null | undefined>(
+    null
+  )
   const classes = useStyles()
   const theme = useTheme()
+
+  const handleCurrentClientChange = (client: Client) => {
+    setCurrentClient(client)
+  }
 
   const handleSearchTermChange = (event: any) => {
     setSearchTerm(event.target.value)
@@ -64,14 +74,18 @@ const ClientsScreen = ({
 
   const handleAddClientModalShow = () => {
     openAddClientModal()
-    console.log('hello from handleAddClientModalShow')
   }
 
   const openAddClientModal = useCallback(() => setAddClientModalOpen(true), [])
   const closeAddClientModal = useCallback(
-    () => setAddClientModalOpen(false),
+    () => [setAddClientModalOpen(false), setCurrentClient(null)],
     []
   )
+
+  const handleEditClientModalShow = (client: Client) => {
+    handleCurrentClientChange(client)
+    openAddClientModal()
+  }
 
   const renderHeader = () => {
     return (
@@ -106,6 +120,7 @@ const ClientsScreen = ({
           <ClientList
             clients={filteredClients}
             onClick={goToClient}
+            onEdit={handleEditClientModalShow}
             className='responsivePadding'
           />
         </div>
@@ -114,6 +129,7 @@ const ClientsScreen = ({
       <ClientModal
         open={addClientModalOpen}
         onRequestClose={closeAddClientModal}
+        client={currentClient}
       />
     </div>
   )

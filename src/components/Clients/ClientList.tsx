@@ -13,11 +13,12 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox'
 
 type Props = {
   clients: Array<Client>
-  onClick: (client: Client) => void
+  onEdit?: (client: Client) => void
   className?: string
+  onClick?: (client: Client) => void
 }
 
-export const ClientList = ({ clients, onClick, className }: Props) => {
+export const ClientList = ({ clients, onEdit, className }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -28,7 +29,7 @@ export const ClientList = ({ clients, onClick, className }: Props) => {
           <EmptyIcon Icon={AccountBoxIcon} title={'No clients found'} />
         )}
         {clients.map((client: Client) => (
-          <ClientItem client={client} onClick={onClick} />
+          <ClientItem client={client} onEdit={onEdit} />
         ))}
       </div>
     </div>

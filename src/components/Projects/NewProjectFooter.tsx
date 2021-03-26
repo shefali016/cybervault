@@ -10,10 +10,12 @@ import {
   POSITION_ABSOLUTE
 } from '../../utils/constants/stringConstants'
 import { GradiantButton } from '../Common/Button/GradiantButton'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 type Props = {
   onBack?: () => void
   onNext?: () => void
+  onDelete?: () => void
   title?: string
   description?: string
   onStartProject?: () => void
@@ -32,6 +34,7 @@ type Props = {
 const NewProjectFooter = ({
   onBack,
   onNext,
+  onDelete,
   title,
   description,
   onStartProject,
@@ -111,6 +114,14 @@ const NewProjectFooter = ({
             className={classes.continueButton}>
             <Typography variant={'button'}>Update</Typography>
           </GradiantButton>
+        )}
+
+        {isEdit && onDelete && (
+          <IconButton
+            onClick={onDelete}
+            aria-label={'Delete Client'}
+            className={'backButton'}
+          />
         )}
       </div>
     </div>

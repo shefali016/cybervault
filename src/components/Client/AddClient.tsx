@@ -27,7 +27,7 @@ type AddClientProps = {
   account: Account
   showStep?: boolean
   stepText?: string
-  client?: Client | undefined
+  client?: Client | null | undefined
   onSuccess?: (client: Client) => void
   showBackButton?: boolean
 }
@@ -215,7 +215,10 @@ export const AddClient = (props: AddClientProps) => {
 
   return (
     <>
-      <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
+      <NewProjectTitle
+        title={'Client'}
+        subtitle={isEdit ? 'Edit a client' : 'Add a client'}
+      />
       {renderClientLogoView()}
       {renderMiddleView()}
       <NewProjectFooter
