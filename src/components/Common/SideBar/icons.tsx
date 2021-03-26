@@ -167,5 +167,5 @@ export {
   SignOutIcon,
   MenuIcon,
   HistoryIcon,
-  AnnounceIcon,
+  AnnounceIcon
 }
