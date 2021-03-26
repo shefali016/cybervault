@@ -52,3 +52,8 @@ export enum ProjectFilters {
   ACTIVE = 'active',
   ARCHIVED = 'archived'
 }
+
+export enum ColorThemes {
+ LIGHT = "light",
+ DARK = "dark"
+}

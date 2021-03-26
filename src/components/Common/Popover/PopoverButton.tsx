@@ -1,13 +1,14 @@
-import { IconButton, MenuItem, Popover, Typography } from '@material-ui/core'
+import { MenuItem, Popover, Typography } from '@material-ui/core'
 import React from 'react'
 import { useTheme } from '@material-ui/core/styles'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import CheckIcon from '@material-ui/icons/Check'
 
 export type MenuItem = {
   title: string
   onClick: () => void
   Icon?: any
   desctructive?: boolean
+  isSelected?: boolean
   disabled?: boolean
   After?: React.ReactElement | null
   Before?: React.ReactElement | null
@@ -25,6 +26,7 @@ export type Props = {
     onClick: (e: any) => void
     id: string | undefined
   }) => React.ReactElement
+  isSelecting?: boolean
 }
 
 export const PopoverButton = ({
@@ -33,7 +35,8 @@ export const PopoverButton = ({
   style,
   anchorOrigin,
   transformOrigin,
-  children
+  children,
+  isSelecting
 }: Props) => {
   const theme = useTheme()
 
@@ -49,6 +52,12 @@ export const PopoverButton = ({
 
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
+
+  const renderCheck = (isSelected: boolean) => (
+    <div className={'popOverSelectedContainer'}>
+      {isSelected ? <CheckIcon className={'backgroundIcon'} /> : null}
+    </div>
+  )
 
   return (
     <div className={className} style={style}>
@@ -79,7 +88,8 @@ export const PopoverButton = ({
             desctructive,
             disabled,
             Before = null,
-            After = null
+            After = null,
+            isSelected
           }: MenuItem) => {
             return (
               <MenuItem
@@ -103,6 +113,7 @@ export const PopoverButton = ({
                     alignItems: 'center'
                   }}>
                   {Before}
+                  {isSelecting ? renderCheck(!!isSelected) : null}
                   {!!Icon && (
                     <Icon
                       style={{ marginRight: theme.spacing(1), marginBottom: 2 }}

@@ -24,6 +24,10 @@ import mail, {
   State as MailState,
   Action as MailActions,
 } from './mailReducer';
+import theme, {
+  State as ThemeState,
+  Action as ThemeActions,
+} from './themeReducer';
 
 const appReducer = combineReducers({
   auth,
@@ -32,7 +36,8 @@ const appReducer = combineReducers({
   clients,
   portfolio,
   stripe,
-  mail
+  mail,
+  theme
 })
 
 export type ReduxState = {
@@ -42,7 +47,8 @@ export type ReduxState = {
   portfolio: PortfolioState,
   clients:ClientsState,
   mail: MailState,
-  stripe: StripeState
+  stripe: StripeState,
+  theme: ThemeState
 }
 
 export type Action = AuthAction &
@@ -51,7 +57,7 @@ export type Action = AuthAction &
   PortfolioAction &
   ClientsActions &
   StripeAction &
-    MailActions
+    MailActions & ThemeActions
 
 const rootReducer = (state: CombinedState<ReduxState>, action: Action) => {
   if (action.type === 'RESET_ALL_DATA') {
@@ -62,7 +68,8 @@ const rootReducer = (state: CombinedState<ReduxState>, action: Action) => {
       clients: state.clients,
       portfolio: state.portfolio,
       stripe: state.stripe,
-      mail:state.mail
+      mail:state.mail,
+      theme: state.theme
     }
   }
   return appReducer(state as any, action)
