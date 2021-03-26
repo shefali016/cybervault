@@ -3,5 +3,5 @@ export type GetProjectParams = {
     endAt: any,
     limit: number,
     orderBy: string,
-    where: string
+    where: string[]
 }

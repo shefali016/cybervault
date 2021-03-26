@@ -19,7 +19,7 @@ import { EmptyIcon } from 'components/EmptyIcon'
 import ProjectIcon from '@material-ui/icons/Collections'
 import { GetProjectParams } from 'utils/Interface/api'
 import { activeProjects } from 'utils/selectors'
-import { ProjectFilters } from 'utils/enums'
+import { ProjectFilters, ProjectStatuses } from 'utils/enums'
 
 const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
@@ -28,7 +28,13 @@ type Props = { projects: Array<Types.Project> }
 const HomeScreen = (props: any) => {
   useEffect(() => {
     props.getClientsRequest(props.userData.account)
-    props.getProjects({}, ProjectFilters.ACTIVE)
+    props.getProjects(
+      {
+        where: ['status', '==', ProjectStatuses.PROGRESS],
+        orderBy: 'updatedAt'
+      },
+      ProjectFilters.ACTIVE
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const classes = useStyles()
@@ -41,7 +47,7 @@ const HomeScreen = (props: any) => {
         title={'Active Projects'}
         EmptyComponent={
           <EmptyIcon
-            title={'No recent projects'}
+            title={'No active projects'}
             Icon={ProjectIcon}
             className={'widgetEmptyIcon'}
           />
@@ -53,7 +59,6 @@ const HomeScreen = (props: any) => {
           <ProjectCard
             clients={props.clients}
             project={item}
-            isPopover={true}
             key={`project-card-${item.id}`}
             style={{
               paddingRight: theme.spacing(3)
@@ -103,7 +108,7 @@ const HomeScreen = (props: any) => {
 
 const mapStateToProps = (state: any) => ({
   newProjectData: state.project.newProjectData,
-  projects: activeProjects,
+  projects: activeProjects(state),
   activeProjectsLoading: state.project.isLoading,
   userData: state.auth,
   clients: state.clients.clientsData,

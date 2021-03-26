@@ -57,16 +57,27 @@ export const getProjects = async (
 ) => {
   const { limit, orderBy, startAt, endAt, where } = params
 
-  let data: any = await firebase
+  let query: any = firebase
     .firestore()
     .collection('AccountData')
     .doc(account.id)
     .collection('Projects')
-    .get()
 
-  return data.docs
+  if (limit) {
+    query = query.limit(limit)
+  }
 
-  console.log(data.docs)
+  if (where) {
+    query = query.where(...where)
+  }
+
+  if (orderBy) {
+    query.orderBy(orderBy)
+  }
+
+  let data: any = await query.get()
+
+  return data.docs.map((doc: any) => doc.data())
 }
 
 /**

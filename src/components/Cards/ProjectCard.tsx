@@ -17,7 +17,6 @@ const ITEM_HEIGHT = 48
 
 type Props = {
   project: Project
-  isPopover?: boolean
   style?: {}
   history?: any
   clients?: Array<Client>
@@ -29,7 +28,6 @@ type Props = {
 
 export const ProjectCard = ({
   project,
-  isPopover,
   style,
   history,
   account,
@@ -121,7 +119,7 @@ export const ProjectCard = ({
             {project.campaignName}
           </Typography>
           <div className={classes.footerInfo}>
-            <Typography variant={'caption'} className={classes.bodyText}>
+            <Typography variant={'subtitle1'} className={classes.bodyText}>
               Value {project.campaignBudget}
             </Typography>
             <Dot
@@ -131,27 +129,25 @@ export const ProjectCard = ({
                 backgroundColor: theme.palette.text.meta
               }}
             />
-            <Typography variant={'caption'} className={classes.bodyText}>
+            <Typography variant={'subtitle1'} className={classes.bodyText}>
               {project.campaignDate}
             </Typography>
           </div>
         </div>
 
-        {isPopover ? (
-          <Grid
-            style={{ position: 'absolute', top: 5, right: 5, display: 'flex' }}>
-            {deletingId === project.id && (
-              <AppLoader
-                color={theme.palette.grey[800]}
-                className={classes.loader}
-                height={48}
-                width={48}
-              />
-            )}
+        <Grid
+          style={{ position: 'absolute', top: 5, right: 5, display: 'flex' }}>
+          {deletingId === project.id && (
+            <AppLoader
+              color={theme.palette.grey[800]}
+              className={classes.loader}
+              height={48}
+              width={48}
+            />
+          )}
 
-            <PopoverMoreIconButton menuItems={popoverMenuItems} />
-          </Grid>
-        ) : null}
+          <PopoverMoreIconButton menuItems={popoverMenuItems} />
+        </Grid>
       </Card>
       <ConfirmationDialog
         title='Delete Project'
@@ -173,7 +169,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: COLUMN,
     justifyContent: CENTER,
     textAlign: 'center',
-    height: 75,
+    height: 80,
     overflow: 'hidden'
   },
   footerInfo: {

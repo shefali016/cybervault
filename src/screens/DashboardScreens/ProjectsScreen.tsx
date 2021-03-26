@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
 import { ProjectCard } from '../../components/Cards/ProjectCard'
@@ -7,65 +7,53 @@ import Widget from '../../components/Common/Widget'
 import { useTabletLayout } from '../../utils/hooks'
 import { EmptyIcon } from 'components/EmptyIcon'
 import ProjectIcon from '@material-ui/icons/Collections'
-
-const PROJECT_DATA = [
-  {
-    campaignName: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    campaignDate: '2020-01-01',
-    campaignBudget: 10000
-  },
-  {
-    campaignName: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    campaignDate: '2020-01-01',
-    campaignBudget: 10000
-  },
-  {
-    campaignName: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    campaignDate: '2020-01-01',
-    campaignBudget: 10000
-  },
-  {
-    campaignName: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6',
-    campaignDate: '2020-01-01',
-    campaignBudget: 10000
-  }
-]
-const ARCHIVE_DATA = [
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6'
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6'
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6'
-  },
-  {
-    name: 'Nike Summer Campaign',
-    description: 'Doc 2016 campaign with audi Q6'
-  }
-]
+import { ProjectFilters, ProjectStatuses } from 'utils/enums'
+import { filteredProjects } from 'utils/selectors'
+import { User, Account, Project } from 'utils/Interface'
+import { deleteProjectRequest, getProjects } from '../../actions/projectActions'
+import { getAllClientsRequest } from '../../actions/clientActions'
+import ArchiveIcon from '@material-ui/icons/Archive'
 
 export const ProjectsScreen = (props: any) => {
   const isTablet = useTabletLayout()
   const theme = useTheme()
+
+  useEffect(() => {
+    props.getClients()
+    props.getProjects(
+      {
+        orderBy: 'updatedAt'
+      },
+      ProjectFilters.RECENT
+    )
+    props.getProjects(
+      {
+        orderBy: 'updatedAt',
+        where: ['status', '==', ProjectStatuses.ARCHIVED]
+      },
+      ProjectFilters.ARCHIVED
+    )
+  }, [])
+
+  const handleProjectClick = (project: Project) =>
+    props.history.push(`/project/${project.id}`)
+
   return (
     <div>
       <Widget
         title={'Recent Projects'}
-        data={PROJECT_DATA}
+        data={props.recentProjects}
         renderItem={(item) => (
           <ProjectCard
-            account={props.userData.account} //added as Project card is expecting account data
+            account={props.account} //added as Project card is expecting account data
             project={item}
             style={{ paddingRight: theme.spacing(3) }}
+            clients={props.clients}
+            key={`project-card-${item.id}`}
+            history={props.history}
+            userInfo={props.user}
+            onDelete={props.deleteProject}
+            deletingId={props.deletingProjectId}
           />
         )}
         EmptyComponent={
@@ -78,26 +66,46 @@ export const ProjectsScreen = (props: any) => {
       />
       <Widget
         title={'Projects Archives'}
-        data={ARCHIVE_DATA}
+        data={props.archivedProjects}
         renderItem={(item) => (
           <ProjectArchives
-            projectDetails={item}
+            onClick={handleProjectClick}
+            clients={props.clients}
+            project={item}
             style={{
               paddingRight: theme.spacing(3),
               marginBottom: isTablet ? theme.spacing(3) : 0
             }}
           />
         )}
-        emptyMessage={'No Projects found'}
+        EmptyComponent={
+          <EmptyIcon
+            title={'No project archives'}
+            Icon={ArchiveIcon}
+            className={'widgetEmptyIcon'}
+          />
+        }
         tabletColumn={true}
       />
     </div>
   )
 }
 
-const mapStateToProps = (state: any) => ({
-  projects: state.project,
-  userData: state.auth
+const mapState = (state: any) => ({
+  recentProjects: filteredProjects(state, { filter: ProjectFilters.RECENT }),
+  archivedProjects: filteredProjects(state, {
+    filter: ProjectFilters.ARCHIVED
+  }),
+  user: state.auth.user as User,
+  account: state.auth.account as Account,
+  clients: state.clients.clientsData,
+  deletingProjectId: state.project.deletingId
 })
 
-export default connect(mapStateToProps)(ProjectsScreen)
+const mapDispatch = {
+  getProjects,
+  getClients: getAllClientsRequest,
+  deleteProject: deleteProjectRequest
+}
+
+export default connect(mapState, mapDispatch)(ProjectsScreen)

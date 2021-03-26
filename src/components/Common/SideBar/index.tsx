@@ -232,7 +232,7 @@ const SideBarComponent = (props: Props) => {
             {
               id: 'logout',
               text: 'Log Out',
-              icon: <LogoutIcon className={classes.listIconStyle} />
+              icon: <LogoutIcon className={'sideBarIcon'} />
             },
             handleLogout
           )}
@@ -321,11 +321,6 @@ const useStyles = makeStyles((theme) => ({
     color: WHITE_COLOR,
     fontSize: 30
   },
-  listIconStyle: {
-    marginRight: 40,
-    color: theme.palette.primary.light,
-    fontSize: theme.spacing(3)
-  },
   storageContainer: {
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(4)
@@ -340,8 +335,8 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     paddingLeft: theme.spacing(2.4),
     paddingRight: theme.spacing(2.4),
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
     '&:hover': { background: theme.palette.background.surface },
     transition: theme.transitions.create(['background'], { duration: 300 })
   },

@@ -236,7 +236,7 @@ const PortfolioSingleScreen = ({
             )}
           </div>
           <div
-            className={clsx('screenChild', 'flex')}
+            className={clsx('screenChild', 'flex', 'shadowLight')}
             style={{ backgroundColor: foregroundColor }}>
             {(!portfolio.projects || portfolio.projects.length === 0) && (
               <EmptyIcon

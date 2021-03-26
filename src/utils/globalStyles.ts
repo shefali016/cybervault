@@ -387,6 +387,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       whiteSpace: 'normal'
     },
     '.widgetTitle': { color: theme.palette.text.background },
+
     // Icons
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
@@ -396,6 +397,13 @@ export const useGlobalStyles = makeStyles((theme) => ({
       fontSize: 25,
       marginLeft: 10
     },
+    '.sideBarIcon': {
+      marginRight: theme.spacing(4),
+      color: theme.palette.primary.light,
+      fontSize: theme.spacing(3.2)
+    },
+    // Icons
+
     '.assetListEmptyIcon': {
       color: theme.palette.background.surfaceHighlight,
       fontSize: 'min(10vw, 100px)',
@@ -448,8 +456,13 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     // Color
     '.lightGrey': { color: theme.palette.grey[100] },
+    '.shadowHover': {
+      '&:hover': {
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+      }
+    },
     '.shadowLight': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}10`
     }
   }
 }))

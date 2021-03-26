@@ -475,6 +475,10 @@ export type Project = {
   isPaid?: boolean
 }
 
+export type ProjectCache = {
+  [id: string]: Project
+}
+
 export type InvoiceConversation = {
   name: string
   senderId: string

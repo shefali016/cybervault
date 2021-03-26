@@ -49,5 +49,6 @@ export enum UploadStatuses {
 
 export enum ProjectFilters {
   RECENT = 'recent',
-  ACTIVE = 'active'
+  ACTIVE = 'active',
+  ARCHIVED = 'archived'
 }

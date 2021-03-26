@@ -13,18 +13,22 @@ import {
   UPDATE_PROJECT_DETAILS_REQUEST,
   DELETE_PROJECT_REQUEST,
   DELETE_PROJECT_SUCCESS,
-  DELETE_PROJECT_FAILURE
+  DELETE_PROJECT_FAILURE,
+  GET_PROJECTS,
+  GET_PROJECTS_SUCCESS,
+  GET_PROJECTS_FAILURE
 } from 'actions/actionTypes'
 
 import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
 import { ProjectFilters } from 'utils/enums'
 import * as Types from '../utils/Interface'
-import { Project } from '../utils/Interface'
+import { Project, ProjectCache } from '../utils/Interface'
 
 export type State = {
   projectData: any
   filteredIds: { [key in ProjectFilters]: Array<string> }
+  loadingFilters: Set<ProjectFilters>
   success: boolean
   error: string | null
   newProjectData: any
@@ -35,7 +39,7 @@ export type State = {
   updateSuccess: boolean
   isProjectDetailsLoading: boolean
   updateProjectSuccess: boolean
-  projectCache: { [id: string]: Project }
+  projectCache: ProjectCache
 }
 
 export type Action = {
@@ -46,10 +50,21 @@ export type Action = {
   newProjectData: Project
   allProjectsData: Project[]
   projectId: string
+  filter: ProjectFilters
+  projects: Project[]
+}
+
+const buildDefaultFilteredIds = (): any => {
+  let filteredIds: any = {}
+  for (let filter in ProjectFilters) {
+    filteredIds[filter] = []
+  }
+  return filteredIds
 }
 
 const initialState = {
-  filteredIds: { [ProjectFilters.ACTIVE]: [], [ProjectFilters.RECENT]: [] },
+  loadingFilters: new Set<ProjectFilters>(),
+  filteredIds: buildDefaultFilteredIds(),
   projectData: null,
   success: false,
   error: null,
@@ -184,6 +199,38 @@ const deleteProjectFailure = (state: State, action: Action) => {
   }
 }
 
+const getProjectsRequest = (state: State, action: Action) => {
+  console.log(state)
+  return {
+    ...state,
+    loadingFilters: state.loadingFilters.add(action.filter)
+  }
+}
+
+const getProjectsSuccess = (state: State, action: Action) => {
+  const { ids, cache } = action.projects.reduce(
+    (
+      acc: {
+        ids: string[]
+        cache: ProjectCache
+      },
+      project: Project
+    ) => ({
+      ids: [...acc.ids, project.id],
+      cache: { ...acc.cache, [project.id]: project }
+    }),
+    {
+      ids: [],
+      cache: {}
+    }
+  )
+  return {
+    ...state,
+    filteredIds: { ...state.filteredIds, [action.filter]: ids },
+    projectCache: { ...state.projectCache, ...cache }
+  }
+}
+
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_PROJECT_REQUEST:
@@ -216,6 +263,12 @@ const projectReducer = (state = initialState, action: Action) => {
       return deleteProjectSuccess(state, action)
     case DELETE_PROJECT_FAILURE:
       return deleteProjectFailure(state, action)
+    case GET_PROJECTS:
+      return getProjectsRequest(state, action)
+    case GET_PROJECTS_SUCCESS:
+      return getProjectsSuccess(state, action)
+    // case GET_PROJECTS_FAILURE:
+    //   return getProjectsFailure(state, action)
     default:
       return state
   }
@@ -228,7 +281,10 @@ export const projectTransform = createTransform(
       allProjectsData: inboundState.allProjectsData
     }
   },
-  (outboundState: State) => outboundState,
+  (outboundState: State) => ({
+    ...initialState,
+    allProjectsData: outboundState.allProjectsData
+  }),
   { whitelist: ['project'] }
 )
 

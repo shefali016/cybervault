@@ -1,4 +1,12 @@
-import { all, call, put, select, take, takeLatest } from 'redux-saga/effects'
+import {
+  all,
+  call,
+  put,
+  select,
+  take,
+  takeLatest,
+  takeEvery
+} from 'redux-saga/effects'
 import {
   createNewProjectSuccess,
   createNewProjectFailure,
@@ -9,7 +17,9 @@ import {
   updateProjectDetailsSuccess,
   updateProjectDetailsFailure,
   deleteProjectFailure,
-  deleteProjectSuccess
+  deleteProjectSuccess,
+  getProjectsSuccess,
+  getProjectsFailure
 } from '../actions/projectActions'
 import { Account, Project } from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
@@ -23,6 +33,7 @@ import {
 } from '../apis/projectRequest'
 import { ReduxState } from 'reducers/rootReducer'
 import { GetProjectParams } from 'utils/Interface/api'
+import { ProjectFilters } from 'utils/enums'
 
 type Params = { newProjectData: Project; type: string; account: Account }
 type GetParams = {
@@ -31,6 +42,7 @@ type GetParams = {
   projectdata: Project
   accountId: string
   params: Partial<GetProjectParams>
+  filter: ProjectFilters
 }
 
 function* createNewProject({ newProjectData }: Params) {
@@ -57,13 +69,13 @@ function* getAllProjectsSaga() {
   }
 }
 
-function* getProjectsSaga({ params }: GetParams) {
+function* getProjectsSaga({ params, filter }: GetParams) {
   try {
     const account = yield select((state) => state.auth.account)
     const response = yield call(getProjects, account, params)
-    // yield put(getAllProjectsRequestSuccess(response))
+    yield put(getProjectsSuccess(response, filter))
   } catch (error) {
-    // yield put(getAllProjectsRequestFailure(error?.message || 'default'))
+    yield put(getProjectsFailure(error?.message || 'default', filter))
   }
 }
 
@@ -106,7 +118,7 @@ function* watchGetRequest() {
     updateProjectDetails
   )
   yield takeLatest(ActionTypes.DELETE_PROJECT_REQUEST, deletingProjectSaga)
-  yield takeLatest(ActionTypes.GET_PROJECTS, getProjectsSaga)
+  yield takeEvery(ActionTypes.GET_PROJECTS, getProjectsSaga)
 }
 
 export default function* sagas() {

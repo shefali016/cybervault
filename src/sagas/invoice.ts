@@ -34,7 +34,6 @@ function* invoiceRequest({ account, project, invoice }: Params) {
       invoice
     )
     yield put(InvoiceActions.generateNewInvoiceSuccess(invoiceData))
-    // yield put(getAllProjectsRequest(account));
   } catch (error: any) {
     yield put(
       InvoiceActions.generateNewInvoiceError(error?.message || 'default')
