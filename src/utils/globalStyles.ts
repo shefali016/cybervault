@@ -389,7 +389,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.widgetTitle': { color: theme.palette.text.background },
 
     // Icons
-    '.backgroundIcon' : {fontSize: 40, color: theme.palette.text.background},
+    '.backgroundIcon': { fontSize: 25, color: theme.palette.text.background },
+    '.metaIcon': { fontSize: 25, color: theme.palette.text.meta },
+    '.paperIcon': { fontSize: 25, color: theme.palette.text.paper },
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
     '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
@@ -403,7 +405,11 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: theme.palette.primary.light,
       fontSize: theme.spacing(3.2)
     },
-    '.popOverSelectedContainer' :{width: theme.spacing(6), display: "flex", justifyContent: "center"},
+    '.popOverSelectedContainer': {
+      width: theme.spacing(4),
+      display: 'flex',
+      alignItems: 'center'
+    },
     // Icons
 
     '.assetListEmptyIcon': {

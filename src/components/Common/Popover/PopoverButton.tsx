@@ -55,7 +55,9 @@ export const PopoverButton = ({
 
   const renderCheck = (isSelected: boolean) => (
     <div className={'popOverSelectedContainer'}>
-      {isSelected ? <CheckIcon className={'backgroundIcon'} /> : null}
+      {isSelected ? (
+        <CheckIcon className={'paperIcon'} style={{ fontSize: 20 }} />
+      ) : null}
     </div>
   )
 

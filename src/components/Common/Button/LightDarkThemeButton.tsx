@@ -17,10 +17,15 @@ type DispatchProps = {
 
 type Props = {
   colorTheme: ColorThemes
+  style: {}
 } & StateProps &
   DispatchProps
 
-const LightDarkThemeButton = ({ colorTheme, setColorTheme }: Props) => {
+const LightDarkThemeButton = ({
+  colorTheme,
+  setColorTheme,
+  style = {}
+}: Props) => {
   const menuItems: MenuItem[] = [
     {
       title: 'Light',
@@ -35,10 +40,14 @@ const LightDarkThemeButton = ({ colorTheme, setColorTheme }: Props) => {
   ]
 
   return (
-    <PopoverButton menuItems={menuItems}>
-      {' '}
+    <PopoverButton menuItems={menuItems} style={style} isSelecting={true}>
       {({ onClick, id }) => (
-        <AppIconButton aria-owns={id} Icon={BrightnessIcon} onClick={onClick} />
+        <AppIconButton
+          aria-owns={id}
+          Icon={BrightnessIcon}
+          onClick={onClick}
+          iconClassName={'metaIcon'}
+        />
       )}
     </PopoverButton>
   )

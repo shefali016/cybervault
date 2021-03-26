@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { deleteProjectRequest, getProjects } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
@@ -41,67 +41,69 @@ const HomeScreen = (props: any) => {
   const theme = useTheme()
 
   return (
-    <div>
-      <Widget
-        data={props.projects}
-        title={'Active Projects'}
-        EmptyComponent={
-          <EmptyIcon
-            title={'No active projects'}
-            Icon={ProjectIcon}
-            className={'widgetEmptyIcon'}
-          />
-        }
-        loading={props.activeProjectsLoading}
-        itemHeight={getWidgetCardHeight(theme)}
-        style={{ height: '70vw', maxHeight: 280 }}
-        renderItem={(item) => (
-          <ProjectCard
-            clients={props.clients}
-            project={item}
-            key={`project-card-${item.id}`}
-            style={{
-              paddingRight: theme.spacing(3)
-            }}
-            history={props.history}
-            account={props.userData.account}
-            userInfo={props.userData.user}
-            onDelete={props.deleteProject}
-            deletingId={props.deletingProjectId}
-          />
-        )}
-      />
+    <div className='screenContainer'>
+      <div className={'screenInner'}>
+        <Widget
+          data={props.projects}
+          title={'Active Projects'}
+          EmptyComponent={
+            <EmptyIcon
+              title={'No active projects'}
+              Icon={ProjectIcon}
+              className={'widgetEmptyIcon'}
+            />
+          }
+          loading={props.activeProjectsLoading}
+          itemHeight={getWidgetCardHeight(theme)}
+          style={{ height: '70vw', maxHeight: 280 }}
+          renderItem={(item) => (
+            <ProjectCard
+              clients={props.clients}
+              project={item}
+              key={`project-card-${item.id}`}
+              style={{
+                paddingRight: theme.spacing(3)
+              }}
+              history={props.history}
+              account={props.userData.account}
+              userInfo={props.userData.user}
+              onDelete={props.deleteProject}
+              deletingId={props.deletingProjectId}
+            />
+          )}
+        />
 
-      <div className={'widgetOuter'}>
-        <Typography
-          variant={'h6'}
-          className={clsx('widgetTitle', 'responsiveHorizontalPadding')}>
-          Invoicing and Analytics
-        </Typography>
-        <div
-          className={clsx(
-            'widgetResponsiveInner',
-            'responsiveHorizontalPadding'
-          )}>
-          <PendingInvoices />
-          <ProfitsExpenses />
-          <ProjectCount projectCount={props.projects.length} />
-          <IncomeThisMonth />
+        <div className={'widgetOuter'}>
+          <Typography
+            variant={'h6'}
+            className={clsx('widgetTitle', 'responsiveHorizontalPadding')}>
+            Invoicing and Analytics
+          </Typography>
+          <div
+            className={clsx(
+              'widgetResponsiveInner',
+              'responsiveHorizontalPadding'
+            )}>
+            <PendingInvoices />
+            <ProfitsExpenses />
+            <ProjectCount projectCount={props.projects.length} />
+            <IncomeThisMonth />
+          </div>
         </div>
-      </div>
 
-      <Widget
-        title={'Unpaid Invoices'}
-        data={UNPAID_INVOICES_DATA}
-        renderItem={(item) => (
-          <UnpaidInvoices
-            projectDetails={item}
-            key={`unpaid-invoices-${item.id}`}
-            style={{ paddingRight: theme.spacing(3) }}
-          />
-        )}
-        emptyMessage={'No Projects found'}
-      />
+        <Widget
+          title={'Unpaid Invoices'}
+          data={UNPAID_INVOICES_DATA}
+          renderItem={(item) => (
+            <UnpaidInvoices
+              projectDetails={item}
+              key={`unpaid-invoices-${item.id}`}
+              style={{ paddingRight: theme.spacing(3) }}
+            />
+          )}
+          emptyMessage={'No Projects found'}
+        />
+      </div>
     </div>
   )
 }

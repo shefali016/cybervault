@@ -9,6 +9,8 @@ import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { AccountTabIds } from 'routes/DashboardSwitch'
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
+import LightDarkThemeButton from 'components/Common/Button/LightDarkThemeButton'
+import { AppIconButton } from '../Core/AppIconButton'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -71,22 +73,28 @@ function Toolbar(props: Props) {
       </div>
 
       {props.user && (
-        <div>
+        <div className='row'>
+          <LightDarkThemeButton style={{ marginRight: 10 }} />
           {!props.isNotificationIcon ? (
-            <IconButton
-              style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
-              <NotificationIcon className={classes.notificationIcon} />
-            </IconButton>
-          ) : null}
-          <IconButton
-            style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-            onClick={handleProfileClick}>
-            <img
-              src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
-              style={{ borderRadius: 20, height: 33, width: 33 }}
-              alt={'img'}
+            <AppIconButton
+              Icon={NotificationIcon}
+              style={{ marginRight: 10 }}
+              iconClassName={'metaIcon'}
             />
-          </IconButton>
+          ) : null}
+
+          <img
+            onClick={handleProfileClick}
+            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
+            style={{
+              borderRadius: 20,
+              height: 33,
+              width: 33,
+              marginRight: 22,
+              cursor: 'pointer'
+            }}
+            alt={'img'}
+          />
         </div>
       )}
     </div>
@@ -117,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.default
+    borderBottomColor: theme.palette.background.surface
   },
   appIcon: {
     color: theme.palette.primary.light,

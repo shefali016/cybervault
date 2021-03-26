@@ -7,7 +7,7 @@ import { AUTO, CENTER, COLUMN, FLEX } from 'utils/constants/stringConstants'
 import {
   BLACK_COLOR,
   GREY_COLOR,
-  WHITE_COLOR,
+  WHITE_COLOR
 } from 'utils/constants/colorsConstants'
 
 function ProjectCardWithButtons(props: {
@@ -35,7 +35,7 @@ function ProjectCardWithButtons(props: {
             display: 'flex',
             flexDirection: 'column',
             alignItems: CENTER,
-            justifyContent: CENTER,
+            justifyContent: CENTER
           }}>
           <Button className={classes.buttons}>Invoice</Button>
           <Button className={classes.buttons}>Edit Project</Button>
@@ -69,8 +69,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     margin: 10,
     padding: 0,
-    backgroundColor: WHITE_COLOR,
-    display: FLEX,
+    display: FLEX
   },
   imageWrapper: {
     boxShadow: '0 0px 1px 2px #DCDCDC',
@@ -82,23 +81,23 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: COLUMN,
     alignItems: CENTER,
-    justifyContent: CENTER,
+    justifyContent: CENTER
   },
   title: {
     fontSize: '12px',
     color: BLACK_COLOR,
     fontWeight: 600,
-    margin: 0,
+    margin: 0
   },
   bodyText: {
     fontSize: '8px',
     color: BLACK_COLOR,
-    margin: 0,
+    margin: 0
   },
   img: {
     width: AUTO,
     height: AUTO,
-    maxHeight: 30,
+    maxHeight: 30
   },
   textWrapper: {
     boxShadow: '0 0px 1px 2px #DCDCDC',
@@ -110,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: CENTER,
     justifyContent: CENTER,
     borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    borderBottomRightRadius: 15
   },
   paper: {
     boxShadow: theme.shadows[5],
@@ -118,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: COLUMN,
     flex: 1,
-    padding: 2,
+    padding: 2
   },
   buttons: {
     background: 'linear-gradient(45deg, #5ea5fc 30%, #3462fc 90%)',
@@ -131,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     fontSize: 8,
     fontWeight: 500,
-    color: WHITE_COLOR,
-  },
+    color: WHITE_COLOR
+  }
 }))
 export default ProjectCardWithButtons

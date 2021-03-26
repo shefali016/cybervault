@@ -39,54 +39,56 @@ export const ProjectsScreen = (props: any) => {
     props.history.push(`/project/${project.id}`)
 
   return (
-    <div>
-      <Widget
-        title={'Recent Projects'}
-        data={props.recentProjects}
-        renderItem={(item) => (
-          <ProjectCard
-            account={props.account} //added as Project card is expecting account data
-            project={item}
-            style={{ paddingRight: theme.spacing(3) }}
-            clients={props.clients}
-            key={`project-card-${item.id}`}
-            history={props.history}
-            userInfo={props.user}
-            onDelete={props.deleteProject}
-            deletingId={props.deletingProjectId}
-          />
-        )}
-        EmptyComponent={
-          <EmptyIcon
-            title={'No recent projects'}
-            Icon={ProjectIcon}
-            className={'widgetEmptyIcon'}
-          />
-        }
-      />
-      <Widget
-        title={'Projects Archives'}
-        data={props.archivedProjects}
-        renderItem={(item) => (
-          <ProjectArchives
-            onClick={handleProjectClick}
-            clients={props.clients}
-            project={item}
-            style={{
-              paddingRight: theme.spacing(3),
-              marginBottom: isTablet ? theme.spacing(3) : 0
-            }}
-          />
-        )}
-        EmptyComponent={
-          <EmptyIcon
-            title={'No project archives'}
-            Icon={ArchiveIcon}
-            className={'widgetEmptyIcon'}
-          />
-        }
-        tabletColumn={true}
-      />
+    <div className='screenContainer'>
+      <div className='screenInner'>
+        <Widget
+          title={'Recent Projects'}
+          data={props.recentProjects}
+          renderItem={(item) => (
+            <ProjectCard
+              account={props.account} //added as Project card is expecting account data
+              project={item}
+              style={{ paddingRight: theme.spacing(3) }}
+              clients={props.clients}
+              key={`project-card-${item.id}`}
+              history={props.history}
+              userInfo={props.user}
+              onDelete={props.deleteProject}
+              deletingId={props.deletingProjectId}
+            />
+          )}
+          EmptyComponent={
+            <EmptyIcon
+              title={'No recent projects'}
+              Icon={ProjectIcon}
+              className={'widgetEmptyIcon'}
+            />
+          }
+        />
+        <Widget
+          title={'Projects Archives'}
+          data={props.archivedProjects}
+          renderItem={(item) => (
+            <ProjectArchives
+              onClick={handleProjectClick}
+              clients={props.clients}
+              project={item}
+              style={{
+                paddingRight: theme.spacing(3),
+                marginBottom: isTablet ? theme.spacing(3) : 0
+              }}
+            />
+          )}
+          EmptyComponent={
+            <EmptyIcon
+              title={'No project archives'}
+              Icon={ArchiveIcon}
+              className={'widgetEmptyIcon'}
+            />
+          }
+          tabletColumn={true}
+        />
+      </div>
     </div>
   )
 }
