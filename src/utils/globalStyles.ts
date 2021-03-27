@@ -315,6 +315,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
         maxWidth: '100%'
       }
     },
+    '.card': {
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
+      '&:hover': {
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+      }
+    },
     '.widgetItemOuter': { marginRight: theme.spacing(3) },
     '.widgetItemResponsiveOuter': {
       marginRight: theme.spacing(3),
@@ -505,10 +511,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
       boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
     },
     '.shadow': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}30`
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}35`
     },
     '.shadowLight': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}10`
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`
     }
   }
 }))

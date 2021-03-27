@@ -73,13 +73,13 @@ export const PopoverButton = ({
         anchorOrigin={
           anchorOrigin || {
             vertical: 'bottom',
-            horizontal: 'right'
+            horizontal: 'center'
           }
         }
         transformOrigin={
           transformOrigin || {
             vertical: 'top',
-            horizontal: 'left'
+            horizontal: 'center'
           }
         }>
         {menuItems.map(

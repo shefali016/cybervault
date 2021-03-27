@@ -20,6 +20,7 @@ import ProjectIcon from '@material-ui/icons/Collections'
 import { GetProjectParams } from 'utils/Interface/api'
 import { activeProjects } from 'utils/selectors'
 import { ProjectFilters, ProjectStatuses } from 'utils/enums'
+import InvoiceIcon from '@material-ui/icons/Receipt'
 
 const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
 
@@ -93,7 +94,7 @@ const HomeScreen = (props: any) => {
 
         <Widget
           title={'Unpaid Invoices'}
-          data={UNPAID_INVOICES_DATA}
+          data={[]}
           renderItem={(item) => (
             <UnpaidInvoices
               projectDetails={item}
@@ -101,7 +102,13 @@ const HomeScreen = (props: any) => {
               style={{ paddingRight: theme.spacing(3) }}
             />
           )}
-          emptyMessage={'No Projects found'}
+          EmptyComponent={
+            <EmptyIcon
+              title={'No unpaid invoices'}
+              Icon={InvoiceIcon}
+              className={'widgetEmptyIcon'}
+            />
+          }
         />
       </div>
     </div>

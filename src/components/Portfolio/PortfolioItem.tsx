@@ -26,7 +26,7 @@ export const PortfolioItem = ({
     <Card
       key={portfolio.id}
       onClick={() => onClick(portfolio)}
-      className={clsx(classes.portfoliosCard)}
+      className={clsx(classes.portfoliosCard, 'card')}
       style={style}>
       <div className={classes.cardLogo}>
         {!!portfolio.icon && <img src={portfolio.icon} alt='' />}

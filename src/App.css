@@ -9,7 +9,6 @@
 
 /* Buttons */
 
-
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -23,4 +22,8 @@ select:-webkit-autofill:focus {
   -webkit-text-fill-color: #fff;
   -webkit-box-shadow: 0 0 0px 1000px rgba(88, 176, 253, 0.1) inset;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+img {
+  pointer-events: none;
 }

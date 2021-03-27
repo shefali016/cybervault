@@ -93,7 +93,7 @@ function Toolbar(props: Props) {
               marginRight: 22,
               cursor: 'pointer'
             }}
-            alt={'img'}
+            alt={'profile-img'}
           />
         </div>
       )}

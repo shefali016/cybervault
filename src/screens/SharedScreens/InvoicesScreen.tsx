@@ -248,9 +248,8 @@ const InvoicesScreen = ({
     <div className={'screenContainer'}>
       <div className={'screenInner'}>
         <div className='responsivePadding'>
-          <Section className={classes.balanceSection}>
+          <div className={classes.balanceSection}>
             <div className={classes.balanceSectionInner}>
-              <div></div>
               <div className={classes.balanceItemsContainer}>
                 <div className={classes.balanceItem}>
                   <Typography variant={'body1'}>This month</Typography>
@@ -286,13 +285,16 @@ const InvoicesScreen = ({
                   onClick={() => navigateStripeDashboard()}>
                   <Typography
                     variant={'caption'}
-                    style={{ color: theme.palette.primary.light }}>
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: 'bold'
+                    }}>
                     View payouts
                   </Typography>
                 </div>
               </div>
             </div>
-          </Section>
+          </div>
 
           <Section className={classes.section}>
             <div className={classes.sectionInner}>
@@ -390,7 +392,6 @@ const useStyles = makeStyles((theme) => ({
   loader: { marginLeft: theme.spacing(1) },
   balanceSection: {
     display: 'flex',
-    backgroundColor: theme.palette.background.default,
     padding: 0
   },
   balanceSectionInner: {
