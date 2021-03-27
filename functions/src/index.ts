@@ -177,7 +177,8 @@ export const addCodec = functions.firestore
           .set(newAsset)
       }
     } catch (error) {
-      console.log('add codec ', error)
+      console.log('add codec error', error)
+      return false
     }
   })
 
