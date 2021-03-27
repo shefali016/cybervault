@@ -57,11 +57,11 @@ export const PopoverHover = ({ children, label, className }: Props) => {
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'left'
+          horizontal: 'center'
         }}
         transformOrigin={{
           vertical: 'bottom',
-          horizontal: 'right'
+          horizontal: 'left'
         }}
         onClose={handlePopoverClose}
         disableRestoreFocus>

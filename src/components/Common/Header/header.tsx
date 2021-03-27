@@ -103,7 +103,7 @@ function Toolbar(props: Props) {
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    color: 'white',
+    color: theme.palette.text.background,
     fontWeight: 'normal',
     [theme.breakpoints.down('sm')]: {
       fontSize: 18

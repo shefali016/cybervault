@@ -83,7 +83,7 @@ export const ProjectsScreen = (props: any) => {
         <AppTextField
           value={searchQuery}
           onChange={handleSearch}
-          style={{ maxWidth: 450, marginBottom: 0 }}
+          style={{ maxWidth: 450, margin: 0 }}
           label={'Search'}
           darkStyle={true}
         />

@@ -176,7 +176,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     height: theme.spacing(10),
-    minWidth: getCardHeight(theme),
+    minWidth: 280,
     boxSizing: 'border-box'
   },
   portfolioFolderTitle: {

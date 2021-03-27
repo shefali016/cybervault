@@ -26,7 +26,7 @@ import { ReduxState } from 'reducers/rootReducer'
 
 const HomeScreen = (props: any) => {
   useEffect(() => {
-    props.getClientsRequest(props.userData.account)
+    props.getClientsRequest()
     props.getProjects(
       {
         where: ['status', '==', ProjectStatuses.PROGRESS],
@@ -129,8 +129,8 @@ const mapDispatchToProps = (dispatch: any) => ({
   getProjects: (params: GetProjectParams, filter: ProjectFilters) => {
     return dispatch(getProjects(params, filter))
   },
-  getClientsRequest: (account: Types.Account) => {
-    return dispatch(getAllClientsRequest(account))
+  getClientsRequest: () => {
+    return dispatch(getAllClientsRequest())
   },
   deleteProject: (projectId: string) => {
     return dispatch(deleteProjectRequest(projectId))

@@ -1,9 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
-import {
-  deleteProjectRequest,
-  getAllProjectsRequest
-} from '../../actions/projectActions'
+import { deleteProjectRequest } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import { makeStyles } from '@material-ui/core/styles'
 import * as Types from '../../utils/Interface'
@@ -14,11 +11,12 @@ import AddIcon from '@material-ui/icons/Add'
 import { PopoverHover } from 'components/Common/PopoverHover'
 import ClientList from 'components/Clients/ClientList'
 import ClientModal from 'components/Common/Modal/ClientModal'
+import { AppDivider } from 'components/Common/Core/AppDivider'
 
-type stateProps = {
+type DispatchProps = { getClientsRequest: () => void }
+
+type StateProps = {
   clients: Array<Client>
-  account: Account
-  client: Client
 }
 
 type Props = {
@@ -27,21 +25,25 @@ type Props = {
   accountId: string
   value: string
   onEdit?: (client: Client) => void
-}
+} & StateProps &
+  DispatchProps
 
 const ClientsScreen = ({
   clients,
   history,
   value,
-  account,
-  onEdit
-}: Props & stateProps) => {
+  getClientsRequest
+}: Props & StateProps) => {
   const [addClientModalOpen, setAddClientModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentClient, setCurrentClient] = useState<Client | null | undefined>(
     null
   )
   const classes = useStyles()
+
+  useEffect(() => {
+    getClientsRequest()
+  }, [])
 
   const handleCurrentClientChange = (client: Client) => {
     setCurrentClient(client)
@@ -83,16 +85,15 @@ const ClientsScreen = ({
           darkStyle={true}
           onChange={handleSearchTermChange}
           value={value}
-          style={{ maxWidth: 400 }}
+          style={{ maxWidth: 450, margin: 0, marginRight: 20 }}
           label={'Search for client'}
         />
-        <div className={classes.sectionTitleContainer}></div>
         <PopoverHover label={'Add Client'}>
           <AppIconButton
             Icon={AddIcon}
-            style={{ paddingRight: '1px' }}
             onClick={handleAddClientModalShow}
-            iconClassName={classes.iconButton}
+            iconClassName={'primaryIcon'}
+            className={'iconButtonPrimary'}
           />
         </PopoverHover>
       </div>
@@ -104,6 +105,7 @@ const ClientsScreen = ({
       <div className={'screenInner'}>
         <div className={'responsivePadding'}>
           {renderHeader()}
+          <AppDivider spacing={3} />
           <ClientList
             clients={filteredClients}
             onEdit={handleEditClientModalShow}
@@ -120,18 +122,12 @@ const ClientsScreen = ({
   )
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: any): StateProps => ({
   clients: state.clients.clientsData
 })
-const mapDispatchToProps = (dispatch: any) => ({
-  getAllProjectsData: (account: Types.Account) => {
-    return dispatch(getAllProjectsRequest(account))
-  },
-  getClientsRequest: (account: Types.Account) => {
-    return dispatch(getAllClientsRequest(account))
-  },
-  deleteProject: (projectId: string) => {
-    return dispatch(deleteProjectRequest(projectId))
+const mapDispatchToProps = (dispatch: any): DispatchProps => ({
+  getClientsRequest: () => {
+    return dispatch(getAllClientsRequest())
   }
 })
 
@@ -148,8 +144,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionHeader: {
     display: 'flex',
-    alignItems: 'center',
-    paddingBottom: theme.spacing(1.5)
+    alignItems: 'center'
   },
   sectionTitleContainer: { flex: 1 },
   sectionInner: {
@@ -167,11 +162,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     padding: theme.spacing(2),
     paddingTop: 0
-  },
-  iconButton: {
-    height: 40,
-    width: 40
   }
 }))
 
-export default connect(mapStateToProps)(ClientsScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ClientsScreen)

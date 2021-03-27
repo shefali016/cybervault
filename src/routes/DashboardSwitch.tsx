@@ -56,8 +56,8 @@ export const DashboardTabIds = {
   projects: 'projects',
   portfolio: 'portfolio',
   invoices: 'invoices',
-  settings: 'settings',
-  clients: 'clients'
+  clients: 'clients',
+  settings: 'settings'
 }
 
 export const AccountTabIds = {
@@ -174,7 +174,7 @@ const MainScreen = ({
         return {
           id,
           text: 'Clients',
-          icon: <AccountBoxIcon className={classes.listIconStyle} />
+          icon: <AccountBoxIcon {...iconProps} />
         }
       case SharedTabIds.security:
         return {

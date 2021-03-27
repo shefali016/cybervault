@@ -83,7 +83,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius * 2,
       overflow: 'hidden',
       position: 'relative',
-      zIndex: 5000
+      zIndex: 5000,
+      [theme.breakpoints.down('xs')]: {
+        width: '95vw'
+      }
     },
     '.modalContent': {
       color: theme.palette.text.paper,
@@ -484,6 +487,8 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
     '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
+    '.primaryIcon': { color: theme.palette.primary.main, fontSize: 25 },
+    '.primaryIconLg': { color: theme.palette.primary.main, fontSize: 40 },
     '.backIcon': {
       color: theme.palette.grey[400],
       fontSize: 25,
@@ -511,7 +516,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Icons
-    
+
     // img
     '.circleImage': {
       minWidth: 60,
@@ -540,6 +545,10 @@ export const useGlobalStyles = makeStyles((theme) => ({
       color: theme.palette.background.surfaceHighlight,
       backgroundColor: `${theme.palette.background.default}`
     },
+    '.iconButtonPrimary': {
+      color: theme.palette.primary,
+      backgroundColor: `${theme.palette.background.surface}`
+    },
     '.MuiIconButton-root': {
       transition: theme.transitions.create(
         ['background-color', 'box-shadow', 'border'],
@@ -560,11 +569,11 @@ export const useGlobalStyles = makeStyles((theme) => ({
       gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 0.5fr))',
       gap: theme.spacing(3),
       [theme.breakpoints.down('sm')]: {
-        gridTemplateColumns: 'repeat(auto-fit, minmax(100%, max-content))',
+        gridTemplateColumns: '1fr'
       }
     },
     // Lists
-    
+
     // Shadow
     '.shadowHover': {
       '&:hover': {

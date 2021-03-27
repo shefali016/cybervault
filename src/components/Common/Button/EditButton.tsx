@@ -6,15 +6,16 @@ import { AppIconButton } from '../Core/AppIconButton'
 type Props = {
   onClick?: () => void
   className?: string
+  iconClassName?: string
 }
 
-export const EditButton = ({ onClick, className }: Props) => {
+export const EditButton = ({ onClick, className, iconClassName }: Props) => {
   return (
     <AppIconButton
       Icon={EditIcon}
       onClick={onClick}
-      className={'iconButton'}
-      iconClassName={'backgroundIcon'}
+      className={className ? className : 'iconButton'}
+      iconClassName={iconClassName ? iconClassName : 'metaIcon'}
     />
   )
 }

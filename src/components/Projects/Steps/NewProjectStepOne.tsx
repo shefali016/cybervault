@@ -43,7 +43,7 @@ const NewProjectStepOne = (props: any) => {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getAllClientsRequest(account))
+    dispatch(getAllClientsRequest())
   }, [])
 
   useEffect(() => {

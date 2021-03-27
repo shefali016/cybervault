@@ -14,10 +14,10 @@ type Props = {
 export const ClientList = ({ clients, onEdit, className }: Props) => {
   return (
     <div className={className}>
+      {clients.length == 0 && (
+        <EmptyIcon Icon={AccountBoxIcon} title={'No clients found'} />
+      )}
       <div className={'listStyle'}>
-        {clients.length == 0 && (
-          <EmptyIcon Icon={AccountBoxIcon} title={'No clients found'} />
-        )}
         {clients.map((client: Client) => (
           <ClientItem client={client} onEdit={onEdit} />
         ))}
