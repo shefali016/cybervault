@@ -98,12 +98,11 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       overflowY: 'scroll',
       position: 'relative',
-      [theme.breakpoints.down('md')]: {
-        // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-      },
       [theme.breakpoints.down('sm')]: {
         padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-        minWidth: 'auto'
+        [theme.breakpoints.down('xs')]: {
+          minWidth: 'auto'
+        }
       }
     },
     '.bold': { fontWeight: 'bold' },

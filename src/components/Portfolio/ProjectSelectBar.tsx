@@ -22,6 +22,7 @@ type ProjectSelectBarProps = {
   width: any
   popoverMenuItems?: Array<MenuItem>
   onShare?: () => void
+  onAddProject?: () => void
 }
 
 export const ProjectSelectBar = ({
@@ -33,7 +34,8 @@ export const ProjectSelectBar = ({
   gradiant2,
   width,
   popoverMenuItems,
-  onShare
+  onShare,
+  onAddProject
 }: ProjectSelectBarProps) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -105,6 +107,22 @@ export const ProjectSelectBar = ({
     )
   }
 
+  const renderAddProjectButton = () =>
+    typeof onAddProject === 'function' && (
+      <AppButton
+        onClick={() => {
+          if (open) {
+            setOpen(false)
+          }
+          onAddProject()
+        }}
+        className={clsx(classes.projectButton, 'alignLeftButton')}>
+        <Typography variant={'inherit'} noWrap={true}>
+          Add Project
+        </Typography>
+      </AppButton>
+    )
+
   return (
     <div className={classes.projectBarContainer}>
       <div
@@ -118,6 +136,7 @@ export const ProjectSelectBar = ({
             barStyle === 'dark' ? classes.portfoloDarkTabsList : '',
             'hiddenSmDown'
           )}>
+          {renderAddProjectButton()}
           {renderProjectButtons({ showActive: true })}
         </div>
         <div
@@ -126,6 +145,7 @@ export const ProjectSelectBar = ({
             barStyle === 'dark' ? classes.portfoloDarkTabsList : '',
             'hiddenMdUp'
           )}>
+          {renderAddProjectButton()}
           {!!selectedProject && (
             <AppButton
               onClick={() => setOpen(!open)}

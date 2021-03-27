@@ -216,6 +216,7 @@ const PortfolioSingleScreen = ({
 
       <ProjectSelectBar
         {...{
+          onAddProject: handleChangeProjects,
           projects: portfolioProjects,
           onSelect: setProjectId,
           selectedProject: selectedProjectData,
