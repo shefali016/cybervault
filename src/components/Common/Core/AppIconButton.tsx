@@ -19,7 +19,7 @@ export const AppIconButton = ({
 }: Props) => {
   return (
     <IconButton onClick={onClick} className={className} style={style}>
-      <Icon className={clsx('icon', iconClassName)} />
+      <Icon className={clsx('metaIcon', iconClassName)} fontSize='inherit' />
     </IconButton>
   )
 }

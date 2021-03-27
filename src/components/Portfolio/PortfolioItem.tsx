@@ -43,7 +43,7 @@ export const PortfolioItem = ({
         </Typography>
       </div>
 
-      <KeyboardArrowRightIcon style={{ color: theme.palette.grey[500] }} />
+      <KeyboardArrowRightIcon style={{ color: theme.palette.text.meta }} />
     </Card>
   )
 }

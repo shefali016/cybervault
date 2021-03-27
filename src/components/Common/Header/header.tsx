@@ -78,23 +78,23 @@ function Toolbar(props: Props) {
           {!props.isNotificationIcon ? (
             <AppIconButton
               Icon={NotificationIcon}
-              style={{ marginRight: 10 }}
-              iconClassName={'metaIcon'}
+              style={{ marginRight: 18 }}
             />
           ) : null}
 
-          <img
-            onClick={handleProfileClick}
-            src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
-            style={{
-              borderRadius: 20,
-              height: 33,
-              width: 33,
-              marginRight: 22,
-              cursor: 'pointer'
-            }}
-            alt={'profile-img'}
-          />
+          <div onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+            <img
+              src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
+              style={{
+                borderRadius: 20,
+                height: 33,
+                width: 33,
+                marginRight: 22,
+                cursor: 'pointer'
+              }}
+              alt={'profile-img'}
+            />
+          </div>
         </div>
       )}
     </div>

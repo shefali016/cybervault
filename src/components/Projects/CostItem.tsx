@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   label: {
     fontWeight: 'bold',
     marginRight: 20,
-    color: '#fff',
+    color: theme.palette.text.background,
     backgroundColor: theme.palette.background.default,
     padding: `2px 10px`,
     borderRadius: 40

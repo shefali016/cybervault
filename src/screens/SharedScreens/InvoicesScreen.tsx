@@ -170,7 +170,9 @@ const InvoicesScreen = ({
   const renderHeader = () => (
     <div className={classes.sectionHeader}>
       <div className={classes.sectionTitleContainer}>
-        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+        <Typography
+          variant='h5'
+          style={{ fontWeight: 500, color: theme.palette.text.secondary }}>
           Invoices
         </Typography>
       </div>
@@ -327,7 +329,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex'
   },
   viewPayouts: {
-    '&:hover': { background: theme.palette.common.black },
+    '&:hover': { background: theme.palette.background.surfaceHighlight },
     padding: `${2}px ${theme.spacing(2)}px`,
     transition: theme.transitions.create(['background']),
     borderRadius: theme.shape.borderRadius,

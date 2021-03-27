@@ -317,7 +317,7 @@ const EditProjectScreen = (props: any) => {
 
       <div className={'screenInner'}>
         <div className={clsx('responsivePadding', 'screenTopPadding')}>
-          <div className={'screenChild'}>
+          <div className={clsx('screenChild', 'shadowLight')}>
             {renderHeader()}
             {renderBody()}
             {renderEditProjectModel()}

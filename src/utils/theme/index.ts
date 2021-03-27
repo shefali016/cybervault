@@ -16,7 +16,7 @@ const darkPalette = {
   colorTheme: ColorThemes.DARK,
   primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
   background: {
-    shadow: '#101010',
+    shadow: '#2f2f2f',
     default: '#181818',
     secondary: '#202020',
     surface: '#272726',

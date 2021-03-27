@@ -42,12 +42,7 @@ const LightDarkThemeButton = ({
   return (
     <PopoverButton menuItems={menuItems} style={style} isSelecting={true}>
       {({ onClick, id }) => (
-        <AppIconButton
-          aria-owns={id}
-          Icon={BrightnessIcon}
-          onClick={onClick}
-          iconClassName={'metaIcon'}
-        />
+        <AppIconButton aria-owns={id} Icon={BrightnessIcon} onClick={onClick} />
       )}
     </PopoverButton>
   )

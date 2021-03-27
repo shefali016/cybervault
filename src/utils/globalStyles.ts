@@ -1,5 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles'
 
+export const GlobalStyles = () => {
+  useGlobalStyles()
+  return null
+}
+
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
     '*': { outline: 'none', selection: 'none' },
@@ -316,9 +321,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     '.card': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
       }
     },
     '.widgetItemOuter': { marginRight: theme.spacing(3) },
@@ -330,7 +335,6 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     '.widgetItem': {
-      backgroundColor: theme.palette.common.white,
       width: '70vw',
       height: '70vw',
       maxWidth: 280,
@@ -340,9 +344,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
       }
     },
     '.widgetItemSmall': {
@@ -355,9 +359,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
       },
       [theme.breakpoints.down('sm')]: {
         width: 'auto',
@@ -378,9 +382,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
         width: 'auto',
         maxWidth: '100%'
       },
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
       }
     },
     // Section
@@ -434,7 +438,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
     '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
     '.backIcon': {
-      color: theme.palette.grey[500],
+      color: theme.palette.grey[400],
       fontSize: 25,
       marginLeft: 10
     },
@@ -490,7 +494,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     // Buttons
     '.iconButton': {
       color: theme.palette.background.surfaceHighlight,
-      backgroundColor: '#00000040'
+      backgroundColor: `${theme.palette.background.default}`
     },
     '.MuiIconButton-root': {
       transition: theme.transitions.create(
@@ -504,17 +508,17 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.lightGrey': { color: theme.palette.grey[100] },
     '.shadowHover': {
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
       }
     },
     '.shadowDark': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}45`
     },
     '.shadow': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}35`
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}35`
     },
     '.shadowLight': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`
     }
   }
 }))

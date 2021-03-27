@@ -136,7 +136,7 @@ export const ProjectCard = ({
         </div>
 
         <Grid
-          style={{ position: 'absolute', top: 5, right: 5, display: 'flex' }}>
+          style={{ position: 'absolute', top: 10, right: 10, display: 'flex' }}>
           {deletingId === project.id && (
             <AppLoader
               color={theme.palette.grey[800]}
@@ -146,7 +146,17 @@ export const ProjectCard = ({
             />
           )}
 
-          <PopoverMoreIconButton menuItems={popoverMenuItems} />
+          <PopoverMoreIconButton
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left'
+            }}
+            menuItems={popoverMenuItems}
+          />
         </Grid>
       </Card>
       <ConfirmationDialog
@@ -178,20 +188,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: ROW,
     justifyContent: CENTER,
     alignItems: CENTER
-  },
-  card: {
-    width: '70vw',
-    height: '70vw',
-    maxWidth: 280,
-    maxHeight: 280,
-    borderRadius: 15,
-    display: FLEX,
-    flexDirection: COLUMN,
-    position: 'relative',
-    overflow: 'hidden',
-    '&:hover': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
-    }
   },
   imageWrapper: {
     alignItems: CENTER,

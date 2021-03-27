@@ -23,16 +23,14 @@ function App({ colorTheme }: Props) {
   return (
     <Router history={history}>
       <StripeProvider apiKey={stripe_public_key}>
-        <ThemeProvider theme={responsiveTheme}>
-          <ToastProvider>
-            <AssetUploadProvider>
-              <React.Fragment>
-                <Routes />
-                <ToastHandler />
-              </React.Fragment>
-            </AssetUploadProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <AssetUploadProvider>
+            <React.Fragment>
+              <Routes />
+              <ToastHandler />
+            </React.Fragment>
+          </AssetUploadProvider>
+        </ToastProvider>
       </StripeProvider>
     </Router>
   )
