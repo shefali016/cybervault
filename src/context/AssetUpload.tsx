@@ -78,7 +78,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
     const asset: Asset = {
       type,
       files: [],
-      fileName: file.name,
+      fileName: file.name.replace(' ', ''),
       id: generateUid()
     }
     try {

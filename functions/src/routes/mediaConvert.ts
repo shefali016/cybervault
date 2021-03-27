@@ -11,9 +11,9 @@ router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
 AWS.config.update({
   accessKeyId: functions.config().aws_config.access_key_id,
-  secretAccessKey:functions.config().aws_config.secret_acces_key,
-  region:functions.config().aws_config.region,
-  endpoint:functions.config().aws_config.endpoint
+  secretAccessKey: functions.config().aws_config.secret_acces_key,
+  region: functions.config().aws_config.region,
+  endpoint: functions.config().aws_config.endpoint
 })
 
 let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
@@ -23,16 +23,12 @@ let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 router.post('/convert', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      console.log("==============================================")
-      
       let videoArray = req.body.data.map(async (item: any, i: number) => {
         return await resizeVideo(item)
       })
-      // console.log(videoArray)
+
       let result = await Promise.all(videoArray)
       return await res.status(200).send(result)
-
-      // console.log(req.body, videoArray, 'bodyyyyyy')
     } catch (error) {
       console.log('create_customer', error)
       return res.status(400).send(error)
@@ -46,7 +42,6 @@ const resizeVideo = async (item: any) => {
       resolution,
       ratio,
       format,
-      // container,
       assetId,
       id,
       fileName,
@@ -57,20 +52,18 @@ const resizeVideo = async (item: any) => {
     const name = fileName.replace(/ /g, '')
     const urlFileName = name.split('.').slice(0, -1).join('.')
 
-    const originalRatio = fileWidth / fileHeight //1280 x 720
-    const newRatio = ratio.w / ratio.h // 0.5625
+    const originalRatio = fileWidth / fileHeight
+    const newRatio = ratio.w / ratio.h
 
-    // original ratio is larger than newRatio meaning width is larger than end size. We will crop width in this case.
-    const cropWidth = Math.ceil((newRatio * resolution) / 2) * 2
+    const newWidth = Math.ceil(newRatio * resolution)
 
     // //That gives us `width` and `height` for cropping params
 
     // // Now we have crop frame but we need to center it.
     // // Since we are cropping width we will be centering with X.
-    const croppedWidth = Math.ceil((fileWidth - cropWidth) / 2) * 2 // This is amount of px being cut
-    const X = Math.ceil(croppedWidth / 2 / 2) * 2 // Even spacing on both sides of video
+    const croppedWidth = Math.ceil(fileWidth - newWidth) // This is amount of px being cut
+    const X = Math.ceil(croppedWidth / 2) // Even spacing on both sides of video
     const Y = 0
-
 
     const getVideoDescription = () => {
       if (originalRatio > newRatio) {
@@ -87,10 +80,10 @@ const resizeVideo = async (item: any) => {
           Crop: {
             X: X,
             Y: Y,
-            Width: cropWidth,
+            Width: newWidth,
             Height: resolution
           },
-          Width: cropWidth,
+          Width: newWidth,
           Height: resolution
         }
       } else {
@@ -104,7 +97,7 @@ const resizeVideo = async (item: any) => {
           DropFrameTimecode: 'ENABLED',
           RespondToAfd: 'NONE',
           ColorMetadata: 'INSERT',
-          Width: cropWidth,
+          Width: newWidth,
           Height: resolution
         }
       }
@@ -269,16 +262,13 @@ const resizeVideo = async (item: any) => {
       let createJonPromise = mediaConvert.createJob(params).promise()
       createJonPromise
         .then((res: any) => {
-          console.log(res, 'bbbbbbbbbbbbbbbbbbbbb')
-
           getJobDetails(res.Job.Id)
             .then((jobDetails: any) => {
-              console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
-              console.log(jobDetails)
-              console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
+              console.log('jobDetails', jobDetails)
+
               resolve({
                 height: resolution,
-                width: cropWidth,
+                width: newWidth,
                 original: false,
                 id: id,
                 assetId: assetId,
@@ -298,7 +288,7 @@ const resizeVideo = async (item: any) => {
           reject(error)
         })
     } catch (error) {
-      console.log(error, '=========')
+      console.log('Convert error', error)
       reject(error)
     }
   })
@@ -309,26 +299,24 @@ async function getJobDetails(Id: any) {
     try {
       let status = ''
       let result
+
       while (status == 'PROGRESSING' || status == '') {
-        result = await mediaConvert.getJob({
-          Id: Id
-        }).promise()
-        console.log('4444444444444444444444444444444444444444444444444444')
-        console.log(result,"resulttttttttttttttt")
-        console.log('4444444444444444444444444444444444444444444444444444')
+        result = await mediaConvert
+          .getJob({
+            Id: Id
+          })
+          .promise()
 
         status = result.Job.Status
+
+        console.log('Job status', status)
+
         await sleep(60)
-        console.log("---------------------",status)
       }
-      console.log('===============================')
-      console.log(result)
-      console.log('===============================')
+
       resolve(result)
     } catch (error) {
-      console.log("eurrorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
-      console.log(error);
-      console.log("errorororororooooorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerrorerror");
+      console.log(error)
       reject(error)
     }
   })
