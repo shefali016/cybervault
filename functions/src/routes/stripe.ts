@@ -1,5 +1,4 @@
 import * as express from 'express'
-
 const { corsHandler } = require('../index')
 
 const router = express.Router()
@@ -139,8 +138,6 @@ router.post('/create_account', (req, res) => {
     try {
       const { country, email } = req.body
 
-      console.log(req.body)
-
       if (!email) {
         throw Error('missing email')
       }
@@ -170,8 +167,6 @@ router.post('/create_account_link', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
       const { id, refresh_url, return_url } = req.body
-
-      console.log(req.body)
 
       if (!id) {
         throw Error('missing account id')
@@ -433,10 +428,16 @@ router.post('/get_customer_balance', (req, res) => {
         stripe_account: stripeAccountId
       })
 
-      let totalBalance: any, balanceAvailable: any, balancePending: any;
-      balanceAvailable = balance.available[0].amount
-      balancePending = balance.pending[0].amount
-      totalBalance = balanceAvailable + balancePending
+      let totalBalance = 0,
+        balanceAvailable = 0,
+        balancePending = 0
+
+      if (balance) {
+        balanceAvailable = balance.available[0].amount
+        balancePending = balance.pending[0].amount
+        totalBalance = balanceAvailable + balancePending
+      }
+
       return res.json({ totalBalance, balancePending, balanceAvailable })
     } catch (error) {
       console.log(error)

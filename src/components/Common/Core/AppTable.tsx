@@ -39,8 +39,6 @@ export const AppTable = ({
 }: Props) => {
   const classes = useStyles()
 
-  console.log(emptyProps, rows)
-
   const renderCell = (
     { renderer, title, cellProps, key }: Cell,
     lastCell: boolean

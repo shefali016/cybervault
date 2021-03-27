@@ -21,9 +21,10 @@ import {
   GET_ACCOUNT_FAILURE,
   RESET_PASSWORD_REQUEST,
   RESET_PASSWORD_SUCCESS,
-  RESET_PASSWORD_ERROR
+  RESET_PASSWORD_ERROR,
+  GET_STORAGE_USED_SUCCESS
 } from 'actions/actionTypes'
-import { User, Account } from 'utils/Interface'
+import { User, Account, Storage } from 'utils/Interface'
 import { createTransform } from 'redux-persist'
 
 export type State = {
@@ -47,6 +48,7 @@ export type State = {
   changePasswordError: boolean
   changePasswordData: string
   signUpLoading: boolean
+  usedStorage: number
 }
 
 export type Action = {
@@ -55,6 +57,7 @@ export type Action = {
   error: Error
   user: User
   account: Account
+  storage: Storage
 }
 
 const initialState = {
@@ -77,7 +80,8 @@ const initialState = {
   changePasswordSuccess: false,
   changePasswordError: false,
   changePasswordData: '',
-  signUpLoading: false
+  signUpLoading: false,
+  usedStorage: 0
 }
 
 const signUp = (state: State, action: Action) => ({
@@ -253,7 +257,11 @@ const authReducer = (state = initialState, action: Action) => {
         accountUpdating: false,
         accountUpdateError: action.error
       }
-
+    case GET_STORAGE_USED_SUCCESS:
+      return {
+        ...state,
+        usedStorage: action.storage.usedStorage
+      }
     default:
       return state
   }

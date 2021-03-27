@@ -14,6 +14,12 @@ import {
   DELETE_PROJECT_REQUEST,
   DELETE_PROJECT_SUCCESS,
   DELETE_PROJECT_FAILURE,
+  GET_ASSET_LIST,
+  GET_ASSET_LIST_SUCCESS,
+  GET_ASSET_LIST_FAILURE,
+  DELETE_ASSET,
+  DELETE_ASSET_SUCCESS,
+  DELETE_ASSET_FAILURE,
   GET_PROJECTS,
   GET_PROJECTS_SUCCESS,
   GET_PROJECTS_FAILURE
@@ -24,7 +30,7 @@ import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
 import { ProjectFilters } from 'utils/enums'
 import * as Types from '../utils/Interface'
-import { Project, ProjectCache } from '../utils/Interface'
+import { Asset, Project, ProjectCache } from '../utils/Interface'
 
 export type State = {
   projectData: any
@@ -41,6 +47,13 @@ export type State = {
   isProjectDetailsLoading: boolean
   updateProjectSuccess: boolean
   projectCache: ProjectCache
+  // Assets
+  allAssetList: Array<Types.Asset> | any
+  assetLoading: boolean
+  assetError: null | string
+  assetSuccess: boolean
+  deleteAssetLoading: boolean
+  deleteAssetError: string | null
   deletingId: null | string
 }
 
@@ -52,6 +65,8 @@ export type Action = {
   newProjectData: Project
   allProjectsData: Project[]
   projectId: string
+  assetList: Array<Types.Asset>
+  assetId: string
   filter: ProjectFilters
   projects: Project[]
 }
@@ -80,6 +95,13 @@ const initialState = {
   updateProjectSuccess: false,
   updateProjectFailure: null,
   projectCache: {},
+  // Assets
+  allAssetList: null,
+  assetLoading: false,
+  assetSuccess: false,
+  assetError: null,
+  deleteAssetLoading: false,
+  deleteAssetError: null,
   deletingId: null
 }
 
@@ -203,7 +225,6 @@ const deleteProjectFailure = (state: State, action: Action) => {
 }
 
 const getProjectsRequest = (state: State, action: Action) => {
-  console.log(state)
   return {
     ...state,
     loadingFilters: state.loadingFilters.add(action.filter)
@@ -242,6 +263,59 @@ const getProjectsFailure = (state: State, action: Action) => {
   }
 }
 
+const getAssetListRequest = (state: State, action: Action) => {
+  return {
+    ...state,
+    assetError: null,
+    assetLoading: true
+  }
+}
+
+const getAssetListSuccess = (state: State, action: Action) => {
+  return {
+    ...state,
+    allAssetList: action.assetList,
+    assetLoading: false,
+    assetSuccess: true
+  }
+}
+
+const getAssetListFailure = (state: State, action: Action) => {
+  return {
+    ...state,
+    assetLoading: false,
+    assetError: action.error
+  }
+}
+// Get All asset data
+
+const deleteAssetRequest = (state: State, action: Action) => {
+  return {
+    ...state,
+    deleteAssetError: null,
+    deleteAssetLoading: true
+  }
+}
+
+const deleteAssetSuccess = (state: State, action: Action) => {
+  return {
+    ...state,
+    allAssetList: state.allAssetList.filter(
+      (asset: Asset) => asset.id !== action.assetId
+    ),
+    deleteAssetLoading: false,
+    deleteAssetSuccess: true
+  }
+}
+
+const deleteAssetFailure = (state: State, action: Action) => {
+  return {
+    ...state,
+    deleteAssetLoading: false,
+    deleteAssetError: action.error
+  }
+}
+
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_PROJECT_REQUEST:
@@ -274,6 +348,18 @@ const projectReducer = (state = initialState, action: Action) => {
       return deleteProjectSuccess(state, action)
     case DELETE_PROJECT_FAILURE:
       return deleteProjectFailure(state, action)
+    case GET_ASSET_LIST:
+      return getAssetListRequest(state, action)
+    case GET_ASSET_LIST_SUCCESS:
+      return getAssetListSuccess(state, action)
+    case GET_ASSET_LIST_FAILURE:
+      return getAssetListFailure(state, action)
+    case DELETE_ASSET:
+      return deleteAssetRequest(state, action)
+    case DELETE_ASSET_SUCCESS:
+      return deleteAssetSuccess(state, action)
+    case DELETE_ASSET_FAILURE:
+      return deleteAssetFailure(state, action)
     case GET_PROJECTS:
       return getProjectsRequest(state, action)
     case GET_PROJECTS_SUCCESS:

@@ -396,6 +396,10 @@ export type Account = {
   }
 }
 
+export interface Storage {
+  usedStorage: number
+}
+
 export type User = {
   id: string
   email: string
@@ -410,6 +414,12 @@ export type User = {
   twitter?: string | undefined
   linkedIn?: string | undefined
   customerId: string
+}
+
+export interface StripeCustomerBalance {
+  balanceAvailable: number
+  balancePending: number
+  totalBalance: number
 }
 
 export type AuthUser = {

@@ -12,7 +12,6 @@ export const activeProjects = createSelector(
   [getProjectCache, getFilteredIds],
   (cache, idMap) => {
     const ids = idMap[ProjectFilters.ACTIVE]
-    console.log('XXX', cache, idMap, ids)
     if (!ids) return []
     return ids.reduce((acc: Project[], id: string) => {
       const project = cache[id]

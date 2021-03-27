@@ -39,6 +39,9 @@ import {
 import { AppButton } from 'components/Common/Core/AppButton'
 import { ProjectStatuses } from 'utils/enums'
 import { getToggledArchiveStatus } from 'utils/projects'
+import { getSubscriptionDetails } from 'utils/subscription'
+import { bytesToGB } from 'utils/helpers'
+import { ToastContext, ToastTypes } from 'context/Toast'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -53,6 +56,7 @@ type EditProjectStates = {
 const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const assetUploadContext = useContext(AssetUploadContext)
+  const toastContext = useContext(ToastContext)
 
   const [state, setState] = useState<EditProjectStates>({
     projectData: props.projectCache[props.match.params.id],
@@ -108,8 +112,33 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
+  const getTotalStorage = () => {
+    const extraStorage =
+      typeof props.storageSubscription?.metadata?.extraStorage === 'string'
+        ? parseInt(props.storageSubscription?.metadata?.extraStorage)
+        : 0
+    const { storage } = getSubscriptionDetails(
+      props.accountSubscription?.metadata?.type
+    )
+    return storage + extraStorage
+  }
+
   const uploadFiles = (type: 'image' | 'video') => async (files: File[]) => {
-    assetUploadContext.uploadFiles(files, type, addAssetToProject)
+    const totalStorage = getTotalStorage()
+    const usedStorage = props.usedStorage
+    const availableStorage = totalStorage - bytesToGB(usedStorage)
+
+    const uploadBytes = files.reduce((acc, file) => acc + file.size, 0)
+    const uploadGb = bytesToGB(uploadBytes)
+
+    if (availableStorage >= uploadGb) {
+      assetUploadContext.uploadFiles(files, type, addAssetToProject)
+    } else {
+      toastContext.showToast({
+        title: 'Purchace extra storage to add more asset data',
+        type: ToastTypes.warning
+      })
+    }
   }
 
   const addAssetToProject = async (asset: Asset) => {
@@ -357,7 +386,10 @@ const mapStateToProps = (state: any) => ({
   projectCache: state.project.projectCache,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
   account: state.auth.account,
-  clients: state.clients.clientsData
+  clients: state.clients.clientsData,
+  usedStorage: state.auth.usedStorage,
+  accountSubscription: state.stripe.accountSubscription,
+  storageSubscription: state.stripe.storageSubscription
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

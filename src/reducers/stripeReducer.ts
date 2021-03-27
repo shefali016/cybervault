@@ -1,7 +1,12 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { Invoice, StripePlans, Subscription } from 'utils/Interface'
+import {
+  Invoice,
+  StripeCustomerBalance,
+  StripePlans,
+  Subscription
+} from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -60,7 +65,7 @@ export type Action = {
   storageSubscription: Subscription
   billingHistory: Array<Invoice>
   paymentMethodId: string
-  balances: any
+  balances: StripeCustomerBalance
 }
 
 const initialState = {

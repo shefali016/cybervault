@@ -27,7 +27,7 @@ export const ConfirmationDialog = ({
   onNo
 }: Props) => {
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} style={{ zIndex: 9999 }}>
       <DialogTitle style={{ fontWeight: 'bold' }}>{title}</DialogTitle>
       {!!message && (
         <DialogContent>

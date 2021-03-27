@@ -49,8 +49,6 @@ const SubscriptionPricingSlider = (props: any) => {
       const { products, plans } = await getProductsWithPlans()
       setProducts(products)
       setProductPlans(plans)
-
-      console.log(products, plans)
     } catch (error) {
       console.log(error.message)
     }

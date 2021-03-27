@@ -158,7 +158,6 @@ const InvoicesScreen = ({
       if (!loginLink) {
         loginLink = await createLoginLink(account.stripe.accountId)
       }
-      console.log(loginLink)
       window.location.href = loginLink.url + (toAccount ? '#/account' : '')
     } catch (error) {
       toastContext.showToast({ title: 'Failed to login. Try again.' })

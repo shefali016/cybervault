@@ -1,5 +1,5 @@
 import * as ActionTypes from './actionTypes'
-import { Account } from '../utils/Interface'
+import { Account, Storage } from '../utils/Interface'
 
 export const getAccount = (id: string) => ({
   type: ActionTypes.GET_ACCOUNT,
@@ -26,5 +26,19 @@ export const updateAccountSuccess = (account: Account) => ({
 
 export const updateAccountFailure = (error: string) => ({
   type: ActionTypes.UPDATE_ACCOUNT_FAILURE,
+  error
+})
+
+export const getUsedStorage = () => ({
+  type: ActionTypes.GET_STORAGE_USED
+})
+
+export const getUsedStorageSuccess = (storage: Storage) => ({
+  type: ActionTypes.GET_STORAGE_USED_SUCCESS,
+  storage
+})
+
+export const getUsedStorageFailure = (error: string) => ({
+  type: ActionTypes.GET_STORAGE_USED_FAILURE,
   error
 })

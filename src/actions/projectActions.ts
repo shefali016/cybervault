@@ -127,3 +127,32 @@ export const deleteProjectFailure = (error: string, projectId: string) => ({
   error,
   projectId
 })
+
+export const getAssetListRequest = () => ({
+  type: ActionTypes.GET_ASSET_LIST
+})
+
+export const getAssetListSuccess = (assetList: Array<Types.Asset>) => ({
+  type: ActionTypes.GET_ASSET_LIST_SUCCESS,
+  assetList
+})
+
+export const getAssetListFailure = (error: string) => ({
+  type: ActionTypes.GET_ASSET_LIST_FAILURE,
+  error
+})
+
+export const deleteAssetRequest = (assetId: string) => ({
+  type: ActionTypes.DELETE_ASSET,
+  assetId
+})
+
+export const deleteAssetSuccess = (assetId: string) => ({
+  type: ActionTypes.DELETE_ASSET_SUCCESS,
+  assetId
+})
+
+export const deleteAssetFailure = (error: string) => ({
+  type: ActionTypes.DELETE_ASSET_FAILURE,
+  error
+})

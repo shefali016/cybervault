@@ -18,13 +18,14 @@ export const DragAndDropUploader = ({
   onSubmit
 }: Props) => {
   const classes = useStyles()
-  const [file, setFile] = useState<File | null>(null)
 
   // receives array of files that are done uploading when submit button is clicked
-  const onDrop = useCallback((files) => {
-    setFile(files)
-    onSubmit(files)
-  }, [])
+  const onDrop = useCallback(
+    (files) => {
+      onSubmit(files)
+    },
+    [onSubmit]
+  )
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -44,11 +45,12 @@ export const DragAndDropUploader = ({
         </div>
       )}
       <div className={classes.container}>
-        {!(file && file.name) ? (
-          <img src={iconFolderUpload} alt='icon' className={classes.image} />
-        ) : (
-          <Typography>{file.name}</Typography>
-        )}
+        <img
+          src={iconFolderUpload}
+          alt='upload-icon'
+          className={classes.image}
+        />
+
         <Typography className={classes.text}>
           Add {isVideo ? 'Video' : 'Image'}
         </Typography>

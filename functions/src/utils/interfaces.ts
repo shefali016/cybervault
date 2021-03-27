@@ -289,6 +289,7 @@ export type AssetFile = {
   url: string
   width: number
   height: number
+  size: number
 }
 
 export type Project = {

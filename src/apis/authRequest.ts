@@ -44,9 +44,7 @@ export const authRequest = (
     .auth()
     .signInWithEmailAndPassword(userLogin.email, userLogin.password)
     .then((res: firebase.auth.UserCredential) => {
-      console.log(res)
       const { user } = res
-      console.log(user)
       if (user && user.uid) {
         return getUserWithAccount(user.uid)
       } else {

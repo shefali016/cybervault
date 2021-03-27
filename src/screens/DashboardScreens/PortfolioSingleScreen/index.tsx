@@ -181,7 +181,6 @@ const PortfolioSingleScreen = ({
     history.replace(`/${AccountTabIds.profile}`)
 
   const handleBack = () => {
-    console.log(history)
     history.push('/portfolio')
   }
 

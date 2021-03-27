@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
 import { generateUid } from './utils'
-import { Mail } from './utils/interfaces'
+import { AssetFile, Mail } from './utils/interfaces'
 import templates from './sendGridTemplates.json'
 import config from './config.json'
 
@@ -167,6 +167,57 @@ export const handleNotificationCreated = functions.firestore
         return admin.firestore().collection('Mails').doc().set(mail)
       }
       return true
+    } catch (error) {
+      console.log(error, 'error occurs')
+      return false
+    }
+  })
+
+export const updateUsedStorage = functions.firestore
+  .document(`AccountData/{accountId}/Assets/{id}`)
+  .onWrite(async (change, context) => {
+    try {
+      let accId: string = context.params.accountId
+
+      let assetAfter = change.after.data()
+      let assetBefore = change.before.data()
+
+      let sizeAfter: number = 0
+      let sizeBefore: number = 0
+
+      if (assetAfter) {
+        sizeAfter = assetAfter.files.reduce(
+          (total: number, file: AssetFile) => {
+            return total + file.size
+          },
+          0
+        )
+      }
+
+      if (assetBefore) {
+        sizeBefore = assetBefore.files.reduce(
+          (total: number, file: AssetFile) => {
+            return total + file.size
+          },
+          0
+        )
+      }
+
+      const currentUsedStorage: any = await admin
+        .firestore()
+        .collection('Storage')
+        .doc(accId)
+        .get()
+      const storageData = currentUsedStorage.data()
+      const usedStorage =
+        storageData && storageData.usedStorage ? storageData.usedStorage : 0
+
+      const totalStorageUsed = usedStorage + (sizeAfter - sizeBefore)
+
+      const data = {
+        usedStorage: totalStorageUsed
+      }
+      return admin.firestore().collection('Storage').doc(accId).set(data)
     } catch (error) {
       console.log(error, 'error occurs')
       return false

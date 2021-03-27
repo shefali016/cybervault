@@ -12,12 +12,14 @@ import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 import Dashboard from './DashboardSwitch'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 import ProjectSingleScreen from 'screens/DashboardScreens/ProjectSingleScreen'
+import { getUsedStorage } from 'actions/account'
 
 type DispatchProps = {
   createNewProject: (project: Project) => void
   getUser: (id: string) => void
   getAccount: (id: string) => void
   getCustomer: () => void
+  getStorage: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -37,6 +39,7 @@ const MainSwitch = ({
   getUser,
   getAccount,
   getCustomer,
+  getStorage,
   user,
   account
 }: Props) => {
@@ -50,6 +53,7 @@ const MainSwitch = ({
     if (!customerRestored) {
       getCustomer()
     }
+    getStorage()
   }, [])
 
   if (!(userRestored && accountRestored && customerRestored)) {
@@ -80,7 +84,8 @@ const mapDispatchToProps: DispatchProps = {
     createNewProjectRequest(projectData),
   getUser: (id: string) => getUser(id),
   getAccount: (id: string) => getAccount(id),
-  getCustomer: () => getCustomer()
+  getCustomer: () => getCustomer(),
+  getStorage: () => getUsedStorage()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainSwitch)

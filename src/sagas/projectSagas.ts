@@ -18,6 +18,10 @@ import {
   updateProjectDetailsFailure,
   deleteProjectFailure,
   deleteProjectSuccess,
+  getAssetListSuccess,
+  getAssetListFailure,
+  deleteAssetSuccess,
+  deleteAssetFailure,
   getProjectsSuccess,
   getProjectsFailure
 } from '../actions/projectActions'
@@ -32,6 +36,7 @@ import {
   getProjects
 } from '../apis/projectRequest'
 import { ReduxState } from 'reducers/rootReducer'
+import { deleteAsset, getAllAssets } from 'apis/assets'
 import { GetProjectParams } from 'utils/Interface/api'
 import { ProjectFilters } from 'utils/enums'
 
@@ -39,6 +44,7 @@ type Params = { newProjectData: Project; type: string; account: Account }
 type GetParams = {
   type: string
   projectId: string
+  assetId: string
   projectdata: Project
   accountId: string
   params: Partial<GetProjectParams>
@@ -109,6 +115,26 @@ function* deletingProjectSaga({ projectId }: GetParams) {
   }
 }
 
+function* getAllAssetList() {
+  try {
+    const accountId = yield select((state) => state.auth.account.id)
+    const assetList = yield call(getAllAssets, accountId)
+    yield put(getAssetListSuccess(assetList))
+  } catch (error: any) {
+    yield put(getAssetListFailure(error?.message || 'default'))
+  }
+}
+
+function* deleteAssetData({ assetId }: GetParams) {
+  try {
+    const accountId = yield select((state) => state.auth.account.id)
+    yield call(deleteAsset, accountId, assetId)
+    yield put(deleteAssetSuccess(assetId))
+  } catch (error: any) {
+    yield put(deleteAssetFailure(error?.message || 'default'))
+  }
+}
+
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.NEW_PROJECT_REQUEST, createNewProject)
   yield takeLatest(ActionTypes.GET_ALL_PROJECT_REQUEST, getAllProjectsSaga)
@@ -118,6 +144,8 @@ function* watchGetRequest() {
     updateProjectDetails
   )
   yield takeLatest(ActionTypes.DELETE_PROJECT_REQUEST, deletingProjectSaga)
+  yield takeLatest(ActionTypes.GET_ASSET_LIST, getAllAssetList)
+  yield takeLatest(ActionTypes.DELETE_ASSET, deleteAssetData)
   yield takeEvery(ActionTypes.GET_PROJECTS, getProjectsSaga)
 }
 

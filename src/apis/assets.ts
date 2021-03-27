@@ -94,8 +94,41 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        return snapshot.data() as Asset
+        return snapshot.data() as Asset | null
       })
   )
-  return await (await Promise.all(assetRequests)).filter((asset) => !!asset)
+
+  const assets = await Promise.all(assetRequests)
+
+  return assets.filter((asset: Asset | null) => !!asset) as Asset[]
+}
+
+export const getAllAssets = async (accountId: string) => {
+  let assetList: Array<Asset> = []
+  const assetData: any = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(accountId)
+    .collection('Assets')
+    .get()
+  for (const doc of assetData.docs) {
+    const assetObject = doc.data()
+    assetList.push(assetObject)
+  }
+  return assetList
+}
+
+export const deleteAsset = async (accountId: string, assetId: string) => {
+  try {
+    return firebase
+      .firestore()
+      .collection('AccountData')
+      .doc(accountId)
+      .collection('Assets')
+      .doc(assetId)
+      .delete()
+  } catch (error) {
+    console.log('delete Asset', error)
+    return error
+  }
 }

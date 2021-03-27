@@ -60,7 +60,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
       if (!assetUpload) {
         return uploadCache
       }
-      return { ...uploadFiles, [assetId]: { ...assetUpload, [key]: value } }
+      return { ...uploadCache, [assetId]: { ...assetUpload, [key]: value } }
     })
   }
 
@@ -75,7 +75,6 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
       fileName: file.name,
       id: generateUid()
     }
-
     try {
       if (!account) {
         throw Error('Not logged in')
@@ -104,7 +103,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
       task.send(async (err: AWSError, data: S3.ManagedUpload.SendData) => {
         if (!err) {
           const url = data.Location
-          asset.files.push(getImageObject(file, url, asset.id))
+          asset.files.push(getImageObject(file, url, asset.id, file.size))
           await addAsset(account.id, asset)
           updateUploadField(asset.id, 'status', UploadStatuses.COMPLETE)
           typeof assetUploadedCallback === 'function' &&
@@ -217,7 +216,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     boxShadow: '0 0 15px 4px #00000040',
     zIndex: 2000,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       width: '90%'
     },
     transition: theme.transitions.create(['opacity'], { duration: 500 })
