@@ -378,7 +378,8 @@ const InvoicesClientScreen = (props: Props) => {
     let res: any = await convertMedia(data)
     if (res.status === 200) {
       var results = res.data.reduce(function (results: any, org: any) {
-        ;(results[org.assetId] = results[org.assetId] || []).push(org)
+        results[org.assetId] = results[org.assetId] || []
+        results[org.assetId].push(org)
         return results
       }, {})
 

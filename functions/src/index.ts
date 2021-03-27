@@ -168,7 +168,7 @@ export const addCodec = functions.firestore
 
         console.log('New asset', newAsset)
 
-        admin
+        return admin
           .firestore()
           .collection('AccountData')
           .doc(accId)
