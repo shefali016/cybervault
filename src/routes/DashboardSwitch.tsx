@@ -158,7 +158,7 @@ const MainScreen = ({
         }
       case DashboardTabIds.settings:
         return {
-          id,
+          id: 'manage',
           text: 'Settings',
           icon: <SettingsIcon {...iconProps} />,
           onPress: () => {
@@ -222,8 +222,6 @@ const MainScreen = ({
   const [activeTab, setActiveTab] = useState(
     getTab(history.location.pathname.replace('/', ''))
   )
-
-  console.log(activeTab)
 
   const getSidebarButtonConfig = (): ButtonConfig => {
     if (screenView === ScreenViews.account) {

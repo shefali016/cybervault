@@ -224,7 +224,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.sectionInner': {
       background: theme.palette.background.paper,
       borderRadius: theme.shape.borderRadius,
-      padding: '15px 25px',
+      padding: '20px 25px',
       color: theme.palette.text.paper,
       display: 'flex',
       alignItems: 'center',
