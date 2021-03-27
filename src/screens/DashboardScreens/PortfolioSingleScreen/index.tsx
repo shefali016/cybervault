@@ -104,7 +104,7 @@ const PortfolioSingleScreen = ({
     if (id) {
       getPortfolio(id)
     }
-  }, [match])
+  }, [match.params?.id])
   // Set selected project id when portfolio is first loaded or projects change
   useEffect(() => {
     if (
