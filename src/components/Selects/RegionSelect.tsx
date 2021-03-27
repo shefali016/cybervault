@@ -93,7 +93,7 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
   return (
     <AppSelect
       items={menuItems}
-      value={regionCode !== undefined ? regionCode : 'USA'}
+      value={regionCode !== undefined ? regionCode : 'US'}
       onChange={(event: any) => {
         handleChange(event.target.value)
       }}

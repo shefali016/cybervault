@@ -48,7 +48,13 @@ export enum UploadStatuses {
 }
 
 export enum ProjectFilters {
+  ALL = "all",
   RECENT = 'recent',
   ACTIVE = 'active',
   ARCHIVED = 'archived'
+}
+
+export enum ColorThemes {
+ LIGHT = "light",
+ DARK = "dark"
 }

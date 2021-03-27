@@ -123,7 +123,7 @@ const PortfolioFolders = ({
                   />
                   <Typography
                     variant='h5'
-                    style={{ marginRight: theme.spacing(2.5) }}>
+                    style={{ marginRight: theme.spacing(2) }}>
                     {folder.name}{' '}
                     <Typography
                       variant='caption'

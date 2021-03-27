@@ -1,11 +1,8 @@
-import React, { useMemo } from 'react'
-import { AppTable } from 'components/Common/Core/AppTable'
+import React from 'react'
 import { Portfolio } from 'utils/Interface'
 import { useStyles } from './style'
 import { PortfolioItem } from 'components/Portfolio/PortfolioItem'
 import { useTheme } from '@material-ui/core/styles'
-import { Grid } from '@material-ui/core'
-import clsx from 'clsx'
 
 type Props = {
   portfolios: Array<Portfolio>
@@ -22,7 +19,7 @@ export const PortfolioList = ({ portfolios, onClick, className }: Props) => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 0.5fr))',
           gap: theme.spacing(3)
         }}>
         {portfolios.map((portfolio: Portfolio) => (

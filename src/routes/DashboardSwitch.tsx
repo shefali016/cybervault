@@ -3,7 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 
-import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
+// import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
+import ProjectsScreen from 'screens/DashboardScreens/AllProjectsScreen'
 import HomeScreen from 'screens/DashboardScreens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
@@ -13,6 +14,7 @@ import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
 import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
 import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
 import BillingHistoryScreen from 'screens/Stripe/BillingHistoryScreen'
+import ClientsScreen from 'screens/DashboardScreens/ClientsScreen'
 
 import NewProjectModal from 'components/Projects/NewProjectModal'
 import Layout, { LayoutProps } from 'components/Common/Layout'
@@ -36,6 +38,7 @@ import ProfileIcon from '@material-ui/icons/Person'
 import ManageIcon from '@material-ui/icons/Apartment'
 import BrandingIcon from '@material-ui/icons/Brush'
 import SubscriptionIcon from '@material-ui/icons/LocalActivity'
+import AccountBoxIcon from '@material-ui/icons/AccountBox'
 
 import { createNewProjectRequest } from 'actions/projectActions'
 import SubscriptionScreen from 'screens/AccountScreens/SubscriptionScreen'
@@ -53,6 +56,7 @@ export const DashboardTabIds = {
   projects: 'projects',
   portfolio: 'portfolio',
   invoices: 'invoices',
+  clients: 'clients',
   settings: 'settings'
 }
 
@@ -158,13 +162,19 @@ const MainScreen = ({
         }
       case DashboardTabIds.settings:
         return {
-          id,
+          id: 'manage',
           text: 'Settings',
           icon: <SettingsIcon {...iconProps} />,
           onPress: () => {
             history.replace(`/manage`)
             setScreenView(ScreenViews.account)
           }
+        }
+      case DashboardTabIds.clients:
+        return {
+          id,
+          text: 'Clients',
+          icon: <AccountBoxIcon {...iconProps} />
         }
       case SharedTabIds.security:
         return {
@@ -222,8 +232,6 @@ const MainScreen = ({
   const [activeTab, setActiveTab] = useState(
     getTab(history.location.pathname.replace('/', ''))
   )
-
-  console.log(activeTab)
 
   const getSidebarButtonConfig = (): ButtonConfig => {
     if (screenView === ScreenViews.account) {
@@ -309,6 +317,11 @@ const MainScreen = ({
           <Route path='/subscription' component={SubscriptionScreen} />
           <Route path='/security' component={SecurityScreen} />
           <Route path='/invoices' component={InvoicesScreen} />
+          <Route path='/clients' component={ClientsScreen} />
+          <Route
+            path='/clientInvoices/:accId/:id'
+            component={InvoicesClientScreen}
+          />
           <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
           <Route
             path='/portfolioFolder/:id'

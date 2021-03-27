@@ -2,7 +2,7 @@ import {
   getPortfolioRequest,
   requestSharePortfolio
 } from 'actions/portfolioActions'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useContext } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
 import { Portfolio, Project, Account, User, Client } from 'utils/Interface'
@@ -24,6 +24,7 @@ import { ProjectSelectBar } from 'components/Portfolio/ProjectSelectBar'
 import { PortfolioProjectDetails } from 'components/Portfolio/PortfolioDetails'
 import clsx from 'clsx'
 import { EmptyIcon } from 'components/EmptyIcon'
+import { ToastContext, ToastTypes } from 'context/Toast'
 
 type StateProps = {
   portfolio: Portfolio
@@ -79,6 +80,7 @@ const PortfolioSingleScreen = ({
   sharePortfolioLoading
 }: Props) => {
   const classes = useStyles()
+  const toastContext = useContext(ToastContext)
 
   const {
     text: textColor,
@@ -102,7 +104,7 @@ const PortfolioSingleScreen = ({
     if (id) {
       getPortfolio(id)
     }
-  }, [match])
+  }, [match.params?.id])
   // Set selected project id when portfolio is first loaded or projects change
   useEffect(() => {
     if (
@@ -147,6 +149,12 @@ const PortfolioSingleScreen = ({
   const handleDelete = () => {}
 
   const prepareShare = () => {
+    if (!portfolio.projects.length) {
+      return toastContext.showToast({
+        title: 'Add projects before sharing.',
+        type: ToastTypes.info
+      })
+    }
     setShareModalOpen(true)
   }
 
@@ -186,10 +194,12 @@ const PortfolioSingleScreen = ({
       imageCount = imageCount + p.images.length
     })
 
+    const hasAssets = !!imageCount && !!videoCount
+
     return `${portfolioProjects.length} project${
-      portfolioProjects.length > 1 ? 's' : ''
-    } with ${!!imageCount ? imageCount + ' Images' : ''}${
-      !!imageCount && !!videoCount && ' and '
+      portfolioProjects.length > 1 || portfolioProjects.length === 0 ? 's' : ''
+    }${hasAssets ? ' with ' : ''}${!!imageCount ? imageCount + ' Images' : ''}${
+      hasAssets ? ' and ' : ''
     }${!!videoCount ? videoCount + ' Videos' : ''}`
   }
 
@@ -206,6 +216,7 @@ const PortfolioSingleScreen = ({
 
       <ProjectSelectBar
         {...{
+          onAddProject: handleChangeProjects,
           projects: portfolioProjects,
           onSelect: setProjectId,
           selectedProject: selectedProjectData,

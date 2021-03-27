@@ -9,6 +9,8 @@ import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { AccountTabIds } from 'routes/DashboardSwitch'
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
+import LightDarkThemeButton from 'components/Common/Button/LightDarkThemeButton'
+import { AppIconButton } from '../Core/AppIconButton'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -71,22 +73,28 @@ function Toolbar(props: Props) {
       </div>
 
       {props.user && (
-        <div>
+        <div className='row'>
+          <LightDarkThemeButton style={{ marginRight: 10 }} />
           {!props.isNotificationIcon ? (
-            <IconButton
-              style={{ borderRadius: 100, width: 10, marginRight: 25 }}>
-              <NotificationIcon className={classes.notificationIcon} />
-            </IconButton>
+            <AppIconButton
+              Icon={NotificationIcon}
+              style={{ marginRight: 18 }}
+            />
           ) : null}
-          <IconButton
-            style={{ borderRadius: 100, width: 45, marginRight: 22 }}
-            onClick={handleProfileClick}>
+
+          <div onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
             <img
               src={props.user.avatar ? props.user.avatar : defaultProfileIcon}
-              style={{ borderRadius: 20, height: 33, width: 33 }}
-              alt={'img'}
+              style={{
+                borderRadius: 20,
+                height: 33,
+                width: 33,
+                marginRight: 22,
+                cursor: 'pointer'
+              }}
+              alt={'profile-img'}
             />
-          </IconButton>
+          </div>
         </div>
       )}
     </div>
@@ -95,7 +103,7 @@ function Toolbar(props: Props) {
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    color: 'white',
+    color: theme.palette.text.background,
     fontWeight: 'normal',
     [theme.breakpoints.down('sm')]: {
       fontSize: 18
@@ -117,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.default
+    borderBottomColor: theme.palette.background.surface
   },
   appIcon: {
     color: theme.palette.primary.light,

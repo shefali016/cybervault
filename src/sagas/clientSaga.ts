@@ -13,8 +13,9 @@ type GetParams = {
   accountId: string
 }
 
-function* getAllClientRequest({ account }: GetParams) {
+function* getAllClientRequest({}: GetParams) {
   try {
+    const account = yield select((state) => state.auth.account)
     const response = yield call(getClients, account)
     yield put(Actions.getAllClientsSuccess(response))
   } catch (error: any) {

@@ -216,7 +216,7 @@ const PortfoliosScreen = ({
             classes.portfolioBoxWrap,
             'responsiveHorizontalPadding'
           )}>
-          <div className={classes.portfolioBox}>
+          <div className={clsx('dropBox', classes.portfolioBox)}>
             <FolderIcon className={classes.uploadFolderIcon} />
             <Typography variant='h6'>Create Folder</Typography>
           </div>

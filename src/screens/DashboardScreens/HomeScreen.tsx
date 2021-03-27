@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { deleteProjectRequest, getProjects } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
@@ -20,14 +20,13 @@ import ProjectIcon from '@material-ui/icons/Collections'
 import { GetProjectParams } from 'utils/Interface/api'
 import { activeProjects } from 'utils/selectors'
 import { ProjectFilters, ProjectStatuses } from 'utils/enums'
-
-const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
-
-type Props = { projects: Array<Types.Project> }
+import InvoiceIcon from '@material-ui/icons/Receipt'
+import { WIDGET_ITEM_HEIGHT } from 'utils/globalStyles'
+import { ReduxState } from 'reducers/rootReducer'
 
 const HomeScreen = (props: any) => {
   useEffect(() => {
-    props.getClientsRequest(props.userData.account)
+    props.getClientsRequest()
     props.getProjects(
       {
         where: ['status', '==', ProjectStatuses.PROGRESS],
@@ -40,76 +39,88 @@ const HomeScreen = (props: any) => {
   const classes = useStyles()
   const theme = useTheme()
 
+  const handleProjectClick = (project: Types.Project) =>
+    props.history.push(`/project/${project.id}`)
+
   return (
-    <div>
-      <Widget
-        data={props.projects}
-        title={'Active Projects'}
-        EmptyComponent={
-          <EmptyIcon
-            title={'No active projects'}
-            Icon={ProjectIcon}
-            className={'widgetEmptyIcon'}
-          />
-        }
-        loading={props.activeProjectsLoading}
-        itemHeight={getWidgetCardHeight(theme)}
-        style={{ height: '70vw', maxHeight: 280 }}
-        renderItem={(item) => (
-          <ProjectCard
-            clients={props.clients}
-            project={item}
-            key={`project-card-${item.id}`}
-            style={{
-              paddingRight: theme.spacing(3)
-            }}
-            history={props.history}
-            account={props.userData.account}
-            userInfo={props.userData.user}
-            onDelete={props.deleteProject}
-            deletingId={props.deletingProjectId}
-          />
-        )}
-      />
+    <div className='screenContainer'>
+      <div className={'screenInner'}>
+        <Widget
+          data={props.activeProjects}
+          title={'Active Projects'}
+          EmptyComponent={
+            <EmptyIcon
+              title={'No active projects'}
+              Icon={ProjectIcon}
+              className={'widgetEmptyIcon'}
+            />
+          }
+          loading={props.activeProjectsLoading}
+          style={{ height: WIDGET_ITEM_HEIGHT }}
+          renderItem={(item) => (
+            <ProjectCard
+              clients={props.clients}
+              project={item}
+              key={`project-card-${item.id}`}
+              containerStyle={{
+                paddingRight: theme.spacing(3)
+              }}
+              onClick={handleProjectClick}
+              account={props.userData.account}
+              userInfo={props.userData.user}
+              onDelete={props.deleteProject}
+              deletingId={props.deletingProjectId}
+            />
+          )}
+        />
 
-      <div className={'widgetOuter'}>
-        <Typography
-          variant={'h6'}
-          className={clsx('widgetTitle', 'responsiveHorizontalPadding')}>
-          Invoicing and Analytics
-        </Typography>
-        <div
-          className={clsx(
-            'widgetResponsiveInner',
-            'responsiveHorizontalPadding'
-          )}>
-          <PendingInvoices />
-          <ProfitsExpenses />
-          <ProjectCount projectCount={props.projects.length} />
-          <IncomeThisMonth />
+        <div className={'widgetOuter'}>
+          <Typography
+            variant={'h6'}
+            className={clsx('widgetTitle', 'responsiveHorizontalPadding')}>
+            Invoicing and Analytics
+          </Typography>
+          <div
+            className={clsx(
+              'widgetResponsiveInner',
+              'responsiveHorizontalPadding'
+            )}>
+            <PendingInvoices />
+            <ProfitsExpenses />
+            <ProjectCount projectCount={props.activeProjects.length} />
+            <IncomeThisMonth />
+          </div>
         </div>
-      </div>
 
-      <Widget
-        title={'Unpaid Invoices'}
-        data={UNPAID_INVOICES_DATA}
-        renderItem={(item) => (
-          <UnpaidInvoices
-            projectDetails={item}
-            key={`unpaid-invoices-${item.id}`}
-            style={{ paddingRight: theme.spacing(3) }}
-          />
-        )}
-        emptyMessage={'No Projects found'}
-      />
+        <Widget
+          title={'Unpaid Invoices'}
+          data={[]}
+          renderItem={(item) => (
+            <UnpaidInvoices
+              projectDetails={item}
+              key={`unpaid-invoices-${item.id}`}
+              style={{ paddingRight: theme.spacing(3) }}
+            />
+          )}
+          EmptyComponent={
+            <EmptyIcon
+              title={'No unpaid invoices'}
+              Icon={InvoiceIcon}
+              className={'widgetEmptyIcon'}
+            />
+          }
+        />
+      </div>
     </div>
   )
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: ReduxState) => ({
   newProjectData: state.project.newProjectData,
-  projects: activeProjects(state),
-  activeProjectsLoading: state.project.isLoading,
+  activeProjects: activeProjects(state),
+  activeProjectsLoading: state.project.loadingFilters.has(
+    ProjectFilters.ACTIVE
+  ),
   userData: state.auth,
   clients: state.clients.clientsData,
   deletingProjectId: state.project.deletingId
@@ -118,8 +129,8 @@ const mapDispatchToProps = (dispatch: any) => ({
   getProjects: (params: GetProjectParams, filter: ProjectFilters) => {
     return dispatch(getProjects(params, filter))
   },
-  getClientsRequest: (account: Types.Account) => {
-    return dispatch(getAllClientsRequest(account))
+  getClientsRequest: () => {
+    return dispatch(getAllClientsRequest())
   },
   deleteProject: (projectId: string) => {
     return dispatch(deleteProjectRequest(projectId))

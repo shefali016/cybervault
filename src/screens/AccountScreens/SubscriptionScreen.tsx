@@ -161,9 +161,9 @@ const SubscriptionScreen = ({
             customerId={user.customerId}
           />
 
-          <Section title={'Your Plan'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Your Plan'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -201,9 +201,9 @@ const SubscriptionScreen = ({
             </div>
           </Section>
 
-          <Section title={'Storage'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Storage'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -225,9 +225,9 @@ const SubscriptionScreen = ({
             </div>
           </Section>
 
-          <Section title={'Payment Details'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Payment Details'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -270,9 +270,9 @@ const SubscriptionScreen = ({
             </div>
           </Section>
 
-          <Section title={'Billing History'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Billing History'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>

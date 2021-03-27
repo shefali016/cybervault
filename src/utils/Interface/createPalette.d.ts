@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as createPalette from '@material-ui/core/styles/createPalette'
+import { ColorThemes } from 'utils/enums'
 
 declare module '@material-ui/core/styles/createPalette' {
   export interface PaletteOptions {
@@ -15,6 +16,7 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 
   export interface Palette {
+    colorTheme: ColorThemes
     border: string
     status: {
       inProgress: React.CSSProperties['color']
@@ -24,7 +26,7 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 
   export interface TypeBackground {
-    shadow: string,
+    shadow: string
     default: string
     secondary: string
     paper: string
@@ -40,5 +42,6 @@ declare module '@material-ui/core/styles/createPalette' {
     hint: string
     paper: string
     meta: string
+    placeholder: string
   }
 }

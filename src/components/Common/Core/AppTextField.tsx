@@ -51,7 +51,7 @@ const AppTextField = (
   const theme = useTheme()
   const currentDate = new Date().toISOString().slice(0, 10)
 
-  const dynamicInputStyle = useMemo(() => {
+  const getInputStyle = () => {
     if (multiline) {
       return darkStyle
         ? classes.multilineInputRootDark
@@ -60,7 +60,9 @@ const AppTextField = (
       return darkStyle ? classes.inputRootDark : classes.inputRoot
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [multiline, darkStyle])
+  }
+
+  const dynamicInputStyle = getInputStyle()
 
   return (
     <React.Fragment>
@@ -149,15 +151,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 0
   },
   dateRootDark: {
-    color: theme.palette.common.white,
+    color: theme.palette.text.placeholder,
     '&$labelFocused': {
-      color: theme.palette.common.white
+      color: theme.palette.text.placeholder
     }
   },
   dateRootDarkFilled: {
-    color: theme.palette.common.white,
+    color: theme.palette.text.placeholder,
     '&$labelFocused': {
-      color: theme.palette.common.white
+      color: theme.palette.text.placeholder
     },
     marginTop: 0
   },
@@ -181,7 +183,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     fontWeight: 500,
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.grey[500]
+      borderColor: theme.palette.border
     },
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: theme.palette.primary.light
@@ -192,7 +194,7 @@ const useStyles = makeStyles((theme) => ({
   },
   inputRoot: {
     backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    color: theme.palette.grey[900],
+    color: theme.palette.text.paper,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -209,13 +211,13 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.background
   },
   labelRoot: {
-    color: theme.palette.grey[500],
+    color: theme.palette.text.placeholder,
     '&$labelFocused': {
       color: theme.palette.primary.light
     }
   },
   labelRootFilled: {
-    color: theme.palette.grey[500],
+    color: theme.palette.text.placeholder,
     '&$labelFocused': {
       color: theme.palette.primary.light
     }
