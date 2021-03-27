@@ -18,8 +18,6 @@ AWS.config.update({
 
 let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 
-// var s3 = new AWS.S3()
-
 router.post('/convert', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
