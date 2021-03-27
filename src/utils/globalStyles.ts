@@ -145,6 +145,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       left: 0,
       bottom: 0
     },
+
+    // Screen
+
     '.screenTopPadding': {
       paddingTop: theme.spacing(6),
       [theme.breakpoints.down('sm')]: {
@@ -207,6 +210,31 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
+
+    // Screen
+
+    // Section
+
+    '.section': { marginBottom: theme.spacing(4) },
+    '.sectionInner': {
+      background: theme.palette.background.paper,
+      borderRadius: theme.shape.borderRadius,
+      padding: '15px 25px',
+      color: theme.palette.text.paper,
+      display: 'flex',
+      alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
+      }
+    },
+    '.sectionTextArea': {
+      flex: 1,
+      [theme.breakpoints.down('md')]: {
+        marginBottom: theme.spacing(4)
+      }
+    },
+    // Section
+
     '.centerContent': {
       display: 'flex',
       flexDirection: 'column',
@@ -346,7 +374,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     // Section
-    '.sectionInner': {
+    '.sectionInner2': {
       background: theme.palette.common.white,
       borderRadius: theme.shape.borderRadius,
       padding: '15px 25px',

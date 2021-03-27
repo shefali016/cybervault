@@ -206,67 +206,6 @@ const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: COLUMN
   },
-  textFiledContainer: {
-    display: FLEX,
-    flex: 1,
-    flexDirection: ROW,
-    justifyContent: CENTER,
-    marginBottom: 20
-  },
-  textField: {
-    width: '90%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    paddingBottom: 0,
-    marginTop: 0,
-    marginBottom: 0,
-    fontWeight: 500,
-    fontSize: 8,
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
-      borderRadius: 20
-    },
-    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    }
-  },
-  input: {
-    color: PRIMARY_COLOR,
-    fontSize: 8
-  },
-  inputRoot: {
-    fontSize: 10,
-    height: 25
-  },
-  labelRoot: {
-    fontSize: 10,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-      marginTop: 2
-    },
-    height: 25,
-    marginTop: -5
-  },
-  labelRootFilled: {
-    fontSize: 10,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR,
-      marginTop: 2
-    },
-    height: 25,
-    marginTop: 0
-  },
-  labelFocused: {},
-  closeButton: {
-    position: POSITION_ABSOLUTE,
-    top: 10,
-    right: 10
-  },
   textSecondary: {
     color: theme.palette.text.meta,
     marginTop: theme.spacing(3),

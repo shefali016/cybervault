@@ -292,68 +292,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: ROW,
     marginBottom: 20
   },
-  textField: {
-    width: '90%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    paddingBottom: 0,
-    marginTop: 0,
-    marginBottom: 0,
-    fontWeight: 500,
-    fontSize: 8,
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
-      borderRadius: 20
-    },
-    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    }
-  },
-  input: {
-    color: PRIMARY_COLOR,
-    fontSize: 8
-  },
-  textFieldDes: {
-    fontWeight: 500,
-    fontSize: 8,
-    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: GREY_COLOR,
-      borderRadius: 20
-    },
-    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    },
-    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: PRIMARY_COLOR
-    },
-    marginBottom: 20
-  },
-  inputRootDes: {
-    fontSize: 12,
-    minHeight: 31
-  },
-  inputRoot: {
-    fontSize: 12,
-    height: 31
-  },
-  labelRoot: {
-    fontSize: 12,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
-    }
-  },
-  labelRootFilled: {
-    fontSize: 12,
-    color: GREY_COLOR,
-    '&$labelFocused': {
-      color: PRIMARY_DARK_COLOR
-    }
-  },
-  labelFocused: {},
   addMore: {
     marginTop: -10,
     marginBottom: 20

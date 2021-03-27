@@ -94,6 +94,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center'
   },
   cellWrapper: { color: '#fff', cursor: 'pointer' },
-  row: { borderColor: theme.palette.background.surfaceHighlight },
+  row: { borderColor: theme.palette.border },
   lastRow: { borderColor: 'transparent' }
 }))

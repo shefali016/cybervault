@@ -19,6 +19,7 @@ import { ColorThemes } from 'utils/enums'
 
 const darkPalette = {
   // action: { hoverOpacity: 0.3 },
+  colorTheme: ColorThemes.DARK,
   primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
   background: {
     shadow: '#101010',
@@ -33,9 +34,10 @@ const darkPalette = {
     secondary: '#e3e3e3',
     background: '#ffffff',
     paper: '#24262b',
-    meta: '#A3A5A9'
+    meta: '#A3A5A9',
+    placeholder: '#878888'
   },
-  border: '#e6e6e6',
+  border: '#40403f',
   status: {
     inProgress: '#ffea00',
     completed: '#4caf50',
@@ -45,6 +47,7 @@ const darkPalette = {
 
 const lightPalette = {
   // action: { hoverOpacity: 0.3 },
+  colorTheme: ColorThemes.LIGHT,
   primary: { main: '#0773FF', light: '#5ea5fc', dark: '#3462fc' },
   background: {
     shadow: '#CCCCCC',
@@ -59,9 +62,10 @@ const lightPalette = {
     secondary: '#606060',
     background: '#030302',
     paper: '#030302',
-    meta: '#606060'
+    meta: '#606060',
+    placeholder: '#878888'
   },
-  border: '#e6e6e6',
+  border: '#CCCCCC',
   status: {
     inProgress: '#ffea00',
     completed: '#4caf50',
