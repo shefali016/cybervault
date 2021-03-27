@@ -324,6 +324,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     '.widgetItem': {
+      backgroundColor: theme.palette.common.white,
       width: '70vw',
       height: '70vw',
       maxWidth: 280,
@@ -333,8 +334,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
       }
     },
     '.widgetItemSmall': {
@@ -347,8 +349,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
       },
       [theme.breakpoints.down('sm')]: {
         width: 'auto',
@@ -369,8 +372,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
         width: 'auto',
         maxWidth: '100%'
       },
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}20`,
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
       }
     },
     // Section
@@ -494,8 +498,14 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.lightGrey': { color: theme.palette.grey[100] },
     '.shadowHover': {
       '&:hover': {
-        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
+        boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
       }
+    },
+    '.shadowDark': {
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}50`
+    },
+    '.shadow': {
+      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}30`
     },
     '.shadowLight': {
       boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}10`

@@ -103,7 +103,7 @@ export const ProjectCard = ({
         client={client}
         userInfo={userInfo}
       />
-      <Card className={'widgetItem'} elevation={5}>
+      <Card className={'widgetItem'}>
         <div className={classes.imageWrapper} onClick={handleClick}>
           {!!clientLogo && (
             <img src={clientLogo} alt='client-logo' className={classes.image} />
