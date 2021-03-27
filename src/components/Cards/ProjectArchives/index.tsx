@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Card, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   BOLD,
@@ -31,8 +31,8 @@ const ProjectArchives = ({ project, clients, onClick, style }: Props) => {
 
   return (
     <div style={style}>
-      <div
-        className={clsx(classes.button, 'shadowHover')}
+      <Card
+        className={clsx('card', classes.card, 'shadowHover')}
         onClick={() => onClick(project)}>
         <div className={classes.imgWrapper}>
           {client && client.logo && (
@@ -52,13 +52,13 @@ const ProjectArchives = ({ project, clients, onClick, style }: Props) => {
         </div>
 
         <ArrowForwardIosIcon fontSize='small' className={classes.arrowIcon} />
-      </div>
+      </Card>
     </div>
   )
 }
 const useStyles = makeStyles((theme) => ({
   arrowIcon: { marginLeft: theme.spacing(2) },
-  button: {
+  card: {
     display: 'flex',
     alignItems: 'center',
     borderRadius: 20,

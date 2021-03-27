@@ -44,14 +44,15 @@ const useStyles = makeStyles((theme) => ({
   },
   inActiveButtonImage: { color: theme.palette.grey[800] },
   button: {
-    background: 'rgba(0,0,0,0.08)',
+    cursor: 'pointer',
+    background: 'rgba(0,0,0,0.05)',
     display: 'flex',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
     zIndex: 2000,
     height: '100%',
     '&:hover': {
-      background: 'rgba(0,0,0,0.2)'
+      background: 'rgba(0,0,0,0.1)'
     },
     transition: theme.transitions.create(['background'])
   }

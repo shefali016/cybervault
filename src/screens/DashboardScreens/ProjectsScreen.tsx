@@ -13,6 +13,8 @@ import { User, Account, Project } from 'utils/Interface'
 import { deleteProjectRequest, getProjects } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
 import ArchiveIcon from '@material-ui/icons/Archive'
+import { ReduxState } from 'reducers/rootReducer'
+import { WIDGET_ITEM_HEIGHT } from 'utils/globalStyles'
 
 export const ProjectsScreen = (props: any) => {
   const isTablet = useTabletLayout()
@@ -44,6 +46,8 @@ export const ProjectsScreen = (props: any) => {
         <Widget
           title={'Recent Projects'}
           data={props.recentProjects}
+          loading={props.recentProjectsLoading}
+          style={{ height: WIDGET_ITEM_HEIGHT }}
           renderItem={(item) => (
             <ProjectCard
               account={props.account} //added as Project card is expecting account data
@@ -51,7 +55,7 @@ export const ProjectsScreen = (props: any) => {
               style={{ paddingRight: theme.spacing(3) }}
               clients={props.clients}
               key={`project-card-${item.id}`}
-              history={props.history}
+              onClick={handleProjectClick}
               userInfo={props.user}
               onDelete={props.deleteProject}
               deletingId={props.deletingProjectId}
@@ -68,6 +72,7 @@ export const ProjectsScreen = (props: any) => {
         <Widget
           title={'Projects Archives'}
           data={props.archivedProjects}
+          loading={props.archivedProjectsLoading}
           renderItem={(item) => (
             <ProjectArchives
               onClick={handleProjectClick}
@@ -93,11 +98,17 @@ export const ProjectsScreen = (props: any) => {
   )
 }
 
-const mapState = (state: any) => ({
+const mapState = (state: ReduxState) => ({
   recentProjects: filteredProjects(state, { filter: ProjectFilters.RECENT }),
+  recentProjectsLoading: state.project.loadingFilters.has(
+    ProjectFilters.RECENT
+  ),
   archivedProjects: filteredProjects(state, {
     filter: ProjectFilters.ARCHIVED
   }),
+  archivedProjectsLoading: state.project.loadingFilters.has(
+    ProjectFilters.ARCHIVED
+  ),
   user: state.auth.user as User,
   account: state.auth.account as Account,
   clients: state.clients.clientsData,

@@ -21,10 +21,8 @@ import { GetProjectParams } from 'utils/Interface/api'
 import { activeProjects } from 'utils/selectors'
 import { ProjectFilters, ProjectStatuses } from 'utils/enums'
 import InvoiceIcon from '@material-ui/icons/Receipt'
-
-const UNPAID_INVOICES_DATA = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
-
-type Props = { projects: Array<Types.Project> }
+import { WIDGET_ITEM_HEIGHT } from 'utils/globalStyles'
+import { ReduxState } from 'reducers/rootReducer'
 
 const HomeScreen = (props: any) => {
   useEffect(() => {
@@ -41,11 +39,14 @@ const HomeScreen = (props: any) => {
   const classes = useStyles()
   const theme = useTheme()
 
+  const handleProjectClick = (project: Types.Project) =>
+    props.history.push(`/project/${project.id}`)
+
   return (
     <div className='screenContainer'>
       <div className={'screenInner'}>
         <Widget
-          data={props.projects}
+          data={props.activeProjects}
           title={'Active Projects'}
           EmptyComponent={
             <EmptyIcon
@@ -55,17 +56,16 @@ const HomeScreen = (props: any) => {
             />
           }
           loading={props.activeProjectsLoading}
-          itemHeight={getWidgetCardHeight(theme)}
-          style={{ height: '70vw', maxHeight: 280 }}
+          style={{ height: WIDGET_ITEM_HEIGHT }}
           renderItem={(item) => (
             <ProjectCard
               clients={props.clients}
               project={item}
               key={`project-card-${item.id}`}
-              style={{
+              containerStyle={{
                 paddingRight: theme.spacing(3)
               }}
-              history={props.history}
+              onClick={handleProjectClick}
               account={props.userData.account}
               userInfo={props.userData.user}
               onDelete={props.deleteProject}
@@ -87,7 +87,7 @@ const HomeScreen = (props: any) => {
             )}>
             <PendingInvoices />
             <ProfitsExpenses />
-            <ProjectCount projectCount={props.projects.length} />
+            <ProjectCount projectCount={props.activeProjects.length} />
             <IncomeThisMonth />
           </div>
         </div>
@@ -115,10 +115,12 @@ const HomeScreen = (props: any) => {
   )
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: ReduxState) => ({
   newProjectData: state.project.newProjectData,
-  projects: activeProjects(state),
-  activeProjectsLoading: state.project.isLoading,
+  activeProjects: activeProjects(state),
+  activeProjectsLoading: state.project.loadingFilters.has(
+    ProjectFilters.ACTIVE
+  ),
   userData: state.auth,
   clients: state.clients.clientsData,
   deletingProjectId: state.project.deletingId

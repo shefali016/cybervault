@@ -40,9 +40,12 @@ const LandingRoutes = () => {
 type Props = { isLoggedIn?: boolean }
 
 const AppRoutes = () => {
-  const theme = createTheme(ColorThemes.LIGHT)
+  const { isLoggedIn, colorTheme } = useSelector((state: ReduxState) => ({
+    isLoggedIn: state.auth.isLoggedIn,
+    colorTheme: state.theme.colorTheme
+  }))
 
-  const isLoggedIn = useSelector((state: ReduxState) => state.auth.isLoggedIn)
+  const theme = createTheme(colorTheme)
 
   const AuthRoutes = isLoggedIn ? LoggedInRoutes() : LoggedOutRoutes()
 

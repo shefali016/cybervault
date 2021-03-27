@@ -1,9 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { ColorThemes } from './enums'
 
 export const GlobalStyles = () => {
   useGlobalStyles()
   return null
 }
+
+export const WIDGET_ITEM_HEIGHT = 280
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
@@ -169,7 +172,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
     '.screenInner': {
       width: '100%',
-      maxWidth: 1600,
+      maxWidth: 1500,
       alignSelf: 'center'
     },
     '.screenInnerMd': {
@@ -334,11 +337,22 @@ export const useGlobalStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3)
       }
     },
+    '.gridList': {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 0.3333fr))',
+      gap: theme.spacing(3),
+      [theme.breakpoints.down(1000)]: {
+        gridTemplateColumns: 'minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
+        [theme.breakpoints.down(500)]: {
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))'
+        }
+      }
+    },
     '.widgetItem': {
       width: '70vw',
-      height: '70vw',
+      minWidth: 280,
       maxWidth: 280,
-      maxHeight: 280,
+      height: WIDGET_ITEM_HEIGHT,
       borderRadius: 15,
       display: 'flex',
       flexDirection: 'column',
@@ -416,6 +430,35 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius,
       overflow: 'hidden'
     },
+    '.dropBox': {
+      padding: theme.spacing(3),
+      borderRadius: '18px',
+      border: '2px dashed #9ea0a28c',
+      textAlign: 'center',
+      cursor: 'pointer',
+      color: theme.palette.text.meta,
+      transition: theme.transitions.create(
+        ['border', 'background', 'color', 'opacity'],
+        {
+          duration: 500
+        }
+      ),
+      '&:hover': {
+        border: `2px dashed ${theme.palette.grey[600]}`,
+        color: theme.palette.text.background,
+        background:
+          theme.palette.colorTheme === ColorThemes.DARK
+            ? 'rgba(0,0,0,0.1)'
+            : theme.palette.background.surface,
+        '& $uploadFolderIcon': {
+          opacity: 1
+        },
+        '& $addIcon': {
+          opacity: 1
+        }
+      }
+    },
+
     // Text
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },

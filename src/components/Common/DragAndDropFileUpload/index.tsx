@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
 import ReactLoading from 'react-loading'
+import clsx from 'clsx'
 
 type Props = {
   isVideo?: boolean
@@ -31,7 +32,7 @@ export const DragAndDropUploader = ({
   })
 
   return (
-    <div {...getRootProps({ className: classes.dropzone })}>
+    <div {...getRootProps({ className: clsx('dropBox', classes.dropzone) })}>
       <input {...getInputProps()} />
       {isLoading && (
         <div className={classes.loaderWrapper}>

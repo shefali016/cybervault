@@ -165,7 +165,16 @@ const EditProjectScreen = (props: any) => {
         <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
           {projectData.campaignName}
         </Typography>
-        <PopoverButton menuItems={popoverMenuItems}>
+        <PopoverButton
+          menuItems={popoverMenuItems}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}>
           {({
             onClick,
             id
@@ -304,7 +313,7 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
-  const handleBack = () => props.history.push('/dashboard')
+  const handleBack = () => props.history.goBack()
 
   return (
     <div className={clsx('screenContainer', 'fullHeight')}>

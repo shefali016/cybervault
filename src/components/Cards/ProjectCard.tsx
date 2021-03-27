@@ -5,36 +5,39 @@ import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project, Client, Account } from 'utils/Interface'
+import { Project, Client, Account, User } from 'utils/Interface'
 import { Dot } from 'components/Common/Dot'
 import { getWidgetCardHeight } from 'utils'
 import InvoiceModal from 'components/Invoices/InvoiceModal'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
-
-const ITEM_HEIGHT = 48
+import clsx from 'clsx'
 
 type Props = {
   project: Project
   style?: {}
-  history?: any
-  clients?: Array<Client>
+  containerStyle?: {}
+  onClick: (project: Project) => void
+  clients: Array<Client>
   account: Account
-  userInfo?: any
-  onDelete?: (projectId: string) => void
+  userInfo: User
+  onDelete: (projectId: string) => void
   deletingId?: string
+  className?: string
 }
 
 export const ProjectCard = ({
   project,
   style,
-  history,
+  containerStyle,
+  onClick,
   account,
   userInfo,
   clients,
   onDelete,
-  deletingId
+  deletingId,
+  className
 }: Props) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const startConfirmingDelete = () => setConfirmingDelete(true)
@@ -46,9 +49,6 @@ export const ProjectCard = ({
 
   const [open, setOpen] = React.useState(false)
 
-  const editProject = (projectId: string) => {
-    history.push(`/project/${projectId}`)
-  }
   const sendInvoice = (projectId: string) => {
     setOpen(true)
   }
@@ -69,11 +69,11 @@ export const ProjectCard = ({
 
   const classes = useStyles()
 
-  const popoverMenuItems = [
+  const getMenuItems = () => [
     {
       title: 'View Project',
       Icon: AddBoxIcon,
-      onClick: () => editProject(project.id)
+      onClick: handleClick
     },
     {
       title: 'Send Invoice',
@@ -91,10 +91,10 @@ export const ProjectCard = ({
     }
   ]
 
-  const handleClick = () => editProject(project.id)
+  const handleClick = () => onClick(project)
 
   return (
-    <div style={style} className={classes.root}>
+    <div style={containerStyle} className={classes.root}>
       <InvoiceModal
         open={open}
         onRequestClose={onRequestClose}
@@ -103,7 +103,7 @@ export const ProjectCard = ({
         client={client}
         userInfo={userInfo}
       />
-      <Card className={'widgetItem'}>
+      <Card className={clsx('widgetItem', className)} style={style}>
         <div className={classes.imageWrapper} onClick={handleClick}>
           {!!clientLogo && (
             <img src={clientLogo} alt='client-logo' className={classes.image} />
@@ -155,7 +155,7 @@ export const ProjectCard = ({
               vertical: 'top',
               horizontal: 'left'
             }}
-            menuItems={popoverMenuItems}
+            menuItems={getMenuItems()}
           />
         </Grid>
       </Card>

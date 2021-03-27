@@ -11,13 +11,15 @@ type Props = {
   onClick: (portfolio: Portfolio) => void
   responsiveWidth?: boolean
   style?: {}
+  className?: string
 }
 
 export const PortfolioItem = ({
   portfolio,
   onClick,
   responsiveWidth = true,
-  style
+  style,
+  className
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
