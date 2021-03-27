@@ -1,19 +1,13 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   deleteProjectRequest,
   getAllProjectsRequest
 } from '../../actions/projectActions'
 import { getAllClientsRequest } from '../../actions/clientActions'
-import { Typography } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { COLUMN, FLEX } from 'utils/constants/stringConstants'
+import { makeStyles } from '@material-ui/core/styles'
 import * as Types from '../../utils/Interface'
-import clsx from 'clsx'
-import { Client, Row, Account } from 'utils/Interface'
-import { AppTable } from 'components/Common/Core/AppTable'
-import AccountBoxIcon from '@material-ui/icons/AccountBox'
-import Section from 'components/Common/Section'
+import { Client, Account } from 'utils/Interface'
 import AppTextField from 'components/Common/Core/AppTextField'
 import { AppIconButton } from 'components/Common/Core/AppIconButton'
 import AddIcon from '@material-ui/icons/Add'
@@ -48,7 +42,6 @@ const ClientsScreen = ({
     null
   )
   const classes = useStyles()
-  const theme = useTheme()
 
   const handleCurrentClientChange = (client: Client) => {
     setCurrentClient(client)
@@ -66,21 +59,17 @@ const ClientsScreen = ({
     [clients, searchTerm]
   )
 
-  const onClick = () => {}
-
-  const goToClient = (client: Client) => {
-    history.push(`/client/${client.id}`)
-  }
-
   const handleAddClientModalShow = () => {
     openAddClientModal()
   }
 
   const openAddClientModal = useCallback(() => setAddClientModalOpen(true), [])
-  const closeAddClientModal = useCallback(
-    () => [setAddClientModalOpen(false), setCurrentClient(null)],
-    []
-  )
+  const closeAddClientModal = useCallback(() => {
+    setAddClientModalOpen(false)
+    if (currentClient) {
+      setTimeout(() => setCurrentClient(null), 150)
+    }
+  }, [currentClient])
 
   const handleEditClientModalShow = (client: Client) => {
     handleCurrentClientChange(client)
@@ -98,10 +87,9 @@ const ClientsScreen = ({
           label={'Search for client'}
         />
         <div className={classes.sectionTitleContainer}></div>
-        <PopoverHover className={classes.temp} label={'Add Client'}>
+        <PopoverHover label={'Add Client'}>
           <AppIconButton
             Icon={AddIcon}
-            className={classes.iconContainer}
             style={{ paddingRight: '1px' }}
             onClick={handleAddClientModalShow}
             iconClassName={classes.iconButton}
@@ -114,14 +102,11 @@ const ClientsScreen = ({
   return (
     <div className={'screenContainer'}>
       <div className={'screenInner'}>
-        <div className={'responsivePadding'}>{renderHeader()}</div>
-
-        <div className={'screenInner'}>
+        <div className={'responsivePadding'}>
+          {renderHeader()}
           <ClientList
             clients={filteredClients}
-            onClick={goToClient}
             onEdit={handleEditClientModalShow}
-            className='responsivePadding'
           />
         </div>
       </div>
@@ -151,17 +136,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
-  invoicingWrapper: {
-    flexWrap: 'nowrap',
-    overflowX: 'auto',
-    whiteSpace: 'nowrap'
-  },
-  middleCardsWrapper: {
-    display: FLEX,
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: COLUMN
-    }
-  },
   sectionTitle: {
     marginBottom: theme.spacing(1),
     color: theme.palette.text.background
@@ -172,31 +146,12 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     overflowY: 'auto'
   },
-  widgetItem: {
-    [theme.breakpoints.up('sm')]: {
-      marginRight: theme.spacing(3)
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(3)
-    }
-  },
   sectionHeader: {
     display: 'flex',
-    alignItems: 'center'
-    // paddingLeft: theme.spacing(1.5)
+    alignItems: 'center',
+    paddingBottom: theme.spacing(1.5)
   },
   sectionTitleContainer: { flex: 1 },
-  projectCardsUl: {
-    margin: 0,
-    padding: 0,
-    overflow: 'hidden',
-    listStyle: 'none'
-  },
-  projectCardsli: {
-    float: 'left',
-    margin: '0 0 20px 0',
-    width: '25%'
-  },
   sectionInner: {
     display: 'flex',
     flexDirection: 'column',
@@ -216,9 +171,7 @@ const useStyles = makeStyles((theme) => ({
   iconButton: {
     height: 40,
     width: 40
-  },
-  iconContainer: {},
-  temp: {}
+  }
 }))
 
 export default connect(mapStateToProps)(ClientsScreen)

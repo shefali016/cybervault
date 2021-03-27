@@ -1,16 +1,9 @@
-// Take array of clients, renders list of clients, returns client item component
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { getAllClientsRequest } from '../../actions/clientActions'
+import React from 'react'
 import { Card, Typography } from '@material-ui/core'
-import { COLUMN, FLEX } from 'utils/constants/stringConstants'
-import * as Types from '../../utils/Interface'
 import clsx from 'clsx'
-import { Client, Row } from 'utils/Interface'
+import { Client } from 'utils/Interface'
 import { useStyles } from 'components/Portfolio/style'
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
-import { useTheme } from '@material-ui/core/styles'
 import { EditButton } from 'components/Common/Button/EditButton'
-import ClientModal from 'components/Common/Modal/ClientModal'
 
 type Props = {
   client: Client
@@ -20,27 +13,8 @@ type Props = {
   onEdit?: (client: Client) => void
 }
 
-export const ClientItem = ({
-  client,
-  onClick,
-  responsiveWidth = true,
-  style,
-  onEdit
-}: Props) => {
-  const [editClientModalOpen, setEditClientModalOpen] = useState(false)
+export const ClientItem = ({ client, style, onEdit }: Props) => {
   const classes = useStyles()
-  const theme = useTheme()
-
-  const handleEditClient = () => {}
-
-  const openEditClientModal = useCallback(
-    () => setEditClientModalOpen(true),
-    []
-  )
-  const closeEditClientModal = useCallback(
-    () => setEditClientModalOpen(false),
-    []
-  )
 
   return (
     <Card
