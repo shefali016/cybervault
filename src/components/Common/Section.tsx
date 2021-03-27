@@ -2,6 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import clsx from 'clsx'
+import { ColorThemes } from 'utils/enums'
 
 type Props = {
   title?: string
@@ -28,20 +29,25 @@ const Section = ({ title, children, className, style }: Props) => {
 const useStyles = makeStyles((theme) => ({
   sectionTitle: {
     marginBottom: theme.spacing(2),
-    color: theme.palette.grey[300]
+    color: theme.palette.text.secondary,
+    fontWeight: 500
   },
   section: {
-    backgroundColor: theme.palette.background.secondary,
+    backgroundColor:
+      theme.palette.colorTheme === ColorThemes.DARK
+        ? theme.palette.background.secondary
+        : theme.palette.background.default,
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(5),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,
-
+    boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}28`,
     [theme.breakpoints.down('sm')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2)
-    }
+    },
+    marginBottom: theme.spacing(4)
   }
 }))
 

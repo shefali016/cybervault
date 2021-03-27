@@ -5,12 +5,14 @@ import { Details } from '../../ProjectInfoDisplay/Details'
 import { AppDivider } from '../Core/AppDivider'
 import { EditButton } from '../Button/EditButton'
 import { Project } from 'utils/Interface'
+import clsx from 'clsx'
 
 type Props = {
   projectData: Project
   editInfo?: boolean
   onEdit?: () => void
   hideBorder?: boolean
+  headerClassName?: string
 }
 
 export const RenderProjectDetails = (props: Props) => {
@@ -18,7 +20,9 @@ export const RenderProjectDetails = (props: Props) => {
   return (
     <div className={classes.clientDetailsContainer}>
       <div className={classes.innerDiv}>
-        <Typography variant={'h5'} className={classes.title}>
+        <Typography
+          variant={'h5'}
+          className={clsx(classes.title, props.headerClassName)}>
           Project Details
         </Typography>
         {props.editInfo && <EditButton onClick={props.onEdit} />}

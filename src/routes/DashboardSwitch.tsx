@@ -3,7 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
 
-import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
+// import ProjectsScreen from 'screens/DashboardScreens/ProjectsScreen'
+import ProjectsScreen from 'screens/DashboardScreens/AllProjectsScreen'
 import HomeScreen from 'screens/DashboardScreens/HomeScreen'
 import ProfileScreen from 'screens/AccountScreens/ProfileScreen'
 import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
@@ -138,31 +139,32 @@ const MainScreen = ({
   )
 
   const getTab = (id: string): Tab => {
+    const iconProps = { className: 'sideBarIcon' }
     switch (id) {
       // Dashboard tabs
       case DashboardTabIds.projects:
         return {
           id,
           text: 'Projects',
-          icon: <ProjectIcon className={classes.listIconStyle} />
+          icon: <ProjectIcon {...iconProps} />
         }
       case DashboardTabIds.portfolio:
         return {
           id,
           text: 'Portfolios',
-          icon: <PortfolioIcon className={classes.listIconStyle} />
+          icon: <PortfolioIcon {...iconProps} />
         }
       case DashboardTabIds.invoices:
         return {
           id,
           text: 'Invoices',
-          icon: <InvoiceIcon className={classes.listIconStyle} />
+          icon: <InvoiceIcon {...iconProps} />
         }
       case DashboardTabIds.settings:
         return {
-          id,
+          id: 'manage',
           text: 'Settings',
-          icon: <SettingsIcon className={classes.listIconStyle} />,
+          icon: <SettingsIcon {...iconProps} />,
           onPress: () => {
             history.replace(`/manage`)
             setScreenView(ScreenViews.account)
@@ -178,26 +180,26 @@ const MainScreen = ({
         return {
           id,
           text: 'Security',
-          icon: <SecurityIcon className={classes.listIconStyle} />
+          icon: <SecurityIcon {...iconProps} />
         }
       // Account tabs
       case AccountTabIds.profile:
         return {
           id,
           text: 'Profile',
-          icon: <ProfileIcon className={classes.listIconStyle} />
+          icon: <ProfileIcon {...iconProps} />
         }
       case AccountTabIds.manage:
         return {
           id,
           text: 'Manage Account',
-          icon: <ManageIcon className={classes.listIconStyle} />
+          icon: <ManageIcon {...iconProps} />
         }
       case AccountTabIds.branding:
         return {
           id,
           text: 'Branding',
-          icon: <BrandingIcon className={classes.listIconStyle} />
+          icon: <BrandingIcon {...iconProps} />
         }
       case SharedTabIds.subscription:
       case ChildTabs.billing:
@@ -205,7 +207,7 @@ const MainScreen = ({
         return {
           id: 'subscription',
           text: 'Subscription',
-          icon: <SubscriptionIcon className={classes.listIconStyle} />
+          icon: <SubscriptionIcon {...iconProps} />
         }
 
       case DashboardTabIds.dashboard:
@@ -213,7 +215,7 @@ const MainScreen = ({
         return {
           id,
           text: 'Dashboard',
-          icon: <DashboardIcon className={classes.listIconStyle} />
+          icon: <DashboardIcon {...iconProps} />
         }
     }
   }
@@ -230,8 +232,6 @@ const MainScreen = ({
   const [activeTab, setActiveTab] = useState(
     getTab(history.location.pathname.replace('/', ''))
   )
-
-  console.log(activeTab)
 
   const getSidebarButtonConfig = (): ButtonConfig => {
     if (screenView === ScreenViews.account) {
@@ -342,9 +342,9 @@ const MainScreen = ({
 
 const useStyles = makeStyles((theme) => ({
   listIconStyle: {
-    marginRight: theme.spacing(5),
+    marginRight: theme.spacing(4),
     color: theme.palette.primary.light,
-    fontSize: theme.spacing(3)
+    fontSize: theme.spacing(3.2)
   },
   screen: {
     display: 'flex',

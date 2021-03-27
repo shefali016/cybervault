@@ -55,7 +55,7 @@ const Widget = ({
         </Typography>
       )}
       <div
-        style={style}
+        style={{ height: itemHeight, ...style }}
         className={clsx(
           classes.wrapper,
           tabletColumn ? classes.tabletColumn : undefined,
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     color: theme.palette.text.background
   },
-  loader: {}
+  loader: { marginLeft: theme.spacing(2) }
 }))
 
 export default Widget

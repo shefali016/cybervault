@@ -5,41 +5,41 @@ import AddBoxIcon from '@material-ui/icons/AddBox'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp'
 import { CENTER, COLUMN, FLEX, ROW } from 'utils/constants/stringConstants'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import { Project, Client, Account } from 'utils/Interface'
+import { Project, Client, Account, User } from 'utils/Interface'
 import { Dot } from 'components/Common/Dot'
 import { getWidgetCardHeight } from 'utils'
 import InvoiceModal from 'components/Invoices/InvoiceModal'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
-
-const ITEM_HEIGHT = 48
+import clsx from 'clsx'
 
 type Props = {
   project: Project
-  isPopover?: boolean
   style?: {}
-  history?: any
-  clients?: Array<Client>
+  containerStyle?: {}
+  onClick: (project: Project) => void
+  clients: Array<Client>
   account: Account
-  userInfo?: any
-  onDelete?: (projectId: string) => void
+  userInfo: User
+  onDelete: (projectId: string) => void
   deletingId?: string
+  className?: string
 }
 
 export const ProjectCard = ({
   project,
-  isPopover,
   style,
-  history,
+  containerStyle,
+  onClick,
   account,
   userInfo,
   clients,
   onDelete,
-  deletingId
+  deletingId,
+  className
 }: Props) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
-
   const startConfirmingDelete = () => setConfirmingDelete(true)
   const stopConfirmingDelete = () => setConfirmingDelete(false)
   const handleDelete = () =>
@@ -49,9 +49,6 @@ export const ProjectCard = ({
 
   const [open, setOpen] = React.useState(false)
 
-  const editProject = (projectId: string) => {
-    history.push(`/project/${projectId}`)
-  }
   const sendInvoice = (projectId: string) => {
     setOpen(true)
   }
@@ -72,11 +69,11 @@ export const ProjectCard = ({
 
   const classes = useStyles()
 
-  const popoverMenuItems = [
+  const getMenuItems = () => [
     {
       title: 'View Project',
       Icon: AddBoxIcon,
-      onClick: () => editProject(project.id)
+      onClick: handleClick
     },
     {
       title: 'Send Invoice',
@@ -94,10 +91,10 @@ export const ProjectCard = ({
     }
   ]
 
-  const handleClick = () => editProject(project.id)
+  const handleClick = () => onClick(project)
 
   return (
-    <div style={style} className={classes.root}>
+    <div style={containerStyle} className={classes.root}>
       <InvoiceModal
         open={open}
         onRequestClose={onRequestClose}
@@ -106,7 +103,7 @@ export const ProjectCard = ({
         client={client}
         userInfo={userInfo}
       />
-      <Card className={'widgetItem'} elevation={5}>
+      <Card className={clsx('widgetItem', className)} style={style}>
         <div className={classes.imageWrapper} onClick={handleClick}>
           {!!clientLogo && (
             <img src={clientLogo} alt='client-logo' className={classes.image} />
@@ -122,7 +119,7 @@ export const ProjectCard = ({
             {project.campaignName}
           </Typography>
           <div className={classes.footerInfo}>
-            <Typography variant={'caption'} className={classes.bodyText}>
+            <Typography variant={'subtitle1'} className={classes.bodyText}>
               Value {project.campaignBudget}
             </Typography>
             <Dot
@@ -132,27 +129,35 @@ export const ProjectCard = ({
                 backgroundColor: theme.palette.text.meta
               }}
             />
-            <Typography variant={'caption'} className={classes.bodyText}>
+            <Typography variant={'subtitle1'} className={classes.bodyText}>
               {project.campaignDate}
             </Typography>
           </div>
         </div>
 
-        {isPopover ? (
-          <Grid
-            style={{ position: 'absolute', top: 5, right: 5, display: 'flex' }}>
-            {deletingId === project.id && (
-              <AppLoader
-                color={theme.palette.grey[800]}
-                className={classes.loader}
-                height={48}
-                width={48}
-              />
-            )}
+        <Grid
+          style={{ position: 'absolute', top: 10, right: 10, display: 'flex' }}>
+          {deletingId === project.id && (
+            <AppLoader
+              color={theme.palette.grey[800]}
+              className={classes.loader}
+              height={48}
+              width={48}
+            />
+          )}
 
-            <PopoverMoreIconButton menuItems={popoverMenuItems} />
-          </Grid>
-        ) : null}
+          <PopoverMoreIconButton
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left'
+            }}
+            menuItems={getMenuItems()}
+          />
+        </Grid>
       </Card>
       <ConfirmationDialog
         title='Delete Project'
@@ -174,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: COLUMN,
     justifyContent: CENTER,
     textAlign: 'center',
-    height: 75,
+    height: 80,
     overflow: 'hidden'
   },
   footerInfo: {
@@ -183,20 +188,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: ROW,
     justifyContent: CENTER,
     alignItems: CENTER
-  },
-  card: {
-    width: '70vw',
-    height: '70vw',
-    maxWidth: 280,
-    maxHeight: 280,
-    borderRadius: 15,
-    display: FLEX,
-    flexDirection: COLUMN,
-    position: 'relative',
-    overflow: 'hidden',
-    '&:hover': {
-      boxShadow: `0 0 10px 10px ${theme.palette.background.shadow}`
-    }
   },
   imageWrapper: {
     alignItems: CENTER,

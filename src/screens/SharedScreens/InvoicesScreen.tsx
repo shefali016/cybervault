@@ -28,14 +28,19 @@ import { AppTable } from 'components/Common/Core/AppTable'
 import ErrorIcon from '@material-ui/icons/Error'
 import { Invoice } from '../../utils/Interface'
 import { InvoicesTable } from 'components/Invoices/InvoicesTable'
+import { getCustomerBalance } from 'actions/stripeActions'
 
 type DispatchProps = { updateAccount: (account: Account) => void }
-type StateProps = { account: Account; invoices: Array<Invoice>; user: User }
+type StateProps = {
+  account: Account
+  invoices: Array<Invoice>
+  user: User
+  customerTotalBalance: number
+  availableBalance: number
+}
 type Props = { history: any } & StateProps & DispatchProps
 type State = {
   monthBalance: number
-  totalBalance: number
-  availableBalance: number
   numberOfInvoicesThisMonth: number
   creatingAccount: boolean
   stripeAccount: StripeAccount | null | undefined
@@ -47,16 +52,17 @@ const InvoicesScreen = ({
   updateAccount,
   invoices,
   history,
-  user
+  user,
+  customerTotalBalance,
+  availableBalance
 }: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
   const dispatch = useDispatch()
+
   const [state, setState] = useState<State>({
     monthBalance: 0,
-    totalBalance: 0,
-    availableBalance: 0,
     numberOfInvoicesThisMonth: 0,
     creatingAccount: false,
     stripeAccount: null,
@@ -65,8 +71,6 @@ const InvoicesScreen = ({
 
   const {
     monthBalance,
-    totalBalance,
-    availableBalance,
     numberOfInvoicesThisMonth,
     creatingAccount,
     stripeAccount,
@@ -79,6 +83,7 @@ const InvoicesScreen = ({
       account?.stripe?.accountId
     ) {
       _verifyStripeAccount()
+      dispatch(getCustomerBalance())
     }
     dispatch(getAllInvoiceRequest(account))
   }, [])
@@ -165,7 +170,9 @@ const InvoicesScreen = ({
   const renderHeader = () => (
     <div className={classes.sectionHeader}>
       <div className={classes.sectionTitleContainer}>
-        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+        <Typography
+          variant='h5'
+          style={{ fontWeight: 500, color: theme.palette.text.secondary }}>
           Invoices
         </Typography>
       </div>
@@ -216,20 +223,24 @@ const InvoicesScreen = ({
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            padding: theme.spacing(4)
           }}>
           <GradiantButton onClick={handleConnectStripeAccount}>
             <div className='row'>
               <Typography variant='body1'>Connect with</Typography>
               <img src={stripeLogo} height={40} />
+              {creatingAccount && (
+                <AppLoader
+                  color={theme.palette.primary.light}
+                  className={classes.loader}
+                  type='spinningBubbles'
+                  height={35}
+                  width={35}
+                />
+              )}
             </div>
           </GradiantButton>
-          {creatingAccount && (
-            <AppLoader
-              color={theme.palette.primary.light}
-              className={classes.loader}
-            />
-          )}
         </div>
       </div>
     )
@@ -239,9 +250,8 @@ const InvoicesScreen = ({
     <div className={'screenContainer'}>
       <div className={'screenInner'}>
         <div className='responsivePadding'>
-          <Section className={classes.balanceSection}>
+          <div className={classes.balanceSection}>
             <div className={classes.balanceSectionInner}>
-              <div></div>
               <div className={classes.balanceItemsContainer}>
                 <div className={classes.balanceItem}>
                   <Typography variant={'body1'}>This month</Typography>
@@ -257,11 +267,11 @@ const InvoicesScreen = ({
                   <Typography variant={'body1'}>Your balance</Typography>
                   <Typography variant={'h4'}>
                     {getCurrencySymbol()}
-                    {totalBalance.toFixed(2)}
+                    {(customerTotalBalance / 100).toFixed(2)}
                   </Typography>
                   <Typography variant={'caption'} className={'metaText'}>
                     {getCurrencySymbol()}
-                    {availableBalance.toFixed(2)} available
+                    {(availableBalance / 100).toFixed(2)} available
                   </Typography>
                 </div>
               </div>
@@ -277,13 +287,16 @@ const InvoicesScreen = ({
                   onClick={() => navigateStripeDashboard()}>
                   <Typography
                     variant={'caption'}
-                    style={{ color: theme.palette.primary.light }}>
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: 'bold'
+                    }}>
                     View payouts
                   </Typography>
                 </div>
               </div>
             </div>
-          </Section>
+          </div>
 
           <Section className={classes.section}>
             <div className={classes.sectionInner}>
@@ -293,7 +306,6 @@ const InvoicesScreen = ({
                 <div className={classes.tableContainer}>
                   <InvoicesTable
                     invoices={invoices}
-                    tableContainerClassName={classes.table}
                     history={history}
                     accountId={account.id}
                   />
@@ -316,12 +328,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     display: 'flex'
   },
-  table: {
-    borderRadius: theme.shape.borderRadius,
-    flex: 1
-  },
   viewPayouts: {
-    '&:hover': { background: theme.palette.common.black },
+    '&:hover': { background: theme.palette.background.surfaceHighlight },
     padding: `${2}px ${theme.spacing(2)}px`,
     transition: theme.transitions.create(['background']),
     borderRadius: theme.shape.borderRadius,
@@ -383,10 +391,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center'
   },
-  loader: { position: 'absolute', bottom: -80 },
+  loader: { marginLeft: theme.spacing(1) },
   balanceSection: {
     display: 'flex',
-    backgroundColor: theme.palette.background.default,
     padding: 0
   },
   balanceSectionInner: {
@@ -429,7 +436,9 @@ const useStyles = makeStyles((theme) => ({
 const mapState = (state: ReduxState): StateProps => ({
   account: state.auth.account as Account,
   invoices: state.invoice.allInvoicesData,
-  user: state.auth.user as User
+  user: state.auth.user as User,
+  customerTotalBalance: state.stripe.customerTotalBalance as number,
+  availableBalance: state.stripe.customerAvailableBalance as number
 })
 
 const mapDispatch: DispatchProps = { updateAccount }

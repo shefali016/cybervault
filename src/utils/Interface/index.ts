@@ -150,7 +150,7 @@ export interface SubscriptionDetails {
   extraFeatures?: Array<string>
   storage: number
   numProjects: number
-  transactionFee: string
+  transactionFee: number
 }
 
 export interface Subscription {
@@ -464,8 +464,8 @@ export type Project = {
   campaignExpenses: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt?: Date | string
-  updatedAt?: Date | string
+  createdAt: number
+  updatedAt: number
   id: string
   videos: Array<string>
   images: Array<string>
@@ -473,6 +473,10 @@ export type Project = {
   status: ProjectStatus
   featuredImage?: string
   isPaid?: boolean
+}
+
+export type ProjectCache = {
+  [id: string]: Project
 }
 
 export type InvoiceConversation = {

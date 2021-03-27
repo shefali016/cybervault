@@ -6,6 +6,7 @@ type Props = {
   Icon: any
   onClick?: (e: any) => void
   className?: string
+  iconClassName?: string
   style?: {}
   iconClass?: string
 }
@@ -14,12 +15,12 @@ export const AppIconButton = ({
   Icon,
   onClick,
   className,
-  style,
-  iconClass
+  iconClassName,
+  style
 }: Props) => {
   return (
     <IconButton onClick={onClick} className={className} style={style}>
-      <Icon className={clsx('icon', iconClass)} />
+      <Icon className={clsx('metaIcon', iconClassName)} fontSize='inherit' />
     </IconButton>
   )
 }

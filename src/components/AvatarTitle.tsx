@@ -21,7 +21,7 @@ export const AvatarTitle = ({ avatar, title, size = 35, className }: Props) => {
 
   return (
     <div className={clsx('row', className)}>
-      <div className={clsx('circleImage', classes.circle)}>
+      <div className={clsx('circleImage', 'shadowDark', classes.circle)}>
         {!!avatar && <img src={avatar} alt='avatar' key={avatar} />}
       </div>
       {!!title && (
@@ -40,10 +40,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 70,
     borderRadius: 70 / 2,
     marginRight: theme.spacing(2),
-    boxShadow: '0 0 15px 4px #00000040',
     background: '#00000010',
     [theme.breakpoints.down('sm')]: {
-      boxShadow: '0 0 10px 2px #00000040',
       fontSize: 35,
       marginRight: theme.spacing(1.5)
     }

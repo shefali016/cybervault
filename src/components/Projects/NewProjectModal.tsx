@@ -7,7 +7,7 @@ import NewProjectStepTwo from './Steps/NewProjectStepTwo'
 import NewProjectStepThree from './Steps/NewProjectStepThree'
 import NewProjectStepFour from './Steps/NewProjectStepFour'
 import NewProjectStepFive from './Steps/NewProjectStepFive'
-import { getProductData, generateUid } from '../../utils'
+import { getProjectData, generateUid } from '../../utils'
 import AppModal from '../Common/Modal'
 import CloseButton from '../Common/Button/CloseButton'
 import * as Types from '../../utils/Interface'
@@ -64,7 +64,7 @@ const NewProject = ({
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(initialStep)
   const [projectData, setProjectData] = useState({
-    ...getProductData(),
+    ...getProjectData(),
     ...(project || {})
   })
   const [clientData, setClientData] = useState<Client | null>(null)
@@ -88,18 +88,6 @@ const NewProject = ({
       })
     }
   })
-
-  // useEffect(() => {
-  // if (addClientSuccess && addClient && currentStep == 1 && newClientData) {
-  //   if (project) {
-  //     setAddClient(false)
-  //   } else {
-  //     setClientData(newClientData)
-  //     setCurrentStep((step) => step + 1)
-  //     setAddClient(false)
-  //   }
-  // }
-  // }, [addClientSuccess])
 
   const onUpdateData = () => {
     if (typeof onUpdate !== 'function') {
@@ -131,7 +119,8 @@ const NewProject = ({
       setIsLoading(true)
       let project = {
         ...projectData,
-
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
         clientId: clientData.id,
         id: generateUid()
       }

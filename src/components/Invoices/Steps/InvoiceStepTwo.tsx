@@ -2,11 +2,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Grid, Checkbox } from '@material-ui/core'
 import { ChangeEvent } from 'react'
 import { BOLD } from 'utils/constants/stringConstants'
-import {
-  GREY_COLOR,
-  BORDER_COLOR_GREY_LIGHT,
-  PRIMARY_COLOR
-} from 'utils/constants/colorsConstants'
+import { GREY_COLOR, PRIMARY_COLOR } from 'utils/constants/colorsConstants'
 import { Project, Milestone, Client } from '../../../utils/Interface'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import EditIcon from '@material-ui/icons/Edit'
@@ -440,10 +436,10 @@ const useStyles = makeStyles((theme) => ({
   },
   mainWrapper: {
     padding: `${theme.spacing(3)}px 0`,
-    borderBottom: `1px solid ${BORDER_COLOR_GREY_LIGHT}`
+    borderBottom: `1px solid ${theme.palette.background.surfaceHighlight}`
   },
   totalAmount: {
-    borderTop: `1px solid ${BORDER_COLOR_GREY_LIGHT}`
+    borderTop: `1px solid ${theme.palette.background.surfaceHighlight}`
   },
   amountWrapper: {
     paddingTop: theme.spacing(4)
@@ -455,7 +451,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 22
   },
   previewText: {
-    color: GREY_COLOR,
+    color: theme.palette.text.meta,
     fontSize: 12,
     padding: theme.spacing(2)
   },

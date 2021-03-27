@@ -207,6 +207,26 @@ function* getCustomerInvoices() {
   }
 }
 
+function* getCustomerTotalBalance() {
+  try {
+    const stripeAccountId = yield select(
+      (state) => state.auth.account.stripe.accountId
+    )
+    if(!stripeAccountId) {
+      throw Error("User does not have a stripe account")
+    }
+    const totalBalance = yield call(
+      StripeApis.getCustomerBalance,
+      stripeAccountId
+    )
+    yield put(StripeActions.getCustomerBalanceSuccess(totalBalance))
+  } catch (error: any) {
+    yield put(
+      StripeActions.getCustomerBalanceFailure(error?.message || 'default')
+    )
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.GET_PAYMENT_METHODS, getPaymentMethods)
   yield takeLatest(ActionTypes.ATTACH_PAYMENT_METHOD, attachPaymentMethod)
@@ -225,6 +245,7 @@ function* watchRequests() {
     setDefultPaymentMethod
   )
   yield takeLatest(ActionTypes.GET_CUSTOMER_INVOICE, getCustomerInvoices)
+  yield takeLatest(ActionTypes.GET_CUSTOMER_BALANCE, getCustomerTotalBalance)
 }
 
 export default function* sagas() {

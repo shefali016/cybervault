@@ -1,33 +1,48 @@
-import { all, call, put, select, take, takeLatest } from 'redux-saga/effects'
+import {
+  all,
+  call,
+  put,
+  select,
+  take,
+  takeLatest,
+  takeEvery
+} from 'redux-saga/effects'
 import {
   createNewProjectSuccess,
   createNewProjectFailure,
-  getAllProjectsRequestSuccess,
-  getAllProjectsRequestFailure,
+  getAllProjectsSuccess,
+  getAllProjectsFailure,
   getProjectDetailsSuccess,
   getProjectDetailsFailure,
   updateProjectDetailsSuccess,
   updateProjectDetailsFailure,
   deleteProjectFailure,
-  deleteProjectSuccess
+  deleteProjectSuccess,
+  getProjectsSuccess,
+  getProjectsFailure
 } from '../actions/projectActions'
-import * as Types from '../utils/Interface'
+import { Account, Project } from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import {
   createNewProjectRequest,
   deleteProject,
-  getAllProjectsRequest,
+  getAllProjects,
   getProject,
-  updateProjectDetailsRequest
+  updateProjectDetailsRequest,
+  getProjects
 } from '../apis/projectRequest'
 import { ReduxState } from 'reducers/rootReducer'
+import { GetProjectParams } from 'utils/Interface/api'
+import { ProjectFilters } from 'utils/enums'
 
-type Params = { newProjectData: Types.Project; type: string; account: Account }
+type Params = { newProjectData: Project; type: string; account: Account }
 type GetParams = {
   type: string
   projectId: string
-  projectdata: Types.Project
-  accountId:string
+  projectdata: Project
+  accountId: string
+  params: Partial<GetProjectParams>
+  filter: ProjectFilters
 }
 
 function* createNewProject({ newProjectData }: Params) {
@@ -44,17 +59,27 @@ function* createNewProject({ newProjectData }: Params) {
   }
 }
 
-function* getAllProjects() {
+function* getAllProjectsSaga() {
   try {
     const account = yield select((state) => state.auth.account)
-    const response = yield call(getAllProjectsRequest, account)
-    yield put(getAllProjectsRequestSuccess(response))
+    const response = yield call(getAllProjects, account)
+    yield put(getAllProjectsSuccess(response))
   } catch (error: any) {
-    yield put(getAllProjectsRequestFailure(error?.message || 'default'))
+    yield put(getAllProjectsFailure(error?.message || 'default'))
   }
 }
 
-function* getProjectDetails({ projectId,accountId }: GetParams) {
+function* getProjectsSaga({ params, filter }: GetParams) {
+  try {
+    const account = yield select((state) => state.auth.account)
+    const response = yield call(getProjects, account, params)
+    yield put(getProjectsSuccess(response, filter))
+  } catch (error) {
+    yield put(getProjectsFailure(error?.message || 'default', filter))
+  }
+}
+
+function* getProjectDetails({ projectId, accountId }: GetParams) {
   try {
     const response = yield call(getProject, accountId, projectId)
 
@@ -86,13 +111,14 @@ function* deletingProjectSaga({ projectId }: GetParams) {
 
 function* watchGetRequest() {
   yield takeLatest(ActionTypes.NEW_PROJECT_REQUEST, createNewProject)
-  yield takeLatest(ActionTypes.GET_ALL_PROJECT_REQUEST, getAllProjects)
+  yield takeLatest(ActionTypes.GET_ALL_PROJECT_REQUEST, getAllProjectsSaga)
   yield takeLatest(ActionTypes.GET_PROJECT_DETAILS_REQUEST, getProjectDetails)
   yield takeLatest(
     ActionTypes.UPDATE_PROJECT_DETAILS_REQUEST,
     updateProjectDetails
   )
   yield takeLatest(ActionTypes.DELETE_PROJECT_REQUEST, deletingProjectSaga)
+  yield takeEvery(ActionTypes.GET_PROJECTS, getProjectsSaga)
 }
 
 export default function* sagas() {

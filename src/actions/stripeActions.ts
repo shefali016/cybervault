@@ -172,3 +172,15 @@ export const getCustomerInvoicesFailure = (error: any) => ({
   type: ActionTypes.GET_CUSTOMER_INVOICE_FAILURE,
   error
 })
+
+export const getCustomerBalance = () => ({
+  type: ActionTypes.GET_CUSTOMER_BALANCE
+})
+export const getCustomerBalanceSuccess = (balances: any) => ({
+  type: ActionTypes.GET_CUSTOMER_BALANCE_SUCCESS,
+  balances
+})
+export const getCustomerBalanceFailure = (error: any) => ({
+  type: ActionTypes.GET_CUSTOMER_BALANCE_FAILURE,
+  error
+})

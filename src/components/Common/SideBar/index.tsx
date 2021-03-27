@@ -19,10 +19,7 @@ import {
   SIDE_DRAWER_WIDTH,
   CENTER
 } from '../../../utils/constants/stringConstants'
-import {
-  WHITE_COLOR,
-  BORDER_COLOR
-} from '../../../utils/constants/colorsConstants'
+import { WHITE_COLOR } from '../../../utils/constants/colorsConstants'
 import { Link } from 'react-router-dom'
 import { Tab, ButtonConfig } from 'utils/Interface'
 import LogoutIcon from '@material-ui/icons/ExitToApp'
@@ -93,11 +90,10 @@ const SideBarComponent = (props: Props) => {
             [classes.visible]: open,
             [classes.hidden]: !open
           })}>
-          <Typography style={{ color: WHITE_COLOR, fontSize: 8, marginTop: 5 }}>
+          <Typography
+            style={{ marginTop: 5, textAlign: 'center' }}
+            variant='caption'>
             {'430GB of 500GB used'}
-          </Typography>
-          <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>
-            {'Buy more storage'}
           </Typography>
         </div>
       </div>
@@ -111,17 +107,17 @@ const SideBarComponent = (props: Props) => {
           [classes.visible]: open,
           [classes.hidden]: !open
         })}>
-        <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>
-          See our{' '}
+        <Typography variant='subtitle2' className={classes.metaText}>
           <Link to={`/forgot-password`} className={classes.linkText}>
             {'Terms & Condition'}
           </Link>
-          {` & `}
+        </Typography>
+        <Typography variant='subtitle2' className={classes.metaText}>
           <Link to={`/forgot-password`} className={classes.linkText}>
             {'Privacy Policy'}
           </Link>
         </Typography>
-        <Typography style={{ color: WHITE_COLOR, fontSize: 8 }}>
+        <Typography variant='subtitle2' className={classes.metaText}>
           {'Content Vault 2020@. All rights reserved'}
         </Typography>
       </div>
@@ -145,13 +141,16 @@ const SideBarComponent = (props: Props) => {
           {tab.icon}
         </ListItemIcon>
         <ListItemText
-          disableTypography
           primary={
-            <Typography style={{ color: WHITE_COLOR, fontSize: 15 }}>
+            <Typography
+              className={clsx(
+                classes.sideBarText,
+                isActive ? classes.activeText : ''
+              )}
+              variant='body2'>
               {tab.text}
             </Typography>
           }
-          className={classes.sideBarText}
         />
       </ListItem>
     )
@@ -232,7 +231,7 @@ const SideBarComponent = (props: Props) => {
             {
               id: 'logout',
               text: 'Log Out',
-              icon: <LogoutIcon className={classes.listIconStyle} />
+              icon: <LogoutIcon className={'sideBarIcon'} />
             },
             handleLogout
           )}
@@ -245,7 +244,11 @@ const SideBarComponent = (props: Props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: { display: 'flex', flexDirection: 'column' },
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    color: theme.palette.text.background
+  },
   mobileRoot: {
     position: 'absolute',
     display: 'flex',
@@ -257,8 +260,8 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap'
   },
   paper: {
-    backgroundColor: theme.palette.background.default,
-    borderRightColor: BORDER_COLOR,
+    backgroundColor: theme.palette.background.secondary,
+    borderRightColor: theme.palette.background.surface,
     width: SIDE_DRAWER_WIDTH
   },
   drawerOpen: {
@@ -284,7 +287,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3)
   },
   divider: {
-    backgroundColor: BORDER_COLOR
+    backgroundColor: theme.palette.background.surfaceHighlight
   },
   appIconHidden: { opacity: 0 },
   appIconContainer: {
@@ -294,15 +297,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 0,
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.default
+    borderBottomColor: theme.palette.background.surface
   },
   appIcon: {
     color: theme.palette.primary.light,
     fontSize: 43
-  },
-  sideBarText: {
-    color: WHITE_COLOR,
-    fontSize: 8
   },
   addProjectButton: {
     width: SIDE_DRAWER_WIDTH - 25,
@@ -321,17 +320,16 @@ const useStyles = makeStyles((theme) => ({
     color: WHITE_COLOR,
     fontSize: 30
   },
-  listIconStyle: {
-    marginRight: 40,
-    color: theme.palette.primary.light,
-    fontSize: theme.spacing(3)
-  },
   storageContainer: {
     marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(3),
+    display: 'flex',
+    flexDirection: 'column',
+    color: theme.palette.text.meta
   },
   storageDetails: {
-    marginLeft: 18
+    marginTop: theme.spacing(1),
+    alignSelf: 'center'
   },
   linearProgress: {
     marginLeft: 18,
@@ -354,9 +352,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 50
   },
   termsContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     marginBottom: theme.spacing(2.5),
     marginLeft: theme.spacing(2.5),
-    marginTop: theme.spacing(2.5)
+    marginTop: theme.spacing(2.5),
+    color: theme.palette.text.background
   },
   hidden: {
     opacity: 0,
@@ -372,10 +375,17 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen
     })
   },
+  metaText: {
+    marginBottom: 10,
+    color: theme.palette.text.meta,
+    whiteSpace: 'normal'
+  },
   linkText: {
-    color: theme.palette.primary.light,
-    fontSize: 8
-  }
+    color: theme.palette.text.meta,
+    textDecoration: 'none'
+  },
+  sideBarText: { color: theme.palette.text.background },
+  activeText: { fontWeight: 600 }
 }))
 
 export default withWidth()(SideBarComponent)

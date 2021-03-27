@@ -10,27 +10,8 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '20px'
   },
   dropzone: {
-    outline: 'none',
-    textAlign: 'center',
-    padding: '20px',
-    border: `2px dashed ${theme.palette.background.surfaceHighlight}`,
-    background: 'transparent',
-    color: '#bdbdbd',
     width: 140,
-    height: 110,
-    borderRadius: 25,
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: theme.transitions.create(['border', 'background', 'color'], {
-      duration: 500
-    }),
-    '&:hover': {
-      border: `2px dashed ${theme.palette.grey[600]}`,
-      color: theme.palette.common.white,
-      background: 'rgba(0,0,0,0.1)'
-    }
+    height: 110
   },
 
   text: {

@@ -315,7 +315,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: theme.palette.background.surfaceHighlight,
+    borderColor: theme.palette.border,
     display: 'flex',
     flexDirection: 'column'
   },

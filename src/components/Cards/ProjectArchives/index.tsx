@@ -1,6 +1,5 @@
-import React from 'react'
-import { Button, Typography } from '@material-ui/core'
-import logo from '../../../assets/logo.png'
+import React, { useMemo } from 'react'
+import { Button, Card, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   BOLD,
@@ -10,60 +9,78 @@ import {
 } from '../../../utils/constants/stringConstants'
 import { GREY_COLOR } from '../../../utils/constants/colorsConstants'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
+import { Client, Project } from 'utils/Interface'
+import clsx from 'clsx'
 
-type Props = { projectDetails?: any; openProject?: any; style?: {} }
+type Props = {
+  project: Project
+  clients: Client[]
+  onClick: (project: Project) => void
+  style?: {}
+}
 
-const ProjectArchives = (props: Props) => {
+const ProjectArchives = ({ project, clients, onClick, style }: Props) => {
   const classes = useStyles()
+  const client: Client | undefined = useMemo(
+    () =>
+      clients
+        ? clients.find((client: Client) => client.id === project.clientId)
+        : undefined,
+    [clients]
+  )
+
   return (
-    <div style={props.style}>
-      <Button className={classes.button} variant={'contained'}>
+    <div style={style}>
+      <Card
+        className={clsx('card', classes.card, 'shadowHover')}
+        onClick={() => onClick(project)}>
         <div className={classes.imgWrapper}>
-          <img
-            className={classes.img}
-            src={
-              props.projectDetails && props.projectDetails.image
-                ? props.projectDetails.image
-                : logo
-            }
-            alt='Logo'
-          />
+          {client && client.logo && (
+            <img className={'coverImage'} src={client.logo} alt='client-logo' />
+          )}
         </div>
         <div className={classes.textWrapper}>
-          <Typography className={classes.title} noWrap={true}>
-            {props.projectDetails?.name}
+          <Typography className={classes.title} variant='h6' noWrap={true}>
+            {project.campaignName}
           </Typography>
-          <Typography className={classes.subTitle} noWrap={true}>
-            {props.projectDetails?.description}
+          <Typography
+            className={classes.subTitle}
+            variant='subtitle1'
+            noWrap={true}>
+            {project.description}
           </Typography>
         </div>
 
-        <ArrowForwardIosIcon fontSize='small' />
-      </Button>
+        <ArrowForwardIosIcon fontSize='small' className={classes.arrowIcon} />
+      </Card>
     </div>
   )
 }
 const useStyles = makeStyles((theme) => ({
-  button: {
-    display: FLEX,
-    justifyContent: CENTER,
+  arrowIcon: { marginLeft: theme.spacing(2) },
+  card: {
+    display: 'flex',
+    alignItems: 'center',
     borderRadius: 20,
-    padding: `${theme.spacing(3)}px ${theme.spacing(1.5)}px`,
-    height: 70,
-    minidth: 300,
-    backgroundColor: 'white'
+    padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
+    maxWidth: 400,
+    backgroundColor: 'white',
+    cursor: 'pointer'
   },
   imgWrapper: {
-    borderRadius: 10,
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    position: 'relative',
+    overflow: 'hidden',
     display: FLEX,
     justifyContent: CENTER,
     alignItems: CENTER
   },
   title: {
-    fontWeight: BOLD,
-    fontSize: 12
+    fontWeight: BOLD
   },
-  subTitle: { fontSize: 9, color: GREY_COLOR },
+  subTitle: { color: theme.palette.text.meta },
   img: {
     width: AUTO,
     height: AUTO,
@@ -71,10 +88,11 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 40
   },
   textWrapper: {
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
     flex: 1,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textoverflow: 'ellipsis'
   }
 }))
 export default ProjectArchives

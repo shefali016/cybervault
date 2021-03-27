@@ -104,7 +104,7 @@ const ClientsScreen = ({
             className={classes.iconContainer}
             style={{ paddingRight: '1px' }}
             onClick={handleAddClientModalShow}
-            iconClass={classes.iconButton}
+            iconClassName={classes.iconButton}
           />
         </PopoverHover>
       </div>

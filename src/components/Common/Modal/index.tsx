@@ -28,15 +28,16 @@ const AppModal = ({
       open={open}
       aria-labelledby='transition-modal-title'
       aria-describedby='transition-modal-description'
-      className={'new-project-modal'}
+      className={'modal'}
       closeAfterTransition
       BackdropComponent={Backdrop}
+      style={{ zIndex: 3000 }}
       BackdropProps={{
         timeout: 500
       }}>
       <Fade in={open}>
         <div className={'modalContentWrapper'}>
-          {children}{' '}
+          {children}
           {showLoadingOverlay && (
             <div className={classes.loadingView}>
               <AppLoader color={theme.palette.primary.main} />
