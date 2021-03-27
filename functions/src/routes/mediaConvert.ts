@@ -47,8 +47,7 @@ const resizeVideo = async (item: any) => {
       fileHeight
     } = item
 
-    const name = fileName.replace(/ /g, '')
-    const urlFileName = name.split('.').slice(0, -1).join('.')
+    const name = fileName
 
     const originalRatio = fileWidth / fileHeight
     const newRatio = ratio.w / ratio.h
@@ -202,7 +201,7 @@ const resizeVideo = async (item: any) => {
                   ProgramSelection: 1
                 }
               },
-              FileInput: `s3://${config.bucketName}/${assetId}${name}`
+              FileInput: `s3://${config.bucketName}/videos/${assetId}/original-${name}`
             }
           ],
           OutputGroups: [
@@ -211,7 +210,7 @@ const resizeVideo = async (item: any) => {
               OutputGroupSettings: {
                 Type: 'FILE_GROUP_SETTINGS',
                 FileGroupSettings: {
-                  Destination: `s3://${config.bucketName}/${assetId}/${id}/`,
+                  Destination: `s3://${config.bucketName}/videos/${assetId}/${resolution}/${id}`,
                   DestinationSettings: {
                     S3Settings: {
                       AccessControl: {
@@ -257,8 +256,8 @@ const resizeVideo = async (item: any) => {
           'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role'
       }
 
-      let createJonPromise = mediaConvert.createJob(params).promise()
-      createJonPromise
+      let createJobPromise = mediaConvert.createJob(params).promise()
+      return createJobPromise
         .then((res: any) => {
           getJobDetails(res.Job.Id)
             .then((jobDetails: any) => {
@@ -273,7 +272,7 @@ const resizeVideo = async (item: any) => {
                 status: 'complete',
                 url: `https://${
                   config.bucketName
-                }.s3.us-east-2.amazonaws.com/${assetId}/${id}/${assetId}${urlFileName}${
+                }.s3.us-east-2.amazonaws.com/videos/${assetId}/${id}${
                   format === 'prores' ? '.mov' : '.mp4'
                 }`
               })

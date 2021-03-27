@@ -7,6 +7,7 @@ import { Asset, AssetFile, Mail } from './utils/interfaces'
 import templates from './sendGridTemplates.json'
 import config from './config.json'
 import axios from 'axios'
+import os from 'os'
 var ffmpeg = require('fluent-ffmpeg')
 
 const fs = require('fs')
@@ -39,35 +40,38 @@ functions.logger.log(rootPath, 'root path')
 
 const getFileMetaData = async (url: string) => {
   return new Promise(async (resolve, reject) => {
+    const rootPath = `${os.tmpdir()}/${url}`
+
+    const unlinkFile = () => fs.unlink(rootPath)
+
     try {
       let data = await axios.get(`${url}`)
-      // var dir = './tmp'
-      // if (!fs.existsSync(dir)) {
-      //   fs.mkdirSync(dir)
-      // }
-      const rootPath = path.join(`../tmp/test.webm`)
 
       fs.writeFile(rootPath, data.data, async (err: any) => {
         if (err) {
           reject(err)
         }
-        let video = getDetails()
-        resolve(video)
+        let details = await getDetails(rootPath)
+        unlinkFile()
+        resolve(details)
       })
     } catch (err) {
+      unlinkFile()
       reject(err)
     }
   })
 }
 
-const getDetails = () => {
-  try {
-    ffmpeg.ffprobe(`../tmp/test.webm`, function (err: any, metadata: any) {
-      return metadata
+const getDetails = (path: string) => {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(path, (err: any, metadata: any) => {
+      if (!err) {
+        resolve(metadata)
+      } else {
+        reject(err)
+      }
     })
-  } catch (e) {
-    return e
-  }
+  })
 }
 
 export const httpsRequests = functions.runWith(runtimeOpts).https.onRequest(app)

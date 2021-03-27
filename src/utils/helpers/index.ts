@@ -72,7 +72,8 @@ export const getImageObject = (
     url: url,
     width: width,
     height: height,
-    size: file.size
+    size: file.size,
+    createdAt: Date.now()
   }
 }
 

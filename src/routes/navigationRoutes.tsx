@@ -14,6 +14,8 @@ import { createTheme } from 'utils/theme'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { ColorThemes } from 'utils/enums'
 import { ReduxState } from 'reducers/rootReducer'
+import { ToastProvider } from 'context/Toast'
+import AssetUploadProvider from 'context/AssetUpload'
 
 const Routes = (props: Props): JSX.Element => {
   return (
@@ -29,10 +31,12 @@ const LandingRoutes = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <Switch>
-        <Route path='/' exact component={LandingScreen} />
-        <Route path='/pricing' exact component={PricingScreen} />
-      </Switch>
+      <ToastProvider>
+        <Switch>
+          <Route path='/' exact component={LandingScreen} />
+          <Route path='/pricing' exact component={PricingScreen} />
+        </Switch>
+      </ToastProvider>
     </ThemeProvider>
   )
 }
@@ -52,14 +56,21 @@ const AppRoutes = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <Switch>
-        <Route
-          path='/clientInvoices/:id/:accId/'
-          component={InvoicesClientScreen}
-        />
-        <Route path='/portfolioShare/:id' component={PortfolioShareScreen} />
-        {AuthRoutes}
-      </Switch>
+      <AssetUploadProvider>
+        <ToastProvider>
+          <Switch>
+            <Route
+              path='/clientInvoices/:id/:accId/'
+              component={InvoicesClientScreen}
+            />
+            <Route
+              path='/portfolioShare/:id'
+              component={PortfolioShareScreen}
+            />
+            {AuthRoutes}
+          </Switch>
+        </ToastProvider>
+      </AssetUploadProvider>
     </ThemeProvider>
   )
 }

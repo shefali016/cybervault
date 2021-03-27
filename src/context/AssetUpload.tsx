@@ -86,7 +86,10 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
         throw Error('Not logged in')
       }
 
-      const task: S3.ManagedUpload = handleMediaUpload(asset.id, file)
+      const task: S3.ManagedUpload = handleMediaUpload(
+        `${type}s/${asset.id}/original-${file.name}`,
+        file
+      )
 
       setUploads((uploadCache: UploadCache) => ({
         ...uploadCache,
@@ -136,26 +139,60 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
     file: File,
     url: string
   ): Promise<AssetFile> => {
+    return new Promise(async (resolve, reject) => {
+      let dimensions = { width: 0, height: 0 }
+
+      try {
+        dimensions =
+          asset.type === 'video'
+            ? await getVideoDimensions(url)
+            : await getImageDimensions(url)
+      } catch (error) {
+        reject(error)
+      }
+
+      resolve(
+        getImageObject(
+          file,
+          url,
+          dimensions.height,
+          dimensions.width,
+          asset.id,
+          generateUid()
+        )
+      )
+    })
+  }
+
+  const getVideoDimensions = async (
+    url: string
+  ): Promise<{ width: number; height: number }> => {
     return new Promise((resolve, reject) => {
       var video = document.createElement('video')
       var source = document.createElement('source')
       source.setAttribute('src', `${url}`)
       video.appendChild(source)
+
       video.onloadedmetadata = () => {
-        resolve(
-          getImageObject(
-            file,
-            url,
-            video.videoHeight,
-            video.videoWidth,
-            asset.id,
-            generateUid()
-          )
-        )
+        resolve({ height: video.videoHeight, width: video.videoWidth })
       }
       video.onerror = () => {
         reject(Error('Failed to get asset file'))
       }
+    })
+  }
+
+  const getImageDimensions = async (
+    url: string
+  ): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve, reject) => {
+      var img = new Image()
+      img.src = url
+
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height })
+      }
+      img.onerror = (error) => reject(error)
     })
   }
 
@@ -193,7 +230,10 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
           )}
           style={{ pointerEvents: hasUploads ? 'auto' : 'none' }}>
           <div className={classes.uploadWindowHeader}>
-            <Typography variant={'body1'} className={classes.headerTitle}>
+            <Typography
+              variant={'body1'}
+              className={classes.headerTitle}
+              color={'inherit'}>
               {headerTitle}
             </Typography>
             <AppIconButton
@@ -254,6 +294,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     boxShadow: '0 0 15px 4px #00000040',
     zIndex: 2000,
+    opacity: 1,
     [theme.breakpoints.down('xs')]: {
       width: '90%'
     },
@@ -261,6 +302,7 @@ const useStyles = makeStyles((theme) => ({
   },
   windowDismissed: { opacity: 0 },
   uploadWindowHeader: {
+    opacity: 1,
     display: 'flex',
     alignItems: 'center',
     padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
@@ -272,5 +314,5 @@ const useStyles = makeStyles((theme) => ({
   },
   windowBodyDismissed: { height: 0, opacity: 0 },
 
-  headerTitle: { flex: 1 }
+  headerTitle: { flex: 1, color: theme.palette.text.background }
 }))

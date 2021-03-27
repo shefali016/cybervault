@@ -282,7 +282,7 @@ const NewProjectModal = ({
     (state: any) => state.clients.newClientSuccess
   )
   const newClientData = useSelector((state: any) => state.clients.newClientData)
-  console.log(AWS, 'awssssssss')
+
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <NewProject

@@ -37,7 +37,7 @@ export const handleMediaUpload = (id: string, file: any) => {
   var params = {
     Body: file,
     Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-    Key: `${id}${name}`,
+    Key: id,
     ACL: 'public-read'
   }
   return s3.upload(params)
@@ -47,7 +47,7 @@ export const setMedia = (id: string, file: any) => {
   var params = {
     Body: file,
     Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-    Key: `${id}${file.name}`,
+    Key: `${id}-${file.name}`,
     ACL: 'public-read'
   }
 
