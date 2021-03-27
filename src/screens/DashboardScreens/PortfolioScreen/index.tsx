@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import PortfolioFolders from '../../../components/Portfolio/PortfolioFolders'
 import { PortfolioFolderModal } from 'components/Portfolio/PortfolioFolderModal'
 import { useEffect, useState } from 'react'
+import { getAllProjects } from 'actions/projectActions'
 import {
   deletePortfolioFolderRequest,
   getPortfolioFolderRequest,
@@ -24,7 +25,7 @@ type StateProps = {
   folderList: Array<PortfolioFolder>
   loading: boolean
   updatingFolder: boolean
-  allProjectsData: Array<Project>
+  allProjects: Array<Project>
   portfolios: Map<string, Portfolio> | any
   clients: Array<Client>
   updatePortfolioLoading: boolean
@@ -52,7 +53,7 @@ const PortfoliosScreen = ({
   updatePortfolioFolder,
   getPortfolioFolders,
   folderList,
-  allProjectsData,
+  allProjects,
   loading,
   updatingFolder,
   deletePortfolioFolder,
@@ -68,6 +69,7 @@ const PortfoliosScreen = ({
 
   useEffect(() => {
     getPortfolioFolders()
+    getAllProjects()
   }, [])
 
   /* Initial State Data */
@@ -214,7 +216,7 @@ const PortfoliosScreen = ({
             classes.portfolioBoxWrap,
             'responsiveHorizontalPadding'
           )}>
-          <div className={classes.portfolioBox}>
+          <div className={clsx('dropBox', classes.portfolioBox)}>
             <FolderIcon className={classes.uploadFolderIcon} />
             <Typography variant='h6'>Create Folder</Typography>
           </div>
@@ -234,7 +236,7 @@ const PortfoliosScreen = ({
           handleModalRequest={handleModalRequest}
           handleSubmit={handlePortfolioSubmit}
           portfolios={portfolios}
-          projectList={allProjectsData}
+          projects={allProjects}
           handlePortfolioView={(portfolioId: string) =>
             handlePortfolioView(portfolioId)
           }
@@ -251,7 +253,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   folderList: state.portfolio.folders as Array<PortfolioFolder>,
   loading: state.portfolio.getFoldersLoading as boolean,
   updatingFolder: state.portfolio.updatingFolder as boolean,
-  allProjectsData: state.project.allProjectsData as Array<Project>,
+  allProjects: state.project.allProjectsData as Array<Project>,
   portfolios: state.portfolio.portfolios as Map<string, Portfolio> | any,
   clients: state.clients.clientsData,
   updatePortfolioLoading: state.portfolio.updatePortfolioLoading,
@@ -259,6 +261,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
   updatePortfolioError: state.portfolio.updatePortfolioError
 })
 const mapDispatchToProps = (dispatch: any) => ({
+  getAllProjects: () => dispatch(getAllProjects()),
   updatePortfolioFolder: (folder: PortfolioFolder) => {
     return dispatch(updatePortfolioFolderRequest(folder))
   },

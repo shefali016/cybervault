@@ -11,13 +11,15 @@ type Props = {
   onClick: (portfolio: Portfolio) => void
   responsiveWidth?: boolean
   style?: {}
+  className?: string
 }
 
 export const PortfolioItem = ({
   portfolio,
   onClick,
   responsiveWidth = true,
-  style
+  style,
+  className
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -26,7 +28,7 @@ export const PortfolioItem = ({
     <Card
       key={portfolio.id}
       onClick={() => onClick(portfolio)}
-      className={clsx(classes.portfoliosCard)}
+      className={clsx(classes.portfoliosCard, 'card')}
       style={style}>
       <div className={classes.cardLogo}>
         {!!portfolio.icon && <img src={portfolio.icon} alt='' />}
@@ -43,7 +45,7 @@ export const PortfolioItem = ({
         </Typography>
       </div>
 
-      <KeyboardArrowRightIcon style={{ color: theme.palette.grey[500] }} />
+      <KeyboardArrowRightIcon style={{ color: theme.palette.text.meta }} />
     </Card>
   )
 }

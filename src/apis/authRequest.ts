@@ -44,9 +44,7 @@ export const authRequest = (
     .auth()
     .signInWithEmailAndPassword(userLogin.email, userLogin.password)
     .then((res: firebase.auth.UserCredential) => {
-      console.log(res)
       const { user } = res
-      console.log(user)
       if (user && user.uid) {
         return getUserWithAccount(user.uid)
       } else {
@@ -150,17 +148,17 @@ export const createAccount = (
     branding: {
       email: {
         foregroundColor: '#fff',
-        backgroundColor: '#EFEFEF',
+        backgroundColor: '#f7f7f7',
         text: '#000',
         buttonBackgroundColor: '#0f77ff',
         buttonTextColor: '#fff'
       },
       portfolio: {
-        backgroundColor: '#999999',
-        foregroundColor: '#EFEFEF',
+        backgroundColor: '#f7f7f7',
+        foregroundColor: '#ffffff',
         text: '#000',
-        headerGradient1: '#0f77ff',
-        headerGradient2: '#fff'
+        headerGradient1: '#5ea5fc',
+        headerGradient2: '#0773FF'
       }
     }
   }

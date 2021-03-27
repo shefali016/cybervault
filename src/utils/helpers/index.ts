@@ -57,14 +57,22 @@ export default function validate(
   }
 }
 
-export const getImageObject = (file: any, url: string,height:number,width:number,assetId: string,id:string) => {
+export const getImageObject = (
+  file: File,
+  url: string,
+  height: number,
+  width: number,
+  assetId: string,
+  id: string
+) => {
   return {
-    assetId:assetId,
+    assetId: assetId,
     id: id,
     original: true,
     url: url,
     width: width,
     height: height,
+    size: file.size
   }
 }
 
@@ -158,4 +166,31 @@ export const findProjectLimit = (allProjectsData: Array<Project>) => {
     }
   }
   return curentMonthProjects.length
+}
+export const formatBytes = (bytes: number) => {
+  let decimals = 2
+  if (bytes === 0) return '0 Bytes'
+
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+}
+
+export const bytesToGB = (bytes: number) => bytes / Math.pow(10, 9)
+
+export const getAvailableStorage = (
+  usedStorage: number,
+  totalStorage: number
+) => {
+  const sizeInGb: number = bytesToGB(usedStorage)
+  const usedStoragePercent: number = (sizeInGb / totalStorage) * 100
+  const availablePercentage: number = 100 - usedStoragePercent
+  return {
+    usedStoragePercent,
+    availablePercentage
+  }
 }

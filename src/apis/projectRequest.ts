@@ -1,7 +1,8 @@
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
-import { Project } from '../utils/Interface'
+import { Project, Account } from '../utils/Interface'
+import { GetProjectParams } from 'utils/Interface/api'
 /**
  * @deleteProject
  */
@@ -22,7 +23,6 @@ export const createNewProjectRequest = async (
   newProjectData: Project,
   account: Account
 ) => {
-  newProjectData.createdAt = new Date().toUTCString()
   await firebase
     .firestore()
     .collection('AccountData')
@@ -36,7 +36,7 @@ export const createNewProjectRequest = async (
 /**
  * @getAllProjects
  */
-export const getAllProjectsRequest = async (account: Account) => {
+export const getAllProjects = async (account: Account) => {
   let allProjectsData: Array<Project> = []
   let data: any = await firebase
     .firestore()
@@ -49,6 +49,35 @@ export const getAllProjectsRequest = async (account: Account) => {
     allProjectsData.push(doc.data())
   }
   return allProjectsData
+}
+
+export const getProjects = async (
+  account: Account,
+  params: Partial<GetProjectParams>
+) => {
+  const { limit, orderBy, startAt, endAt, where } = params
+
+  let query: any = firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Projects')
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  if (where) {
+    query = query.where(...where)
+  }
+
+  if (orderBy) {
+    query.orderBy(orderBy)
+  }
+
+  let data: any = await query.get()
+
+  return data.docs.map((doc: any) => doc.data())
 }
 
 /**

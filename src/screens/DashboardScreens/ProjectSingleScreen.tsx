@@ -32,7 +32,16 @@ import clsx from 'clsx'
 import { AppLoader } from 'components/Common/Core/AppLoader'
 import { AssetUploadContext } from 'context/AssetUpload'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
-var ffmpeg = require('ffmpeg')
+import {
+  MenuItem,
+  PopoverButton
+} from 'components/Common/Popover/PopoverButton'
+import { AppButton } from 'components/Common/Core/AppButton'
+import { ProjectStatuses } from 'utils/enums'
+import { getToggledArchiveStatus } from 'utils/projects'
+import { getSubscriptionDetails } from 'utils/subscription'
+import { bytesToGB } from 'utils/helpers'
+import { ToastContext, ToastTypes } from 'context/Toast'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -47,6 +56,7 @@ type EditProjectStates = {
 const EditProjectScreen = (props: any) => {
   const classes = useStyles()
   const assetUploadContext = useContext(AssetUploadContext)
+  const toastContext = useContext(ToastContext)
 
   const [state, setState] = useState<EditProjectStates>({
     projectData: props.projectCache[props.match.params.id],
@@ -57,6 +67,7 @@ const EditProjectScreen = (props: any) => {
     isTaskEdit: false,
     isBudgetEdit: false
   })
+  const { projectData } = state
 
   const [confirmDeleteAsset, setConfirmDeleteAsset] = useState<Asset | null>(
     null
@@ -101,8 +112,33 @@ const EditProjectScreen = (props: any) => {
     }
   }, [])
 
+  const getTotalStorage = () => {
+    const extraStorage =
+      typeof props.storageSubscription?.metadata?.extraStorage === 'string'
+        ? parseInt(props.storageSubscription?.metadata?.extraStorage)
+        : 0
+    const { storage } = getSubscriptionDetails(
+      props.accountSubscription?.metadata?.type
+    )
+    return storage + extraStorage
+  }
+
   const uploadFiles = (type: 'image' | 'video') => async (files: File[]) => {
-    assetUploadContext.uploadFiles(files, type, addAssetToProject)
+    const totalStorage = getTotalStorage()
+    const usedStorage = props.usedStorage
+    const availableStorage = totalStorage - bytesToGB(usedStorage)
+
+    const uploadBytes = files.reduce((acc, file) => acc + file.size, 0)
+    const uploadGb = bytesToGB(uploadBytes)
+
+    if (availableStorage >= uploadGb) {
+      assetUploadContext.uploadFiles(files, type, addAssetToProject)
+    } else {
+      toastContext.showToast({
+        title: 'Purchace extra storage to add more asset data',
+        type: ToastTypes.warning
+      })
+    }
   }
 
   const addAssetToProject = async (asset: Asset) => {
@@ -128,8 +164,15 @@ const EditProjectScreen = (props: any) => {
     } catch (error) {}
   }
 
+  const handleToggleArchived = () => {
+    props.updateProjectDetails({
+      ...projectData,
+      status: getToggledArchiveStatus(projectData)
+    })
+  }
+
   const renderHeader = () => {
-    if (!state.projectData) {
+    if (!projectData) {
       return (
         <div className={clsx('row', 'center')}>
           <AppLoader />
@@ -137,15 +180,47 @@ const EditProjectScreen = (props: any) => {
       )
     }
 
+    const isProjectArchived = projectData.status === ProjectStatuses.ARCHIVED
+
+    const popoverMenuItems: Array<MenuItem> = [
+      {
+        title: isProjectArchived ? 'Activate' : 'Archive',
+        onClick: handleToggleArchived
+      }
+    ]
+
     return (
       <div className={clsx('row', 'headerContainer')}>
         <Typography variant={'h4'} className={clsx('bold', 'h4', 'flex')}>
-          {state.projectData.campaignName}
+          {projectData.campaignName}
         </Typography>
-        <div className={classes.projectStatus}>
-          <Typography>Status: {state.projectData.status}</Typography>
-          <ProjectStatusIndicator status={state.projectData.status} />
-        </div>
+        <PopoverButton
+          menuItems={popoverMenuItems}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}>
+          {({
+            onClick,
+            id
+          }: {
+            onClick: (e: any) => void
+            id: string | undefined
+          }) => (
+            <AppButton onClick={onClick} aria-owns={id}>
+              <div className={classes.projectStatus}>
+                <Typography className={classes.statusText}>
+                  Status: {projectData.status}
+                </Typography>
+                <ProjectStatusIndicator status={projectData.status} />
+              </div>
+            </AppButton>
+          )}
+        </PopoverButton>
       </div>
     )
   }
@@ -213,25 +288,6 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
-  const checkVideo = () => {
-    try {
-      var process = new ffmpeg(
-        'https://cybervault-bucket.s3.us-east-2.amazonaws.com/8f3e8411ed1d3efe/51186357a5771402/8f3e8411ed1d3efevideoplayback.mp4'
-      )
-      process.then(
-        function (video: any) {
-          console.log(video, 'The video is ready to be processed')
-        },
-        function (err: any) {
-          console.log('Error: ' + err)
-        }
-      )
-    } catch (e) {
-      console.log(e.code, 'nnnnnnnnnnnnn')
-      console.log(e.msg, 'nnnnnnnnnnnnnnnn')
-    }
-  }
-
   const renderBody = () => {
     if (!state.projectData) {
       return null
@@ -240,7 +296,6 @@ const EditProjectScreen = (props: any) => {
       <div className={classes.detailsWrapper}>
         <Fragment>
           {renderProjectDetails()}
-          {checkVideo()}
           <AppDivider spacing={6} />
           <AssetUploadDisplay
             {...{
@@ -287,7 +342,7 @@ const EditProjectScreen = (props: any) => {
     )
   }
 
-  const handleBack = () => props.history.push('/dashboard')
+  const handleBack = () => props.history.goBack()
 
   return (
     <div className={clsx('screenContainer', 'fullHeight')}>
@@ -300,7 +355,7 @@ const EditProjectScreen = (props: any) => {
 
       <div className={'screenInner'}>
         <div className={clsx('responsivePadding', 'screenTopPadding')}>
-          <div className={'screenChild'}>
+          <div className={clsx('screenChild', 'shadowLight')}>
             {renderHeader()}
             {renderBody()}
             {renderEditProjectModel()}
@@ -331,7 +386,10 @@ const mapStateToProps = (state: any) => ({
   projectCache: state.project.projectCache,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,
   account: state.auth.account,
-  clients: state.clients.clientsData
+  clients: state.clients.clientsData,
+  usedStorage: state.auth.usedStorage,
+  accountSubscription: state.stripe.accountSubscription,
+  storageSubscription: state.stripe.storageSubscription
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -344,6 +402,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 const useStyles = makeStyles((theme) => ({
+  statusText: { color: theme.palette.text.background },
   projectStatus: {
     display: 'flex',
     [theme.breakpoints.down('sm')]: {

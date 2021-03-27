@@ -1,4 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { ColorThemes } from './enums'
+
+export const GlobalStyles = () => {
+  useGlobalStyles()
+  return null
+}
+
+export const WIDGET_ITEM_HEIGHT = 280
 
 export const useGlobalStyles = makeStyles((theme) => ({
   '@global': {
@@ -64,11 +72,21 @@ export const useGlobalStyles = makeStyles((theme) => ({
         background: theme.palette.background.surface
       }
     },
+    '.modal': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 5000
+    },
     '.modalContentWrapper': {
       outline: 'none',
       borderRadius: theme.shape.borderRadius * 2,
       overflow: 'hidden',
-      position: 'relative'
+      position: 'relative',
+      zIndex: 5000,
+      [theme.breakpoints.down('xs')]: {
+        width: '95vw'
+      }
     },
     '.modalContent': {
       color: theme.palette.text.paper,
@@ -83,12 +101,11 @@ export const useGlobalStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       overflowY: 'scroll',
       position: 'relative',
-      [theme.breakpoints.down('md')]: {
-        // padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-      },
       [theme.breakpoints.down('sm')]: {
         padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-        minWidth: 'auto'
+        [theme.breakpoints.down('xs')]: {
+          minWidth: 'auto'
+        }
       }
     },
     '.bold': { fontWeight: 'bold' },
@@ -138,6 +155,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       left: 0,
       bottom: 0
     },
+
+    // Screen
+
     '.screenTopPadding': {
       paddingTop: theme.spacing(6),
       [theme.breakpoints.down('sm')]: {
@@ -154,7 +174,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.wrapContainer': { display: 'flex', flexWrap: 'wrap' },
     '.screenInner': {
       width: '100%',
-      maxWidth: 1600,
+      maxWidth: 1500,
       alignSelf: 'center'
     },
     '.screenInnerMd': {
@@ -200,6 +220,31 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
+
+    // Screen
+
+    // Section
+
+    '.section': { marginBottom: theme.spacing(4) },
+    '.sectionInner': {
+      background: theme.palette.background.paper,
+      borderRadius: theme.shape.borderRadius,
+      padding: '20px 25px',
+      color: theme.palette.text.paper,
+      display: 'flex',
+      alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
+      }
+    },
+    '.sectionTextArea': {
+      flex: 1,
+      [theme.breakpoints.down('md')]: {
+        marginBottom: theme.spacing(4)
+      }
+    },
+    // Section
+
     '.centerContent': {
       display: 'flex',
       flexDirection: 'column',
@@ -244,8 +289,122 @@ export const useGlobalStyles = makeStyles((theme) => ({
         alignItems: 'flex-start'
       }
     },
+    // Widget
+    '.widgetOuter': { marginBottom: theme.spacing(6) },
+    '.widgetInner': {
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'nowrap',
+      overflowX: 'scroll',
+      whiteSpace: 'nowrap',
+      paddingTop: 15,
+      paddingBottom: 15
+    },
+    '.widgetResponsiveInner': {
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'nowrap',
+      overflowX: 'scroll',
+      whiteSpace: 'nowrap',
+      paddingTop: 15,
+      paddingBottom: 15,
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column !important',
+        alignItems: 'stretch'
+      }
+    },
+    '.widgetEmptyIcon': {
+      flex: 1,
+      background: theme.palette.background.secondary,
+      alignSelf: 'stretch',
+      maxWidth: 270,
+      borderRadius: 15,
+      justifyContent: 'center',
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      }
+    },
+    '.card': {
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
+      '&:hover': {
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
+      }
+    },
+    '.widgetItemOuter': { marginRight: theme.spacing(3) },
+    '.widgetItemResponsiveOuter': {
+      marginRight: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        marginRight: 0,
+        marginBottom: theme.spacing(3)
+      }
+    },
+    '.gridList': {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 0.3333fr))',
+      gap: theme.spacing(3),
+      [theme.breakpoints.down(1000)]: {
+        gridTemplateColumns: 'minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
+        [theme.breakpoints.down(500)]: {
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))'
+        }
+      }
+    },
+    '.widgetItem': {
+      width: '70vw',
+      minWidth: 280,
+      maxWidth: 280,
+      height: WIDGET_ITEM_HEIGHT,
+      borderRadius: 15,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
+      '&:hover': {
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
+      }
+    },
+    '.widgetItemSmall': {
+      width: '70vw',
+      height: '12rem',
+      maxWidth: 230,
+      maxHeight: '12rem',
+      borderRadius: 15,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
+      '&:hover': {
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      }
+    },
+    '.widgetItemWide': {
+      width: '70vw',
+      maxWidth: 350,
+      maxHeight: '12rem',
+      minHeight: '12rem',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      borderRadius: 15,
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        maxWidth: '100%'
+      },
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`,
+      '&:hover': {
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
+      }
+    },
     // Section
-    '.sectionInner': {
+    '.sectionInner2': {
       background: theme.palette.common.white,
       borderRadius: theme.shape.borderRadius,
       padding: '15px 25px',
@@ -268,8 +427,40 @@ export const useGlobalStyles = makeStyles((theme) => ({
       overflow: 'hidden'
     },
     '.table': {
-      borderRadius: theme.shape.borderRadius
+      flex: 1,
+      background: theme.palette.background.surface,
+      borderRadius: theme.shape.borderRadius,
+      overflow: 'hidden'
     },
+    '.dropBox': {
+      padding: theme.spacing(3),
+      borderRadius: '18px',
+      border: '2px dashed #9ea0a28c',
+      textAlign: 'center',
+      cursor: 'pointer',
+      color: theme.palette.text.meta,
+      transition: theme.transitions.create(
+        ['border', 'background', 'color', 'opacity'],
+        {
+          duration: 500
+        }
+      ),
+      '&:hover': {
+        border: `2px dashed ${theme.palette.grey[600]}`,
+        color: theme.palette.text.background,
+        background:
+          theme.palette.colorTheme === ColorThemes.DARK
+            ? 'rgba(0,0,0,0.1)'
+            : theme.palette.background.surface,
+        '& $uploadFolderIcon': {
+          opacity: 1
+        },
+        '& $addIcon': {
+          opacity: 1
+        }
+      }
+    },
+
     // Text
     '.metaText': { color: theme.palette.text.meta },
     '.whiteText': { color: 'white' },
@@ -282,14 +473,31 @@ export const useGlobalStyles = makeStyles((theme) => ({
       WebkitBoxOrient: 'vertical',
       whiteSpace: 'normal'
     },
+    '.widgetTitle': { color: theme.palette.text.background },
+    '.popOverSelectedContainer': {
+      width: theme.spacing(4),
+      display: 'flex',
+      alignItems: 'center'
+    },
+
     // Icons
+    '.backgroundIcon': { fontSize: 25, color: theme.palette.text.background },
+    '.metaIcon': { fontSize: 25, color: theme.palette.text.meta },
+    '.paperIcon': { fontSize: 25, color: theme.palette.text.paper },
     '.whiteIconLg': { fontSize: 40, color: theme.palette.common.white },
     '.blackIconLg': { fontSize: 40, color: theme.palette.common.black },
     '.editIcon': { color: theme.palette.grey[100], fontSize: 15 },
+    '.primaryIcon': { color: theme.palette.primary.main, fontSize: 25 },
+    '.primaryIconLg': { color: theme.palette.primary.main, fontSize: 40 },
     '.backIcon': {
-      color: theme.palette.grey[500],
+      color: theme.palette.grey[400],
       fontSize: 25,
       marginLeft: 10
+    },
+    '.sideBarIcon': {
+      marginRight: theme.spacing(4),
+      color: theme.palette.primary.light,
+      fontSize: theme.spacing(3.2)
     },
     '.assetListEmptyIcon': {
       color: theme.palette.background.surfaceHighlight,
@@ -307,6 +515,8 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       }
     },
+    // Icons
+
     // img
     '.circleImage': {
       minWidth: 60,
@@ -322,10 +532,22 @@ export const useGlobalStyles = makeStyles((theme) => ({
         objectFit: 'cover'
       }
     },
+    '.coverImage': {
+      height: '100%',
+      minWidth: '100%',
+      objectFit: 'cover',
+      position: 'absolute'
+    },
+    // img
+
     // Buttons
     '.iconButton': {
       color: theme.palette.background.surfaceHighlight,
-      backgroundColor: '#00000040'
+      backgroundColor: `${theme.palette.background.default}`
+    },
+    '.iconButtonPrimary': {
+      color: theme.palette.primary,
+      backgroundColor: `${theme.palette.background.surface}`
     },
     '.MuiIconButton-root': {
       transition: theme.transitions.create(
@@ -335,7 +557,38 @@ export const useGlobalStyles = makeStyles((theme) => ({
         }
       )
     },
+    // Buttons
+
     // Color
-    '.lightGrey': { color: theme.palette.grey[100] }
+    '.lightGrey': { color: theme.palette.grey[100] },
+    //Color
+
+    // Lists
+    '.listStyle': {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 0.5fr))',
+      gap: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: '1fr'
+      }
+    },
+    // Lists
+
+    // Shadow
+    '.shadowHover': {
+      '&:hover': {
+        boxShadow: `0 0 15px 5px ${theme.palette.background.shadow}45`
+      }
+    },
+    '.shadowDark': {
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}45`
+    },
+    '.shadow': {
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}35`
+    },
+    '.shadowLight': {
+      boxShadow: `0 0 15px 3px ${theme.palette.background.shadow}20`
+    }
+    // Shadow
   }
 }))

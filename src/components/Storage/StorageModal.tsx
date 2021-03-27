@@ -1,4 +1,5 @@
-import { Typography } from '@material-ui/core'
+import React, { useState } from 'react'
+import { Box, Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { PaymentMethod } from '@stripe/stripe-js'
 import clsx from 'clsx'
@@ -8,8 +9,7 @@ import { AppCircularProgress } from 'components/Common/Core/AppCircularProgress'
 import { AppSlider } from 'components/Common/Core/AppSlider'
 import Modal from 'components/Common/Modal'
 import PaymentMethodModal from 'components/Common/PaymentMethodModal'
-import React, { useState } from 'react'
-import { SubscriptionTypes } from 'utils/enums'
+import { bytesToGB, getAvailableStorage } from 'utils/helpers'
 import { getSubscriptionDetails } from 'utils/subscription'
 import { Account, Product, Subscription } from '../../utils/Interface'
 
@@ -29,24 +29,23 @@ type Props = {
   ) => void
   storageProduct: Product
   storagePurchaseLoading: boolean
+  usedStorage: number
 }
 
 export const StorageModal = ({
   open,
   onRequestClose,
-  account,
   accountSubscription,
   storageSubscription,
   paymentMethods,
-  customerId,
   createAmountSubscription,
   storageProduct,
-  storagePurchaseLoading
+  storagePurchaseLoading,
+  usedStorage
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
-  const [storageUsed] = useState<number>(2)
   const [paymentModal, setPaymentModal] = useState<boolean>(false)
 
   const [extraStorage, setExtraStorage] = useState<number>(
@@ -81,17 +80,16 @@ export const StorageModal = ({
 
   const renderStorageTracker = () => {
     const totalStorage: number = getTotalStorage()
-    const usedStoragePercent: any = (
-      (storageUsed / totalStorage) *
-      100
-    ).toFixed(2)
-    const availablePercentage: number | any = 100 - usedStoragePercent
+    const {
+      usedStoragePercent,
+      availablePercentage
+    }: any = getAvailableStorage(usedStorage, totalStorage)
     return (
       <div className={classes.storageTrackerContainer}>
         <div className={classes.storagePieOuter}>
           <AppCircularProgress
             variant='determinate'
-            value={(storageUsed / totalStorage) * 100}
+            value={usedStoragePercent}
             color='primary'
             className={classes.storagePie}
             size={200}
@@ -100,7 +98,7 @@ export const StorageModal = ({
           <div className={classes.storagePieInner}>
             <div className={classes.storagePercentContainer}>
               <Typography variant='h3' style={{ marginRight: 4 }}>
-                {availablePercentage}
+                {availablePercentage.toFixed(2)}
               </Typography>
               <Typography variant='h6'> %</Typography>
             </div>
@@ -115,7 +113,9 @@ export const StorageModal = ({
             color: theme.palette.text.meta
           }}>
           <div style={{ textAlign: 'center' }}>
-            <Typography variant={'h5'}>{storageUsed}GB</Typography>
+            <Typography variant={'h5'}>
+              {bytesToGB(usedStorage).toFixed(1)}GB
+            </Typography>
             <Typography variant={'caption'}>Used</Typography>
           </div>
 
@@ -166,11 +166,13 @@ export const StorageModal = ({
           {extraStorage}. This will add an $
           {Math.floor(extraStorage * 0.2).toFixed(2)} to your monthly bill.
         </Typography>
-        <GradiantButton
-          onClick={handleBuyStorage}
-          className={classes.applyButton}>
-          Apply
-        </GradiantButton>
+        <Box display={'flex'}>
+          <GradiantButton
+            onClick={handleBuyStorage}
+            className={classes.applyButton}>
+            Apply
+          </GradiantButton>
+        </Box>
       </div>
     )
   }

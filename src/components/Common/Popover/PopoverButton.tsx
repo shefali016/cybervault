@@ -1,21 +1,32 @@
-import { IconButton, MenuItem, Popover, Typography } from '@material-ui/core'
+import { MenuItem, Popover, Typography } from '@material-ui/core'
 import React from 'react'
 import { useTheme } from '@material-ui/core/styles'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import CheckIcon from '@material-ui/icons/Check'
 
 export type MenuItem = {
   title: string
   onClick: () => void
   Icon?: any
   desctructive?: boolean
+  isSelected?: boolean
   disabled?: boolean
+  After?: React.ReactElement | null
+  Before?: React.ReactElement | null
 }
-type Props = {
+export type Props = {
   menuItems: Array<MenuItem>
   className?: string
   style?: {}
   anchorOrigin?: any
   transformOrigin?: any
+  children: ({
+    onClick,
+    id
+  }: {
+    onClick: (e: any) => void
+    id: string | undefined
+  }) => React.ReactElement
+  isSelecting?: boolean
 }
 
 export const PopoverButton = ({
@@ -23,7 +34,9 @@ export const PopoverButton = ({
   className,
   style,
   anchorOrigin,
-  transformOrigin
+  transformOrigin,
+  children,
+  isSelecting
 }: Props) => {
   const theme = useTheme()
 
@@ -40,14 +53,17 @@ export const PopoverButton = ({
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const renderCheck = (isSelected: boolean) => (
+    <div className={'popOverSelectedContainer'}>
+      {isSelected ? (
+        <CheckIcon className={'paperIcon'} style={{ fontSize: 20 }} />
+      ) : null}
+    </div>
+  )
+
   return (
     <div className={className} style={style}>
-      <IconButton aria-owns={id} onClick={handleClick} className={'iconButton'}>
-        <MoreVertIcon
-          style={{ color: theme.palette.grey[100] }}
-          fontSize='small'
-        />
-      </IconButton>
+      {children({ onClick: handleClick, id })}
 
       <Popover
         id={id}
@@ -57,17 +73,26 @@ export const PopoverButton = ({
         anchorOrigin={
           anchorOrigin || {
             vertical: 'bottom',
-            horizontal: 'right'
+            horizontal: 'center'
           }
         }
         transformOrigin={
           transformOrigin || {
             vertical: 'top',
-            horizontal: 'left'
+            horizontal: 'center'
           }
         }>
         {menuItems.map(
-          ({ title, onClick, Icon, desctructive, disabled }: MenuItem) => {
+          ({
+            title,
+            onClick,
+            Icon,
+            desctructive,
+            disabled,
+            Before = null,
+            After = null,
+            isSelected
+          }: MenuItem) => {
             return (
               <MenuItem
                 key={title}
@@ -89,6 +114,8 @@ export const PopoverButton = ({
                       : theme.palette.text.paper,
                     alignItems: 'center'
                   }}>
+                  {Before}
+                  {isSelecting ? renderCheck(!!isSelected) : null}
                   {!!Icon && (
                     <Icon
                       style={{ marginRight: theme.spacing(1), marginBottom: 2 }}
@@ -98,6 +125,7 @@ export const PopoverButton = ({
                   <Typography variant={'subtitle1'} style={{ margin: 0 }}>
                     {title}
                   </Typography>
+                  {After}
                 </div>
               </MenuItem>
             )

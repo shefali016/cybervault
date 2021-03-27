@@ -13,15 +13,18 @@ type CardInputElementProps = {
   customerId: string
   onPaymentMethodCreated?: (paymentMethod: PaymentMethod) => void
   saveOnCreate?: boolean
+  directCheckout?: boolean
+  handleCreateCharge?: (token: any) => void
 }
 
 export const CardInputElement = injectStripe(
   ({
-    customerId,
+    directCheckout,
     elements,
     stripe,
     saveOnCreate = true,
-    onPaymentMethodCreated
+    onPaymentMethodCreated,
+    handleCreateCharge
   }: CardInputElementProps & any) => {
     const toastContext = useContext(ToastContext)
 
@@ -35,40 +38,58 @@ export const CardInputElement = injectStripe(
       e.preventDefault()
 
       const cardElement = elements.getElement('card')
-
-      stripe
-        .createPaymentMethod({
-          type: 'card',
-          card: cardElement,
-          billing_details: { name: 'Jenny Rosen' }
-        })
-        .then(({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
-          if (paymentMethod && paymentMethod.id) {
-            if (saveOnCreate) {
-              dispatch(attachPaymentMethod(paymentMethod))
+      if (directCheckout) {
+        stripe
+          .createToken({ type: 'card' })
+          .then((result: any) => {
+            if (result.error) {
+              // Show error to your customer.
+              console.log(result.error.message)
+              toastContext.showToast({ title: result.error.message })
+            } else {
+              setLoading(false)
+              handleCreateCharge(result.token)
             }
-            return paymentMethod
-          } else {
+          })
+          .catch((error: any) => {
+            console.log('Failed to pay for invoice', error)
+            toastContext.showToast({ title: 'Failed to pay for invoice' })
             setLoading(false)
-          }
-        })
-        .then((paymentMethod: PaymentMethod) => {
-          if (paymentMethod) {
-            if (typeof onPaymentMethodCreated === 'function') {
-              onPaymentMethodCreated(paymentMethod)
+          })
+      } else {
+        stripe
+          .createPaymentMethod({
+            type: 'card',
+            card: cardElement
+          })
+          .then(({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
+            if (paymentMethod && paymentMethod.id) {
+              if (saveOnCreate) {
+                dispatch(attachPaymentMethod(paymentMethod))
+              }
+              return paymentMethod
+            } else {
+              setLoading(false)
             }
-            toastContext.showToast({
-              title: 'Card added!',
-              type: ToastTypes.success
-            })
+          })
+          .then((paymentMethod: PaymentMethod) => {
+            if (paymentMethod) {
+              if (typeof onPaymentMethodCreated === 'function') {
+                onPaymentMethodCreated(paymentMethod)
+              }
+              toastContext.showToast({
+                title: 'Card added!',
+                type: ToastTypes.success
+              })
+              setLoading(false)
+            }
+          })
+          .catch((error: any) => {
+            console.log('Failed to create payment method', error)
+            toastContext.showToast({ title: 'Failed to add card' })
             setLoading(false)
-          }
-        })
-        .catch((error: any) => {
-          console.log('Failed to create payment method', error)
-          toastContext.showToast({ title: 'Failed to add card' })
-          setLoading(false)
-        })
+          })
+      }
     }
 
     return (
@@ -87,7 +108,7 @@ export const CardInputElement = injectStripe(
             type='submit'
             style={{ marginTop: 30, alignSelf: 'center' }}
             loading={loading}>
-            Save
+            {directCheckout ? 'Pay Invoice' : 'Save'}
           </GradiantButton>
         </div>
       </form>
@@ -97,13 +118,17 @@ export const CardInputElement = injectStripe(
 
 export const CardInput = ({
   customerId,
-  onPaymentMethodCreated
+  onPaymentMethodCreated,
+  directCheckout,
+  handleCreateCharge
 }: CardInputElementProps) => {
   return (
     <Elements>
       <CardInputElement
         customerId={customerId}
         onPaymentMethodCreated={onPaymentMethodCreated}
+        directCheckout={directCheckout}
+        handleCreateCharge={handleCreateCharge}
       />
     </Elements>
   )
@@ -112,12 +137,17 @@ export const CardInput = ({
 type CardModalProps = {
   open: boolean
   onRequestClose: () => void
+  directCheckout?: boolean
+  customerId?: string
+  handleCreateCharge?: (token: any) => void
 } & CardInputElementProps
 
 export const CardModal = ({
   open,
   onRequestClose,
-  customerId
+  customerId,
+  directCheckout,
+  handleCreateCharge
 }: CardModalProps) => {
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
@@ -125,7 +155,9 @@ export const CardModal = ({
         <CloseButton onClick={onRequestClose} className={'modalCloseButton'} />
         <CardInput
           customerId={customerId}
+          directCheckout={directCheckout}
           onPaymentMethodCreated={onRequestClose}
+          handleCreateCharge={handleCreateCharge}
         />
       </div>
     </AppModal>

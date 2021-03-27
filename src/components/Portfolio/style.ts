@@ -7,6 +7,7 @@ import {
   POSITION_ABSOLUTE,
   POSITION_RELATIVE
 } from 'utils/constants/stringConstants'
+import { ColorThemes } from 'utils/enums'
 
 export const useStyles = makeStyles((theme) => ({
   campaignTitle: { color: 'inherit' },
@@ -175,7 +176,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     height: theme.spacing(10),
-    minWidth: getCardHeight(theme),
+    minWidth: 280,
     boxSizing: 'border-box'
   },
   portfolioFolderTitle: {
@@ -226,34 +227,12 @@ export const useStyles = makeStyles((theme) => ({
   },
   folderDescription: { color: theme.palette.text.meta },
   portfolioBox: {
-    marginBottom: theme.spacing(6),
-    padding: theme.spacing(3),
-    borderRadius: '18px',
-    border: '2px dashed #9ea0a28c',
-    textAlign: 'center',
-    cursor: 'pointer',
-    color: theme.palette.text.meta,
-    transition: theme.transitions.create(
-      ['border', 'background', 'color', 'opacity'],
-      {
-        duration: 500
-      }
-    ),
-    '&:hover': {
-      border: `2px dashed ${theme.palette.grey[600]}`,
-      color: theme.palette.common.white,
-      background: 'rgba(0,0,0,0.1)',
-      '& $uploadFolderIcon': {
-        opacity: 1
-      },
-      '& $addIcon': {
-        opacity: 1
-      }
-    }
+    marginBottom: theme.spacing(6)
   },
   portfolioLogoImg: {
-    height: 80,
-    borderRadius: 40,
+    height: '100%',
+    minWidth: '100%',
+    objectFit: 'cover',
     position: POSITION_ABSOLUTE
   },
   addLogoText: {

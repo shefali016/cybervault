@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core'
 import { useStyles } from './style'
 import iconFolderUpload from '../../../assets/iconFolderUpload.png'
 import ReactLoading from 'react-loading'
+import clsx from 'clsx'
 
 type Props = {
   isVideo?: boolean
@@ -17,13 +18,14 @@ export const DragAndDropUploader = ({
   onSubmit
 }: Props) => {
   const classes = useStyles()
-  const [file, setFile] = useState<File | null>(null)
 
   // receives array of files that are done uploading when submit button is clicked
-  const onDrop = useCallback((files) => {
-    setFile(files)
-    onSubmit(files)
-  }, [])
+  const onDrop = useCallback(
+    (files) => {
+      onSubmit(files)
+    },
+    [onSubmit]
+  )
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -31,7 +33,7 @@ export const DragAndDropUploader = ({
   })
 
   return (
-    <div {...getRootProps({ className: classes.dropzone })}>
+    <div {...getRootProps({ className: clsx('dropBox', classes.dropzone) })}>
       <input {...getInputProps()} />
       {isLoading && (
         <div className={classes.loaderWrapper}>
@@ -43,11 +45,12 @@ export const DragAndDropUploader = ({
         </div>
       )}
       <div className={classes.container}>
-        {!(file && file.name) ? (
-          <img src={iconFolderUpload} alt='icon' className={classes.image} />
-        ) : (
-          <Typography>{file.name}</Typography>
-        )}
+        <img
+          src={iconFolderUpload}
+          alt='upload-icon'
+          className={classes.image}
+        />
+
         <Typography className={classes.text}>
           Add {isVideo ? 'Video' : 'Image'}
         </Typography>

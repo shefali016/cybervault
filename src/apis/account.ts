@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import { Account } from 'utils/Interface'
+import { Account, Storage } from 'utils/Interface'
 import { getStripeAccount, verifyStripeAccount } from './stripe'
 
 export const getAccount = async (id: string): Promise<Account> => {
@@ -46,4 +46,21 @@ export const updateAccountFields = (
     .doc(accountId)
     .update(accountData)
     .then(() => accountData)
+}
+
+export const listenToStorage = (
+  accountId: string,
+  onData: (data: Storage | undefined) => void
+): (() => void) => {
+  return firebase
+    .firestore()
+    .collection('Storage')
+    .doc(accountId)
+    .onSnapshot((snapshot) => {
+      const storage = snapshot.data() as Storage | undefined
+
+      if (storage) {
+        onData(storage)
+      }
+    })
 }

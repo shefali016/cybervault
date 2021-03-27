@@ -22,17 +22,18 @@ import { setMedia } from 'apis/assets'
 
 type AddClientProps = {
   isEdit: boolean
-  onBack: () => void
+  onBack?: () => void
   onUpdate?: () => void
   account: Account
   showStep?: boolean
   stepText?: string
-  client?: Client | undefined
+  client?: Client | null | undefined
   onSuccess?: (client: Client) => void
+  showBackButton?: boolean
 }
 
 export const AddClient = (props: AddClientProps) => {
-  const { isEdit, onBack, account, client } = props
+  const { isEdit, onBack, account, client, showBackButton } = props
 
   const [clientData, setClientData] = useState<Client>(
     !!client && isEdit ? client : getClientData()
@@ -89,7 +90,7 @@ export const AddClient = (props: AddClientProps) => {
 
       try {
         if (logoFile) {
-          logo = await setMedia(`ClientLogos/${clientId}`, logoFile)
+          logo = await setMedia(`client_logos/${clientId}`, logoFile)
         }
 
         const client: Client = {
@@ -214,7 +215,10 @@ export const AddClient = (props: AddClientProps) => {
 
   return (
     <>
-      <NewProjectTitle title={'New Project'} subtitle={'Add a client'} />
+      <NewProjectTitle
+        title={'Client'}
+        subtitle={isEdit ? 'Edit a client' : 'Add a client'}
+      />
       {renderClientLogoView()}
       {renderMiddleView()}
       <NewProjectFooter
@@ -226,7 +230,7 @@ export const AddClient = (props: AddClientProps) => {
         addClient={true}
         isLoading={isLoading}
         isEdit={isEdit}
-        persistBackButton={true}
+        persistBackButton={showBackButton}
       />
     </>
   )

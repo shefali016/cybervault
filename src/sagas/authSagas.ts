@@ -30,7 +30,6 @@ type Params = {
 
 function* login({ loginInfo }: Params) {
   try {
-    console.log(loginInfo)
     const loginResponse = yield call(authRequest, loginInfo)
     yield put(loginSuccess(loginResponse))
   } catch (error: any) {

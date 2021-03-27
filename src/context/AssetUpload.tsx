@@ -1,6 +1,6 @@
 import React, { createContext, useState, useMemo, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { addAsset, setMedia } from 'apis/assets'
+import { addAsset, handleMediaUpload } from 'apis/assets'
 import { Typography } from '@material-ui/core'
 import ArrowDown from '@material-ui/icons/KeyboardArrowDown'
 import ArrowUp from '@material-ui/icons/KeyboardArrowUp'
@@ -8,7 +8,13 @@ import CloseIcon from '@material-ui/icons/Close'
 import { AppIconButton } from 'components/Common/Core/AppIconButton'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
-import { Account, Asset, AssetUpload, UploadCache } from 'utils/Interface'
+import {
+  Account,
+  Asset,
+  AssetFile,
+  AssetUpload,
+  UploadCache
+} from 'utils/Interface'
 import { generateUid } from 'utils'
 import { getImageObject } from 'utils/helpers'
 import { ToastContext } from './Toast'
@@ -16,7 +22,6 @@ import { UploadStatuses } from 'utils/enums'
 import { AssetUploadItem } from 'components/Assets/AssetUploadItem'
 import clsx from 'clsx'
 import { AWSError, S3 } from 'aws-sdk'
-// import FFMPEG from "react-ffmpeg";
 
 const AWS = require('aws-sdk')
 
@@ -61,7 +66,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
       if (!assetUpload) {
         return uploadCache
       }
-      return { ...uploadFiles, [assetId]: { ...assetUpload, [key]: value } }
+      return { ...uploadCache, [assetId]: { ...assetUpload, [key]: value } }
     })
   }
 
@@ -76,13 +81,12 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
       fileName: file.name,
       id: generateUid()
     }
-
     try {
       if (!account) {
         throw Error('Not logged in')
       }
 
-      const task: S3.ManagedUpload = setMedia(asset.id, file)
+      const task: S3.ManagedUpload = handleMediaUpload(asset.id, file)
 
       setUploads((uploadCache: UploadCache) => ({
         ...uploadCache,
@@ -106,44 +110,14 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
         if (!err) {
           const url = data.Location
 
-          var video = document.createElement('video')
-          var source = document.createElement('source')
-          source.setAttribute('src', `${url}`)
-          video.appendChild(source)
-          video.onloadedmetadata = async () => {
-            console.log(
-              // video.videoHeight,
-              video.dataset,
-              'uuuuuuuuuuuuuuuuuu'
-            )
+          const assetFile = await getAssetFile(asset, file, url)
 
-            // await FFMPEG.process(
-            //   file,
-            //   '-metadata location="" -metadata location-eng="" -metadata author="" -c:v copy -c:a copy',
-            //   function (e:any) {
-            //     const vid = e.result;
-            //     console.log(vid,"tttttttttttttt");
-            //   }.bind(this)
-            // );
+          asset.files.push(assetFile)
+          await addAsset(account.id, asset)
 
-            asset.files.push(
-              getImageObject(
-                file,
-                url,
-                video.videoHeight,
-                video.videoWidth,
-                asset.id,
-                generateUid()
-              )
-            )
-            await addAsset(account.id, asset)
-            updateUploadField(asset.id, 'status', UploadStatuses.COMPLETE)
-            typeof assetUploadedCallback === 'function' &&
-              assetUploadedCallback(asset)
-          }
-          video.onerror = async () => {
-            updateUploadField(asset.id, 'status', UploadStatuses.FAILED)
-          }
+          updateUploadField(asset.id, 'status', UploadStatuses.COMPLETE)
+          typeof assetUploadedCallback === 'function' &&
+            assetUploadedCallback(asset)
         } else {
           console.log(err)
           updateUploadField(asset.id, 'status', UploadStatuses.FAILED)
@@ -155,6 +129,34 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
         title: `Failed to upload ${type === 'image' ? 'Image' : 'Video'}`
       })
     }
+  }
+
+  const getAssetFile = (
+    asset: Asset,
+    file: File,
+    url: string
+  ): Promise<AssetFile> => {
+    return new Promise((resolve, reject) => {
+      var video = document.createElement('video')
+      var source = document.createElement('source')
+      source.setAttribute('src', `${url}`)
+      video.appendChild(source)
+      video.onloadedmetadata = () => {
+        resolve(
+          getImageObject(
+            file,
+            url,
+            video.videoHeight,
+            video.videoWidth,
+            asset.id,
+            generateUid()
+          )
+        )
+      }
+      video.onerror = () => {
+        reject(Error('Failed to get asset file'))
+      }
+    })
   }
 
   const handleTaskDelete = (assetUpload: AssetUpload) => {
@@ -252,7 +254,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     boxShadow: '0 0 15px 4px #00000040',
     zIndex: 2000,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       width: '90%'
     },
     transition: theme.transitions.create(['opacity'], { duration: 500 })

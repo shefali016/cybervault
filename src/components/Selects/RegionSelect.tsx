@@ -29,7 +29,6 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
       const res = await fetch('https://restcountries.eu/rest/v2/all')
       const countries = await res.json()
       const { regions, items } = mapCountriesToMenuItems(countries)
-      console.log(items)
       setState((state) => ({ ...state, regions, menuItems: items }))
     } catch (error) {
       console.log('Failed to fetch countries')
@@ -93,7 +92,7 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
   return (
     <AppSelect
       items={menuItems}
-      value={regionCode !== undefined ? regionCode : 'USA'}
+      value={regionCode !== undefined ? regionCode : 'US'}
       onChange={(event: any) => {
         handleChange(event.target.value)
       }}

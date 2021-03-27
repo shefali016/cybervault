@@ -11,7 +11,7 @@ import {
   WatermarkControls,
   WatermarkStyles
 } from 'utils/enums'
-import {S3} from "aws-sdk"
+import { S3 } from 'aws-sdk'
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -150,7 +150,7 @@ export interface SubscriptionDetails {
   extraFeatures?: Array<string>
   storage: number
   numProjects: number
-  transactionFee: string
+  transactionFee: number
 }
 
 export interface Subscription {
@@ -396,6 +396,10 @@ export type Account = {
   }
 }
 
+export interface Storage {
+  usedStorage: number
+}
+
 export type User = {
   id: string
   email: string
@@ -410,6 +414,12 @@ export type User = {
   twitter?: string | undefined
   linkedIn?: string | undefined
   customerId: string
+}
+
+export interface StripeCustomerBalance {
+  balanceAvailable: number
+  balancePending: number
+  totalBalance: number
 }
 
 export type AuthUser = {
@@ -466,14 +476,19 @@ export type Project = {
   campaignExpenses: number
   expenses: Array<Expense>
   milestones: Array<Milestone>
-  createdAt?: Date | string
-  updatedAt?: Date | string
+  createdAt: number
+  updatedAt: number
   id: string
   videos: Array<string>
   images: Array<string>
   canInvoice: Boolean
   status: ProjectStatus
   featuredImage?: string
+  isPaid?: boolean
+}
+
+export type ProjectCache = {
+  [id: string]: Project
 }
 
 export type InvoiceConversation = {

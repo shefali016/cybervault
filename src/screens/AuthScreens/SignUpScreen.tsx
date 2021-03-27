@@ -47,11 +47,18 @@ export const SignUpScreen = (props: any) => {
     const _email = email.trim()
     const _password = password.trim()
     const _name = name.trim()
+
     if (!_email || !_name || !_password) {
-      toastContext.showToast({ title: 'Complete all fields before signing up' })
-    } else {
-      props.signUp({ email: _email, password: _password, name: _name })
+      return toastContext.showToast({
+        title: 'Complete all fields before signing up'
+      })
     }
+
+    if (_name.split(' ').length < 2) {
+      return toastContext.showToast({ title: 'Enter your full name' })
+    }
+
+    props.signUp({ email: _email, password: _password, name: _name })
   }
 
   const navigateToLogin = () => props.history.replace('/')

@@ -1,7 +1,12 @@
 import * as ActionTypes from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { PaymentMethod } from '@stripe/stripe-js'
-import { Invoice, StripePlans, Subscription } from 'utils/Interface'
+import {
+  Invoice,
+  StripeCustomerBalance,
+  StripePlans,
+  Subscription
+} from 'utils/Interface'
 
 export type State = {
   paymentMethods: Array<PaymentMethod>
@@ -42,6 +47,9 @@ export type State = {
   billingHistoryLoading: boolean
   billingHistorySuccess: boolean
   billingHistoryError: null | string
+
+  customerTotalBalance: number
+  customerAvailableBalance: number
 }
 
 export type Action = {
@@ -57,6 +65,7 @@ export type Action = {
   storageSubscription: Subscription
   billingHistory: Array<Invoice>
   paymentMethodId: string
+  balances: StripeCustomerBalance
 }
 
 const initialState = {
@@ -96,7 +105,9 @@ const initialState = {
   billingHistory: null,
   billingHistoryLoading: false,
   billingHistorySuccess: false,
-  billingHistoryError: null
+  billingHistoryError: null,
+  customerTotalBalance: 0,
+  customerAvailableBalance: 0
 }
 
 const stripe = (state = initialState, action: Action) => {
@@ -305,7 +316,12 @@ const stripe = (state = initialState, action: Action) => {
         billingHistoryLoading: false,
         billingHistorySuccess: false
       }
-
+    case ActionTypes.GET_CUSTOMER_BALANCE_SUCCESS:
+      return {
+        ...state,
+        customerTotalBalance: action.balances.totalBalance,
+        customerAvailableBalance: action.balances.balanceAvailable
+      }
     default:
       return state
   }

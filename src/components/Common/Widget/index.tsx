@@ -49,13 +49,13 @@ const Widget = ({
     <div className={clsx(classes.root)}>
       {!!title && (
         <Typography
-          variant={'body1'}
+          variant={'h6'}
           className={clsx(classes.title, 'responsiveHorizontalPadding')}>
           {title}
         </Typography>
       )}
       <div
-        style={style}
+        style={{ height: itemHeight, ...style }}
         className={clsx(
           classes.wrapper,
           tabletColumn ? classes.tabletColumn : undefined,
@@ -100,10 +100,9 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   title: {
-    marginBottom: theme.spacing(1),
     color: theme.palette.text.background
   },
-  loader: {}
+  loader: { marginLeft: theme.spacing(2) }
 }))
 
 export default Widget

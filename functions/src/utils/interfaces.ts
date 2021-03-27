@@ -114,7 +114,7 @@ export interface SubscriptionDetails {
   extraFeatures?: Array<string>
   storage: number
   numProjects: number
-  transactionFee: string
+  transactionFee: number
 }
 
 export interface Subscription {
@@ -289,6 +289,7 @@ export type AssetFile = {
   url: string
   width: number
   height: number
+  size: number
 }
 
 export type Project = {

@@ -11,7 +11,7 @@ import { useStyles } from './style'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import Widget from '../../components/Common/Widget'
 import { useTheme } from '@material-ui/core/styles'
-import { PopoverButton } from 'components/Common/PopoverButton'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 import clsx from 'clsx'
 import { AppButton } from 'components/Common/Core/AppButton'
 import { PortfolioItem } from 'components/Portfolio/PortfolioItem'
@@ -24,7 +24,7 @@ type Props = {
   deletefolder: (folderId: string) => void
   handleModalRequest: ({ type, folder }: any) => void
   handleSubmit: (portfolio: Portfolio) => void
-  projectList: Array<Project>
+  projects: Array<Project>
   portfolios: Map<string, Portfolio> | any
   handlePortfolioView: (portfolioId: string) => void
   clients: Array<Client>
@@ -39,7 +39,7 @@ const PortfolioFolders = ({
   handleEditFolderDetail,
   deletefolder,
   handleSubmit,
-  projectList,
+  projects,
   updatePortfolioLoading,
   updatePortfolioError,
   updatePortfolioSuccess,
@@ -71,7 +71,7 @@ const PortfolioFolders = ({
         open={!!creatingPortfolioForFolder}
         onRequestClose={() => createPortfolioForFolder(null)}
         onSubmit={(portfolio: Portfolio) => handleSubmit(portfolio)}
-        projectList={projectList}
+        projects={projects}
         loading={updatePortfolioLoading}
         error={updatePortfolioError}
         success={updatePortfolioSuccess}
@@ -123,7 +123,7 @@ const PortfolioFolders = ({
                   />
                   <Typography
                     variant='h5'
-                    style={{ marginRight: theme.spacing(2.5) }}>
+                    style={{ marginRight: theme.spacing(2) }}>
                     {folder.name}{' '}
                     <Typography
                       variant='caption'
@@ -131,7 +131,7 @@ const PortfolioFolders = ({
                       {folder.description}
                     </Typography>
                   </Typography>
-                  <PopoverButton menuItems={popoverMenuItems} />
+                  <PopoverMoreIconButton menuItems={popoverMenuItems} />
                   {portFolios.length > 4 && (
                     <AppButton
                       style={{

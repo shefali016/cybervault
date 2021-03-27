@@ -11,7 +11,8 @@ import {
   SubscriptionType,
   StripePlans,
   Product,
-  Invoice
+  Invoice,
+  Asset
 } from 'utils/Interface'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import RightArrow from '@material-ui/icons/ArrowForwardIos'
@@ -33,6 +34,7 @@ import { PaymentMethod } from '@stripe/stripe-js'
 import { PaymentMethodInline } from 'components/Stripe/PaymentMethodInline'
 import { SubscriptionTypes } from 'utils/enums'
 import moment from 'moment'
+import { deleteAssetRequest, getAssetListRequest } from 'actions/projectActions'
 
 type StateProps = {
   account: Account
@@ -45,6 +47,8 @@ type StateProps = {
   subscriptionPlans: Array<StripePlans> | null
   storagePurchaseLoading: boolean
   billingHistory: Array<Invoice> | any
+  usedStorage: number
+  assetList: Array<Asset>
 }
 type DispatchProps = {
   getPaymentMethods: (customerId: string) => void
@@ -67,6 +71,8 @@ type DispatchProps = {
   ) => void
   getPlanList: () => void
   getCustomerInvoices: () => void
+  getAllAssetData: () => void
+  deleteAssetData: (assetId: string) => void
 }
 type ReduxProps = StateProps & DispatchProps
 type Props = { history: any; location: any }
@@ -90,7 +96,11 @@ const SubscriptionScreen = ({
   subscriptionLoading,
   storagePurchaseLoading,
   getCustomerInvoices,
-  billingHistory
+  billingHistory,
+  usedStorage,
+  getAllAssetData,
+  assetList,
+  deleteAssetData
 }: Props & ReduxProps) => {
   const classes = useStyles()
 
@@ -153,6 +163,7 @@ const SubscriptionScreen = ({
             createAmountSubscription={createAmountSubscription}
             storageProduct={storageProduct}
             storagePurchaseLoading={storagePurchaseLoading}
+            usedStorage={usedStorage}
           />
 
           <CardModal
@@ -161,9 +172,9 @@ const SubscriptionScreen = ({
             customerId={user.customerId}
           />
 
-          <Section title={'Your Plan'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Your Plan'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -201,9 +212,9 @@ const SubscriptionScreen = ({
             </div>
           </Section>
 
-          <Section title={'Storage'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Storage'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -225,9 +236,9 @@ const SubscriptionScreen = ({
             </div>
           </Section>
 
-          <Section title={'Payment Details'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Payment Details'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -270,9 +281,9 @@ const SubscriptionScreen = ({
             </div>
           </Section>
 
-          <Section title={'Billing History'} className={classes.section}>
-            <div className={classes.sectionInner}>
-              <div className={classes.sectionTextArea}>
+          <Section title={'Billing History'} className={'section'}>
+            <div className={'sectionInner'}>
+              <div className={'sectionTextArea'}>
                 <ResponsiveRow>
                   {[
                     <div style={{ flex: 1 }}>
@@ -390,7 +401,9 @@ const mapState = (state: ReduxState): StateProps => ({
   subscriptionPlans: state.stripe
     .subscriptionPlans as Array<StripePlans> | null,
   storagePurchaseLoading: state.stripe.storagePurchaseLoading,
-  billingHistory: state.stripe.billingHistory as Array<Invoice>
+  billingHistory: state.stripe.billingHistory as Array<Invoice>,
+  usedStorage: state.auth.usedStorage as number,
+  assetList: state.project.allAssetList as Array<Asset>
 })
 
 const mapDispatch = (dispatch: any): DispatchProps => ({
@@ -418,7 +431,9 @@ const mapDispatch = (dispatch: any): DispatchProps => ({
       createAmountSubscription(price, paymentMethodId, extraStorage, productId)
     ),
   getPlanList: () => dispatch(getStripPlanList()),
-  getCustomerInvoices: () => dispatch(getCustomerInvoices())
+  getCustomerInvoices: () => dispatch(getCustomerInvoices()),
+  getAllAssetData: () => dispatch(getAssetListRequest()),
+  deleteAssetData: (assetId: string) => dispatch(deleteAssetRequest(assetId))
 })
 
 export default connect(mapState, mapDispatch)(SubscriptionScreen)

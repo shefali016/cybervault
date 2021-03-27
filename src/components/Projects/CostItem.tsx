@@ -24,15 +24,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     marginBottom: theme.spacing(1.2),
-    padding: '2px 0',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column'
-    }
+    padding: '2px 0'
   },
   label: {
     fontWeight: 'bold',
     marginRight: 20,
-    color: '#fff',
+    color: theme.palette.text.background,
     backgroundColor: theme.palette.background.default,
     padding: `2px 10px`,
     borderRadius: 40

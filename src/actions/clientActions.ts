@@ -1,10 +1,9 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
 
-export function getAllClientsRequest(account: Types.Account) {
+export function getAllClientsRequest() {
   return {
-    type: ActionTypes.GET_ALL_CLIENTS_REQUEST,
-    account
+    type: ActionTypes.GET_ALL_CLIENTS_REQUEST
   }
 }
 

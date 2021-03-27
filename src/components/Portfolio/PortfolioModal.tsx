@@ -39,7 +39,7 @@ type AddPortfolioProps = {
   folderId: string | undefined
   onSubmit: (portfolio: Portfolio) => void
   updatingFolder?: boolean
-  projectList: Array<Project>
+  projects: Array<Project>
   loading: boolean
   error: string | null
   success: boolean
@@ -50,13 +50,13 @@ type AddPortfolioProps = {
 
 export const AddPortfolio = ({
   onSubmit,
-  projectList,
+  projects,
   loading,
   error,
   success,
   clients,
   folderId,
-  portfolio = {},
+  portfolio,
   isEditingProject
 }: AddPortfolioProps) => {
   let imageInputRef: any = useRef()
@@ -73,7 +73,7 @@ export const AddPortfolio = ({
         projects: [],
         folderId: folderId || ''
       },
-      portfolio
+      portfolio || {}
     ),
     iconFile: '',
     isChooseProject: !!isEditingProject,
@@ -93,14 +93,17 @@ export const AddPortfolio = ({
     let icon = state.portfolio.icon
 
     try {
-      if (!state.portfolio.projects.length) {
+      if (projects.length && !state.portfolio.projects.length) {
         throw Error('Select a project first.')
       }
 
       if (state.iconFile) {
         setState((state) => ({ ...state, uploadingIcon: true }))
         const iconId = generateUid()
-        const iconUrl = await setMedia(iconId, state.iconFile)
+        const iconUrl = await setMedia(
+          `portfolio_icons/${iconId}`,
+          state.iconFile
+        )
         if (typeof iconUrl === 'string') {
           icon = iconUrl
         } else {
@@ -120,7 +123,7 @@ export const AddPortfolio = ({
         createdAt: Date.now()
       })
     } catch (error) {
-      setState((state) => ({ ...state, uploadingIcon: true }))
+      setState((state) => ({ ...state, uploadingIcon: false }))
       toastContent.showToast({ title: error.message, type: ToastTypes.error })
     }
   }
@@ -253,50 +256,55 @@ export const AddPortfolio = ({
     )
   }
 
-  const renderProjectList = () => {
+  const renderProjects = () => {
     return (
       <Fragment>
         <div style={{ marginTop: '10px' }}>
           <List>
-            {projectList && projectList.length
-              ? projectList.map((project: Project, index: number) => {
-                  const isProjectSelected = state.portfolio?.projects?.includes(
-                    project.id
-                  )
-                  const client = clients
-                    ? clients.find(
-                        (client: Client) => client.id === project.clientId
-                      )
-                    : null
-                  return (
-                    <ListItem
-                      key={index}
-                      role={undefined}
-                      button
-                      onClick={() => handleProjectSelect(project.id)}
-                      className={clsx(
-                        classes.listProject,
-                        isProjectSelected ? classes.selectedProject : ''
-                      )}>
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={`${project.campaignName}-icon`}
-                          src={client ? client.logo : null}
-                        />
-                      </ListItemAvatar>
-                      <ListItemText
-                        classes={{
-                          root: clsx(
-                            classes.listItemText,
-                            isProjectSelected ? classes.selectedProjectText : ''
-                          )
-                        }}
-                        primary={project.campaignName}
+            {projects && projects.length ? (
+              projects.map((project: Project, index: number) => {
+                const isProjectSelected = state.portfolio?.projects?.includes(
+                  project.id
+                )
+                const client = clients
+                  ? clients.find(
+                      (client: Client) => client.id === project.clientId
+                    )
+                  : null
+                return (
+                  <ListItem
+                    key={index}
+                    role={undefined}
+                    button
+                    onClick={() => handleProjectSelect(project.id)}
+                    className={clsx(
+                      classes.listProject,
+                      isProjectSelected ? classes.selectedProject : ''
+                    )}>
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={`${project.campaignName}-icon`}
+                        src={client ? client.logo : null}
                       />
-                    </ListItem>
-                  )
-                })
-              : null}
+                    </ListItemAvatar>
+                    <ListItemText
+                      classes={{
+                        root: clsx(
+                          classes.listItemText,
+                          isProjectSelected ? classes.selectedProjectText : ''
+                        )
+                      }}
+                      primary={project.campaignName}
+                    />
+                  </ListItem>
+                )
+              })
+            ) : (
+              <Typography variant={'body1'}>
+                You have not created any projects yet. You can add projects to
+                this portfolio later.
+              </Typography>
+            )}
           </List>
         </div>
       </Fragment>
@@ -335,7 +343,7 @@ export const AddPortfolio = ({
     <React.Fragment>
       <ModalTitle title={getTitle()} subtitle={getSubTitle()} />
       {!state.isChooseProject ? renderPortfolioLogoView() : null}
-      {!state.isChooseProject ? renderDetails() : renderProjectList()}
+      {!state.isChooseProject ? renderDetails() : renderProjects()}
       <GradiantButton
         onClick={handleButtonClick}
         className={classes.portfolioModalBtn}
@@ -361,7 +369,7 @@ export const PortfolioModal = ({
   open,
   onRequestClose,
   onSubmit,
-  projectList,
+  projects,
   loading,
   error,
   success,
@@ -387,7 +395,7 @@ export const PortfolioModal = ({
             isEditingProject,
             portfolio,
             onSubmit,
-            projectList,
+            projects,
             loading,
             error,
             success,

@@ -3,7 +3,8 @@ import { useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import { AppButton } from 'components/Common/Core/AppButton'
 import { Dot } from 'components/Common/Dot'
-import { MenuItem, PopoverButton } from 'components/Common/PopoverButton'
+import { MenuItem } from 'components/Common/Popover/PopoverButton'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 import React, { useState } from 'react'
 import { useOnChange } from 'utils/hooks'
 import { Project } from 'utils/Interface'
@@ -21,6 +22,7 @@ type ProjectSelectBarProps = {
   width: any
   popoverMenuItems?: Array<MenuItem>
   onShare?: () => void
+  onAddProject?: () => void
 }
 
 export const ProjectSelectBar = ({
@@ -32,7 +34,8 @@ export const ProjectSelectBar = ({
   gradiant2,
   width,
   popoverMenuItems,
-  onShare
+  onShare,
+  onAddProject
 }: ProjectSelectBarProps) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -91,7 +94,7 @@ export const ProjectSelectBar = ({
     return (
       !!popoverMenuItems &&
       !!popoverMenuItems.length && (
-        <PopoverButton
+        <PopoverMoreIconButton
           menuItems={popoverMenuItems}
           style={style}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
@@ -103,6 +106,22 @@ export const ProjectSelectBar = ({
       )
     )
   }
+
+  const renderAddProjectButton = () =>
+    typeof onAddProject === 'function' && (
+      <AppButton
+        onClick={() => {
+          if (open) {
+            setOpen(false)
+          }
+          onAddProject()
+        }}
+        className={clsx(classes.projectButton, 'alignLeftButton')}>
+        <Typography variant={'inherit'} noWrap={true}>
+          Add Project
+        </Typography>
+      </AppButton>
+    )
 
   return (
     <div className={classes.projectBarContainer}>
@@ -117,6 +136,7 @@ export const ProjectSelectBar = ({
             barStyle === 'dark' ? classes.portfoloDarkTabsList : '',
             'hiddenSmDown'
           )}>
+          {renderAddProjectButton()}
           {renderProjectButtons({ showActive: true })}
         </div>
         <div
@@ -125,6 +145,7 @@ export const ProjectSelectBar = ({
             barStyle === 'dark' ? classes.portfoloDarkTabsList : '',
             'hiddenMdUp'
           )}>
+          {renderAddProjectButton()}
           {!!selectedProject && (
             <AppButton
               onClick={() => setOpen(!open)}
@@ -156,8 +177,7 @@ export const ProjectSelectBar = ({
         className={clsx(classes.projectBarCollapsed)}
         style={{
           height: open
-            ? projects.length * 73 +
-              (shouldRenderShare || shouldRenderPopover ? 60 : 0)
+            ? 0 + (shouldRenderShare || shouldRenderPopover ? 85 : 0)
             : 0,
           paddingTop: open ? undefined : 0,
           background: `linear-gradient(to right ,${gradiant1}, ${gradiant2})`

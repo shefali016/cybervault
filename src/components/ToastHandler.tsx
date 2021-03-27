@@ -121,8 +121,6 @@ const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
       }
     ]
 
-    console.log(projects)
-
     const projectToasts = [
       {
         error:

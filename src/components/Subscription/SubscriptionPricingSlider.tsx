@@ -49,8 +49,6 @@ const SubscriptionPricingSlider = (props: any) => {
       const { products, plans } = await getProductsWithPlans()
       setProducts(products)
       setProductPlans(plans)
-
-      console.log(products, plans)
     } catch (error) {
       console.log(error.message)
     }
@@ -296,7 +294,7 @@ const SubscriptionHeader = ({
 type SubscriptionDetailsProps = {
   numProjects: number
   storage: number
-  transactionFee: string
+  transactionFee: number
   features?: Array<string>
 }
 
@@ -316,7 +314,7 @@ const SubscriptionDetails = ({
       </Typography>
       <Typography className={classes.feature}>{storage}GB storage</Typography>
       <Typography className={classes.feature}>
-        {transactionFee} transaction fee
+        {transactionFee}% transaction fee
       </Typography>
       <AppDivider className={classes.detailsDivider} spacing={3} />
       {!!features && (

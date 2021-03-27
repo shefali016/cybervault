@@ -2,49 +2,38 @@ import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
 import { Asset } from '../utils/Interface'
-import axios from 'axios';
+import axios from 'axios'
+import AWS, { AWSError, S3 } from 'aws-sdk'
 
 const buildAssetPath = (id: string) => `${id}/${id}-original`
-var AWS = require('aws-sdk')
+
 AWS.config.update({
-  cloudwatchevents: '2015-10-07',
   accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
   secretAccessKey: `${process.env.REACT_APP_AWS_SECURITY_ACCESS_KEY}`,
   region: `${process.env.REACT_APP_AWS_REGION}`
 })
 var s3 = new AWS.S3()
-var cloudwatchevents = new AWS.CloudWatchEvents();
 
-
-const { server_url, domain } = require('../config.json')
+const { server_url } = require('../config.json')
 
 export const convertMedia = (data: any) => {
-  return new Promise(function async (resolve, reject) {
-    // var params = {
-    //   Name: 'arn:aws:iam::460614553226:role/service-role/MediaConvert_Default_Role'
-    // };
-    // cloudwatchevents.describeEventBus(params, function(err:any, data:any) {
-    //   if (err) console.log(err, err.stack,"cloudwatchhhh"); // an error occurred
-    //   else     console.log(data,"cloudwatchhhhdata");           // successful response
-    // });
-    axios.post<any>(
-      `${server_url}/api/v1/media/convert`,
-      {data:data}
-    ).then((res)=>{
-      resolve(res)
-    }).catch((err)=>{
+  return new Promise(function async(resolve, reject) {
+    axios
+      .post<any>(`${server_url}/api/v1/media/convert`, { data: data })
+      .then((res) => {
+        resolve(res)
+      })
+      .catch((err) => {
         reject(err)
-    })
+      })
   })
 }
-
 
 export const createAsset = async (asset: Asset) => {
   return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
 }
 
-export const setMedia = (id: string, file: any) => {
-  const name = file.name.replace(/ /g, '')
+export const handleMediaUpload = (id: string, file: any) => {
   var params = {
     Body: file,
     Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
@@ -52,6 +41,29 @@ export const setMedia = (id: string, file: any) => {
     ACL: 'public-read'
   }
   return s3.upload(params)
+}
+
+export const setMedia = (id: string, file: any) => {
+  var params = {
+    Body: file,
+    Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+    Key: `${id}${file.name}`,
+    ACL: 'public-read'
+  }
+
+  return new Promise((resolve, reject) => {
+    s3.upload(params).send(
+      async (err: AWSError, data: S3.ManagedUpload.SendData) => {
+        if (!err) {
+          const url = data.Location
+          resolve(url)
+        } else {
+          console.log('Set media failed', err)
+          reject(err)
+        }
+      }
+    )
+  })
 }
 
 export const uploadMedia = (id: string, file: any) => {
@@ -98,23 +110,52 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        return snapshot.data() as Asset
+        return snapshot.data() as Asset | null
       })
   )
-  return await (await Promise.all(assetRequests)).filter((asset) => !!asset)
+
+  const assets = await Promise.all(assetRequests)
+
+  return assets.filter((asset: Asset | null) => !!asset) as Asset[]
 }
 
-export const getSingleAsset = async (
-  id: string,
-  accountId: string
-)=> {
-  const assetRequest = 
-    await firebase
+export const getAllAssets = async (accountId: string) => {
+  let assetList: Array<Asset> = []
+  const assetData: any = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(accountId)
+    .collection('Assets')
+    .get()
+  for (const doc of assetData.docs) {
+    const assetObject = doc.data()
+    assetList.push(assetObject)
+  }
+  return assetList
+}
+
+export const deleteAsset = async (accountId: string, assetId: string) => {
+  try {
+    return firebase
       .firestore()
       .collection('AccountData')
       .doc(accountId)
       .collection('Assets')
-      .doc(id)
-      .get()
-      return assetRequest.data() as Asset
+      .doc(assetId)
+      .delete()
+  } catch (error) {
+    console.log('delete Asset', error)
+    return error
+  }
+}
+
+export const getSingleAsset = async (id: string, accountId: string) => {
+  const assetRequest = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(accountId)
+    .collection('Assets')
+    .doc(id)
+    .get()
+  return assetRequest.data() as Asset
 }

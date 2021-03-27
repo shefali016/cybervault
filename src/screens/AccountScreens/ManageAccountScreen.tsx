@@ -109,9 +109,9 @@ const ManageAccountScreen = ({
       <div className={'screenInner'}>
         <div className={'responsivePadding'}>
           <div className={'col'}>
-            <Section title={'Invoicing Currency'} className={classes.section}>
-              <div className={classes.sectionInner}>
-                <div className={classes.sectionTextArea}>
+            <Section title={'Invoicing Currency'}>
+              <div className={'sectionInner'}>
+                <div className={'sectionTextArea'}>
                   <Typography variant='body1'>
                     Choose the currency in which you are invoicing clients
                   </Typography>
@@ -128,9 +128,9 @@ const ManageAccountScreen = ({
               </div>
             </Section>
 
-            <Section title={'Sharing Permissions'} className={classes.section}>
-              <div className={classes.sectionInner}>
-                <div className={classes.sectionTextArea}>
+            <Section title={'Sharing Permissions'}>
+              <div className={'sectionInner'}>
+                <div className={'sectionTextArea'}>
                   <Typography variant='body1'>
                     Clients can share project preview links with others
                   </Typography>
@@ -167,9 +167,9 @@ const ManageAccountScreen = ({
                 </div>
 
                 <div
-                  className={classes.sectionInner}
+                  className={'sectionInner'}
                   style={{ marginBottom: theme.spacing(4) }}>
-                  <div className={classes.sectionTextArea}>
+                  <div className={'sectionTextArea'}>
                     <Typography variant='body1'>
                       Watermark appearance
                     </Typography>
@@ -185,8 +185,8 @@ const ManageAccountScreen = ({
                   />
                 </div>
 
-                <div className={classes.sectionInner}>
-                  <div className={classes.sectionTextArea}>
+                <div className={'sectionInner'}>
+                  <div className={'sectionTextArea'}>
                     <Typography variant='body1'>
                       Require watermark on all external links
                     </Typography>
@@ -236,26 +236,6 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(6),
     justifyContent: 'center',
     width: '100%'
-  },
-  sectionInner: {
-    background: theme.palette.common.white,
-    borderRadius: theme.shape.borderRadius,
-    padding: '15px 25px',
-    color: theme.palette.text.paper,
-    display: 'flex',
-    alignItems: 'center',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column'
-    }
-  },
-  sectionTextArea: {
-    flex: 1,
-    [theme.breakpoints.down('md')]: {
-      marginBottom: theme.spacing(4)
-    }
-  },
-  section: {
-    marginBottom: theme.spacing(4)
   },
   saveButton: {
     alignSelf: 'center',

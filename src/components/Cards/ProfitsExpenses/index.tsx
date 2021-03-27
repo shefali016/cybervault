@@ -23,68 +23,41 @@ export default function ProfitExpenses(props: any) {
   }
   const classes = useStyles()
   return (
-    <Card className={clsx(classes.card, props.className)}>
-      <CardContent>
-        <div className={classes.header}>
-          <Typography variant='h6' className={classes.title}>
-            Profit/Expenses
-          </Typography>
-          <div className={classes.root}>
-            <CustomTabs
-              value={value}
-              onChange={handleChange}
-              aria-label='ant example'>
-              <CustomTab label='This Year' />
-              <CustomTab label='This Month' />
-            </CustomTabs>
+    <div className={'widgetItemResponsiveOuter'}>
+      <Card className={'widgetItemWide'}>
+        <CardContent>
+          <div className={classes.header}>
+            <Typography variant='h6' className={classes.title}>
+              Profit/Expenses
+            </Typography>
+            <div>
+              <CustomTabs
+                value={value}
+                onChange={handleChange}
+                aria-label='ant example'>
+                <CustomTab label='This Year' />
+                <CustomTab label='This Month' />
+              </CustomTabs>
+            </div>
           </div>
-        </div>
-        <Chart />
-      </CardContent>
-    </Card>
+          <Chart />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
-  inner: {
-    display: FLEX,
-    flexDirection: COLUMN,
-    justifyContent: 'center'
-  },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     [theme.breakpoints.down('sm')]: { flexDirection: 'column' }
   },
-  card: {
-    minWidth: getCardHeight(theme),
-    height: '12rem',
-    borderRadius: 15,
-    padding: 5,
-    display: FLEX,
-    flexDirection: COLUMN,
-    justifyContent: 'center'
-  },
   title: {
     fontWeight: BOLD,
     margin: 0,
     [theme.breakpoints.up('sm')]: { paddingRight: 20, paddingBottom: 0 }
-  },
-  bodyText: {
-    margin: 0,
-    padding: 0
-  },
-  toggleDiv: {},
-  toggleGroup: {
-    height: 20,
-    width: 135,
-    borderRadius: 50
-  },
-  root: {},
-  padding: {
-    padding: theme.spacing(0)
-  },
-  demo1: {}
+  }
 }))
 
 interface StyledTabProps {

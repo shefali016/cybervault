@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create(['background', 'color'])
   },
   inActive: {
-    background: `linear-gradient(90deg, ${theme.palette.grey[800]},  ${theme.palette.grey[800]})`,
+    background: `linear-gradient(90deg, ${theme.palette.background.surfaceHighlight},  ${theme.palette.background.surfaceHighlight})`,
     color: theme.palette.grey[400],
     transition: theme.transitions.create(['background', 'color'])
   },

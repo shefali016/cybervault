@@ -131,7 +131,7 @@ const ProfileScreen = ({
                   darkStyle={true}
                 />
                 <AppTextField
-                  label='Email Addresss'
+                  label='Email Address'
                   onChange={(event: InputChangeEvent) =>
                     updateProfile('email')(event.target.value)
                   }
@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionTitle: {
     marginBottom: theme.spacing(1),
-    color: theme.palette.grey[300]
+    color: theme.palette.text.secondary
   },
   section: {
     backgroundColor: theme.palette.background.secondary,

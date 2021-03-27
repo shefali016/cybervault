@@ -3,17 +3,15 @@ import express from 'express'
 import cors from 'cors'
 import * as admin from 'firebase-admin'
 import { generateUid } from './utils'
-import { Mail } from './utils/interfaces'
+import { Asset, AssetFile, Mail } from './utils/interfaces'
 import templates from './sendGridTemplates.json'
 import config from './config.json'
 import axios from 'axios'
-var ffmpeg = require('fluent-ffmpeg');
+var ffmpeg = require('fluent-ffmpeg')
 
 const fs = require('fs')
 const sgMail = require('@sendgrid/mail')
-var path=require('path')
-
-// const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
+var path = require('path')
 
 const app = express()
 
@@ -36,50 +34,38 @@ const runtimeOpts = {
   timeoutSeconds: 300
 }
 
-const rootPath=path.join('./tmp/test.mp4')
-functions.logger.log(rootPath,"rooooooooooooooooooooooooooo")
-
+const rootPath = path.join('./tmp/test.mp4')
+functions.logger.log(rootPath, 'root path')
 
 const getFileMetaData = async (url: string) => {
-
   return new Promise(async (resolve, reject) => {
     try {
-      functions.logger.log("datatttttttttttttttttttttt")
-
       let data = await axios.get(`${url}`)
       // var dir = './tmp'
       // if (!fs.existsSync(dir)) {
       //   fs.mkdirSync(dir)
       // }
-      const rootPath=path.join(`../tmp/test.webm`)
-      console.log(rootPath,"pathhhhhhhhhhhhhhhhhhhhhhh")
-      fs.writeFile(rootPath, data.data, async(err: any) =>{
-        console.log(err,"rrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
-        if(err){
+      const rootPath = path.join(`../tmp/test.webm`)
+
+      fs.writeFile(rootPath, data.data, async (err: any) => {
+        if (err) {
           reject(err)
         }
         let video = getDetails()
-        console.log(video, '777777777777777777777777777777777777777777777')
         resolve(video)
       })
     } catch (err) {
-      console.log(err,"errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
       reject(err)
     }
   })
 }
+
 const getDetails = () => {
   try {
-    ffmpeg.ffprobe(`../tmp/test.webm`,function(err:any, metadata:any) {
-      console.log(metadata,"metttttttttttttttttttt")
-      console.log(err,"ffffffffffffffffffffffffffffffffffffff")
+    ffmpeg.ffprobe(`../tmp/test.webm`, function (err: any, metadata: any) {
       return metadata
-    });
-    // var process = await new ffmpeg(`../tmp/test.webm`)
-    // console.log(process,"processssssssssssssssssssssssssss")
+    })
   } catch (e) {
-    console.log(e.code,"codeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-    console.log(e.msg,"msssssssssssssssssssssssssssssssssssss")
     return e
   }
 }
@@ -151,42 +137,32 @@ export const sendEmail = functions.firestore
 
 export const addCodec = functions.firestore
   .document(`AccountData/{accountId}/Assets/{assetId}`)
-  .onWrite(async (change, context) => {
+  .onCreate(async (snapshot, context) => {
     try {
-      let newData = change.after.data()
-      let oldData = change.before.data()
+      let asset = snapshot.data() as Asset | undefined
       let accId = context.params.accountId
       let assetId = context.params.accountId
 
-      if (
-        !oldData &&
-        newData &&
-        newData &&
-        newData?.files?.length &&
-        newData?.type === 'video'
-      ) {
-       
-        const originalFileData = newData.files.find((file: any, i: number) => {
-          return file.original
-        })
-        const videoMetaData: any = await getFileMetaData(originalFileData.url)
-        console.log(videoMetaData,assetId,"nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-        originalFileData.codec =
-          videoMetaData
-
-        const filesData: any = newData.files.map((file: any, i: number) => {
-          if (file.id === originalFileData.id) {
-            return originalFileData
-          } else {
-            return file
-          }
-        })
-
-        console.log(
-          filesData,
-          originalFileData,
-          '0000000000000000000000000000000'
+      if (asset && asset.files && asset.type === 'video') {
+        const originalFile = asset.files.find(
+          (file: AssetFile) => file.original
         )
+
+        if (!originalFile) {
+          throw Error('Missing original file')
+        }
+
+        const videoMetaData: any = await getFileMetaData(originalFile.url)
+        console.log('Video meta data', videoMetaData, assetId)
+
+        const newAsset = {
+          ...asset,
+          files: asset.files.map((file: AssetFile) =>
+            file.original ? { ...file, codec: videoMetaData } : file
+          )
+        }
+
+        console.log('New asset', newAsset)
 
         admin
           .firestore()
@@ -194,9 +170,7 @@ export const addCodec = functions.firestore
           .doc(accId)
           .collection('Assets')
           .doc(assetId)
-          .update({
-            files: filesData
-          })
+          .set(newAsset)
       }
     } catch (error) {
       console.log('add codec ', error)
@@ -281,6 +255,57 @@ export const handleNotificationCreated = functions.firestore
         return admin.firestore().collection('Mails').doc().set(mail)
       }
       return true
+    } catch (error) {
+      console.log(error, 'error occurs')
+      return false
+    }
+  })
+
+export const updateUsedStorage = functions.firestore
+  .document(`AccountData/{accountId}/Assets/{id}`)
+  .onWrite(async (change, context) => {
+    try {
+      let accId: string = context.params.accountId
+
+      let assetAfter = change.after.data()
+      let assetBefore = change.before.data()
+
+      let sizeAfter: number = 0
+      let sizeBefore: number = 0
+
+      if (assetAfter) {
+        sizeAfter = assetAfter.files.reduce(
+          (total: number, file: AssetFile) => {
+            return total + file.size
+          },
+          0
+        )
+      }
+
+      if (assetBefore) {
+        sizeBefore = assetBefore.files.reduce(
+          (total: number, file: AssetFile) => {
+            return total + file.size
+          },
+          0
+        )
+      }
+
+      const currentUsedStorage: any = await admin
+        .firestore()
+        .collection('Storage')
+        .doc(accId)
+        .get()
+      const storageData = currentUsedStorage.data()
+      const usedStorage =
+        storageData && storageData.usedStorage ? storageData.usedStorage : 0
+
+      const totalStorageUsed = usedStorage + (sizeAfter - sizeBefore)
+
+      const data = {
+        usedStorage: totalStorageUsed
+      }
+      return admin.firestore().collection('Storage').doc(accId).set(data)
     } catch (error) {
       console.log(error, 'error occurs')
       return false

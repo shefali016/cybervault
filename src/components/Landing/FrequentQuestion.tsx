@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
     margin: theme.spacing(1),
     borderStyle: 'solid',
-    borderColor: theme.palette.background.surface,
+    borderColor: theme.palette.border,
     borderWidth: 1,
     padding: theme.spacing(5),
     flex: 1
