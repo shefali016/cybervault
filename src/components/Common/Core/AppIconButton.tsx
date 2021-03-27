@@ -8,7 +8,6 @@ type Props = {
   className?: string
   iconClassName?: string
   style?: {}
-  iconClass?: string
 }
 
 export const AppIconButton = ({
