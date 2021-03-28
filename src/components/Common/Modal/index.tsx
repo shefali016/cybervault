@@ -4,6 +4,7 @@ import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import React from 'react'
 import { AppLoader } from '../Core/AppLoader'
+import './index.css'
 
 export type ModalProps = {
   open: boolean

@@ -6,12 +6,13 @@ import clsx from 'clsx'
 type Props = {
   className?: string
   spacing?: number
+  style?: {}
 }
 
-export const AppDivider = ({ className, spacing = 5 }: Props) => {
+export const AppDivider = ({ className, spacing = 5, style }: Props) => {
   const classes = useStyles(spacing)
   const theme = useTheme()
-  return <Divider className={clsx(classes.divider, className)} />
+  return <Divider className={clsx(classes.divider, className)} style={style} />
 }
 
 const useStyles = (spacing: number) => {

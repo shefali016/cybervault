@@ -72,5 +72,5 @@ export const InvoicesTable = ({
 }
 
 const useStyles = makeStyles((theme) => ({
-  status: { marginRight: theme.spacing(1.5) }
+  status: { marginRight: theme.spacing(1) }
 }))

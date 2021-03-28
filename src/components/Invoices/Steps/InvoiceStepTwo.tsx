@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Grid, Checkbox } from '@material-ui/core'
-import { ChangeEvent } from 'react'
+import React, { ChangeEvent, useContext } from 'react'
 import { BOLD } from 'utils/constants/stringConstants'
 import { GREY_COLOR, PRIMARY_COLOR } from 'utils/constants/colorsConstants'
 import { Project, Milestone, Client } from '../../../utils/Interface'
@@ -10,6 +10,9 @@ import AppTextField from '../../Common/Core/AppTextField'
 import CheckIcon from '@material-ui/icons/Check'
 import SaveIcon from '@material-ui/icons/Save'
 import { ClientLogo } from 'components/Clients/ClientLogo'
+import { AppIconButton } from 'components/Common/Core/AppIconButton'
+import { AppDivider } from 'components/Common/Core/AppDivider'
+import { ToastContext } from 'context/Toast'
 
 type InvoiceStepProps = {
   project: Project
@@ -26,6 +29,12 @@ type InvoiceStepProps = {
   handleMileChange: (id: string, key: string, e: any) => void
   milestones: Array<MilestoneProps>
   client: Client
+}
+enum EditTypes {
+  CLIENT_DETAILS = 'clientDetails',
+  INVOICE_DETAILS = 'invoiceDetails',
+  PROJECT_DETAILS = 'projectDetails',
+  MILESTONE_DETAILS = 'milestoneDetails'
 }
 type editType = {
   clientDetails: boolean
@@ -55,13 +64,40 @@ const InvoiceStepTwo = ({
   client
 }: InvoiceStepProps) => {
   const classes = useStyles()
+  const toastContext = useContext(ToastContext)
+
   const handleClick = () => {
+    let isEditing = false
+
+    Object.values(edit).forEach((val) => isEditing === isEditing || !!val)
+
+    if (isEditing) {
+      return toastContext.showToast({
+        title: 'Save your changes before sending invoice.'
+      })
+    }
+
     handleSendInvoice()
+  }
+
+  const renderEditSaveButton = (key: EditTypes) => {
+    if (!edit.hasOwnProperty(key)) {
+      return null
+    }
+    return !edit[key] ? (
+      <AppIconButton Icon={EditIcon} onClick={() => handleEdit(key)} />
+    ) : (
+      <AppIconButton Icon={SaveIcon} onClick={() => handleSave(key)} />
+    )
   }
 
   return (
     <>
-      <Grid container spacing={3} alignItems='center'>
+      <Grid
+        container
+        spacing={3}
+        alignItems='center'
+        style={{ marginBottom: 10 }}>
         <Grid item>
           <ClientLogo logo={client.logo} />
         </Grid>
@@ -76,33 +112,22 @@ const InvoiceStepTwo = ({
       </Grid>
       <div className={classes.mainWrapper}>
         <Grid container alignItems='center'>
-          <Typography className={classes.subHeading}>
+          <Typography className={classes.subHeading} variant='h6'>
             Client Details:
           </Typography>
 
-          <Typography>
-            {!edit.clientDetails ? (
-              <EditIcon
-                className={classes.editicon}
-                onClick={() => handleEdit('clientDetails')}
-              />
-            ) : (
-              <SaveIcon
-                className={classes.editicon}
-                onClick={() => handleSave('clientDetails')}
-              />
-            )}
-          </Typography>
+          {renderEditSaveButton(EditTypes.CLIENT_DETAILS)}
         </Grid>
         <Grid className={classes.detailsWrapper}>
-          <Grid container alignItems='center'>
+          <Grid container className={classes.section}>
             <Grid item sm={3}>
-              <Typography className={classes.textField}>Client Name</Typography>
+              <Typography className={classes.textField} variant='body1'>
+                Client Name
+              </Typography>
             </Grid>
             <Grid item sm={9}>
-              {' '}
               {!edit.clientDetails ? (
-                <Typography className={classes.textField}>
+                <Typography className={classes.textField} variant='body1'>
                   {client.name}
                 </Typography>
               ) : (
@@ -116,16 +141,15 @@ const InvoiceStepTwo = ({
               )}
             </Grid>
           </Grid>
-          <Grid container alignItems='center'>
+          <Grid container className={classes.section}>
             <Grid item sm={3}>
-              {' '}
-              <Typography className={classes.textField}>
-                Email Invoiced To:
+              <Typography className={classes.textField} variant='body1'>
+                Email to:
               </Typography>
             </Grid>
             <Grid item sm={9}>
               {!edit.clientDetails ? (
-                <Typography className={classes.textField}>
+                <Typography className={classes.textField} variant='body1'>
                   {client.email}
                 </Typography>
               ) : (
@@ -141,36 +165,27 @@ const InvoiceStepTwo = ({
           </Grid>
         </Grid>
       </div>
+
+      <AppDivider className={classes.divider} spacing={2} />
+
       <div className={classes.mainWrapper}>
-        <Grid container>
-          <Typography className={classes.subHeading}>
+        <Grid container alignItems='center'>
+          <Typography className={classes.subHeading} variant='h6'>
             Project Details:
           </Typography>
-          <Typography>
-            {!edit.projectDetails ? (
-              <EditIcon
-                className={classes.editicon}
-                onClick={() => handleEdit('projectDetails')}
-              />
-            ) : (
-              <SaveIcon
-                className={classes.editicon}
-                onClick={() => handleSave('projectDetails')}
-              />
-            )}
-          </Typography>
+
+          {renderEditSaveButton(EditTypes.PROJECT_DETAILS)}
         </Grid>
         <Grid className={classes.detailsWrapper}>
-          <Grid container alignItems='center'>
+          <Grid container className={classes.section}>
             <Grid item sm={3}>
-              <Typography className={classes.textField}>
-                Campaign Objective
+              <Typography className={classes.textField} variant='body1'>
+                Objective
               </Typography>
             </Grid>
             <Grid item sm={9}>
-              {' '}
               {!edit.projectDetails ? (
-                <Typography className={classes.textField}>
+                <Typography className={classes.textField} variant='body1'>
                   {project.campaignObjective}
                 </Typography>
               ) : (
@@ -186,14 +201,16 @@ const InvoiceStepTwo = ({
               )}
             </Grid>
           </Grid>
-          <Grid container alignItems='center'>
+
+          <Grid container className={classes.section}>
             <Grid item sm={3}>
-              {' '}
-              <Typography className={classes.textField}>Deadline</Typography>
+              <Typography className={classes.textField} variant='body1'>
+                Deadline
+              </Typography>
             </Grid>
             <Grid item sm={9}>
               {!edit.projectDetails ? (
-                <Typography className={classes.textField}>
+                <Typography className={classes.textField} variant='body1'>
                   {project.campaignDeadLine}
                 </Typography>
               ) : (
@@ -208,16 +225,16 @@ const InvoiceStepTwo = ({
               )}
             </Grid>
           </Grid>
-          <Grid container alignItems='center'>
+
+          <Grid container className={classes.section}>
             <Grid item sm={3}>
-              {' '}
-              <Typography className={classes.textField}>
+              <Typography className={classes.textField} variant='body1'>
                 Project Summary
               </Typography>
             </Grid>
             <Grid item sm={9}>
               {!edit.projectDetails ? (
-                <Typography className={classes.textField}>
+                <Typography className={classes.textField} variant='body1'>
                   {project.description}
                 </Typography>
               ) : (
@@ -227,44 +244,35 @@ const InvoiceStepTwo = ({
                   name='description'
                   onChange={(e: ChangeEvent) => handleChange(e)('description')}
                   value={project.description}
+                  multiline={true}
                 />
               )}
             </Grid>
           </Grid>
         </Grid>
       </div>
+
+      <AppDivider className={classes.divider} spacing={2} />
+
       {invoiceType === 'fullAmount' && (
-        <div className={classes.amountWrapper}>
-          <Grid container>
-            <Typography className={classes.subHeading}>
+        <div className={classes.mainWrapper}>
+          <Grid container alignItems='center'>
+            <Typography className={classes.subHeading} variant='body1'>
               Invoice Details:
             </Typography>
-            <Typography>
-              {!edit.invoiceDetails ? (
-                <EditIcon
-                  className={classes.editicon}
-                  onClick={() => handleEdit('invoiceDetails')}
-                />
-              ) : (
-                <SaveIcon
-                  className={classes.editicon}
-                  onClick={() => handleSave('invoiceDetails')}
-                />
-              )}
-            </Typography>
+
+            {renderEditSaveButton(EditTypes.INVOICE_DETAILS)}
           </Grid>
           <Grid className={classes.detailsWrapper}>
-            <Grid container>
+            <Grid container className={classes.section}>
               <Grid item sm={3}>
-                {' '}
-                <Typography className={classes.textField}>
-                  Production Budget
+                <Typography className={classes.textField} variant='body1'>
+                  Budget
                 </Typography>
               </Grid>
               <Grid item sm={3}>
-                {' '}
                 {!edit.invoiceDetails ? (
-                  <Typography className={classes.textField}>
+                  <Typography className={classes.textField} variant='body1'>
                     ${project.campaignBudget}
                   </Typography>
                 ) : (
@@ -280,17 +288,16 @@ const InvoiceStepTwo = ({
                 )}
               </Grid>
             </Grid>
-            <Grid container>
+
+            <Grid container className={classes.section}>
               <Grid item sm={3}>
-                {' '}
-                <Typography className={classes.textField}>
-                  Production Expenses
+                <Typography className={classes.textField} variant='body1'>
+                  Expenses
                 </Typography>
               </Grid>
               <Grid item sm={3}>
-                {' '}
                 {!edit.invoiceDetails ? (
-                  <Typography className={classes.textField}>
+                  <Typography className={classes.textField} variant='body1'>
                     ${project.campaignExpenses}
                   </Typography>
                 ) : (
@@ -306,18 +313,25 @@ const InvoiceStepTwo = ({
                 )}
               </Grid>
             </Grid>
+
+            <AppDivider
+              spacing={1}
+              className={classes.amountDivider}
+              style={{ maxWidth: 350 }}
+            />
+
             <Grid container>
               <Grid item sm={3}>
-                {' '}
                 <Typography
-                  className={`${classes.textField} ${classes.totalAmount}`}>
+                  className={`${classes.textField} ${classes.totalAmount}`}
+                  variant='body1'>
                   Total Due
                 </Typography>
               </Grid>
               <Grid item sm={3}>
-                {' '}
                 <Typography
-                  className={`${classes.textField} ${classes.totalAmount}`}>
+                  className={`${classes.textField} ${classes.totalAmount}`}
+                  variant='body1'>
                   $
                   {Number(project.campaignBudget) -
                     Number(project.campaignExpenses)}
@@ -327,25 +341,15 @@ const InvoiceStepTwo = ({
           </Grid>
         </div>
       )}
+
       {invoiceType === 'mileStone' && (
-        <div className={classes.amountWrapper}>
+        <div className={classes.mainWrapper}>
           <Grid container alignItems='center'>
-            <Typography className={classes.subHeading}>
+            <Typography className={classes.subHeading} variant='body1'>
               Milestone Details:
             </Typography>
-            <Typography>
-              {!edit.milestoneDetails ? (
-                <EditIcon
-                  className={classes.editicon}
-                  onClick={() => handleEdit('milestoneDetails')}
-                />
-              ) : (
-                <SaveIcon
-                  className={classes.editicon}
-                  onClick={() => handleSave('milestoneDetails')}
-                />
-              )}
-            </Typography>
+
+            {renderEditSaveButton(EditTypes.MILESTONE_DETAILS)}
           </Grid>
           <Grid className={classes.detailsWrapper}>
             {milestones.map((mile, i) => {
@@ -394,7 +398,7 @@ const InvoiceStepTwo = ({
       )}
 
       <Grid container justify='flex-end' alignItems='center'>
-        <Typography className={classes.previewText}>Preview</Typography>
+        {/* <Typography className={classes.previewText}>Preview</Typography> */}
         <GradiantButton className={classes.invoiceBtn} onClick={handleClick}>
           Send Invoice
         </GradiantButton>
@@ -403,6 +407,11 @@ const InvoiceStepTwo = ({
   )
 }
 const useStyles = makeStyles((theme) => ({
+  divider: {
+    backgroundColor: `${theme.palette.grey[300]} !important`
+  },
+  amountDivider: { backgroundColor: `${theme.palette.grey[400]} !important` },
+  section: { marginBottom: theme.spacing(1.2) },
   headerTitle: {
     fontWeight: BOLD
   },
@@ -420,44 +429,29 @@ const useStyles = makeStyles((theme) => ({
   },
 
   heading: {
-    fontWeight: BOLD,
-    fontSize: 18
+    fontWeight: BOLD
   },
   subHeading: {
-    fontSize: 15,
-    fontWeight: 600
+    fontWeight: 600,
+    marginRight: theme.spacing(1)
   },
   detailsWrapper: {
-    paddingLeft: theme.spacing(12)
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(5)
   },
-  textField: {
-    fontSize: 12,
-    padding: '5px 0'
-  },
+  textField: {},
   mainWrapper: {
-    padding: `${theme.spacing(3)}px 0`,
-    borderBottom: `1px solid ${theme.palette.background.surfaceHighlight}`
+    padding: `${theme.spacing(1)}px 0`
   },
-  totalAmount: {
-    borderTop: `1px solid ${theme.palette.background.surfaceHighlight}`
-  },
-  amountWrapper: {
-    paddingTop: theme.spacing(4)
-  },
-  invoiceBtn: {
-    fontSize: 12,
-    minWidth: 120,
-    padding: 8,
-    borderRadius: 22
-  },
+  totalAmount: {},
+  amountWrapper: {},
+  invoiceBtn: { marginTop: theme.spacing(4) },
   previewText: {
     color: theme.palette.text.meta,
-    fontSize: 12,
     padding: theme.spacing(2)
   },
   editicon: {
     color: PRIMARY_COLOR,
-    fontSize: '1.2em',
     padding: '0 8px'
   },
   checkBoxIcon: {

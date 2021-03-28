@@ -35,7 +35,7 @@ export const ProjectsList = ({
       <div className={'gridList'}>
         {projects.map((project: Project) => (
           <ProjectCard
-            key={Math.random() + project.id}
+            key={project.id}
             {...{
               account,
               project,

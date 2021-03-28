@@ -103,25 +103,25 @@ const InvoicesClientScreen = (props: Props) => {
     loadingError: null | string
   }>({ account: null, user: null, transactionFee: 0, loadingError: null })
   const { account: ownerAccount, user: ownerUser, transactionFee } = state
-  const isAccountOwner = account && ownerAccountId === account.id
+  const isAccountOwner: boolean = !!account && ownerAccountId === account.id
 
   // Select objects from cache
-  const invoice = useMemo(() => {
+  const invoice: Invoice | null = useMemo(() => {
     const invoiceId = props.match.params?.id
     return invoiceId ? invoiceCache[invoiceId] : null
   }, [invoiceCache])
-  const client = useMemo(() => {
+  const client: Client | null = useMemo(() => {
     if (!invoice) {
       return null
     }
     const clientId = invoice.clientId
     return clientCache[clientId]
   }, [invoice, clientCache])
-  const project = useMemo(() => {
+  const project: Project | null = useMemo(() => {
     if (!invoice) {
       return null
     }
-    const projectId = invoice.projectId
+    const projectId: string = invoice.projectId
     return projectCache[projectId]
   }, [invoice, projectCache])
 
@@ -443,6 +443,7 @@ const InvoicesClientScreen = (props: Props) => {
                         isVideo={false}
                         innerImageClassName={classes.image}
                         assetContainerMinHeight={160}
+                        featuredAsset={project.featuredImage}
                       />
                     </div>
                   </Grid>
