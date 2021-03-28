@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useContext } from 'react'
 import { Card, Grid, Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import AddBoxIcon from '@material-ui/icons/AddBox'
@@ -13,6 +13,7 @@ import { AppLoader } from 'components/Common/Core/AppLoader'
 import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 import clsx from 'clsx'
+import { ModalContext } from 'routes/DashboardSwitch'
 
 type Props = {
   project: Project
@@ -39,6 +40,8 @@ export const ProjectCard = ({
   deletingId,
   className
 }: Props) => {
+  const modalContext = useContext(ModalContext)
+
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const startConfirmingDelete = () => setConfirmingDelete(true)
   const stopConfirmingDelete = () => setConfirmingDelete(false)
@@ -93,7 +96,7 @@ export const ProjectCard = ({
 
   const handleClick = () => onClick(project)
 
-  console.log('OPEN', open)
+  const handleCreateProject = modalContext.toggleProjectModal(true)
 
   return (
     <div style={containerStyle} className={classes.root}>
@@ -102,8 +105,8 @@ export const ProjectCard = ({
         onRequestClose={onRequestClose}
         project={project}
         account={account}
-        client={client}
         userInfo={userInfo}
+        onCreateProject={handleCreateProject}
       />
       <Card className={clsx('widgetItem', className)} style={style}>
         <div className={classes.imageWrapper} onClick={handleClick}>

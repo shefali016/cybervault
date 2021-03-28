@@ -43,10 +43,14 @@ export const InvoicesTable = ({
             { title: `${inv.dateCreated}`, key: `${inv.id}date` },
             {
               renderer: () => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
                   <InvoiceStatusIndicator
                     status={inv.status}
-                    className={classes.status}
+                    style={{ marginRight: 15 }}
                   />
                   {inv.status}
                 </div>

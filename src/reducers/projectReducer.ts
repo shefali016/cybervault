@@ -132,7 +132,6 @@ const createNewProjectFailure = (state: State, action: Action) => ({
 
 const getAllProjects = (state: State, action: Action) => ({
   ...state,
-  allProjectsData: null,
   isLoading: true
 })
 

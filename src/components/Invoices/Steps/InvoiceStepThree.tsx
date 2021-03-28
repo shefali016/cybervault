@@ -41,11 +41,11 @@ const InvoiceStepThree = ({
               : getAmountByMilestone()
           }`}
         </Typography>
-        <Typography variant={'body2'} paragraph>
+        <Typography variant={'body1'} paragraph>
           To: {client.email}
         </Typography>
-        <Typography variant={'body2'} paragraph>
-          A confirmation has been sent to your email.
+        <Typography variant={'h5'} paragraph>
+          You will be notified by email when it is viewed.
         </Typography>
       </Grid>
       <GradiantButton className={classes.btn} onClick={handleDoneClick}>

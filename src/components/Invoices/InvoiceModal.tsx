@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext, useEffect, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, connect } from 'react-redux'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import InvoiceStepOne from './Steps/InvoiceStepOne'
 import { generateUid } from '../../utils'
@@ -20,20 +20,23 @@ import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjects } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
 import { InvoiceStatuses } from 'utils/enums'
-import {
-  sendEmailRequest,
-  getAllMailTemplatesRequest
-} from '../../actions/mails'
+import { sendEmailRequest } from '../../actions/mails'
 import sendGridTemplates from '../../sendGridTemplates.json'
+import { ProjectSelect } from 'components/Projects/ProjectSelect'
+import { Typography } from '@material-ui/core'
+import { useTheme } from '@material-ui/core/styles'
+import NewProjectFooter from 'components/Projects/NewProjectFooter'
+import { GradiantButton } from 'components/Common/Button/GradiantButton'
+import { getProjects } from 'apis/projectRequest'
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
 type InvoiceProps = {
   onRequestClose: () => void
-  project: Project
+  project?: Project | null | undefined
   account: Account
-  client: Client
   userInfo: any
+  onCreateProject: () => void
 }
 type MilestoneProps = {
   id: string
@@ -46,19 +49,48 @@ const InvoiceData = ({
   onRequestClose,
   project,
   account,
-  client,
-  userInfo
+  userInfo,
+  onCreateProject
 }: InvoiceProps) => {
-  const hasMilestones = project.milestones && project.milestones.length
+  const theme = useTheme()
 
-  const [currentStep, setCurrentStep] = useState(hasMilestones ? 1 : 2)
+  const dispatch = useDispatch()
+  const clientState: {
+    clients: Client[]
+    clientCache: { [id: string]: Client }
+  } = useSelector((state: ReduxState) => ({
+    clients: state.clients.clientsData,
+    clientCache: state.clients.cache
+  }))
+  const { clients, clientCache } = clientState
+  const projects: Project[] = useSelector(
+    (state: ReduxState) => state.project.allProjectsData
+  )
+  const filteredProjects = useMemo(
+    () => projects.filter((p: Project) => p.canInvoice !== false),
+    [projects]
+  )
+  const invoiceData = useSelector((state: ReduxState) => state.invoice)
+  const mailData = useSelector((state: ReduxState) => state.mail)
+
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
+
+  const [projectData, setProjectData] = useState(project)
+  const hasMilestones =
+    projectData && projectData.milestones && projectData.milestones.length
+
+  const [clientData, setClientData] = useState(
+    projectData
+      ? clients.find((client: Client) => client.id === projectData.clientId)
+      : undefined
+  )
   const [invoiceType, setInvoiceType] = useState(
     !hasMilestones ? InvoiceTypes.full : ''
   )
-  const [projectData, setProjectData] = useState(project)
-  const [clientData, setClientData] = useState(client)
+  const [currentStep, setCurrentStep] = useState(
+    !project ? 0 : hasMilestones ? 1 : 2
+  )
   const [edit, setEdit] = useState({
     clientDetails: false,
     projectDetails: false,
@@ -67,16 +99,12 @@ const InvoiceData = ({
   })
 
   const [milestones, setMilestones] = useState(
-    projectData.milestones
+    projectData && projectData.milestones
       ? projectData.milestones.map((mile) => {
           return { ...mile, check: true }
         })
       : []
   )
-  const dispatch = useDispatch()
-
-  const invoiceData = useSelector((state: ReduxState) => state.invoice)
-  const mailData = useSelector((state: ReduxState) => state.mail)
 
   useOnChange(invoiceData.error, (error) => {
     if (!!error) {
@@ -113,10 +141,16 @@ const InvoiceData = ({
   }
 
   useEffect(() => {
-    setProjectData(project)
-    if (projectData.milestones) {
+    if (!project) {
+      dispatch(getAllProjects())
+    }
+  }, [])
+
+  useEffect(() => {
+    if (project && (!projectData || projectData.milestones)) {
+      setProjectData(project)
       setMilestones(
-        projectData.milestones.map((mile) => {
+        project.milestones.map((mile) => {
           return { ...mile, check: true }
         })
       )
@@ -124,9 +158,10 @@ const InvoiceData = ({
   }, [project])
 
   const getFullAmount = () => {
-    return (
-      Number(projectData.campaignBudget) - Number(projectData.campaignExpenses)
-    )
+    return projectData
+      ? Number(projectData.campaignBudget) -
+          Number(projectData.campaignExpenses)
+      : 0
   }
   const getAmountByMilestone = () => {
     let cost = 0
@@ -137,7 +172,25 @@ const InvoiceData = ({
     })
     return cost
   }
+
+  const validateSending = () => {
+    if (!projectData) {
+      return toastContext.showToast({
+        title: 'Choose a project before incoiving'
+      })
+    }
+
+    if (!clientData) {
+      return toastContext.showToast({
+        title: 'Please wait to invoice.'
+      })
+    }
+  }
+
   const handleSendInvoice = (invoiceId: string) => {
+    if (!(projectData && clientData)) {
+      return validateSending()
+    }
     const invoice = {
       id: invoiceId, // Using generateId function
       dateCreated: new Date().toLocaleString(),
@@ -158,6 +211,10 @@ const InvoiceData = ({
   }
 
   const handleSendMail = () => {
+    if (!(projectData && clientData)) {
+      return validateSending()
+    }
+
     const invoiceId = generateUid()
 
     const amount =
@@ -199,15 +256,11 @@ const InvoiceData = ({
       toastContext.showToast({ title: 'Failed to send invoice' })
     }
   })
-  useOnChange(
-    invoiceData.success &&
-      invoiceData?.newinvoiceData?.projectId === projectData.id,
-    (success) => {
-      if (success) {
-        setCurrentStep((step) => step + 1)
-      }
+  useOnChange(invoiceData.success, (success) => {
+    if (success) {
+      setCurrentStep((step) => step + 1)
     }
-  )
+  })
 
   const handleEdit = (editType: string) => {
     setEdit({
@@ -223,21 +276,85 @@ const InvoiceData = ({
   }
 
   const handleChange = (event: any) => (key: string) => {
-    const value = event.target.value
-    setProjectData({ ...projectData, [key]: value })
+    if (projectData) {
+      const value = event.target.value
+      setProjectData({ ...projectData, [key]: value })
+    }
   }
 
   const handleClientChange = (event: any) => (key: string) => {
-    const value = event.target.value
-    setClientData({ ...clientData, [key]: value })
+    if (clientData) {
+      const value = event.target.value
+      setClientData({ ...clientData, [key]: value })
+    }
+  }
+
+  const handleProjectSelect = (project: Project) => {
+    setMilestones(
+      project.milestones.map((mile) => {
+        return { ...mile, check: true }
+      })
+    )
+    const client = clientCache[project.clientId]
+    if (client) setClientData(client)
+    setProjectData(project)
+  }
+
+  const handleUpdateClient = () => {
+    if (clientData) {
+      // dispatch(updateClient(clientData))
+    }
+  }
+
+  const handleUpdateProject = () => {
+    if (projectData) {
+      // dispatch(updateProject(projectData))
+    }
   }
 
   const renderStepsView = () => {
-    const onNext = (invoiceType: any) => {
+    const onNext = (invoiceType?: any) => {
       if (currentStep === 1) {
         setInvoiceType(invoiceType)
       }
       setCurrentStep((step) => step + 1)
+    }
+
+    if (filteredProjects.length === 0)
+      return (
+        <div
+          style={{
+            display: 'flex',
+            minHeight: 200,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <Typography variant={'h5'} className={'bold'}>
+            You have no projects to invoice.
+          </Typography>
+          <GradiantButton
+            onClick={onCreateProject}
+            style={{ marginLeft: theme.spacing(3) }}>
+            Create a project now
+          </GradiantButton>
+        </div>
+      )
+
+    if (!(clientData && projectData) || currentStep === 0) {
+      return (
+        <div>
+          <Typography variant={'h5'} className={'bold'}>
+            Choose A Project
+          </Typography>
+          <ProjectSelect
+            projects={filteredProjects}
+            clientCache={clientCache}
+            handleSelect={handleProjectSelect}
+            selected={projectData && projectData.id}
+          />
+          <NewProjectFooter onNext={() => onNext()} disabled={!projectData} />
+        </div>
+      )
     }
 
     switch (currentStep) {
@@ -267,6 +384,8 @@ const InvoiceData = ({
             handleMilestone={handleMilestone}
             handleMileChange={handleMileChange}
             client={clientData}
+            onUpdateClient={handleUpdateClient}
+            onUpdateProject={handleUpdateProject}
           />
         )
       case 3:
@@ -302,32 +421,24 @@ const InvoiceData = ({
 
 type InvoiceModalProps = {
   open: boolean
-  project: Project
   onRequestClose: () => void
-  account: Account
-  client: Client | undefined
-  userInfo: any
-}
+} & InvoiceProps
 
 const InvoiceModal = ({
   open,
   project,
   onRequestClose,
   account,
-  client,
-  userInfo
+  userInfo,
+  onCreateProject
 }: InvoiceModalProps) => {
-  if (!client) {
-    return null
-  }
-
   return (
     <AppModal open={open} onRequestClose={onRequestClose}>
       <InvoiceData
+        onCreateProject={onCreateProject}
         onRequestClose={onRequestClose}
         project={project}
         account={account}
-        client={client}
         userInfo={userInfo}
       />
     </AppModal>

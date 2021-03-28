@@ -27,7 +27,7 @@ type Props = {
   currentStep?: number
   buttonText?: string
   disabled?: boolean
-  isEdit: boolean
+  isEdit?: boolean
   persistBackButton?: boolean
 }
 

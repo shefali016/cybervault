@@ -40,13 +40,14 @@ export const AppTable = ({
   const classes = useStyles()
 
   const renderCell = (
-    { renderer, title, cellProps, key }: Cell,
+    { renderer, title, cellProps, key, style }: Cell,
     lastCell: boolean
   ) => (
     <TableCell
       {...cellProps}
       className={clsx(classes.cellWrapper)}
-      classes={{ root: lastCell ? classes.lastRow : classes.row }}>
+      classes={{ root: lastCell ? classes.lastRow : classes.row }}
+      style={style}>
       {typeof renderer === 'function' ? renderer() : title}
     </TableCell>
   )

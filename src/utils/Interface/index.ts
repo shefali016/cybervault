@@ -454,13 +454,13 @@ export type Milestone = {
 }
 
 export type AssetFile = {
-  assetId:string
+  assetId: string
   id: string
   original?: boolean
   url: string
   width: number
   height: number
-  status?:string
+  status?: string
 }
 
 export type Project = {
@@ -593,6 +593,7 @@ export type Cell = {
   renderer?: () => React.ReactElement
   title?: string
   key: string
+  style?: {}
 }
 
 export type Mail = {

@@ -51,7 +51,7 @@ const lightPalette = {
     primary: '#030302',
     secondary: '#606060',
     background: '#030302',
-    paper: '#030302',
+    paper: '#24262b',
     meta: '#606060',
     placeholder: '#878888'
   },

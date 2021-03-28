@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  createContext,
+  useEffect
+} from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core'
@@ -24,7 +30,10 @@ import {
   Tab,
   Subscription,
   SubscriptionType,
-  SubscriptionDetails
+  SubscriptionDetails,
+  Account,
+  Client,
+  User
 } from 'utils/Interface'
 import AddIcon from '@material-ui/icons/Add'
 import BackArrow from '@material-ui/icons/ArrowBack'
@@ -50,6 +59,11 @@ import { ReduxState } from 'reducers/rootReducer'
 import { getSubscriptionDetails, getSubscriptionType } from 'utils/subscription'
 import { findProjectLimit } from 'utils/helpers'
 import clsx from 'clsx'
+import { useModalState, useOnChange } from 'utils/hooks'
+import InvoiceModal from 'components/Invoices/InvoiceModal'
+import history from 'services/history'
+import { getClients } from 'apis/clients'
+import { getAllClientsRequest } from 'actions/clientActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -81,12 +95,20 @@ export const ScreenViews = {
   account: 'account'
 }
 
+export const ModalContext = createContext({
+  toggleInvoiceModal: (open: boolean) => () => {},
+  toggleProjectModal: (open: boolean) => () => {}
+})
+
 type DispatchProps = {
   createNewProject: (project: Project) => void
+  getClients: () => void
 }
 type StateProps = {
   allProjectsData: Array<Project>
   accountSubscription: Subscription
+  account: Account
+  userInfo: User
 }
 type Props = { history: any } & StateProps & DispatchProps
 
@@ -94,9 +116,16 @@ const MainScreen = ({
   createNewProject,
   history,
   allProjectsData,
-  accountSubscription
+  accountSubscription,
+  account,
+  userInfo,
+  getClients
 }: Props) => {
   const classes = useStyles()
+
+  useEffect(() => {
+    getClients()
+  }, [])
 
   const getInitialScreenView = () => {
     return Object.values({ ...AccountTabIds }).includes(
@@ -123,7 +152,13 @@ const MainScreen = ({
     return currentMonthProjects >= allowedProjects
   }, [accountSubscription, allProjectsData])
 
-  const [newProjectModalOpen, setNewProjectModalOpen] = useState(false)
+  // Project handling
+
+  const [
+    newProjectModalOpen,
+    setNewProjectModalOpen,
+    toggleProjectModal
+  ] = useModalState(false)
 
   const handleProjectModalShow = () => {
     openNewProjectModal()
@@ -137,6 +172,14 @@ const MainScreen = ({
     () => setNewProjectModalOpen(false),
     []
   )
+
+  // Invoice handling
+
+  const [
+    invoiceModalOpen,
+    setInvoiceModalOpen,
+    toggleInvoiceModal
+  ] = useModalState(false)
 
   const getTab = (id: string): Tab => {
     const iconProps = { className: 'sideBarIcon' }
@@ -233,6 +276,13 @@ const MainScreen = ({
     getTab(history.location.pathname.replace('/', ''))
   )
 
+  useOnChange(history.location.pathname, () => {
+    const tab = getTab(history.location.pathname.replace('/', ''))
+    if (tab && tab.id !== activeTab.id) {
+      setActiveTab(tab)
+    }
+  })
+
   const getSidebarButtonConfig = (): ButtonConfig => {
     if (screenView === ScreenViews.account) {
       return {
@@ -243,6 +293,12 @@ const MainScreen = ({
     }
 
     switch (activeTab.id) {
+      case DashboardTabIds.invoices:
+        return {
+          title: 'Invoice Project',
+          onClick: toggleInvoiceModal(true),
+          icon: <AddIcon className={classes.buttonIcon} />
+        }
       default:
         return {
           title: 'New Project',
@@ -299,44 +355,63 @@ const MainScreen = ({
     )
   }
 
+  const handleCreateProject = () => {
+    setInvoiceModalOpen(false)
+    history.push('/projects')
+    setNewProjectModalOpen(true)
+  }
+
   return (
-    <Layout {...getLayoutProps()}>
-      <NewProjectModal
-        onUpgradeSubscription={handleUpgradeSubscription}
-        open={newProjectModalOpen}
-        onRequestClose={closeNewProjectModal}
-        onSubmitClicked={createNewProject}
-        isBeyondLimit={isBeyondProjectLimit}
-      />
-      <div className={clsx(classes.screen, 'screenTopPadding')}>
-        <Switch>
-          <Route path='/projects' component={ProjectsScreen} />
-          <Route path='/profile' component={ProfileScreen} />
-          <Route path='/manage' component={ManageAccountScreen} />
-          <Route path='/branding' component={BrandingScreen} />
-          <Route path='/subscription' component={SubscriptionScreen} />
-          <Route path='/security' component={SecurityScreen} />
-          <Route path='/invoices' component={InvoicesScreen} />
-          <Route path='/clients' component={ClientsScreen} />
-          <Route
-            path='/clientInvoices/:accId/:id'
-            component={InvoicesClientScreen}
-          />
-          <Route path='/portfolio' component={PortfoliosScreen} exact={true} />
-          <Route
-            path='/portfolioFolder/:id'
-            component={PortfolioFolderScreen}
-          />
-          <Route path='/paymentmethods' component={PaymentMethodsScreen} />
-          <Route path='/billing' component={BillingHistoryScreen} />
-          <Route
-            path='/refresh_account_link/:id'
-            component={AccountLinkRefreshScreen}
-          />
-          <Route path='/' component={HomeScreen} />
-        </Switch>
-      </div>
-    </Layout>
+    <ModalContext.Provider value={{ toggleProjectModal, toggleInvoiceModal }}>
+      <Layout {...getLayoutProps()}>
+        <NewProjectModal
+          onUpgradeSubscription={handleUpgradeSubscription}
+          open={newProjectModalOpen}
+          onRequestClose={closeNewProjectModal}
+          onSubmitClicked={createNewProject}
+          isBeyondLimit={isBeyondProjectLimit}
+        />
+        <InvoiceModal
+          open={invoiceModalOpen}
+          onRequestClose={toggleInvoiceModal(false)}
+          account={account}
+          userInfo={userInfo}
+          onCreateProject={handleCreateProject}
+        />
+        <div className={clsx(classes.screen, 'screenTopPadding')}>
+          <Switch>
+            <Route path='/projects' component={ProjectsScreen} />
+            <Route path='/profile' component={ProfileScreen} />
+            <Route path='/manage' component={ManageAccountScreen} />
+            <Route path='/branding' component={BrandingScreen} />
+            <Route path='/subscription' component={SubscriptionScreen} />
+            <Route path='/security' component={SecurityScreen} />
+            <Route path='/invoices' component={InvoicesScreen} />
+            <Route path='/clients' component={ClientsScreen} />
+            <Route
+              path='/clientInvoices/:accId/:id'
+              component={InvoicesClientScreen}
+            />
+            <Route
+              path='/portfolio'
+              component={PortfoliosScreen}
+              exact={true}
+            />
+            <Route
+              path='/portfolioFolder/:id'
+              component={PortfolioFolderScreen}
+            />
+            <Route path='/paymentmethods' component={PaymentMethodsScreen} />
+            <Route path='/billing' component={BillingHistoryScreen} />
+            <Route
+              path='/refresh_account_link/:id'
+              component={AccountLinkRefreshScreen}
+            />
+            <Route path='/' component={HomeScreen} />
+          </Switch>
+        </div>
+      </Layout>
+    </ModalContext.Provider>
   )
 }
 
@@ -368,12 +443,15 @@ const useStyles = makeStyles((theme) => ({
 
 const mapStateToProps = (state: ReduxState): StateProps => ({
   allProjectsData: state.project.allProjectsData as Array<Project>,
-  accountSubscription: state.stripe.accountSubscription as Subscription
+  accountSubscription: state.stripe.accountSubscription as Subscription,
+  account: state.auth.account as Account,
+  userInfo: state.auth.user as User
 })
 
 const mapDispatchToProps: DispatchProps = {
   createNewProject: (projectData: Project) =>
-    createNewProjectRequest(projectData)
+    createNewProjectRequest(projectData),
+  getClients: () => getAllClientsRequest()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

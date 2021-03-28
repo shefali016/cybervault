@@ -29,6 +29,8 @@ type InvoiceStepProps = {
   handleMileChange: (id: string, key: string, e: any) => void
   milestones: Array<MilestoneProps>
   client: Client
+  onUpdateProject: () => void
+  onUpdateClient: () => void
 }
 enum EditTypes {
   CLIENT_DETAILS = 'clientDetails',
@@ -61,7 +63,9 @@ const InvoiceStepTwo = ({
   handleMileChange,
   handleSave,
   milestones,
-  client
+  client,
+  onUpdateProject,
+  onUpdateClient
 }: InvoiceStepProps) => {
   const classes = useStyles()
   const toastContext = useContext(ToastContext)
@@ -84,10 +88,26 @@ const InvoiceStepTwo = ({
     if (!edit.hasOwnProperty(key)) {
       return null
     }
+
     return !edit[key] ? (
-      <AppIconButton Icon={EditIcon} onClick={() => handleEdit(key)} />
+      <AppIconButton
+        Icon={EditIcon}
+        onClick={() => handleEdit(key)}
+        iconClassName={'primaryIcon'}
+      />
     ) : (
-      <AppIconButton Icon={SaveIcon} onClick={() => handleSave(key)} />
+      <AppIconButton
+        Icon={SaveIcon}
+        onClick={() => {
+          if (key === EditTypes.CLIENT_DETAILS) {
+            onUpdateClient()
+          } else {
+            onUpdateProject()
+          }
+          handleSave(key)
+        }}
+        iconClassName={'primaryIcon'}
+      />
     )
   }
 

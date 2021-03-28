@@ -90,7 +90,8 @@ const generateNewInvoiceSuccess = (state: State, action: Action) => ({
   success: true,
   error: false,
   newinvoiceData: action.payload,
-  cache: addToCache(state.cache, action.payload)
+  cache: addToCache(state.cache, action.payload),
+  allInvoicesData: [action.payload, ...state.allInvoicesData]
 })
 
 const getAllInvoiceRequest = (state: State, action: Action) => ({
