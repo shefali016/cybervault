@@ -2,6 +2,8 @@ import * as functions from 'firebase-functions'
 import * as express from 'express'
 import config from '../config.json'
 const { corsHandler } = require('../index')
+import * as admin from 'firebase-admin'
+import { AssetFile, MediaConvertParams } from '../utils/interfaces'
 
 const router = express.Router()
 const bodyParser = require('body-parser')
@@ -18,23 +20,110 @@ AWS.config.update({
 
 let mediaConvert = new AWS.MediaConvert({ apiVersion: '2017-08-29' })
 
+const updateAssetFiles = (
+  assetId: string,
+  file:
+    | AssetFile
+    | {
+        id: string
+        assetId: string
+        conversion: MediaConvertParams
+        status: string
+      },
+  isNew: boolean
+) => {
+  const db = admin.firestore()
+  const assetRef = db.collection('Assets').doc(assetId)
+
+  return db.runTransaction((transaction) => {
+    return transaction.get(assetRef).then((assetDoc) => {
+      if (!assetDoc.exists) {
+        throw 'Document does not exist!'
+      }
+
+      const asset = assetDoc.data()
+
+      if (!asset) {
+        throw 'Asset does not exist'
+      }
+
+      let newFiles = asset.files
+
+      if (isNew) {
+        newFiles.push(file)
+      } else {
+        newFiles = newFiles.map((f: AssetFile) => (f.id === file.id ? file : f))
+      }
+
+      transaction.update(assetRef, { files: newFiles })
+    })
+  })
+}
+
 router.post('/convert', (req, res) => {
   return corsHandler(req, res, async () => {
     try {
-      let videoArray = req.body.data.map(async (item: any, i: number) => {
-        return await resizeVideo(item)
-      })
+      const convertParams = req.body.data
+
+      if (!(convertParams && Array.isArray(convertParams))) {
+        throw Error('Invalid convert params')
+      }
+
+      let videoArray = convertParams.map(
+        async (conversion: MediaConvertParams) => {
+          const {
+            resolution,
+            ratio,
+            format,
+            assetId,
+            id,
+            fileName,
+            fileWidth,
+            fileHeight
+          } = conversion
+
+          if (
+            !(
+              resolution &&
+              ratio &&
+              format &&
+              typeof assetId === 'string' &&
+              typeof id === 'string' &&
+              fileName &&
+              fileWidth &&
+              fileHeight
+            )
+          ) {
+            throw Error('Invalid convert params')
+          }
+
+          const tempFile = { id, assetId, conversion, status: 'pending' }
+
+          try {
+            updateAssetFiles(assetId, tempFile, true)
+
+            const convertedFile = await resizeVideo(conversion)
+
+            updateAssetFiles(assetId, convertedFile, false)
+
+            return convertedFile
+          } catch (error) {
+            updateAssetFiles(assetId, { ...tempFile, status: 'failed' }, false)
+            return null
+          }
+        }
+      )
 
       let result = await Promise.all(videoArray)
       return await res.status(200).send(result)
     } catch (error) {
-      console.log('create_customer', error)
+      console.log('convert error', error)
       return res.status(400).send(error)
     }
   })
 })
 
-const resizeVideo = async (item: any) => {
+const resizeVideo = async (item: any): Promise<AssetFile> => {
   return new Promise(async (resolve, reject) => {
     const {
       resolution,
@@ -274,7 +363,8 @@ const resizeVideo = async (item: any) => {
                   config.bucketName
                 }.s3.us-east-2.amazonaws.com/videos/${assetId}/${id}${
                   format === 'prores' ? '.mov' : '.mp4'
-                }`
+                }`,
+                size: 0 // We wont charge customer for convert files as they will be deleted after a month
               })
             })
             .catch((error: any) => {

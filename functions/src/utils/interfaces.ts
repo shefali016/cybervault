@@ -285,11 +285,14 @@ export type Milestone = {
 
 export type AssetFile = {
   id: string
-  original?: boolean
+  assetId: string
+  original: boolean
   url: string
   width: number
   height: number
   size: number
+  conversion?: MediaConvertParams
+  status?: 'complete' | 'failed ' | 'pending'
 }
 
 export type Project = {
@@ -464,4 +467,18 @@ export interface Notification {
   createdAt: number
   title: string
   isRead: boolean
+}
+
+export type MediaConvertParams = {
+  id: string
+  format: string
+  resolution: number
+  ratio: {
+    w: number
+    h: number
+  }
+  fileName: string
+  assetId: string
+  fileHeight: number
+  fileWidth: number
 }

@@ -34,7 +34,7 @@ import { getAccount } from 'apis/account'
 import { getUser } from 'apis/user'
 import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 import Header from 'components/Common/Header/header'
-import MediaConvert from './MediaConvert'
+import MediaConvert, { MediaConvertParams } from './MediaConvert'
 import { convertMedia, getSingleAsset, addAsset } from '../../apis/assets'
 import { CardModal } from '../../components/Stripe/CardModal'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
@@ -372,27 +372,12 @@ const InvoicesClientScreen = (props: Props) => {
     })
   }
 
-  const mediaConvert = async (data: any) => {
+  const mediaConvert = async (data: MediaConvertParams[]) => {
     setMediaConversionLoading(true)
     await handleAddAsset(data)
-    let res: any = await convertMedia(data)
-    if (res.status === 200) {
-      var results = res.data.reduce(function (results: any, org: any) {
-        results[org.assetId] = results[org.assetId] || []
-        results[org.assetId].push(org)
-        return results
-      }, {})
-
-      for (let ele in results) {
-        let asset = await getSingleAsset(ele, ownerAccountId)
-        let newFileData = asset.files.map(
-          (obj: AssetFile) =>
-            results[ele].find((o: AssetFile) => o.id === obj.id) || obj
-        )
-        await addAsset(ownerAccountId, { ...asset, files: newFileData })
-      }
-      setMediaConversionLoading(false)
-    }
+    try {
+      let res: any = await convertMedia(data)
+    } catch (error) {}
   }
 
   return (

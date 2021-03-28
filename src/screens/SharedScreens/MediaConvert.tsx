@@ -9,7 +9,8 @@ import AppModal from 'components/Common/Modal'
 import { createNull } from 'typescript'
 import { generateUid } from 'utils'
 
-type Media = {
+export type MediaConvertParams = {
+  id: string
   format: string
   resolution: number
   ratio: {
@@ -23,12 +24,22 @@ type Media = {
 }
 
 type MediaConvertProps = {
-  mediaConvert: (val: Media) => void
+  mediaConvert: (val: MediaConvertParams[]) => void
   assetIds: Array<string>
   accountId: string
   selectedAsset: string
   mediaConversionLoading: boolean
 }
+
+type State = {
+  format: 'h.264' | 'prores' | ''
+  resolution: number
+  ratio: {
+    w: number
+    h: number
+  }
+}
+
 const MediaConvert = ({
   mediaConvert,
   assetIds,
@@ -37,16 +48,16 @@ const MediaConvert = ({
   mediaConversionLoading
 }: MediaConvertProps) => {
   const classes = useStyles()
-  const [open, setOpen] = useState<any>(false)
-  const [state, setState] = useState<any>({
-    format: 'h.264',
+  const [open, setOpen] = useState<boolean>(false)
+  const [state, setState] = useState<State>({
+    format: '',
     resolution: 0,
     ratio: {
-      w: 9,
-      h: 16
+      w: 0,
+      h: 0
     }
   })
-  const [items, setItems] = useState<any>([])
+  const [items, setItems] = useState<MediaConvertParams[]>([])
   const [error, setError] = useState('')
 
   const chooseSize = (type: string, value: any) => {
@@ -112,33 +123,38 @@ const MediaConvert = ({
       return 'Choose Resolution'
     } else if (!state.format) {
       return 'Choose Format'
-    } else if (!state.ratio) {
+    } else if (!(state.ratio.h && state.ratio.w)) {
       return 'Choose Aspect Ratio'
     }
   }
 
-  const validateRepeative = (assetId: string, resolution: number) => {
+  const validateRepeative = (assetId: string, state: State) => {
     const error = validate()
     if (!error) {
+      const { format, resolution, ratio } = state
+
       const existingItemWithSameResolution = items.filter(
         (item: any, i: number) => {
-          if (item.id === assetId && item.resolution === resolution) {
+          if (
+            item.id === assetId &&
+            item.resolution === resolution &&
+            item.format === format &&
+            item.ratio === ratio
+          ) {
             return item
           }
         }
       )
       if (existingItemWithSameResolution.length) {
-        return 'Cannot choose same resolution Again'
+        return 'You have already choosen this conversion.'
       }
     } else {
       return error
     }
   }
   const save = () => {
-    const err = validateRepeative(selectedAsset, state.resolution)
-    const originalFile = activeAsset.files.filter((file: any, i: number) => {
-      return file.original
-    })
+    const err = validateRepeative(selectedAsset, state)
+    const originalFile = activeAsset.files.find((file: any) => file.original)
     if (!err) {
       setItems([
         ...items,
@@ -146,8 +162,8 @@ const MediaConvert = ({
           assetId: selectedAsset,
           id: generateUid(),
           fileName: activeAsset.fileName,
-          fileHeight: originalFile[0].height,
-          fileWidth: originalFile[0].width,
+          fileHeight: originalFile.height,
+          fileWidth: originalFile.width,
           ...state
         }
       ])
