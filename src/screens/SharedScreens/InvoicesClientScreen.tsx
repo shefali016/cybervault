@@ -575,7 +575,10 @@ const InvoicesClientScreen = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   descContainer: { paddingTop: theme.spacing(3) },
-  paddedContainer: { padding: theme.spacing(4) },
+  paddedContainer: {
+    padding: theme.spacing(4),
+    paddingBottom: theme.spacing(7)
+  },
   clientInvoiceWrapper: {
     border: `1px solid ${theme.palette.primary.light}75`,
     color: theme.palette.text.background,
