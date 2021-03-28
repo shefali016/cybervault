@@ -38,13 +38,13 @@ const updateAssetFiles = (
   return db.runTransaction((transaction) => {
     return transaction.get(assetRef).then((assetDoc) => {
       if (!assetDoc.exists) {
-        throw 'Document does not exist!'
+        throw Error('Document does not exist!')
       }
 
       const asset = assetDoc.data()
 
       if (!asset) {
-        throw 'Asset does not exist'
+        throw Error('Asset does not exist')
       }
 
       let newFiles = asset.files
@@ -114,8 +114,8 @@ router.post('/convert', (req, res) => {
         }
       )
 
-      let result = await Promise.all(videoArray)
-      return await res.status(200).send(result)
+      Promise.all(videoArray)
+      return res.status(200)
     } catch (error) {
       console.log('convert error', error)
       return res.status(400).send(error)

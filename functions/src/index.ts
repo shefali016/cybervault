@@ -35,9 +35,6 @@ const runtimeOpts = {
   timeoutSeconds: 300
 }
 
-const rootPath = path.join('./tmp/test.mp4')
-functions.logger.log(rootPath, 'root path')
-
 const getFileMetaData = async (url: string) => {
   return new Promise(async (resolve, reject) => {
     const rootPath = `${os.tmpdir()}/${url}`
@@ -176,6 +173,8 @@ export const addCodec = functions.firestore
           .doc(assetId)
           .set(newAsset)
       }
+
+      return true
     } catch (error) {
       console.log('add codec error', error)
       return false
