@@ -108,6 +108,7 @@ export const ProjectSelectBar = ({
   }
 
   const renderAddProjectButton = () =>
+    projects.length === 0 &&
     typeof onAddProject === 'function' && (
       <AppButton
         onClick={() => {

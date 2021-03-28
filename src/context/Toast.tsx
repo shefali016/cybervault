@@ -54,7 +54,8 @@ export const ToastProvider = ({
               justifyContent: 'center',
               alignItems: 'flex-start',
               padding: 30,
-              pointerEvents: 'none'
+              pointerEvents: 'none',
+              zIndex: 3001
             }}>
             <Alert
               severity={toast.type as any}

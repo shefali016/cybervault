@@ -151,7 +151,8 @@ const updatePortfolioSuccess = (state: State, action: Action) => ({
     [action.portfolio.id]: action.portfolio
   },
   updatePortfolioLoading: false,
-  updatePortfolioSuccess: true
+  updatePortfolioSuccess: true,
+  portfolio: action.portfolio
 })
 const updatePortfolioFailure = (state: State, action: Action) => ({
   ...state,

@@ -22,7 +22,8 @@ import {
   DELETE_ASSET_FAILURE,
   GET_PROJECTS,
   GET_PROJECTS_SUCCESS,
-  GET_PROJECTS_FAILURE
+  GET_PROJECTS_FAILURE,
+  GET_PORTFOLIO_SUCCESS
 } from 'actions/actionTypes'
 import { Set } from 'immutable'
 
@@ -315,8 +316,17 @@ const deleteAssetFailure = (state: State, action: Action) => {
   }
 }
 
+const getPortfolioSuccess = (state: State, action: Action) => ({
+  ...state,
+  projectCache: action.projects
+    ? addArrayToCache(state.projectCache, action.projects)
+    : state.projectCache
+})
+
 const projectReducer = (state = initialState, action: Action) => {
   switch (action.type) {
+    case GET_PORTFOLIO_SUCCESS:
+      return getPortfolioSuccess(state, action)
     case NEW_PROJECT_REQUEST:
       return createNewProject(state, action)
     case NEW_PROJECT_SUCCESS:
@@ -372,10 +382,7 @@ const projectReducer = (state = initialState, action: Action) => {
 
 export const projectTransform = createTransform(
   (inboundState: State) => {
-    return {
-      ...initialState,
-      allProjectsData: inboundState.allProjectsData
-    }
+    return initialState
   },
   (outboundState: State) => ({
     ...initialState,

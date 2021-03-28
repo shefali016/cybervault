@@ -5,7 +5,14 @@ import {
 import React, { useEffect, useState, useMemo, useContext } from 'react'
 import { connect } from 'react-redux'
 import { ReduxState } from 'reducers/rootReducer'
-import { Portfolio, Project, Account, User, Client } from 'utils/Interface'
+import {
+  Portfolio,
+  Project,
+  Account,
+  User,
+  Client,
+  ProjectCache
+} from 'utils/Interface'
 import { useStyles } from 'components/Portfolio/style'
 import { getTextColor } from 'utils/helpers'
 import Header from '../../../components/Common/Header/header'
@@ -28,7 +35,6 @@ import { ToastContext, ToastTypes } from 'context/Toast'
 
 type StateProps = {
   portfolio: Portfolio
-  portfolioProjects: Array<Project>
   account: Account
   user: User
   updatePortfolioLoading: boolean
@@ -38,6 +44,7 @@ type StateProps = {
   projects: Array<Project>
   sharePortfolioSuccess: boolean
   sharePortfolioLoading: boolean
+  projectCache: ProjectCache
 }
 
 type DispatchProps = {
@@ -62,8 +69,8 @@ type Props = {
 
 const PortfolioSingleScreen = ({
   getPortfolio,
+  projectCache,
   account,
-  portfolioProjects,
   user,
   history,
   match,
@@ -118,6 +125,13 @@ const PortfolioSingleScreen = ({
       }))
     }
   }, [portfolio])
+
+  const portfolioProjects = useMemo(() => {
+    return portfolio && portfolio.projects
+      ? portfolio.projects.map((projectId: string) => projectCache[projectId])
+      : []
+  }, [portfolio])
+
   // Select project with selected id in state
   const selectedProjectData = useMemo(
     () => portfolioProjects.find((p) => p.id === state.selectedProjectId),
@@ -302,7 +316,6 @@ const mapStateToProps = (state: ReduxState): StateProps => {
     updatePortfolioLoading,
     updatePortfolioError,
     updatePortfolioSuccess,
-    portfolioProjects,
     portfolio,
     sharePortfolioSuccess,
     sharePortfolioLoading
@@ -310,7 +323,7 @@ const mapStateToProps = (state: ReduxState): StateProps => {
 
   return {
     portfolio: portfolio as Portfolio,
-    portfolioProjects: portfolioProjects as Array<Project>,
+    projectCache: state.project.projectCache,
     account: state.auth.account as Account,
     user: state.auth.user as User,
     updatePortfolioLoading,

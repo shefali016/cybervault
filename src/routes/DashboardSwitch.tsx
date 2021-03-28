@@ -61,9 +61,6 @@ import { findProjectLimit } from 'utils/helpers'
 import clsx from 'clsx'
 import { useModalState, useOnChange } from 'utils/hooks'
 import InvoiceModal from 'components/Invoices/InvoiceModal'
-import history from 'services/history'
-import { getClients } from 'apis/clients'
-import { getAllClientsRequest } from 'actions/clientActions'
 
 export const DashboardTabIds = {
   dashboard: 'dashboard',
@@ -102,7 +99,6 @@ export const ModalContext = createContext({
 
 type DispatchProps = {
   createNewProject: (project: Project) => void
-  getClients: () => void
 }
 type StateProps = {
   allProjectsData: Array<Project>
@@ -118,14 +114,9 @@ const MainScreen = ({
   allProjectsData,
   accountSubscription,
   account,
-  userInfo,
-  getClients
+  userInfo
 }: Props) => {
   const classes = useStyles()
-
-  useEffect(() => {
-    getClients()
-  }, [])
 
   const getInitialScreenView = () => {
     return Object.values({ ...AccountTabIds }).includes(
@@ -450,8 +441,7 @@ const mapStateToProps = (state: ReduxState): StateProps => ({
 
 const mapDispatchToProps: DispatchProps = {
   createNewProject: (projectData: Project) =>
-    createNewProjectRequest(projectData),
-  getClients: () => getAllClientsRequest()
+    createNewProjectRequest(projectData)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)

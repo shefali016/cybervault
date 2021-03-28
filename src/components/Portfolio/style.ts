@@ -10,7 +10,7 @@ import {
 import { ColorThemes } from 'utils/enums'
 
 export const useStyles = makeStyles((theme) => ({
-  campaignTitle: { color: 'inherit' },
+  campaignTitle: { color: 'inherit !important' },
 
   contentHeader: {
     display: 'flex',
