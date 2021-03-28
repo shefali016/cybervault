@@ -93,6 +93,8 @@ export const ProjectCard = ({
 
   const handleClick = () => onClick(project)
 
+  console.log('OPEN', open)
+
   return (
     <div style={containerStyle} className={classes.root}>
       <InvoiceModal

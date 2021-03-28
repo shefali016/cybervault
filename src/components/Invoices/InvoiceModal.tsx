@@ -24,6 +24,7 @@ import {
   sendEmailRequest,
   getAllMailTemplatesRequest
 } from '../../actions/mails'
+import sendGridTemplates from '../../sendGridTemplates.json'
 
 export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
@@ -77,19 +78,6 @@ const InvoiceData = ({
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
   const mailData = useSelector((state: ReduxState) => state.mail)
 
-  const getTemplateId = () => {
-    if (mailData.mailTemplatesData) {
-      let data: any
-      data = mailData.mailTemplatesData.find((tmp: MailTemplate) => {
-        return tmp.type === 'invoice'
-      })
-      return data?.templateId
-    }
-  }
-  const templateId = useMemo(() => {
-    return getTemplateId()
-  }, [mailData.mailTemplatesData])
-
   useOnChange(invoiceData.error, (error) => {
     if (!!error) {
       toastContext.showToast({ title: 'Failed to create invoice' })
@@ -134,10 +122,6 @@ const InvoiceData = ({
       )
     }
   }, [project])
-
-  useEffect(() => {
-    dispatch(getAllMailTemplatesRequest())
-  }, [])
 
   const getFullAmount = () => {
     return (
@@ -187,7 +171,7 @@ const InvoiceData = ({
 
     const mailPayload: Mail = {
       to: clientData.email,
-      templateId: templateId,
+      templateId: sendGridTemplates.invoice,
       type: 'invoice',
       data: {
         clientEmail: clientData.email,
