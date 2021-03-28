@@ -147,7 +147,8 @@ export const CardModal = ({
   onRequestClose,
   customerId,
   directCheckout,
-  handleCreateCharge
+  handleCreateCharge,
+  onPaymentMethodCreated
 }: CardModalProps) => {
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
@@ -156,7 +157,7 @@ export const CardModal = ({
         <CardInput
           customerId={customerId}
           directCheckout={directCheckout}
-          onPaymentMethodCreated={onRequestClose}
+          onPaymentMethodCreated={onPaymentMethodCreated}
           handleCreateCharge={handleCreateCharge}
         />
       </div>

@@ -1,6 +1,6 @@
+import React, { Fragment, useEffect, useState } from 'react'
 import { Typography } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles'
-import React, { Fragment, useEffect, useState } from 'react'
 import { SubscriptionDurations, SubscriptionTypes } from 'utils/enums'
 import { findProductWithType } from 'utils/subscription'
 import {
@@ -21,6 +21,7 @@ import { ConfirmationDialog } from 'components/Common/Dialog/ConfirmationDialog'
 import { useStyles } from './style'
 import { SubscriptionItem } from './SubscriptionItem'
 import { SubscriptionDurationSwitch } from './SubscriptionDurationSwitch'
+import { CardModal } from 'components/Stripe/CardModal'
 
 type SubscriptionParams = { planId: string; type: SubscriptionType }
 
@@ -57,7 +58,8 @@ export const SubscriptionModal = ({
   cancelSubscription,
   updateSubscription,
   setStorageProduct,
-  loading
+  loading,
+  customerId
 }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -69,7 +71,7 @@ export const SubscriptionModal = ({
   const [productPlans, setProductPlans] = useState<{
     [productId: string]: Array<StripePlans>
   }>({})
-  const [paymentModal, setPaymentModal] = useState<boolean>(false)
+  const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false)
   const [
     subscriptionParams,
     setSubscriptionParams
@@ -108,7 +110,7 @@ export const SubscriptionModal = ({
       setOpenDialog({ value: true, for: 'Update' })
       setSubscriptionParams({ planId, type })
     } else {
-      setPaymentModal(true)
+      setPaymentModalOpen(true)
       setSubscriptionParams({ planId, type })
     }
   }
@@ -129,7 +131,7 @@ export const SubscriptionModal = ({
       const { planId, type } = subscriptionParams
       planSubscription(planId, paymentMethod.id, type)
     }
-    setPaymentModal(false)
+    setPaymentModalOpen(false)
   }
 
   const handleChatWithSales = () => {}
@@ -264,12 +266,22 @@ export const SubscriptionModal = ({
           <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
         </div>
       </Modal>
-      <PaymentMethodModal
-        open={paymentModal}
-        onRequestClose={() => setPaymentModal(!paymentModal)}
-        paymentMethods={paymentMethods}
-        handleSubscription={handleSubscription}
-      />
+      {paymentMethods && paymentMethods.length ? (
+        <PaymentMethodModal
+          open={paymentModalOpen}
+          onRequestClose={() => setPaymentModalOpen(false)}
+          paymentMethods={paymentMethods}
+          handleSubscription={handleSubscription}
+        />
+      ) : (
+        <CardModal
+          open={paymentModalOpen}
+          onRequestClose={() => setPaymentModalOpen(false)}
+          customerId={customerId}
+          onPaymentMethodCreated={handleSubscription}
+        />
+      )}
+
       <ConfirmationDialog
         isOpen={!!openDialog.value}
         onClose={() => setOpenDialog({ value: false, for: '' })}

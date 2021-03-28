@@ -169,6 +169,7 @@ const SubscriptionScreen = ({
           <CardModal
             open={cardModalOpen}
             onRequestClose={toggleCardModal(false)}
+            onPaymentMethodCreated={toggleCardModal(false)}
             customerId={user.customerId}
           />
 

@@ -74,19 +74,18 @@ const PaymentMethodModal = ({
               )
             })
           ) : (
-            <Typography variant={'h4'}>
-              Please Add Payment Method to Continue
+            <Typography variant={'h6'}>
+              No cards added. Please Add Payment Method
             </Typography>
           )}
         </List>
-        {paymentMethods && paymentMethods.length ? (
-          <GradiantButton
-            disabled={selectedPaymentMethod ? false : true}
-            onClick={() => handleSubscription(selectedPaymentMethod)}
-            className={classes.saveButton}>
-            <Typography variant='button'>Submit</Typography>
-          </GradiantButton>
-        ) : null}
+
+        <GradiantButton
+          disabled={!!selectedPaymentMethod}
+          onClick={() => handleSubscription(selectedPaymentMethod)}
+          className={classes.saveButton}>
+          <Typography variant='button'>Submit</Typography>
+        </GradiantButton>
       </div>
     </Modal>
   )
