@@ -142,6 +142,7 @@ const NewProjectStepOne = (props: any) => {
         isEdit={editClient}
         client={clientData}
         onSuccess={handleClientSuccess}
+        showBackButton={true}
       />
     )
   }

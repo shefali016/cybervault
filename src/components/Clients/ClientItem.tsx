@@ -19,13 +19,13 @@ export const ClientItem = ({ client, style, onEdit }: Props) => {
   return (
     <Card
       key={client.id}
-      className={clsx('card', classes.portfoliosCard)}
+      className={clsx('card', 'gridItemLong')}
       style={style}>
       <div className={classes.cardLogo}>
         {!!client.logo && <img src={client.logo} alt='' />}
       </div>
 
-      <div className={classes.logoContent}>
+      <div className={'gridItemLongText'}>
         <Typography variant='body1' style={{ fontSize: 18 }}>
           {client.name}
         </Typography>
@@ -38,7 +38,7 @@ export const ClientItem = ({ client, style, onEdit }: Props) => {
 
       <EditButton
         onClick={() => typeof onEdit === 'function' && onEdit(client)}
-        className={' '}
+        className={'gridItemIconButton'}
       />
     </Card>
   )

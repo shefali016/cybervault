@@ -286,7 +286,7 @@ const MainScreen = ({
     switch (activeTab.id) {
       case DashboardTabIds.invoices:
         return {
-          title: 'Invoice Project',
+          title: 'New Invoice',
           onClick: toggleInvoiceModal(true),
           icon: <AddIcon className={classes.buttonIcon} />
         }

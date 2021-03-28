@@ -38,6 +38,7 @@ export const AddClient = (props: AddClientProps) => {
   const [clientData, setClientData] = useState<Client>(
     !!client && isEdit ? client : getClientData()
   )
+  const [logoUploading, setLogoUploading] = useState(false)
   const [haveError, setHaveError] = useState(false)
   const [logoFile, setLogoFile] = useState(null)
 
@@ -81,6 +82,9 @@ export const AddClient = (props: AddClientProps) => {
 
   const handleAddClient = async () => {
     const isError = validateAddClient(clientData)
+
+    if (isLoading || logoUploading) return
+
     if (isError) {
       setHaveError(isError)
     } else {
@@ -90,6 +94,7 @@ export const AddClient = (props: AddClientProps) => {
 
       try {
         if (logoFile) {
+          setLogoUploading(true)
           logo = await setMedia(`client_logos/${clientId}`, logoFile)
         }
 
@@ -103,6 +108,7 @@ export const AddClient = (props: AddClientProps) => {
 
         dispatch(addClientRequest(account, client))
       } catch (error) {
+        setLogoUploading(false)
         console.log(error)
         toastContext.showToast({
           title: 'Failed to upload client image. Please try again.'
@@ -228,9 +234,9 @@ export const AddClient = (props: AddClientProps) => {
         onUpdate={isEdit ? handleAddClient : undefined}
         haveError={haveError ? haveError : false}
         addClient={true}
-        isLoading={isLoading}
+        isLoading={isLoading || logoUploading}
         isEdit={isEdit}
-        persistBackButton={showBackButton}
+        persistBackButton={showBackButton !== false}
       />
     </>
   )

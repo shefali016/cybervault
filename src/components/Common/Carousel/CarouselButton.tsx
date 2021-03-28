@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: 'center',
     maxHeight: 300,
     cursor: 'pointer',
-    background: `${theme.palette.background.surface}`,
+    background: 'rgba(0,0,0,0.08)',
     display: 'flex',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,

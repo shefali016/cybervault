@@ -17,11 +17,13 @@ const MENU_ITEMS: Array<Item> = [
 type Props = {
   onChange: (privacy: SharingPrivacy) => void
   privacy: SharingPrivacy
+  className?: string
 }
 
-const SharingPrivacySelect = ({ onChange, privacy }: Props) => {
+const SharingPrivacySelect = ({ onChange, privacy, className }: Props) => {
   return (
     <AppSelect
+      className={className}
       items={MENU_ITEMS}
       value={privacy !== undefined ? privacy : SharingPrivacies.strict}
       onChange={(event: any) => {

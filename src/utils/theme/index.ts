@@ -28,7 +28,7 @@ const darkPalette = {
     secondary: '#e3e3e3',
     background: '#ffffff',
     paper: '#24262b',
-    meta: '#828487',
+    meta: '#a7a8ab',
     placeholder: '#878888'
   },
   border: '#40403f'

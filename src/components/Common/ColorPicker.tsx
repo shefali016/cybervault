@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0 0 10px #999999',
     position: 'absolute',
     borderRadius: theme.shape.borderRadius,
-    zIndex: 100
+    background: theme.palette.background.paper
   },
   colorDisplayOuter: { display: 'flex', marginBottom: 10, padding: 0 },
   colorDisplay: {

@@ -225,9 +225,7 @@ const NewProject = ({
   }
 
   return (
-    <div
-      className={isBeyondLimit ? 'modalContent' : 'new-project-modal-content'}
-      ref={modalContentRef}>
+    <div className={'modalWideContent'} ref={modalContentRef}>
       {isBeyondLimit ? renderProjectLimitMessage() : renderStepsView()}
       <CloseButton
         onClick={onRequestClose}

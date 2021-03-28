@@ -17,11 +17,17 @@ const MENU_ITEMS: Array<Item> = [
 type Props = {
   onChange: (watermarkStyle: WatermarkStyle) => void
   watermarkStyle: WatermarkStyle
+  className?: string
 }
 
-const WatermarkStyleSelect = ({ onChange, watermarkStyle }: Props) => {
+const WatermarkStyleSelect = ({
+  onChange,
+  watermarkStyle,
+  className
+}: Props) => {
   return (
     <AppSelect
+      className={className}
       items={MENU_ITEMS}
       value={
         watermarkStyle !== undefined ? watermarkStyle : WatermarkStyles.single

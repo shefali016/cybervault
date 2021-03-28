@@ -55,12 +55,12 @@ export const ToastProvider = ({
               alignItems: 'flex-start',
               padding: 30,
               pointerEvents: 'none',
-              zIndex: 3001
+              zIndex: 5000
             }}>
             <Alert
               severity={toast.type as any}
               variant='filled'
-              style={{ zIndex: 30000 }}>
+              style={{ zIndex: 5000 }}>
               {toast.title}
             </Alert>
           </div>

@@ -17,26 +17,28 @@ export const RenderBudgetDetails = (props: any) => {
         </Typography>
         {props.editInfo ? <EditButton onClick={props.onEdit} /> : null}
       </div>
-      <Details
-        label={'Production Budget:'}
-        value={'$' + props.projectData?.campaignBudget || ''}
-      />
-      <Details
-        label={'Production Expenses:'}
-        value={'$' + props.projectData?.campaignExpenses || ''}
-      />
-      <Details
-        label={'Estimated Net Revenue:'}
-        value={
-          '$' +
-          (props.projectData
-            ? (
-                props.projectData.campaignBudget -
-                props.projectData.campaignExpenses
-              ).toString()
-            : '')
-        }
-      />
+      <div className={classes.detailsContainer}>
+        <Details
+          label={'Production Budget:'}
+          value={'$' + props.projectData?.campaignBudget || ''}
+        />
+        <Details
+          label={'Production Expenses:'}
+          value={'$' + props.projectData?.campaignExpenses || ''}
+        />
+        <Details
+          label={'Estimated Net Revenue:'}
+          value={
+            '$' +
+            (props.projectData
+              ? (
+                  props.projectData.campaignBudget -
+                  props.projectData.campaignExpenses
+                ).toString()
+              : '')
+          }
+        />
+      </div>
     </div>
   )
 }

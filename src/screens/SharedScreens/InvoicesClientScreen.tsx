@@ -379,7 +379,12 @@ const InvoicesClientScreen = (props: Props) => {
     await handleAddAsset(data)
     try {
       let res: any = await convertMedia(data)
-    } catch (error) {}
+    } catch (error) {
+      toastContext.showToast({
+        title:
+          'Failed to start conversion. Please try again or contact support.'
+      })
+    }
   }
 
   return (
@@ -390,8 +395,7 @@ const InvoicesClientScreen = (props: Props) => {
       </div>
 
       <div className={'screenInner'}>
-        <div
-          className={clsx('responsivePadding', 'fixedHeaderScreenTopPadding')}>
+        <div className={clsx('responsivePadding', 'screenTopPadding')}>
           <Grid item container className={classes.section}>
             <Grid item sm={11} className={classes.mAuto}>
               <Card
@@ -662,6 +666,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.palette.primary.light,
+    marginTop: theme.spacing(7),
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.background,

@@ -34,18 +34,19 @@ export const PortfolioItem = ({
         {!!portfolio.icon && <img src={portfolio.icon} alt='' />}
       </div>
 
-      <div className={classes.logoContent}>
-        <Typography variant='body1' style={{ fontSize: 18 }}>
-          {portfolio.name}
-        </Typography>
-        <Typography
-          variant='caption'
-          style={{ margin: 0, marginTop: 0, padding: 0 }}>
-          {portfolio.description}
-        </Typography>
+      <div className={'row stretch flex'}>
+        <div className={`${classes.logoContent} flex`}>
+          <Typography variant='body1' style={{ fontSize: 18 }}>
+            {portfolio.name}
+          </Typography>
+          <Typography
+            variant='caption'
+            style={{ margin: 0, marginTop: 0, padding: 0 }}>
+            {portfolio.description}
+          </Typography>
+        </div>
+        <KeyboardArrowRightIcon style={{ color: theme.palette.text.meta }} />
       </div>
-
-      <KeyboardArrowRightIcon style={{ color: theme.palette.text.meta }} />
     </Card>
   )
 }

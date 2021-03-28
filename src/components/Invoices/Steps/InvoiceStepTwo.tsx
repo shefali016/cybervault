@@ -457,7 +457,7 @@ const useStyles = makeStyles((theme) => ({
   },
   detailsWrapper: {
     paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(5)
+    paddingLeft: theme.spacing(3)
   },
   textField: {},
   mainWrapper: {

@@ -63,17 +63,19 @@ export const getProjects = async (
     .doc(account.id)
     .collection('Projects')
 
-  if (limit) {
-    query = query.limit(limit)
+  if (orderBy) {
+    query = query.orderBy(orderBy)
   }
 
   if (where) {
     query = query.where(...where)
   }
 
-  if (orderBy) {
-    query.orderBy(orderBy)
+  if (limit) {
+    query = query.limit(limit)
   }
+
+  console.log(orderBy)
 
   let data: any = await query.get()
 

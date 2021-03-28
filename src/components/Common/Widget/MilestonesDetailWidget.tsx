@@ -34,7 +34,8 @@ export const RenderMilestonesDetails = (props: any) => {
         </Typography>
         {props.editInfo ? <EditButton onClick={props.onEdit} /> : null}
       </div>
-      {renderMilestones()}
+      <div className={classes.detailsContainer}>{renderMilestones()}</div>
+
       <AppDivider />
     </div>
   )

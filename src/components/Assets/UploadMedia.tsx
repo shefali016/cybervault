@@ -99,5 +99,5 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: theme.spacing(3)
     }
   },
-  title: { marginBottom: theme.spacing(3), color: theme.palette.text.secondary }
+  title: { marginBottom: theme.spacing(3), color: theme.palette.text.meta }
 }))

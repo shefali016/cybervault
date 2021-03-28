@@ -45,7 +45,8 @@ const NewProjectFooter = ({
   currentStep,
   buttonText,
   disabled,
-  isEdit
+  isEdit,
+  persistBackButton
 }: Props) => {
   const classes = useStyles()
 
@@ -77,16 +78,15 @@ const NewProjectFooter = ({
           <div className={classes.startProjectButtonContainer}>
             <GradiantButton
               onClick={onStartProject}
-              className={classes.buttonStartProject}
+              className={classes.button}
               loading={isLoading}>
               <Typography variant={'button'}>Start Project</Typography>
             </GradiantButton>
           </div>
         )}
 
-        {!isEdit &&
-          typeof onBack === 'function' &&
-          currentStep !== 1 &&
+        {typeof onBack === 'function' &&
+          ((!isEdit && currentStep !== 1) || persistBackButton) &&
           renderBackButton()}
 
         {!isEdit && !!title && (
@@ -98,7 +98,7 @@ const NewProjectFooter = ({
         {!isEdit && typeof onNext === 'function' && (
           <GradiantButton
             onClick={onNext}
-            className={classes.continueButton}
+            className={classes.button}
             loading={isLoading}
             disabled={disabled}>
             <Typography variant={'button'}>
@@ -111,7 +111,7 @@ const NewProjectFooter = ({
           <GradiantButton
             onClick={() => onUpdate(projectData)}
             loading={isLoading}
-            className={classes.continueButton}>
+            className={classes.button}>
             <Typography variant={'button'}>Update</Typography>
           </GradiantButton>
         )}
@@ -134,13 +134,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
     marginLeft: 15
   },
-  continueButton: { marginLeft: 25, minWidth: '125px', borderRadius: '24px' },
-  button: {
-    width: 110,
-    height: 40,
-    fontSize: 8,
-    textTransform: NONE
-  },
+  button: { marginLeft: 25, minWidth: '125px', borderRadius: '24px' },
   backButton: { height: 40, width: 40 },
   backButtonIcon: {
     width: 15,
@@ -154,7 +148,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: FLEX_END,
     position: 'relative'
   },
-  buttonStartProject: {},
   startProjectButtonContainer: {
     position: POSITION_ABSOLUTE,
     right: 0,
@@ -162,6 +155,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     bottom: 0,
     display: FLEX,
+    height: 50,
     justifyContent: CENTER,
     [theme.breakpoints.down('sm')]: { top: -55 }
   },

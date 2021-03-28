@@ -35,15 +35,6 @@ export const DragAndDropUploader = ({
   return (
     <div {...getRootProps({ className: clsx('dropBox', classes.dropzone) })}>
       <input {...getInputProps()} />
-      {isLoading && (
-        <div className={classes.loaderWrapper}>
-          <ReactLoading
-            type={'bubbles'}
-            color={'#fff'}
-            className={classes.loader}
-          />
-        </div>
-      )}
       <div className={classes.container}>
         <img
           src={iconFolderUpload}

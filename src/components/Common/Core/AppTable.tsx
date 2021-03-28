@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center'
   },
-  cellWrapper: { color: '#fff', cursor: 'pointer' },
+  cellWrapper: { color: theme.palette.text.background, cursor: 'pointer' },
   row: { borderColor: theme.palette.border },
   lastRow: { borderColor: 'transparent' }
 }))

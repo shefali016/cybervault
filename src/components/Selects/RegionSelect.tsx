@@ -7,9 +7,15 @@ type Props = {
   showCurrency?: boolean
   onChange: (region: Region) => void
   regionCode: string | undefined
+  className?: string
 }
 
-const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
+const RegionSelect = ({
+  showCurrency,
+  onChange,
+  regionCode,
+  className
+}: Props) => {
   const [state, setState] = useState<{
     menuItems: Array<Item>
     regions: { [code: string]: Region }
@@ -56,14 +62,26 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
         const item = {
           value: region.code,
           renderer: () => (
-            <div style={{ display: 'flex', padding: '0 10px 0 10px' }}>
-              <img
-                src={flag}
-                height='20px'
-                width='25px'
-                alt={`${name}-flag`}
-                style={{ marginRight: 15 }}
-              />
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 10px 0 10px'
+              }}>
+              <div
+                style={{
+                  width: 70,
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}>
+                <img
+                  src={flag}
+                  height='20px'
+                  alt={`${name}-flag`}
+                  style={{ marginRight: 15 }}
+                />
+              </div>
+
               {showCurrency ? (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Typography variant='body1' style={{ marginRight: 5 }}>
@@ -91,6 +109,7 @@ const RegionSelect = ({ showCurrency, onChange, regionCode }: Props) => {
 
   return (
     <AppSelect
+      className={className}
       items={menuItems}
       value={regionCode !== undefined ? regionCode : 'US'}
       onChange={(event: any) => {

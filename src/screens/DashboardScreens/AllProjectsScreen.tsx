@@ -12,6 +12,7 @@ import AppTextField from 'components/Common/Core/AppTextField'
 import { PopoverButton } from 'components/Common/Popover/PopoverButton'
 import { Typography } from '@material-ui/core'
 import { AppDivider } from 'components/Common/Core/AppDivider'
+import { useOnChange } from 'utils/hooks'
 
 const orderByParams = [
   { title: 'Name', value: 'campaignName' },
@@ -39,6 +40,12 @@ export const ProjectsScreen = (props: any) => {
   useEffect(() => {
     props.getClients()
   }, [])
+
+  useOnChange(props.updateProjectSuccess, (success: boolean) => {
+    if (success) {
+      loadProjects()
+    }
+  })
 
   const handleProjectClick = (project: Project) =>
     props.history.push(`/project/${project.id}`)
@@ -143,7 +150,8 @@ const mapState = (state: ReduxState) => ({
   user: state.auth.user as User,
   account: state.auth.account as Account,
   clients: state.clients.clientsData,
-  deletingProjectId: state.project.deletingId
+  deletingProjectId: state.project.deletingId,
+  updateProjectSuccess: state.project.updateSuccess
 })
 
 const mapDispatch = {

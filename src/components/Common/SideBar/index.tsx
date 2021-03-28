@@ -182,7 +182,6 @@ const SideBarComponent = (props: Props) => {
                 [classes.drawerClose]: !open
               }
         )}
-        style={{ zIndex: 2950 }}
         classes={{
           paper: clsx(
             classes.paper,

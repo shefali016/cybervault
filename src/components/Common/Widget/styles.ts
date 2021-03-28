@@ -6,13 +6,13 @@ export const useStyles = makeStyles((theme) => ({
     display: FLEX,
     flexDirection: COLUMN
   },
-  clientDetails: { marginTop: 15 },
+  detailsContainer: { paddingLeft: theme.spacing(2) },
   innerDiv: {
     display: 'flex',
     marginBottom: 15,
     alignItems: 'center'
   },
-  title: { marginRight: theme.spacing(2), color: theme.palette.text.secondary },
+  title: { marginRight: theme.spacing(2), color: theme.palette.text.meta },
   button: {
     padding: 5,
     height: 15,

@@ -172,7 +172,6 @@ const PortfolioFolders = ({
                     </Typography>
                   </div>
                 }
-                itemHeight={theme.spacing(10)}
                 renderItem={(data: Portfolio) => (
                   <div style={{ paddingRight: theme.spacing(3) }}>
                     <PortfolioItem

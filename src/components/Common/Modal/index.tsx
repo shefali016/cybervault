@@ -32,7 +32,6 @@ const AppModal = ({
       className={'modal'}
       closeAfterTransition
       BackdropComponent={Backdrop}
-      style={{ zIndex: 3000 }}
       BackdropProps={{
         timeout: 500
       }}>

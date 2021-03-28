@@ -38,19 +38,5 @@ export const useStyles = makeStyles((theme) => ({
     display: FLEX,
     alignItems: 'center',
     flexDirection: 'column'
-  },
-  loader: {
-    zIndex: 100
-  },
-  loaderWrapper: {
-    zIndex: 1000,
-    position: 'absolute',
-    right: '0px',
-    bottom: '0px',
-    height: '100%',
-    width: '100%',
-    display: FLEX,
-    alignItems: CENTER,
-    justifyContent: CENTER
   }
 }))

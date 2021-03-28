@@ -43,7 +43,7 @@ export const RenderTaskDetails = (props: any) => {
         </Typography>
         {props.editInfo ? <EditButton onClick={props.onEdit} /> : null}
       </div>
-      {renderTasks()}
+      <div className={classes.detailsContainer}>{renderTasks()}</div>
 
       <AppDivider />
     </div>

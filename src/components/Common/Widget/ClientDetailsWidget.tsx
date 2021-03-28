@@ -25,7 +25,7 @@ export const ClientDetails = ({
 
   return (
     <div className={classes.clientDetailsContainer}>
-      <div className={'row'}>
+      <div className={'row'} style={{ marginBottom: 20 }}>
         <AvatarTitle
           title={clientData.name}
           avatar={clientData.logo}
@@ -35,7 +35,7 @@ export const ClientDetails = ({
       </div>
 
       {!hideInfo && (
-        <div className={classes.clientDetails}>
+        <div className={classes.detailsContainer}>
           <Details label={'Email'} value={clientData.email} />
           <Details label={'Address'} value={clientData.address} />
           <Details label={'City'} value={clientData.city} />

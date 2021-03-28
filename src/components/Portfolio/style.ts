@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core'
+import theme from 'reducers/themeReducer'
 import { getCardHeight } from 'utils'
 import { GREY_COLOR, TRANSPARENT } from 'utils/constants/colorsConstants'
 import {
@@ -154,6 +155,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: 60,
     color: theme.palette.primary.light,
     opacity: 0.6,
+    marginRight: 10,
     transition: theme.transitions.create(['opacity'], {
       duration: 500
     })
@@ -170,14 +172,23 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     borderRadius: '15px',
     alignItems: 'center',
-    justifyContent: 'center',
     fontWeight: 600,
     cursor: 'pointer',
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
-    height: theme.spacing(10),
-    minWidth: 280,
-    boxSizing: 'border-box'
+    paddingTop: theme.spacing(0.5),
+    paddingBottom: theme.spacing(0.5),
+    minWidth: 320,
+    boxSizing: 'border-box',
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+      height: 'auto',
+      width: 'auto',
+      minWidth: 250,
+      maxWidth: 280,
+      padding: 20,
+      paddingBottom: 5
+    }
   },
   portfolioFolderTitle: {
     marginBottom: theme.spacing(1),
@@ -192,7 +203,13 @@ export const useStyles = makeStyles((theme) => ({
     marginBottom: 5,
     overflow: 'hidden'
   },
-  logoContent: { flex: 1, padding: theme.spacing(2) },
+  logoContent: {
+    flex: 1,
+    padding: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: 0
+    }
+  },
   cardLogo: {
     minWidth: 60,
     height: 60,

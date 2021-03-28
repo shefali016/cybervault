@@ -17,7 +17,7 @@ export const ClientList = ({ clients, onEdit, className }: Props) => {
       {clients.length == 0 && (
         <EmptyIcon Icon={AccountBoxIcon} title={'No clients found'} />
       )}
-      <div className={'listStyle'}>
+      <div className={'gridListWide'}>
         {clients.map((client: Client) => (
           <ClientItem client={client} onEdit={onEdit} />
         ))}

@@ -75,17 +75,35 @@ export const useGlobalStyles = makeStyles((theme) => ({
     '.modal': {
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 5000
+      alignItems: 'center'
     },
     '.modalContentWrapper': {
       outline: 'none',
       borderRadius: theme.shape.borderRadius * 2,
       overflow: 'hidden',
       position: 'relative',
-      zIndex: 5000,
       [theme.breakpoints.down('xs')]: {
         width: '95vw'
+      }
+    },
+    '.modalWideContent': {
+      color: theme.palette.text.paper,
+      backgroundColor: theme.palette.background.paper,
+      padding: `${theme.spacing(6)}px ${theme.spacing(5)}px`,
+      maxHeight: '80vh',
+      width: '60vw',
+      maxWidth: 1200,
+      outline: 'none',
+      borderRadius: theme.shape.borderRadius * 2,
+      display: 'flex',
+      flexDirection: 'column',
+      overflowY: 'scroll',
+      position: 'relative',
+      [theme.breakpoints.down('sm')]: {
+        padding: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+        [theme.breakpoints.down('xs')]: {
+          width: 'auto'
+        }
       }
     },
     '.modalContent': {
@@ -244,10 +262,7 @@ export const useGlobalStyles = makeStyles((theme) => ({
       }
     },
     '.sectionTextArea': {
-      flex: 1,
-      [theme.breakpoints.down('md')]: {
-        marginBottom: theme.spacing(4)
-      }
+      flex: 1
     },
     // Section
 
@@ -352,13 +367,78 @@ export const useGlobalStyles = makeStyles((theme) => ({
       [theme.breakpoints.down(1000)]: {
         gridTemplateColumns: 'minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
         [theme.breakpoints.down(500)]: {
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))'
+          gridTemplateColumns: 'minmax(180px, 1fr)'
         }
+      }
+    },
+    '.gridListWide': {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 0.3333fr))',
+      gap: theme.spacing(3),
+      [theme.breakpoints.down(1300)]: {
+        gridTemplateColumns: 'minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
+        [theme.breakpoints.down(900)]: {
+          gridTemplateColumns: 'minmax(180px, 1fr)'
+        }
+      }
+    },
+    '.gridItem': {
+      display: 'flex',
+      flexDirection: 'column',
+      borderRadius: '15px',
+      alignItems: 'center',
+      fontWeight: 600,
+      cursor: 'pointer',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingTop: theme.spacing(0.5),
+      paddingBottom: theme.spacing(0.5),
+      boxSizing: 'border-box',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        height: 'auto',
+        width: 'auto',
+        padding: 20,
+        paddingBottom: 5
+      }
+    },
+    '.gridItemLong': {
+      position: 'relative',
+      display: 'flex',
+      borderRadius: '15px',
+      alignItems: 'center',
+      fontWeight: 600,
+      cursor: 'pointer',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingTop: theme.spacing(0.5),
+      paddingBottom: theme.spacing(0.5),
+      boxSizing: 'border-box',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        height: 'auto',
+        width: 'auto',
+        padding: 20,
+        paddingBottom: 5
+      }
+    },
+    '.gridItemLongText': {
+      flex: 1,
+      padding: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        textAlign: 'center'
+      }
+    },
+    '.gridItemIconButton': {
+      [theme.breakpoints.down('xs')]: {
+        position: 'absolute',
+        top: 10,
+        right: 10
       }
     },
     '.widgetItem': {
       width: '70vw',
-      minWidth: 280,
+      minWidth: 250,
       maxWidth: 280,
       height: WIDGET_ITEM_HEIGHT,
       borderRadius: 15,
@@ -444,6 +524,9 @@ export const useGlobalStyles = makeStyles((theme) => ({
       border: '2px dashed #9ea0a28c',
       textAlign: 'center',
       cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       color: theme.palette.text.meta,
       transition: theme.transitions.create(
         ['border', 'background', 'color', 'opacity'],

@@ -121,6 +121,7 @@ const ManageAccountScreen = ({
                   </Typography>
                 </div>
                 <RegionSelect
+                  className={classes.select}
                   showCurrency={true}
                   onChange={(region: Region) => updateAccountRegion(region)}
                   regionCode={accountUpdate.region?.code}
@@ -139,6 +140,7 @@ const ManageAccountScreen = ({
                   </Typography>
                 </div>
                 <SharingPrivacySelect
+                  className={classes.select}
                   onChange={(sharingPrivacy: SharingPrivacy) =>
                     updateAccountSettings('sharingPrivacy')(sharingPrivacy)
                   }
@@ -178,6 +180,7 @@ const ManageAccountScreen = ({
                     </Typography>
                   </div>
                   <WatermarkStyleSelect
+                    className={classes.select}
                     onChange={(watermarkStyle: WatermarkStyle) =>
                       updateAccountSettings('watermarkStyle')(watermarkStyle)
                     }
@@ -195,6 +198,7 @@ const ManageAccountScreen = ({
                     </Typography>
                   </div>
                   <WatermarkControlSelect
+                    className={classes.select}
                     onChange={(watermarkControl: WatermarkControl) =>
                       updateAccountSettings('watermarkControl')(
                         watermarkControl
@@ -243,7 +247,8 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 10,
     paddingBottom: 10,
     minWidth: 150
-  }
+  },
+  select: { [theme.breakpoints.down('sm')]: { marginTop: theme.spacing(3) } }
 }))
 
 const mapState = (state: ReduxState): StateProps => ({

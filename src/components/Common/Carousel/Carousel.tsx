@@ -103,7 +103,7 @@ export const AssetCarousel = ({
                   className={classes.assetOuter}
                   style={{
                     position: index === 0 ? 'relative' : 'absolute',
-                    zIndex: 1000 - index,
+                    zIndex: 100 - index,
                     transform: `translateX(${
                       13 * position
                     }%) translateX(-${Math.max(
@@ -204,21 +204,6 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create(['color'], { duration: 500 })
   },
   inActiveButtonImage: { color: theme.palette.grey[800] },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    borderRadius: theme.shape.borderRadius,
-    zIndex: 2000,
-    flex: 1,
-    height: '23vw',
-    [theme.breakpoints.down('md')]: {
-      height: '38vw'
-    },
-    '&:hover': {
-      background: 'rgba(0,0,0,0.2)'
-    },
-    transition: theme.transitions.create(['background'])
-  },
   assetContainer: {
     display: 'flex',
     position: 'relative',

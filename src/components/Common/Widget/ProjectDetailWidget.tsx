@@ -28,23 +28,28 @@ export const RenderProjectDetails = (props: Props) => {
         {props.editInfo && <EditButton onClick={props.onEdit} />}
       </div>
 
-      <Details
-        label={'Campaign Name:'}
-        value={props.projectData?.campaignName}
-      />
-      <Details
-        label={'Campaign Objective:'}
-        value={props.projectData?.campaignObjective}
-      />
-      <Details label={'Start Date:'} value={props.projectData?.campaignDate} />
-      <Details
-        label={'Deadline:'}
-        value={props.projectData?.campaignDeadLine}
-      />
-      <Details
-        label={'Project Summary:'}
-        value={props.projectData?.description}
-      />
+      <div className={classes.detailsContainer}>
+        <Details
+          label={'Campaign Name:'}
+          value={props.projectData?.campaignName}
+        />
+        <Details
+          label={'Campaign Objective:'}
+          value={props.projectData?.campaignObjective}
+        />
+        <Details
+          label={'Start Date:'}
+          value={props.projectData?.campaignDate}
+        />
+        <Details
+          label={'Deadline:'}
+          value={props.projectData?.campaignDeadLine}
+        />
+        <Details
+          label={'Project Summary:'}
+          value={props.projectData?.description}
+        />
+      </div>
 
       {!props.hideBorder && <AppDivider />}
     </div>

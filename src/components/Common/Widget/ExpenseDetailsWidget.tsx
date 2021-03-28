@@ -34,7 +34,8 @@ export const RenderExpenseDetails = (props: any) => {
         </Typography>
         {props.editInfo ? <EditButton onClick={props.onEdit} /> : null}
       </div>
-      {renderExpenses()}
+      <div className={classes.detailsContainer}> {renderExpenses()}</div>
+
       <AppDivider />
     </div>
   )
