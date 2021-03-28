@@ -72,6 +72,25 @@ export const SubscriptionModal = ({
     [productId: string]: Array<StripePlans>
   }>({})
   const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false)
+  const [cardModalOpen, setCardModalOpen] = useState<boolean>(false)
+
+  const togglePaymentModal = (open: boolean) => {
+    if (open) {
+      if (paymentMethods && paymentMethods.length) {
+        setPaymentModalOpen(true)
+      } else {
+        setCardModalOpen(true)
+      }
+    } else {
+      if (paymentModalOpen) {
+        setPaymentModalOpen(false)
+      }
+      if (cardModalOpen) {
+        setCardModalOpen(false)
+      }
+    }
+  }
+
   const [
     subscriptionParams,
     setSubscriptionParams
@@ -110,7 +129,7 @@ export const SubscriptionModal = ({
       setOpenDialog({ value: true, for: 'Update' })
       setSubscriptionParams({ planId, type })
     } else {
-      setPaymentModalOpen(true)
+      togglePaymentModal(true)
       setSubscriptionParams({ planId, type })
     }
   }
@@ -131,7 +150,7 @@ export const SubscriptionModal = ({
       const { planId, type } = subscriptionParams
       planSubscription(planId, paymentMethod.id, type)
     }
-    setPaymentModalOpen(false)
+    togglePaymentModal(false)
   }
 
   const handleChatWithSales = () => {}
@@ -266,21 +285,21 @@ export const SubscriptionModal = ({
           <div style={{ display: 'flex' }}>{renderBusinessSubscription()}</div>
         </div>
       </Modal>
-      {paymentMethods && paymentMethods.length ? (
-        <PaymentMethodModal
-          open={paymentModalOpen}
-          onRequestClose={() => setPaymentModalOpen(false)}
-          paymentMethods={paymentMethods}
-          handleSubscription={handleSubscription}
-        />
-      ) : (
-        <CardModal
-          open={paymentModalOpen}
-          onRequestClose={() => setPaymentModalOpen(false)}
-          customerId={customerId}
-          onPaymentMethodCreated={handleSubscription}
-        />
-      )}
+
+      <PaymentMethodModal
+        open={paymentModalOpen}
+        onRequestClose={() => togglePaymentModal(false)}
+        paymentMethods={paymentMethods}
+        handleSubscription={handleSubscription}
+      />
+
+      <CardModal
+        open={cardModalOpen}
+        onRequestClose={() => togglePaymentModal(false)}
+        customerId={customerId}
+        onPaymentMethodCreated={handleSubscription}
+        waitUntilAttached={true}
+      />
 
       <ConfirmationDialog
         isOpen={!!openDialog.value}

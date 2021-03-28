@@ -7,7 +7,9 @@ import { PaymentMethod } from '@stripe/stripe-js'
 import { attachPaymentMethod } from 'actions/stripeActions'
 import { ToastContext, ToastTypes } from 'context/Toast'
 import CloseButton from 'components/Common/Button/CloseButton'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { ReduxState } from 'reducers/rootReducer'
+import { useOnChange } from 'utils/hooks'
 
 type CardInputElementProps = {
   customerId: string
@@ -15,6 +17,7 @@ type CardInputElementProps = {
   saveOnCreate?: boolean
   directCheckout?: boolean
   handleCreateCharge?: (token: any) => void
+  waitUntilAttached?: boolean
 }
 
 export const CardInputElement = injectStripe(
@@ -24,13 +27,39 @@ export const CardInputElement = injectStripe(
     stripe,
     saveOnCreate = true,
     onPaymentMethodCreated,
-    handleCreateCharge
+    handleCreateCharge,
+    waitUntilAttached
   }: CardInputElementProps & any) => {
     const toastContext = useContext(ToastContext)
 
     const dispatch = useDispatch()
+    const paymentAttachedSuccess = useSelector(
+      (state: ReduxState) => state.stripe.attachSuccess
+    )
 
     const [loading, setLoading] = useState(false)
+    const [
+      paymentMethodPendingAttach,
+      setPaymethodPendingAttach
+    ] = useState<PaymentMethod | null>(null)
+
+    useOnChange(paymentAttachedSuccess, (success: boolean) => {
+      console.log(success, paymentMethodPendingAttach)
+      if (success && paymentMethodPendingAttach) {
+        onSuccess(paymentMethodPendingAttach)
+      }
+    })
+
+    const onSuccess = (paymentMethod: PaymentMethod) => {
+      if (typeof onPaymentMethodCreated === 'function') {
+        onPaymentMethodCreated(paymentMethod)
+      }
+      toastContext.showToast({
+        title: 'Card added!',
+        type: ToastTypes.success
+      })
+      setLoading(false)
+    }
 
     const handleSubmit = (e: any) => {
       setLoading(true)
@@ -74,14 +103,11 @@ export const CardInputElement = injectStripe(
           })
           .then((paymentMethod: PaymentMethod) => {
             if (paymentMethod) {
-              if (typeof onPaymentMethodCreated === 'function') {
-                onPaymentMethodCreated(paymentMethod)
+              if (waitUntilAttached) {
+                setPaymethodPendingAttach(paymentMethod)
+              } else {
+                onSuccess(paymentMethod)
               }
-              toastContext.showToast({
-                title: 'Card added!',
-                type: ToastTypes.success
-              })
-              setLoading(false)
             }
           })
           .catch((error: any) => {
@@ -120,7 +146,8 @@ export const CardInput = ({
   customerId,
   onPaymentMethodCreated,
   directCheckout,
-  handleCreateCharge
+  handleCreateCharge,
+  waitUntilAttached
 }: CardInputElementProps) => {
   return (
     <Elements>
@@ -129,6 +156,7 @@ export const CardInput = ({
         onPaymentMethodCreated={onPaymentMethodCreated}
         directCheckout={directCheckout}
         handleCreateCharge={handleCreateCharge}
+        waitUntilAttached={waitUntilAttached}
       />
     </Elements>
   )
@@ -148,7 +176,8 @@ export const CardModal = ({
   customerId,
   directCheckout,
   handleCreateCharge,
-  onPaymentMethodCreated
+  onPaymentMethodCreated,
+  waitUntilAttached
 }: CardModalProps) => {
   return (
     <AppModal open={open} onRequestClose={onRequestClose} clickToClose={true}>
@@ -159,6 +188,7 @@ export const CardModal = ({
           directCheckout={directCheckout}
           onPaymentMethodCreated={onPaymentMethodCreated}
           handleCreateCharge={handleCreateCharge}
+          waitUntilAttached={waitUntilAttached}
         />
       </div>
     </AppModal>

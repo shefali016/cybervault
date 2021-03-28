@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import businessSubBg from '../../assets/business-sub-bg.png'
 
 export const useStyles = makeStyles((theme) => ({
+  subscriptionItemHeader: { paddingBottom: theme.spacing(3) },
   switchWhiteRoot: { background: 'white' },
   subscriptionContainer: {
     display: 'flex',
@@ -11,7 +12,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   cancelDateText: {
     color: theme.palette.error.main,
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     textAlign: 'center'
   },
   loadingView: {
@@ -30,9 +31,7 @@ export const useStyles = makeStyles((theme) => ({
   choosePlanContainer: {
     display: 'flex',
     flexDirection: 'column',
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingTop: theme.spacing(5)
+    justifyContent: 'flex-end'
   },
   header: {
     display: 'flex',
@@ -146,7 +145,6 @@ export const useStyles = makeStyles((theme) => ({
       alignSelf: 'center'
     }
   },
-  divider: { margin: `${theme.spacing(3)}px 0` },
   featureTitle: {
     color: theme.palette.primary.main,
     fontSize: 16
