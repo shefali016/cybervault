@@ -32,6 +32,7 @@ import { PortfolioProjectDetails } from 'components/Portfolio/PortfolioDetails'
 import clsx from 'clsx'
 import { EmptyIcon } from 'components/EmptyIcon'
 import { ToastContext, ToastTypes } from 'context/Toast'
+import { useTheme } from '@material-ui/core/styles'
 
 type StateProps = {
   portfolio: Portfolio
@@ -87,6 +88,7 @@ const PortfolioSingleScreen = ({
   sharePortfolioLoading
 }: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
   const toastContext = useContext(ToastContext)
 
   const {
@@ -219,12 +221,17 @@ const PortfolioSingleScreen = ({
   return (
     <div
       className={clsx('screenContainer', 'fullHeight')}
-      style={{ backgroundColor, color: textColor }}>
+      style={{
+        backgroundColor,
+        color: textColor,
+        paddingTop: theme.spacing(7)
+      }}>
       <Header
         user={user}
         onProfileClick={handleProfileNavigation}
         renderAppIcon={true}
         onLogoClick={handleBack}
+        style={{ position: 'fixed', top: 0 }}
       />
 
       <ProjectSelectBar

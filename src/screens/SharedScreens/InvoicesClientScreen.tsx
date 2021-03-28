@@ -41,6 +41,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import { getSubscription } from '../../apis/stripe'
 import { SubscriptionTypes } from '../../utils/enums'
 import { getSubscriptionDetails } from '../../utils/subscription'
+import { AppDivider } from 'components/Common/Core/AppDivider'
 
 const { revision } = require('sendGridTemplates.json')
 
@@ -251,7 +252,7 @@ const InvoicesClientScreen = (props: Props) => {
         <Typography variant='h6' className={classes.subHeading}>
           Invoice ammount:{' '}
         </Typography>
-        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+        <Typography variant='h4' style={{ fontWeight: 'bold' }}>
           ${invoice.price}
         </Typography>
       </Grid>
@@ -282,6 +283,7 @@ const InvoicesClientScreen = (props: Props) => {
         onLogoClick={handleBack}
         history={props.history}
         hideBackArrow={!user}
+        style={{ position: 'fixed', top: 0 }}
       />
     )
   }
@@ -321,7 +323,7 @@ const InvoicesClientScreen = (props: Props) => {
   }
 
   const renderMediaConverter = () => {
-    if (project.videos.length) {
+    if (project.videos.length && !isAccountOwner) {
       return (
         <Grid container>
           <Grid item sm={8}></Grid>
@@ -388,7 +390,8 @@ const InvoicesClientScreen = (props: Props) => {
       </div>
 
       <div className={'screenInner'}>
-        <div className={clsx('responsivePadding', 'screenTopPadding')}>
+        <div
+          className={clsx('responsivePadding', 'fixedHeaderScreenTopPadding')}>
           <Grid item container className={classes.section}>
             <Grid item sm={11} className={classes.mAuto}>
               <Card
@@ -402,11 +405,7 @@ const InvoicesClientScreen = (props: Props) => {
                   {renderInvoiceAmount()}
                 </Grid>
 
-                <Grid
-                  container
-                  className={classes.campaignWrapper}
-                  spacing={5}
-                  alignItems='center'>
+                <Grid container className={classes.campaignWrapper} spacing={5}>
                   <Grid item sm={7}>
                     <div className={classes.wrapper}>
                       <div className={clsx(classes.carousel)}>
@@ -419,7 +418,7 @@ const InvoicesClientScreen = (props: Props) => {
                       </div>
                     </div>
                   </Grid>
-                  <Grid item sm={5}>
+                  <Grid item sm={5} className={classes.descContainer}>
                     <Typography paragraph variant={'h5'}>
                       Campaign Description
                     </Typography>
@@ -428,13 +427,12 @@ const InvoicesClientScreen = (props: Props) => {
                     </Typography>
                   </Grid>
                 </Grid>
+
                 {renderMediaConverter()}
 
-                <Grid
-                  container
-                  className={classes.campaignWrapper}
-                  alignItems='center'
-                  spacing={5}>
+                <AppDivider spacing={10} />
+
+                <Grid container className={classes.campaignWrapper} spacing={5}>
                   <Grid item sm={7}>
                     <div className={clsx(classes.carousel)}>
                       <FeatureAssetList
@@ -447,7 +445,7 @@ const InvoicesClientScreen = (props: Props) => {
                       />
                     </div>
                   </Grid>
-                  <Grid item sm={5}>
+                  <Grid item sm={5} className={classes.descContainer}>
                     <Typography paragraph variant={'h5'}>
                       Project Details
                     </Typography>
@@ -576,18 +574,17 @@ const InvoicesClientScreen = (props: Props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  descContainer: { paddingTop: theme.spacing(3) },
   paddedContainer: { padding: theme.spacing(4) },
   clientInvoiceWrapper: {
     border: `1px solid ${theme.palette.primary.light}75`,
-    color: '#fff',
+    color: theme.palette.text.background,
     boxShadow: `0 0 15px 3px ${theme.palette.primary.light}75`
   },
   heading: {
     fontWeight: 800
   },
-  campaignWrapper: {
-    paddingBottom: theme.spacing(5)
-  },
+  campaignWrapper: {},
   subHeading: {
     marginRight: '10px'
   },
@@ -619,7 +616,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%'
   },
   editorSection: {
-    borderTop: `2px solid ${SECONDARY_DARK_COLOR}`,
+    borderTop: `2px solid ${theme.palette.border}`,
     marginTop: 30
   },
   revisionHeading: {
@@ -631,8 +628,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '20px'
   },
   messageWrapper: {
-    color: 'black',
-    backgroundColor: '#e6e6e6',
+    color: theme.palette.text.paper,
+    backgroundColor: theme.palette.background.paper,
     marginBottom: '5px',
     padding: '8px 12px',
     borderRadius: '16px',
@@ -640,12 +637,7 @@ const useStyles = makeStyles((theme) => ({
       margin: 0
     }
   },
-  message: {
-    // padding: '8px 12px',
-    // borderRadius: '16px',
-    // color:'black',
-    // backgroundColor:'#e6e6e6',
-  },
+  message: {},
   date: {
     fontSize: '0.8rem'
   },
@@ -657,15 +649,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '12px'
   },
   section: {
-    color: '#fff'
+    color: theme.palette.text.background
   },
   mAuto: {
     margin: 'auto'
-  },
-  headerSection: {
-    backgroundColor: '#ff0000',
-    color: '#fff',
-    padding: theme.spacing(3)
   },
   subHeaderSection: {
     display: 'flex',
@@ -674,24 +661,20 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.light,
     padding: theme.spacing(2),
     textAlign: 'center',
-    color: '#fff',
+    color: theme.palette.text.background,
     fontSize: 14,
     position: 'relative'
   },
   dot: {
     position: 'absolute',
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.text.background,
     borderRadius: '50%',
     bottom: 7,
     width: 5,
     height: 5,
     left: '50%'
   },
-  carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' },
-  root: {
-    backgroundColor: '#181818',
-    paddingTop: theme.spacing(6)
-  }
+  carousel: { display: 'flex', flex: 1, alignSelf: 'stretch' }
 }))
 
 export default InvoicesClientScreen

@@ -27,6 +27,7 @@ type Props = {
   history?: any
   width: any
   hideBackArrow?: boolean
+  style?: {}
 }
 
 function Toolbar(props: Props) {
@@ -46,7 +47,7 @@ function Toolbar(props: Props) {
   }
 
   return (
-    <div className={classes.Toolbar}>
+    <div className={classes.Toolbar} style={props.style}>
       {props.renderAppIcon && (
         <div className={classes.backIconContainer} onClick={props.onLogoClick}>
           {!props.hideBackArrow && <ArrowBackIosIcon className={'backIcon'} />}
@@ -116,6 +117,10 @@ const useStyles = makeStyles((theme) => ({
   },
   notificationIcon: { color: theme.palette.common.white, fontSize: 26 },
   Toolbar: {
+    zIndex: 2900,
+    top: 0,
+    right: 0,
+    left: 0,
     alignSelf: 'stetch',
     height: theme.spacing(7),
     background: theme.palette.background.secondary,

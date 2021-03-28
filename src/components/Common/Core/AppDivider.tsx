@@ -20,7 +20,11 @@ const useStyles = (spacing: number) => {
     divider: {
       marginTop: theme.spacing(spacing),
       marginBottom: theme.spacing(spacing),
-      backgroundColor: theme.palette.background.surfaceHighlight
+      backgroundColor: theme.palette.background.surfaceHighlight,
+      [theme.breakpoints.down('sm')]: {
+        marginTop: theme.spacing(spacing * 0.75),
+        marginBottom: theme.spacing(spacing * 0.75)
+      }
     }
   }))()
 }

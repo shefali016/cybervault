@@ -164,6 +164,12 @@ export const useGlobalStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(4)
       }
     },
+    '.fixedHeaderScreenTopPadding': {
+      paddingTop: theme.spacing(13),
+      [theme.breakpoints.down('sm')]: {
+        paddingTop: theme.spacing(11)
+      }
+    },
     '.screenContainer': {
       display: 'flex',
       flex: 1,

@@ -44,8 +44,10 @@ const useStyles = makeStyles((theme) => ({
   },
   inActiveButtonImage: { color: theme.palette.grey[800] },
   button: {
+    alignSelf: 'center',
+    maxHeight: 300,
     cursor: 'pointer',
-    background: 'rgba(0,0,0,0.05)',
+    background: `${theme.palette.background.surface}`,
     display: 'flex',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,

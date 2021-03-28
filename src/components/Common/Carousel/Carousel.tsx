@@ -77,15 +77,7 @@ export const AssetCarousel = ({
         className={classes.largeSwitchButton}
       />
 
-      <div
-        className={classes.assetContainer}
-        style={
-          assets && assets.length
-            ? {
-                marginRight: `${Math.min(3, assets.length - 1) * 1}%`
-              }
-            : {}
-        }>
+      <div className={classes.assetContainer}>
         <div
           style={{
             position: 'relative',
@@ -121,7 +113,8 @@ export const AssetCarousel = ({
                     opacity:
                       position >= 0 && position <= 2 ? 1 / (position + 1) : 0,
                     background: isVideo ? 'transparent' : '#000',
-                    pointerEvents: position >= 0 ? 'auto' : 'none'
+                    pointerEvents: position >= 0 ? 'auto' : 'none',
+                    marginRight: `${Math.min(3, assets.length - 1) * 1}%`
                   }}>
                   <div
                     className={classes.assetInner}

@@ -351,10 +351,12 @@ const EditProjectScreen = (props: any) => {
         renderAppIcon={true}
         onLogoClick={handleBack}
         history={props.history}
+        style={{ position: 'fixed', top: 0 }}
       />
 
       <div className={'screenInner'}>
-        <div className={clsx('responsivePadding', 'screenTopPadding')}>
+        <div
+          className={clsx('responsivePadding', 'fixedHeaderScreenTopPadding')}>
           <div className={clsx('screenChild', 'shadowLight')}>
             {renderHeader()}
             {renderBody()}

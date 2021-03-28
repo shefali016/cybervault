@@ -182,6 +182,7 @@ const SideBarComponent = (props: Props) => {
                 [classes.drawerClose]: !open
               }
         )}
+        style={{ zIndex: 2950 }}
         classes={{
           paper: clsx(
             classes.paper,
@@ -245,7 +246,8 @@ const SideBarComponent = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: 'fixed',
+    right: 0,
     flexDirection: 'column',
     color: theme.palette.text.background
   },
@@ -297,7 +299,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 0,
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.surface
+    borderBottomColor: theme.palette.background.surface,
+    zIndex: 2950
   },
   appIcon: {
     color: theme.palette.primary.light,
