@@ -119,7 +119,6 @@ const InvoicesClientScreen = (props: Props) => {
 
   // Select objects from cache
   const invoice: Invoice | null = useMemo(() => {
-    const invoiceId = props.match.params?.id
     return invoiceId ? invoiceCache[invoiceId] : null
   }, [invoiceCache])
   const client: Client | null = useMemo(() => {
@@ -178,9 +177,10 @@ const InvoicesClientScreen = (props: Props) => {
         const invoiceShare: InvoiceShare | undefined = await getInvoiceShare(
           props.match.params.shareId
         )
+        console.log(invoiceShare)
         if (invoiceShare) {
-          const { accountId, invoiceId } = invoiceShare
-          setState((state) => ({ ...state, accountId, invoiceId }))
+          const { accountId: ownerAccountId, invoiceId } = invoiceShare
+          setState((state) => ({ ...state, ownerAccountId, invoiceId }))
         } else {
           throw Error('Missing invoice')
         }
@@ -193,6 +193,7 @@ const InvoicesClientScreen = (props: Props) => {
   useOnChange(
     invoice,
     (invoice: Invoice | null, prevInvoice: Invoice | null) => {
+      console.log('INVOICE', invoice)
       if (!invoice) {
         return
       }
@@ -434,10 +435,12 @@ const InvoicesClientScreen = (props: Props) => {
       <div className={classes.subHeaderSection}>
         <div />
         {project.campaignName}
-        <PopoverMoreIconButton
-          menuItems={popoverMenuItems}
-          isLoadingDescructive={deletingInvoice === invoice.id}
-        />
+        {isAccountOwner && (
+          <PopoverMoreIconButton
+            menuItems={popoverMenuItems}
+            isLoadingDescructive={deletingInvoice === invoice.id}
+          />
+        )}
       </div>
 
       <div className={'screenInner'}>

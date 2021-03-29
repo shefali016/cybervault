@@ -59,7 +59,7 @@ const AppRoutes = () => {
       <AssetUploadProvider>
         <ToastProvider>
           <Switch>
-            <Route path='/invoice-share' component={InvoiceSingleScreen} />
+            <Route path='/invoicing/:shareId' component={InvoiceSingleScreen} />
             <Route
               path='/portfolio-share/:shareId'
               component={PortfolioShareScreen}

@@ -246,7 +246,7 @@ const InvoiceData = ({
         userEmail: userInfo.email,
         amount: invoiceAmount,
         subject: "Creator's Cloud Invoice",
-        link: `${window.location.origin}/invoice-share/${invoiceShare.id}`
+        link: `${window.location.origin}/invoicing/${invoiceShare.id}`
       }
     }
 
