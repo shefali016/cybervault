@@ -3,6 +3,7 @@ import { ChangeEvent } from 'react'
 import PortfolioFolderScreen from 'screens/DashboardScreens/PortfolioFolderScreen'
 import {
   InvoiceStatuses,
+  InvoiceTypes,
   ProjectStatuses,
   SharingPrivacies,
   SubscriptionDurations,
@@ -520,6 +521,7 @@ export type Invoice = {
   isPaid: Boolean
   status: InvoiceStatuses
   conversation?: Array<InvoiceConversation>
+  type: InvoiceTypes
 }
 
 export type ProjectStatus =

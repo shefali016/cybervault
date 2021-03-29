@@ -5,22 +5,22 @@ import { Project, Client } from '../../../utils/Interface'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import CheckIcon from '@material-ui/icons/Check'
 import { ClientLogo } from 'components/Clients/ClientLogo'
+import { InvoiceTypes } from 'utils/enums'
+import { numberWithCommas } from 'utils'
 
 type InvoiceStepThreeProps = {
   project: Project
   handleDoneClick: () => void
-  getAmountByMilestone: () => number
-  invoiceType: string
-  getFullAmount: () => number
+  invoiceAmount: number
   client: Client
+  currencySymbol: string
 }
 
 const InvoiceStepThree = ({
   handleDoneClick,
-  getAmountByMilestone,
-  invoiceType,
-  getFullAmount,
-  client
+  invoiceAmount,
+  client,
+  currencySymbol
 }: InvoiceStepThreeProps) => {
   const classes = useStyles()
 
@@ -29,17 +29,14 @@ const InvoiceStepThree = ({
       <Grid item sm={2} className={classes.imageWrapper}>
         {client.logo && <ClientLogo logo={client.logo} />}
         <Card className={classes.successIcon}>
-          {' '}
           <CheckIcon className={classes.checkIcon} />
         </Card>
       </Grid>
       <Grid container direction='column' alignItems='center'>
         <Typography variant={'h4'} className={classes.headerTitle} paragraph>
-          {`Invoice Sent For $${
-            invoiceType === 'fullAmount'
-              ? getFullAmount()
-              : getAmountByMilestone()
-          }`}
+          {`Invoice Sent For ${currencySymbol}${numberWithCommas(
+            invoiceAmount
+          )}`}
         </Typography>
         <Typography variant={'body1'} paragraph>
           To: {client.email}

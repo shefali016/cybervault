@@ -13,6 +13,8 @@ import { ClientLogo } from 'components/Clients/ClientLogo'
 import { AppIconButton } from 'components/Common/Core/AppIconButton'
 import { AppDivider } from 'components/Common/Core/AppDivider'
 import { ToastContext } from 'context/Toast'
+import { InvoiceTypes } from 'utils/enums'
+import { EditText } from 'components/Common/EditText'
 
 type InvoiceStepProps = {
   project: Project
@@ -146,19 +148,14 @@ const InvoiceStepTwo = ({
               </Typography>
             </Grid>
             <Grid item sm={9}>
-              {!edit.clientDetails ? (
-                <Typography className={classes.textField} variant='body1'>
-                  {client.name}
-                </Typography>
-              ) : (
-                <AppTextField
-                  label={'Client Name'}
-                  type={'text'}
-                  name='clientName'
-                  onChange={(e: ChangeEvent) => handleClientChange(e)('name')}
-                  value={client.name}
-                />
-              )}
+              <EditText
+                label={'Client Name'}
+                type={'text'}
+                name='clientName'
+                onChange={(e: ChangeEvent) => handleClientChange(e)('name')}
+                value={client.name}
+                isEditing={edit.clientDetails}
+              />
             </Grid>
           </Grid>
           <Grid container className={classes.section}>
@@ -168,19 +165,14 @@ const InvoiceStepTwo = ({
               </Typography>
             </Grid>
             <Grid item sm={9}>
-              {!edit.clientDetails ? (
-                <Typography className={classes.textField} variant='body1'>
-                  {client.email}
-                </Typography>
-              ) : (
-                <AppTextField
-                  label={'Client Email'}
-                  type={'text'}
-                  name='clientEmail'
-                  onChange={(e: ChangeEvent) => handleClientChange(e)('email')}
-                  value={client.email}
-                />
-              )}
+              <EditText
+                label={'Client Email'}
+                type={'text'}
+                name='clientEmail'
+                onChange={(e: ChangeEvent) => handleClientChange(e)('email')}
+                value={client.email}
+                isEditing={edit.clientDetails}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -204,21 +196,16 @@ const InvoiceStepTwo = ({
               </Typography>
             </Grid>
             <Grid item sm={9}>
-              {!edit.projectDetails ? (
-                <Typography className={classes.textField} variant='body1'>
-                  {project.campaignObjective}
-                </Typography>
-              ) : (
-                <AppTextField
-                  label={'Objective'}
-                  type={'text'}
-                  name='campaignObjective'
-                  onChange={(e: ChangeEvent) =>
-                    handleChange(e)('campaignObjective')
-                  }
-                  value={project.campaignObjective}
-                />
-              )}
+              <EditText
+                label={'Objective'}
+                type={'text'}
+                onChange={(e: ChangeEvent) =>
+                  handleChange(e)('campaignObjective')
+                }
+                value={project.campaignObjective}
+                emptyValue={'No objective added. Will not show on invoice.'}
+                isEditing={edit.projectDetails}
+              />
             </Grid>
           </Grid>
 
@@ -229,20 +216,15 @@ const InvoiceStepTwo = ({
               </Typography>
             </Grid>
             <Grid item sm={9}>
-              {!edit.projectDetails ? (
-                <Typography className={classes.textField} variant='body1'>
-                  {project.campaignDeadLine}
-                </Typography>
-              ) : (
-                <AppTextField
-                  type={'date'}
-                  label={'Campaign Date'}
-                  value={project.campaignDeadLine}
-                  onChange={(e: ChangeEvent) =>
-                    handleChange(e)('campaignDeadline')
-                  }
-                />
-              )}
+              <EditText
+                type={'date'}
+                label={'Campaign Date'}
+                value={project.campaignDeadLine}
+                onChange={(e: ChangeEvent) =>
+                  handleChange(e)('campaignDeadLine')
+                }
+                isEditing={edit.projectDetails}
+              />
             </Grid>
           </Grid>
 
@@ -253,20 +235,16 @@ const InvoiceStepTwo = ({
               </Typography>
             </Grid>
             <Grid item sm={9}>
-              {!edit.projectDetails ? (
-                <Typography className={classes.textField} variant='body1'>
-                  {project.description}
-                </Typography>
-              ) : (
-                <AppTextField
-                  label={'Project Summary'}
-                  type={'text'}
-                  name='description'
-                  onChange={(e: ChangeEvent) => handleChange(e)('description')}
-                  value={project.description}
-                  multiline={true}
-                />
-              )}
+              <EditText
+                label={'Project Summary'}
+                type={'text'}
+                name='description'
+                onChange={(e: ChangeEvent) => handleChange(e)('description')}
+                value={project.description}
+                emptyValue={'No summary added. Will not show on invoice.'}
+                multiline={true}
+                isEditing={edit.projectDetails}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -274,7 +252,7 @@ const InvoiceStepTwo = ({
 
       <AppDivider className={classes.divider} spacing={2} />
 
-      {invoiceType === 'fullAmount' && (
+      {invoiceType === InvoiceTypes.FULL && (
         <div className={classes.mainWrapper}>
           <Grid container alignItems='center'>
             <Typography className={classes.subHeading} variant='body1'>
@@ -291,21 +269,15 @@ const InvoiceStepTwo = ({
                 </Typography>
               </Grid>
               <Grid item sm={3}>
-                {!edit.invoiceDetails ? (
-                  <Typography className={classes.textField} variant='body1'>
-                    ${project.campaignBudget}
-                  </Typography>
-                ) : (
-                  <AppTextField
-                    label={'Project Budget'}
-                    type={'text'}
-                    name='projectBudget'
-                    onChange={(e: ChangeEvent) =>
-                      handleChange(e)('campaignBudget')
-                    }
-                    value={project.campaignBudget}
-                  />
-                )}
+                <EditText
+                  label={'Project Budget'}
+                  type={'text'}
+                  onChange={(e: ChangeEvent) =>
+                    handleChange(e)('campaignBudget')
+                  }
+                  value={project.campaignBudget}
+                  isEditing={edit.invoiceDetails}
+                />
               </Grid>
             </Grid>
 
@@ -316,21 +288,15 @@ const InvoiceStepTwo = ({
                 </Typography>
               </Grid>
               <Grid item sm={3}>
-                {!edit.invoiceDetails ? (
-                  <Typography className={classes.textField} variant='body1'>
-                    ${project.campaignExpenses}
-                  </Typography>
-                ) : (
-                  <AppTextField
-                    label={'Project Expenses'}
-                    type={'text'}
-                    name='projectExpenses'
-                    onChange={(e: ChangeEvent) =>
-                      handleChange(e)('campaignExpenses')
-                    }
-                    value={project.campaignExpenses}
-                  />
-                )}
+                <EditText
+                  label={'Project Expenses'}
+                  type={'text'}
+                  onChange={(e: ChangeEvent) =>
+                    handleChange(e)('campaignExpenses')
+                  }
+                  value={project.campaignExpenses}
+                  isEditing={edit.invoiceDetails}
+                />
               </Grid>
             </Grid>
 
@@ -362,7 +328,7 @@ const InvoiceStepTwo = ({
         </div>
       )}
 
-      {invoiceType === 'mileStone' && (
+      {invoiceType === InvoiceTypes.MILESTONE && (
         <div className={classes.mainWrapper}>
           <Grid container alignItems='center'>
             <Typography className={classes.subHeading} variant='body1'>
@@ -372,9 +338,9 @@ const InvoiceStepTwo = ({
             {renderEditSaveButton(EditTypes.MILESTONE_DETAILS)}
           </Grid>
           <Grid className={classes.detailsWrapper}>
-            {milestones.map((mile, i) => {
+            {milestones.map((mile: MilestoneProps) => {
               return (
-                <Grid container alignItems='center' spacing={1}>
+                <Grid container alignItems='center' spacing={2} key={mile.id}>
                   <Grid item sm={1}>
                     <Checkbox
                       onChange={() => handleMilestone(mile)}
@@ -389,25 +355,23 @@ const InvoiceStepTwo = ({
                     />
                   </Grid>
                   <Grid item sm={4}>
-                    <AppTextField
+                    <EditText
                       type={'text'}
-                      name='mileStone'
-                      disabled={edit.milestoneDetails ? false : true}
                       onChange={(e: ChangeEvent) =>
                         handleMileChange(mile.id, 'title', e)
                       }
                       value={mile.title}
+                      isEditing={edit.milestoneDetails}
                     />
                   </Grid>
                   <Grid item sm={2}>
-                    <AppTextField
+                    <EditText
                       type={'text'}
-                      name='mileStonePrice'
-                      disabled={edit.milestoneDetails ? false : true}
                       onChange={(e: ChangeEvent) =>
                         handleMileChange(mile.id, 'payment', e)
                       }
                       value={mile.payment}
+                      isEditing={edit.milestoneDetails}
                     />
                   </Grid>
                 </Grid>
@@ -470,14 +434,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.meta,
     padding: theme.spacing(2)
   },
-  editicon: {
-    color: PRIMARY_COLOR,
-    padding: '0 8px'
-  },
   checkBoxIcon: {
     borderRadius: '50%',
-    width: '35px',
-    height: '35px',
+    width: 35,
+    height: 35,
     backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'center',
@@ -486,7 +446,7 @@ const useStyles = makeStyles((theme) => ({
       '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)'
   },
   checkIcon: {
-    color: 'black'
+    color: theme.palette.primary.main
   }
 }))
 

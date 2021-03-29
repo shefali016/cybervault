@@ -34,6 +34,11 @@ export enum InvoiceStatuses {
   PAID = 'Paid'
 }
 
+export enum InvoiceTypes {
+  FULL = 'Full',
+  MILESTONE = 'Milestone'
+}
+
 export enum ProjectStatuses {
   PROGRESS = 'In progress',
   PAID = 'Paid',
@@ -48,13 +53,13 @@ export enum UploadStatuses {
 }
 
 export enum ProjectFilters {
-  ALL = "all",
+  ALL = 'all',
   RECENT = 'recent',
   ACTIVE = 'active',
   ARCHIVED = 'archived'
 }
 
 export enum ColorThemes {
- LIGHT = "light",
- DARK = "dark"
+  LIGHT = 'light',
+  DARK = 'dark'
 }

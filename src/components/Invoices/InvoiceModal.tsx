@@ -19,7 +19,7 @@ import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjects } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
-import { InvoiceStatuses } from 'utils/enums'
+import { InvoiceStatuses, InvoiceTypes } from 'utils/enums'
 import { sendEmailRequest } from '../../actions/mails'
 import sendGridTemplates from '../../sendGridTemplates.json'
 import { ProjectSelect } from 'components/Projects/ProjectSelect'
@@ -28,8 +28,6 @@ import { useTheme } from '@material-ui/core/styles'
 import NewProjectFooter from 'components/Projects/NewProjectFooter'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { getProjects } from 'apis/projectRequest'
-
-export const InvoiceTypes = { full: 'fullAmount', milestone: 'milestone' }
 
 type InvoiceProps = {
   onRequestClose: () => void
@@ -85,8 +83,8 @@ const InvoiceData = ({
       ? clients.find((client: Client) => client.id === projectData.clientId)
       : undefined
   )
-  const [invoiceType, setInvoiceType] = useState(
-    !hasMilestones ? InvoiceTypes.full : ''
+  const [invoiceType, setInvoiceType] = useState<InvoiceTypes>(
+    hasMilestones ? InvoiceTypes.MILESTONE : InvoiceTypes.FULL
   )
   const [currentStep, setCurrentStep] = useState(
     !project ? 0 : hasMilestones ? 1 : 2
@@ -173,6 +171,11 @@ const InvoiceData = ({
     return cost
   }
 
+  const invoiceAmount: number = useMemo(
+    invoiceType === InvoiceTypes.FULL ? getFullAmount : getAmountByMilestone,
+    [invoiceType]
+  )
+
   const validateSending = () => {
     if (!projectData) {
       return toastContext.showToast({
@@ -198,14 +201,14 @@ const InvoiceData = ({
       projectId: projectData.id, // Id of the project being invoiced
       accountId: account.id,
       clientId: clientData.id,
-      price:
-        invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone(),
+      price: invoiceAmount,
       milestones: milestones.filter((mile) => {
         return mile.check === true
       }), // will contain milestones being invoiced or null if invoicing total amount
       isPaid: false,
       status: InvoiceStatuses.PENDING, // has client paid invoice or not
-      projectName: projectData.campaignName
+      projectName: projectData.campaignName,
+      type: invoiceType
     }
     dispatch(generateNewInvoiceRequest(account, projectData, invoice))
   }
@@ -217,10 +220,7 @@ const InvoiceData = ({
 
     const invoiceId = generateUid()
 
-    const amount =
-      invoiceType === 'fullAmount' ? getFullAmount() : getAmountByMilestone()
-
-    if (!amount) {
+    if (!invoiceAmount) {
       return toastContext.showToast({
         title: 'Cannot send as this invoice is invalid'
       })
@@ -235,10 +235,7 @@ const InvoiceData = ({
         projectName: projectData.campaignName,
         invoiceId,
         userEmail: userInfo.email,
-        amount:
-          invoiceType === 'fullAmount'
-            ? getFullAmount()
-            : getAmountByMilestone() || '',
+        amount: invoiceAmount,
         subject: 'Creator Cloud Invoice',
         link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}`
       }
@@ -313,8 +310,8 @@ const InvoiceData = ({
   }
 
   const renderStepsView = () => {
-    const onNext = (invoiceType?: any) => {
-      if (currentStep === 1) {
+    const onNext = (invoiceType?: InvoiceTypes) => {
+      if (invoiceType) {
         setInvoiceType(invoiceType)
       }
       setCurrentStep((step) => step + 1)
@@ -393,9 +390,8 @@ const InvoiceData = ({
           <InvoiceStepThree
             project={projectData}
             handleDoneClick={handleDoneClick}
-            getAmountByMilestone={getAmountByMilestone}
-            invoiceType={invoiceType}
-            getFullAmount={getFullAmount}
+            invoiceAmount={invoiceAmount}
+            currencySymbol={account.region?.currencySymbol || '$'}
             client={clientData}
           />
         )

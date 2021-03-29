@@ -298,8 +298,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 0,
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.surface,
-    zIndex: 2950
+    borderBottomColor: theme.palette.background.surface
   },
   appIcon: {
     color: theme.palette.primary.light,

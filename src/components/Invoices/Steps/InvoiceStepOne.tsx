@@ -7,6 +7,7 @@ import InvoiceLogo from '../../../assets/invoice.png'
 import Milestone from '../../../assets/milestone.png'
 import { GradiantButton } from '../../Common/Button/GradiantButton'
 import { ClientLogo } from '../../Clients/ClientLogo'
+import { InvoiceTypes } from 'utils/enums'
 
 type InvoiceStepProps = {
   project: Project
@@ -50,55 +51,25 @@ const InvoiceStepOne = ({
           </Typography>
           <GradiantButton
             className={classes.btn}
-            onClick={() => handleClick('fullAmount')}>
+            onClick={() => handleClick(InvoiceTypes.FULL)}>
             Continue
           </GradiantButton>
         </Grid>
         <Grid item sm={5} className={classes.milestoneSection}>
           <img src={Milestone} className={classes.icon} />
           <Typography className={classes.heading}>
-            Invoice full milestone
+            Invoice by milestone
           </Typography>
           <Typography className={classes.subHeading}>
             Clients will receive a partial invoice for steps Completed
           </Typography>
           <GradiantButton
             className={classes.btn}
-            onClick={() => handleClick('mileStone')}>
+            onClick={() => handleClick(InvoiceTypes.MILESTONE)}>
             Continue
           </GradiantButton>
         </Grid>
       </Grid>
-
-      {/* {allProjects.map((pro) => {
-        return (
-          <Grid item sm={3}>
-            <Card className={classes.card}>
-              <CardContent className={classes.cardContent}>
-                <Grid container>
-                  <Grid item sm={3} container alignItems='center'>
-                    <img
-                      src={pro.logo ? pro.logo : logo}
-                      className={classes.img}
-                    />
-                  </Grid>
-                  <Grid item sm={9}>
-                    <Typography className={classes.bodyText}>
-                      {pro.campaignName}
-                    </Typography>
-                    <Typography className={classes.bottomText}>
-                      {pro.description}
-                    </Typography>
-                    <Typography className={classes.bottomText}>
-                      Date Completed:{pro.campaignDate}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-        )
-      })} */}
     </Grid>
   )
 }
