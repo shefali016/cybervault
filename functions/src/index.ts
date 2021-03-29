@@ -13,7 +13,6 @@ var ffmpeg = require('fluent-ffmpeg')
 
 const fs = require('fs')
 const sgMail = require('@sendgrid/mail')
-var path = require('path')
 
 const app = express()
 

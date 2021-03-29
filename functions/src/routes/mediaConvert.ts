@@ -1,13 +1,13 @@
 import * as functions from 'firebase-functions'
 import * as express from 'express'
 import config from '../config.json'
-const { corsHandler } = require('../index')
 import * as admin from 'firebase-admin'
 import { AssetFile, MediaConvertParams } from '../utils/interfaces'
 
+const { corsHandler } = require('../index')
 const router = express.Router()
 const bodyParser = require('body-parser')
-var AWS = require('aws-sdk')
+const AWS = require('aws-sdk')
 
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
