@@ -362,12 +362,17 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     '.gridList': {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 0.3333fr))',
+      gridTemplateColumns:
+        'minmax(180px, 0.3333fr) minmax(180px, 0.3333fr) minmax(180px, 0.3333fr) minmax(180px, 0.3333fr)',
       gap: theme.spacing(3),
-      [theme.breakpoints.down(1000)]: {
-        gridTemplateColumns: 'minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
-        [theme.breakpoints.down(500)]: {
-          gridTemplateColumns: 'minmax(180px, 1fr)'
+      [theme.breakpoints.down(1300)]: {
+        gridTemplateColumns:
+          'minmax(180px, 0.5fr) minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
+        [theme.breakpoints.down(1000)]: {
+          gridTemplateColumns: 'minmax(180px, 0.5fr) minmax(180px, 0.5fr)',
+          [theme.breakpoints.down(600)]: {
+            gridTemplateColumns: 'minmax(180px, 1fr)'
+          }
         }
       }
     },
