@@ -1,16 +1,18 @@
-import React from 'react'
-import { IconButton, Typography } from '@material-ui/core'
+import React, { useState, useRef } from 'react'
+import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import defaultProfileIcon from '../../../assets/default_user.png'
 import { FLEX } from 'utils/constants/stringConstants'
-import NotificationIcon from '@material-ui/icons/Notifications'
 import { User } from 'utils/Interface'
 import PolymerSharpIcon from '@material-ui/icons/PolymerSharp'
 import { AccountTabIds } from 'routes/DashboardSwitch'
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth'
 import LightDarkThemeButton from 'components/Common/Button/LightDarkThemeButton'
-import { AppIconButton } from '../Core/AppIconButton'
+import { NotificationButton } from 'components/Notification/NotificationButton'
+import { NotificationList } from 'components/Notification/NotificationList'
+import clsx from 'clsx'
+import * as _ from 'underscore'
 
 type Props = {
   isNotificationIcon?: boolean
@@ -46,6 +48,17 @@ function Toolbar(props: Props) {
     }
   }
 
+  const [notificationListOpen, setNotificationListOpen] = useState(false)
+  // Used to work around list click outside handler calling when clicking close button
+  const lastOpened = useRef<number>(0)
+  const toggleNotificationList = () => {
+    const now = Date.now()
+    if (now - lastOpened.current > 300) {
+      lastOpened.current = now
+      setNotificationListOpen((open: boolean) => !open)
+    }
+  }
+
   return (
     <div className={classes.Toolbar} style={props.style}>
       {props.renderAppIcon && (
@@ -76,12 +89,10 @@ function Toolbar(props: Props) {
       {props.user && (
         <div className='row'>
           <LightDarkThemeButton style={{ marginRight: 10 }} />
-          {!props.isNotificationIcon ? (
-            <AppIconButton
-              Icon={NotificationIcon}
-              style={{ marginRight: 18 }}
-            />
-          ) : null}
+          <NotificationButton
+            style={{ marginRight: 15 }}
+            onClick={toggleNotificationList}
+          />
 
           <div onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
             <img
@@ -98,11 +109,32 @@ function Toolbar(props: Props) {
           </div>
         </div>
       )}
+
+      <NotificationList
+        open={notificationListOpen}
+        onClose={toggleNotificationList}
+        className={clsx(classes.notificationList, {
+          [classes.notificationListOpen]: notificationListOpen,
+          [classes.notificationListClosed]: !notificationListOpen
+        })}
+      />
     </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
+  notificationList: {
+    position: 'fixed',
+    right: 60,
+    top: theme.spacing(7),
+    transition: theme.transitions.create(['opacity']),
+    [theme.breakpoints.down('xs')]: {
+      right: 0,
+      left: 0
+    }
+  },
+  notificationListClosed: { pointerEvents: 'none', opacity: 0 },
+  notificationListOpen: { pointerEvents: 'auto', opacity: 1 },
   title: {
     color: theme.palette.text.background,
     fontWeight: 'normal',
@@ -136,17 +168,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.light,
     fontSize: 43,
     cursor: 'pointer'
-  },
-  portfolioHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 15px',
-    height: theme.spacing(7),
-    background: theme.palette.background.secondary,
-    boxSizing: 'border-box',
-    borderBottomWidth: 1,
-    borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.default
   }
 }))
 

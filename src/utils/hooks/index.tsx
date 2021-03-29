@@ -1,6 +1,6 @@
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useTheme } from '@material-ui/core/styles'
-import { useRef, useEffect, useMemo, useState } from 'react'
+import React, { useRef, useEffect, useMemo, useState, RefObject } from 'react'
 import { Client, Project } from 'utils/Interface'
 
 export const useTabletLayout = () => {
@@ -35,4 +35,21 @@ export const useModalState = (
   const [open, setOpen] = useState(initialOpen)
   const toggle = (open: boolean) => () => setOpen(open)
   return [open, setOpen, toggle]
+}
+
+export const useClickedOutside = (ref: any, onClickOutside?: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        typeof onClickOutside === 'function' && onClickOutside()
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mouseup', handleClickOutside)
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mouseup', handleClickOutside)
+    }
+  }, [ref, onClickOutside])
 }

@@ -195,6 +195,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: CENTER
   },
   imageWrapper: {
+    position: 'relative',
     alignItems: CENTER,
     display: FLEX,
     justifyContent: CENTER,
@@ -206,14 +207,16 @@ const useStyles = makeStyles((theme) => ({
       duration: 500,
       easing: theme.transitions.easing.easeOut
     }),
+    transform: `scale(1.01)`,
     '&:hover': {
-      transform: `scale(1.02)`
+      transform: `scale(1.05)`
     }
   },
   image: {
-    height: '100%',
-    minWidth: '100%',
-    maxWidth: '100%',
+    position: 'absolute',
+    minHeight: '120%',
+    maxHeight: '120%',
+    minWidth: '120%',
     objectFit: 'cover'
   },
   title: {

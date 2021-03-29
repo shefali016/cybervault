@@ -659,6 +659,11 @@ export const useGlobalStyles = makeStyles((theme) => ({
       borderTopStyle: 'solid',
       borderTopColor: theme.palette.border
     },
+    '.borderBottom': {
+      borderBottomWidth: 1,
+      borderBottomStyle: 'solid',
+      borderBottomColor: theme.palette.border
+    },
 
     // Color
     '.lightGrey': { color: theme.palette.grey[100] },

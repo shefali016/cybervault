@@ -15,13 +15,21 @@ export const getNotificationsFailure = (error: string) => ({
   error
 })
 
-export type Action =
-  | { type: typeof ActionTypes.GET_NOTIFICATIONS }
-  | {
-      type: typeof ActionTypes.GET_NOTIFICATIONS_SUCCESS
-      notifications: CloudNotification[]
-    }
-  | {
-      type: typeof ActionTypes.GET_NOTIFICATIONS_FAILURE
-      error: string
-    }
+export const markNotificationRead = (notification: CloudNotification) => ({
+  type: ActionTypes.MARK_NOTIFICATION_READ,
+  notification
+})
+export const markNotificationReadSuccess = (
+  notification: CloudNotification
+) => ({ type: ActionTypes.MARK_NOTIFICATION_READ_SUCCESS, notification })
+export const markNotificationReadFailure = (error: string) => ({
+  type: ActionTypes.MARK_NOTIFICATION_READ_FAILURE,
+  error
+})
+
+export type Action = {
+  type: string
+  notifications: CloudNotification[]
+  notification: CloudNotification
+  error: string
+}

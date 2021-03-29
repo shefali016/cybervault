@@ -3,16 +3,16 @@ import { CloudNotification } from 'utils/Interface'
 import { Action } from 'actions/notification'
 
 export type State = {
-  notifications: CloudNotification[]
+  data: CloudNotification[]
 
-  readLoading: boolean
+  readLoading: null | string
   readError: null | string
 }
 
 const initialState: State = {
-  notifications: [],
+  data: [],
 
-  readLoading: false,
+  readLoading: null,
   readError: null
 }
 
@@ -21,10 +21,23 @@ const notifications = (state: State = initialState, action: Action) => {
     case ActionTypes.GET_NOTIFICATIONS_SUCCESS:
       return {
         ...state,
-        notifications: action.notifications
+        data: action.notifications
       }
+    case ActionTypes.MARK_NOTIFICATION_READ:
+      return { ...state, readLoading: action.notification.id, readError: null }
+    case ActionTypes.MARK_NOTIFICATION_READ_SUCCESS:
+      return {
+        ...state,
+        readLoading: null,
+        data: state.data.filter(
+          (notification: CloudNotification) =>
+            notification.id !== action.notification.id
+        )
+      }
+    case ActionTypes.MARK_NOTIFICATION_READ_FAILURE:
+      return { ...state, readLoading: null, readError: action.error }
     default:
-      return initialState
+      return state
   }
 }
 

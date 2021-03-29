@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import { IconButton } from '@material-ui/core'
-import clsx from 'clsx'
 import { AppLoader } from './AppLoader'
 import { useTheme } from '@material-ui/core/styles'
 
 type Props = {
   Icon: any
-  onClick?: (e: any) => void
+  onClick?: MouseEventHandler<any>
   className?: string
   iconClassName?: string
   style?: {}
