@@ -482,3 +482,8 @@ export type MediaConvertParams = {
   fileHeight: number
   fileWidth: number
 }
+
+export interface RouteProps {
+  history: any
+  match: any
+}

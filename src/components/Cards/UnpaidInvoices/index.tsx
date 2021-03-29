@@ -1,8 +1,6 @@
 import React from 'react'
 import { Card, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { BOLD } from 'utils/constants/stringConstants'
-import { WHITE_COLOR } from 'utils/constants/colorsConstants'
 import clsx from 'clsx'
 import {
   Client,
@@ -30,7 +28,7 @@ function UnpaidInvoices({
 }: Props) {
   const classes = useStyles()
   const client: Client = clientCache[invoice.clientId]
-  const project: Project = projectCache[invoice.projectId]
+  const project: Project = projectCache.get(invoice.projectId)
   return (
     <div style={style}>
       <Card

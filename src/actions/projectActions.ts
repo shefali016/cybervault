@@ -139,14 +139,16 @@ export const getAssetListFailure = (error: string) => ({
   error
 })
 
-export const deleteAssetRequest = (assetId: string) => ({
+export const deleteAssetRequest = (assetId: string, projectId?: string) => ({
   type: ActionTypes.DELETE_ASSET,
-  assetId
+  assetId,
+  projectId
 })
 
-export const deleteAssetSuccess = (assetId: string) => ({
+export const deleteAssetSuccess = (assetId: string, projectId?: string) => ({
   type: ActionTypes.DELETE_ASSET_SUCCESS,
-  assetId
+  assetId,
+  projectId
 })
 
 export const deleteAssetFailure = (error: string) => ({

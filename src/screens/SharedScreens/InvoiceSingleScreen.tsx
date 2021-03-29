@@ -133,7 +133,7 @@ const InvoicesClientScreen = (props: Props) => {
       return null
     }
     const projectId: string = invoice.projectId
-    return projectCache[projectId]
+    return projectCache.get(projectId)
   }, [invoice, projectCache])
 
   const [cardModalOpen, setCardModalOpen] = useState(false)

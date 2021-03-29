@@ -13,6 +13,7 @@ import {
   WatermarkStyles
 } from 'utils/enums'
 import { S3 } from 'aws-sdk'
+import { Map } from 'immutable'
 
 export type SubscriptionType =
   | SubscriptionTypes.CREATOR
@@ -489,9 +490,7 @@ export type Project = {
   isPaid?: boolean
 }
 
-export type ProjectCache = {
-  [id: string]: Project
-}
+export type ProjectCache = Map<string, Project>
 
 export type InvoiceConversation = {
   name: string

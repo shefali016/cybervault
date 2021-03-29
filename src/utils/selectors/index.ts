@@ -18,7 +18,7 @@ export const activeProjects = createSelector(
     const ids = idMap[ProjectFilters.ACTIVE]
     if (!ids) return []
     return ids.reduce((acc: Project[], id: string) => {
-      const project = cache[id]
+      const project = cache.get(id)
       return project ? [...acc, project] : acc
     }, [])
   }
@@ -29,7 +29,7 @@ export const filteredProjects = createSelector(
   (cache, ids) => {
     if (!ids) return []
     return ids.reduce((acc: Project[], id: string) => {
-      const project = cache[id]
+      const project = cache.get(id)
       return project ? [...acc, project] : acc
     }, [])
   }

@@ -126,11 +126,11 @@ function* getAllAssetList() {
   }
 }
 
-function* deleteAssetData({ assetId }: ActionParams) {
+function* deleteAssetData({ assetId, projectId }: ActionParams) {
   try {
     const accountId: string = yield select((state) => state.auth.account.id)
     yield call(deleteAsset, accountId, assetId)
-    yield put(deleteAssetSuccess(assetId))
+    yield put(deleteAssetSuccess(assetId, projectId))
   } catch (error: any) {
     yield put(deleteAssetFailure(error?.message || 'default'))
   }

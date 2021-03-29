@@ -10,6 +10,7 @@ import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { COLUMN, FLEX } from '../../utils/constants/stringConstants'
 import {
+  deleteAssetRequest,
   requestGetProjectDetails,
   requestUpdateProjectDetails
 } from '../../actions/projectActions'
@@ -22,7 +23,15 @@ import { RenderBudgetDetails } from '../../components/Common/Widget/BudgetDetail
 import ProjectModal from 'components/Projects/NewProjectModal'
 import ProjectStatusIndicator from '../../components/Common/ProjectStatusIndicator'
 import { AssetUploadDisplay } from '../../components/Assets/UploadMedia'
-import { Asset, Project } from 'utils/Interface'
+import {
+  Asset,
+  Client,
+  Project,
+  ProjectCache,
+  Subscription,
+  User,
+  Account
+} from 'utils/Interface'
 import { useGetClient, useOnChange } from 'utils/hooks'
 import { FeatureAssetUpload } from '../../components/Assets/FeatureAssetUpload'
 import { AppDivider } from '../../components/Common/Core/AppDivider'
@@ -42,6 +51,7 @@ import { getToggledArchiveStatus } from 'utils/projects'
 import { getSubscriptionDetails } from 'utils/subscription'
 import { bytesToGB } from 'utils/helpers'
 import { ToastContext, ToastTypes } from 'context/Toast'
+import { RouteComponentProps } from 'react-router-dom'
 
 type EditProjectStates = {
   projectData: Object | any
@@ -53,13 +63,39 @@ type EditProjectStates = {
   isBudgetEdit: boolean | undefined
 }
 
-const EditProjectScreen = (props: any) => {
+type DispatchProps = {
+  getProjectDetails: (accountId: string, projectId: string) => void
+  updateProjectDetails: (projectData: Project) => void
+  deleteAsset: (assetId: string, projectId: string) => void
+}
+
+type StateProps = {
+  user: User
+  isLoggedIn: boolean
+  newProjectData: Project
+  projectDetails: Project
+  projectCache: ProjectCache
+  isProjectDetailsLoading: boolean
+  account: Account
+  clients: Client[]
+  usedStorage: number
+  accountSubscription: Subscription
+  storageSubscription: Subscription
+}
+
+type MatchParams = {
+  id: string
+}
+
+const EditProjectScreen = (
+  props: DispatchProps & StateProps & RouteComponentProps<MatchParams>
+) => {
   const classes = useStyles()
   const assetUploadContext = useContext(AssetUploadContext)
   const toastContext = useContext(ToastContext)
 
   const [state, setState] = useState<EditProjectStates>({
-    projectData: props.projectCache[props.match.params.id],
+    projectData: props.projectCache.get(props.match.params.id),
     editProjectModalOpen: false,
     currentStep: 0,
     isExpensesEdit: false,
@@ -98,8 +134,8 @@ const EditProjectScreen = (props: any) => {
     []
   )
 
-  useOnChange(props.projectCache, (projectCache: { [id: string]: Project }) => {
-    const project = projectCache[props.match.params.id]
+  useOnChange(props.projectCache, (projectCache) => {
+    const project = projectCache.get(props.match.params.id)
     if (project) {
       setState((state) => ({ ...state, projectData: project }))
     }
@@ -161,6 +197,7 @@ const EditProjectScreen = (props: any) => {
   const handleAssetDelete = async (asset: Asset) => {
     setConfirmDeleteAsset(null)
     try {
+      props.deleteAsset(asset.id, projectData.id)
     } catch (error) {}
   }
 
@@ -400,7 +437,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   updateProjectDetails: (projectData: Project) => {
     return dispatch(requestUpdateProjectDetails(projectData))
-  }
+  },
+  deleteAsset: (assetId: string, projectId: string) =>
+    dispatch(deleteAssetRequest(assetId, projectId))
 })
 
 const useStyles = makeStyles((theme) => ({

@@ -20,10 +20,6 @@ export const convertMedia = (data: any) => {
   return axios.post<any>(`${server_url}/api/v1/media/convert`, { data: data })
 }
 
-export const createAsset = async (asset: Asset) => {
-  return firebase.firestore().collection('Assets').doc(asset.id).set(asset)
-}
-
 export const handleMediaUpload = (id: string, file: any) => {
   var params = {
     Body: file,
@@ -57,22 +53,6 @@ export const setMedia = (id: string, file: any) => {
   })
 }
 
-export const uploadMedia = (id: string, file: any) => {
-  const childRef = firebase.storage().ref().child(buildAssetPath(id))
-  return childRef.put(file)
-}
-
-export const getDownloadUrl = async (id: string) => {
-  return new Promise(async function (resolve, reject) {
-    const downloadUrl = await firebase
-      .storage()
-      .ref()
-      .child(buildAssetPath(id))
-      .getDownloadURL()
-    resolve(downloadUrl)
-  })
-}
-
 export const addAsset = async (accountId: string, asset: Asset) => {
   try {
     return firebase
@@ -101,13 +81,13 @@ export const getAssets = async (
       .doc(id)
       .get()
       .then((snapshot) => {
-        return snapshot.data() as Asset | null
+        return snapshot.data() as Asset | undefined
       })
   )
 
   const assets = await Promise.all(assetRequests)
 
-  return assets.filter((asset: Asset | null) => !!asset) as Asset[]
+  return assets.filter((asset: Asset | undefined) => !!asset) as Asset[]
 }
 
 export const getAllAssets = async (accountId: string) => {

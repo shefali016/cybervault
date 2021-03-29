@@ -130,7 +130,9 @@ const PortfolioSingleScreen = ({
 
   const portfolioProjects = useMemo(() => {
     return portfolio && portfolio.projects
-      ? portfolio.projects.map((projectId: string) => projectCache[projectId])
+      ? portfolio.projects.map((projectId: string) =>
+          projectCache.get(projectId)
+        )
       : []
   }, [portfolio])
 

@@ -1,6 +1,7 @@
 import { Theme } from '@material-ui/core/styles'
 import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
+import { Map } from 'immutable'
 
 export const numberWithCommas = (x: number) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -14,6 +15,18 @@ export const addArrayToCache = (
   const newCache: { [id: string]: any } = { ...cache }
   arr.forEach((item: any) => {
     newCache[item[key]] = item
+  })
+  return newCache
+}
+
+export const addArrayToMap = (
+  cache: Map<string, any>,
+  arr: any[],
+  key: string | undefined = 'id'
+) => {
+  let newCache = cache
+  arr.forEach((item: any) => {
+    newCache = newCache.set(item[key], item)
   })
   return newCache
 }

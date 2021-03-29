@@ -25,10 +25,10 @@ import {
   GET_PROJECTS_FAILURE,
   GET_PORTFOLIO_SUCCESS
 } from 'actions/actionTypes'
-import { Set } from 'immutable'
+import { Set, Map } from 'immutable'
 
 import { createTransform } from 'redux-persist'
-import { addArrayToCache, addToCache } from 'utils'
+import { addArrayToMap } from 'utils'
 import { ProjectFilters } from 'utils/enums'
 import * as Types from '../utils/Interface'
 import { Asset, Project, ProjectCache } from '../utils/Interface'
@@ -95,7 +95,7 @@ const initialState = {
   isProjectDetailsLoading: false,
   updateProjectSuccess: false,
   updateProjectFailure: null,
-  projectCache: {},
+  projectCache: Map<string, Project>(),
   // Assets
   allAssetList: null,
   assetLoading: false,
@@ -119,7 +119,7 @@ const createNewProjectSuccess = (state: State, action: Action) => {
     ...state,
     newProjectData: action.payload,
     allProjectsData: [action.payload, ...state.allProjectsData],
-    projectCache: addToCache(state.projectCache, action.payload),
+    projectCache: state.projectCache.set(action.payload.id, action.payload),
     updateLoading: false,
     updateSuccess: true
   }
@@ -140,7 +140,7 @@ const getAllProjectsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     allProjectsData: action.allProjectsData,
-    projectCache: addArrayToCache(state.projectCache, action.allProjectsData),
+    projectCache: addArrayToMap(state.projectCache, action.allProjectsData),
     isLoading: false,
     updateSuccess: false
   }
@@ -162,7 +162,7 @@ const getProjectDetailsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     isProjectDetailsLoading: false,
-    projectCache: addToCache(state.projectCache, action.payload),
+    projectCache: state.projectCache.set(action.payload.id, action.payload),
     allProjectsData: replaceProject(action.payload, state)
   }
 }
@@ -181,7 +181,10 @@ const updateProjectDetailsRequest = (state: State, action: Action) => ({
 
 const updateProjectDetailsSuccess = (state: State, action: Action) => ({
   ...state,
-  projectCache: addToCache(state.projectCache, action.projectData),
+  projectCache: state.projectCache.set(
+    action.projectData.id,
+    action.projectData
+  ),
   allProjectsData: replaceProject(action.projectData, state),
   updateProjectSuccess: true,
   updateProjectFailure: null,
@@ -205,11 +208,10 @@ const deleteProjectRequest = (state: State, action: Action) => {
 }
 
 const deleteProjectSuccess = (state: State, action: Action) => {
-  const { [action.projectId]: _, ...newCache } = state.projectCache
   return {
     ...state,
     deletingId: null,
-    projectCache: newCache,
+    projectCache: state.projectCache.delete(action.projectId),
     allProjectsData: state.allProjectsData.filter(
       (project) => project.id !== action.projectId
     )
@@ -236,7 +238,7 @@ const getProjectsSuccess = (state: State, action: Action) => {
     (
       acc: {
         ids: string[]
-        cache: ProjectCache
+        cache: { [id: string]: Project }
       },
       project: Project
     ) => ({
@@ -251,7 +253,7 @@ const getProjectsSuccess = (state: State, action: Action) => {
   return {
     ...state,
     filteredIds: { ...state.filteredIds, [action.filter]: ids },
-    projectCache: { ...state.projectCache, ...cache },
+    projectCache: state.projectCache.merge(cache),
     loadingFilters: state.loadingFilters.remove(action.filter)
   }
 }
@@ -303,7 +305,9 @@ const deleteAssetSuccess = (state: State, action: Action) => {
     allAssetList: state.allAssetList.filter(
       (asset: Asset) => asset.id !== action.assetId
     ),
-    deleteAssetLoading: false,
+    projectCache: action.projectId
+      ? state.projectCache.delete(action.projectId)
+      : state.projectCache,
     deleteAssetSuccess: true
   }
 }
@@ -319,11 +323,11 @@ const deleteAssetFailure = (state: State, action: Action) => {
 const getPortfolioSuccess = (state: State, action: Action) => ({
   ...state,
   projectCache: action.projects
-    ? addArrayToCache(state.projectCache, action.projects)
+    ? addArrayToMap(state.projectCache, action.projects)
     : state.projectCache
 })
 
-const projectReducer = (state = initialState, action: Action) => {
+const projectReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case GET_PORTFOLIO_SUCCESS:
       return getPortfolioSuccess(state, action)
