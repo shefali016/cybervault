@@ -4,7 +4,8 @@ import {
   getInvoiceRequest,
   sendRevisionRequest,
   getAllInvoiceConversationRequest,
-  payInvoice
+  payInvoice,
+  requestDeleteInvoice
 } from '../../actions/invoiceActions'
 import { requestGetProjectDetails } from '../../actions/projectActions'
 import { getClientRequest } from '../../actions/clientActions'
@@ -19,7 +20,7 @@ import { generateUid } from '../../utils'
 import * as Types from '../../utils/Interface'
 import { sendEmailRequest } from '../../actions/mails'
 import { ReduxState } from 'reducers/rootReducer'
-import { SECONDARY_DARK_COLOR } from '../../utils/constants/colorsConstants'
+import DeleteIcon from '@material-ui/icons/Delete'
 import clsx from 'clsx'
 import {
   Invoice,
@@ -27,7 +28,7 @@ import {
   Client,
   Account,
   User,
-  AssetFile
+  InvoiceShare
 } from '../../utils/Interface'
 import { ToastContext } from 'context/Toast'
 import { getAccount } from 'apis/account'
@@ -42,6 +43,8 @@ import { getSubscription } from '../../apis/stripe'
 import { SubscriptionTypes } from '../../utils/enums'
 import { getSubscriptionDetails } from '../../utils/subscription'
 import { AppDivider } from 'components/Common/Core/AppDivider'
+import { getInvoiceShare } from 'apis/invoiceApi'
+import { PopoverMoreIconButton } from 'components/Common/Popover/PopoverMoreIconButton'
 
 const { revision } = require('sendGridTemplates.json')
 
@@ -58,23 +61,8 @@ const InvoicesClientScreen = (props: Props) => {
   const classes = useStyles()
   const theme = useTheme()
   const dispatch = useDispatch()
-  const [selectedAsset, selectAsset] = useState('')
-  const [mediaConversionLoading, setMediaConversionLoading] = useState(false)
 
   const toastContext = useContext(ToastContext)
-
-  const { invoiceId, ownerAccountId } = useMemo(() => {
-    const { params } = props.match
-
-    if (!(params && params.accId && params.id)) {
-      return {
-        invoiceId: null,
-        ownerAccountId: null
-      }
-    }
-    const { accId: ownerAccountId, id: invoiceId } = params
-    return { ownerAccountId, invoiceId }
-  }, [props.match.params])
 
   // Select cache from state
   const {
@@ -85,7 +73,9 @@ const InvoicesClientScreen = (props: Props) => {
     user,
     revisionSuccess,
     revisionLoading,
-    invoiceConversationData
+    invoiceConversationData,
+    deletingInvoice,
+    deleteSuccess
   } = useSelector((state: ReduxState) => ({
     invoiceCache: state.invoice.cache,
     projectCache: state.project.projectCache,
@@ -94,16 +84,37 @@ const InvoicesClientScreen = (props: Props) => {
     user: state.auth.user,
     revisionSuccess: state.invoice.revisionSuccess,
     revisionLoading: state.invoice.revisionLoading,
-    invoiceConversationData: state.invoice.invoiceConversationData
+    invoiceConversationData: state.invoice.invoiceConversationData,
+    deletingInvoice: state.invoice.deletingInvoice,
+    deleteSuccess: state.invoice.deleteSuccess
   }))
 
+  const [selectedAsset, selectAsset] = useState('')
+  const [mediaConversionLoading, setMediaConversionLoading] = useState(false)
   const [state, setState] = useState<{
+    invoiceId: string
+    ownerAccountId: string
     account: Account | null
     user: User | null
     transactionFee: number | any
     loadingError: null | string
-  }>({ account: null, user: null, transactionFee: 0, loadingError: null })
-  const { account: ownerAccount, user: ownerUser, transactionFee } = state
+  }>({
+    account: null,
+    user: null,
+    transactionFee: 0,
+    loadingError: null,
+    invoiceId: props.match.params.id,
+    ownerAccountId: props.match.params.accId
+  })
+
+  const {
+    account: ownerAccount,
+    user: ownerUser,
+    transactionFee,
+    ownerAccountId,
+    invoiceId
+  } = state
+
   const isAccountOwner: boolean = !!account && ownerAccountId === account.id
 
   // Select objects from cache
@@ -129,14 +140,15 @@ const InvoicesClientScreen = (props: Props) => {
   const [cardModalOpen, setCardModalOpen] = useState(false)
   // Load invoice and conversations
   useEffect(() => {
-    loadInitialData()
-  }, [])
-  const loadInitialData = async () => {
-    if (invoiceId && ownerAccountId) {
-      dispatch(getInvoiceRequest(ownerAccountId, invoiceId))
-      dispatch(getAllInvoiceConversationRequest(ownerAccountId, invoiceId))
+    loadInitialData(invoiceId, ownerAccountId)
+  }, [invoiceId, ownerAccountId])
 
-      try {
+  const loadInitialData = async (invoiceId: string, ownerAccountId: string) => {
+    try {
+      if (invoiceId && ownerAccountId) {
+        dispatch(getInvoiceRequest(ownerAccountId, invoiceId))
+        dispatch(getAllInvoiceConversationRequest(ownerAccountId, invoiceId))
+
         const ownerAccount = await getAccount(ownerAccountId)
         if (!ownerAccount) throw Error('No account')
 
@@ -162,9 +174,19 @@ const InvoicesClientScreen = (props: Props) => {
           account: ownerAccount,
           transactionFee
         }))
-      } catch (error) {
-        setState((state) => ({ ...state, loadingError: error }))
+      } else if (props.match.params.shareId) {
+        const invoiceShare: InvoiceShare | undefined = await getInvoiceShare(
+          props.match.params.shareId
+        )
+        if (invoiceShare) {
+          const { accountId, invoiceId } = invoiceShare
+          setState((state) => ({ ...state, accountId, invoiceId }))
+        } else {
+          throw Error('Missing invoice')
+        }
       }
+    } catch (error) {
+      setState((state) => ({ ...state, loadingError: error }))
     }
   }
   // Load client and project when invoice is loaded
@@ -183,6 +205,12 @@ const InvoicesClientScreen = (props: Props) => {
       }
     }
   )
+
+  useOnChange(deleteSuccess, (success: boolean) => {
+    if (success) {
+      props.history.goBack()
+    }
+  })
 
   const [message, setMessage] = useState('')
 
@@ -387,11 +415,29 @@ const InvoicesClientScreen = (props: Props) => {
     }
   }
 
+  const popoverMenuItems = [
+    {
+      title: 'Delete Invoice',
+      onClick: () => {
+        if (invoice) {
+          dispatch(requestDeleteInvoice(invoice))
+        }
+      },
+      Icon: DeleteIcon,
+      desctructive: true
+    }
+  ]
+
   return (
     <div className={'screenContainer'}>
       {renderHeader()}
       <div className={classes.subHeaderSection}>
-        {project.campaignName} <div className={classes.dot}></div>
+        <div />
+        {project.campaignName}
+        <PopoverMoreIconButton
+          menuItems={popoverMenuItems}
+          isLoadingDescructive={deletingInvoice === invoice.id}
+        />
       </div>
 
       <div className={'screenInner'}>
@@ -664,10 +710,10 @@ const useStyles = makeStyles((theme) => ({
   subHeaderSection: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     backgroundColor: theme.palette.primary.light,
     marginTop: theme.spacing(7),
-    padding: theme.spacing(2),
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     textAlign: 'center',
     color: theme.palette.text.background,
     fontSize: 14,

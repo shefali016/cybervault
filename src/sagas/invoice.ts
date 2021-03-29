@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, put, takeLatest, select } from 'redux-saga/effects'
 import * as ActionTypes from '../actions/actionTypes'
 import * as InvoiceApis from '../apis/invoiceApi'
 import * as InvoiceActions from '../actions/invoiceActions'
@@ -6,10 +6,12 @@ import {
   Account,
   Project,
   Invoice,
-  InvoiceConversation
+  InvoiceConversation,
+  InvoiceShare
 } from '../utils/Interface'
 import * as StripeApis from '../apis/stripe'
 import { InvoiceStatuses } from '../utils/enums'
+import { ReduxState } from 'reducers/rootReducer'
 
 type Params = {
   account: Account
@@ -23,15 +25,17 @@ type Params = {
   amount: number
   stripeAccountId: string
   transactionFee: number
+  invoiceShare: InvoiceShare
 }
 
-function* invoiceRequest({ account, project, invoice }: Params) {
+function* invoiceRequest({ account, project, invoice, invoiceShare }: Params) {
   try {
-    const invoiceData = yield call(
+    const invoiceData: Invoice = yield call(
       InvoiceApis.newInvoice,
       account,
       project,
-      invoice
+      invoice,
+      invoiceShare
     )
     yield put(InvoiceActions.generateNewInvoiceSuccess(invoiceData))
   } catch (error: any) {
@@ -42,7 +46,10 @@ function* invoiceRequest({ account, project, invoice }: Params) {
 }
 function* getAllInvoice({ account }: Params) {
   try {
-    const invoiceData = yield call(InvoiceApis.getAllInvoices, account)
+    const invoiceData: Invoice[] = yield call(
+      InvoiceApis.getAllInvoices,
+      account
+    )
     yield put(InvoiceActions.getAllInvoiceSuccess(invoiceData))
   } catch (error: any) {
     yield put(InvoiceActions.getAllInvoiceError(error?.message || 'default'))
@@ -51,7 +58,12 @@ function* getAllInvoice({ account }: Params) {
 
 function* getInvoice({ accountId, invoiceId }: Params) {
   try {
-    const response = yield call(InvoiceApis.getInvoice, accountId, invoiceId)
+    const response: Invoice = yield call(
+      InvoiceApis.getInvoice,
+      accountId,
+      invoiceId
+    )
+
     yield put(InvoiceActions.getInvoiceSuccess(response))
   } catch (error: any) {
     yield put(InvoiceActions.getInvoiceError(error?.message || 'default'))
@@ -59,7 +71,7 @@ function* getInvoice({ accountId, invoiceId }: Params) {
 }
 function* sendRevison({ accountId, invoiceId, conversation }: Params) {
   try {
-    const response = yield call(
+    yield call(
       InvoiceApis.sendRevisionRequest,
       accountId,
       invoiceId,
@@ -75,7 +87,7 @@ function* sendRevison({ accountId, invoiceId, conversation }: Params) {
 }
 function* allnvoiceConversation({ accountId, invoiceId }: Params) {
   try {
-    const response = yield call(
+    const response: InvoiceConversation[] = yield call(
       InvoiceApis.allInvoiceConversation,
       accountId,
       invoiceId
@@ -117,6 +129,18 @@ function* payInvoice({
   }
 }
 
+function* deleteInvoice({ invoice }: Params) {
+  try {
+    const account: Account = yield select(
+      (state: ReduxState) => state.auth.account
+    )
+    yield call(InvoiceApis.deleteInvoice, account, invoice)
+    yield put(InvoiceActions.deleteInvoiceSuccess(invoice.id))
+  } catch (error) {
+    yield put(InvoiceActions.deleteInvoiceFailure(error || 'default'))
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.NEW_INVOICE_REQUEST, invoiceRequest)
   yield takeLatest(ActionTypes.GET_ALL_INVOICE_REQUEST, getAllInvoice)
@@ -127,6 +151,7 @@ function* watchRequests() {
     allnvoiceConversation
   )
   yield takeLatest(ActionTypes.PAY_INVOICE, payInvoice)
+  yield takeLatest(ActionTypes.DELETE_INVOICE, deleteInvoice)
 }
 
 export default function* sagas() {

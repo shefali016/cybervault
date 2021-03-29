@@ -7,10 +7,11 @@ import { Props as PopoverButtonProps } from './PopoverButton'
 import { AppIconButton } from '../Core/AppIconButton'
 
 export const PopoverMoreIconButton = (
-  props: Omit<PopoverButtonProps, 'children'>
+  props: Omit<PopoverButtonProps, 'children'> & {
+    isLoading?: boolean
+    isLoadingDescructive?: boolean
+  }
 ) => {
-  const theme = useTheme()
-
   return (
     <PopoverButton {...props}>
       {({ onClick, id }) => (
@@ -19,6 +20,8 @@ export const PopoverMoreIconButton = (
           aria-owns={id}
           onClick={onClick}
           className={'iconButton'}
+          isLoading={props.isLoading}
+          isLoadingDescructive={props.isLoadingDescructive}
         />
       )}
     </PopoverButton>

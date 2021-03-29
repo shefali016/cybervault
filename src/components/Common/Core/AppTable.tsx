@@ -41,12 +41,30 @@ export const AppTable = ({
 
   const renderCell = (
     { renderer, title, cellProps, key, style }: Cell,
-    lastCell: boolean
+    lastCell?: boolean
   ) => (
     <TableCell
+      key={key}
       {...cellProps}
       className={clsx(classes.cellWrapper)}
       classes={{ root: lastCell ? classes.lastRow : classes.row }}
+      style={style}>
+      {typeof renderer === 'function' ? renderer() : title}
+    </TableCell>
+  )
+
+  const renderHeaderCell = ({
+    renderer,
+    title,
+    cellProps,
+    key,
+    style
+  }: Cell) => (
+    <TableCell
+      key={key}
+      {...cellProps}
+      className={clsx(classes.cellWrapper)}
+      classes={{ root: classes.headerCell }}
       style={style}>
       {typeof renderer === 'function' ? renderer() : title}
     </TableCell>
@@ -58,7 +76,7 @@ export const AppTable = ({
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              {headerCells.map((cell: Cell) => renderCell(cell, false))}
+              {headerCells.map((cell: Cell) => renderHeaderCell(cell))}
             </TableRow>
           </TableHead>
 
@@ -94,5 +112,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cellWrapper: { color: theme.palette.text.background, cursor: 'pointer' },
   row: { borderColor: theme.palette.border },
-  lastRow: { borderColor: 'transparent' }
+  lastRow: { borderColor: 'transparent' },
+  headerCell: { background: theme.palette.background.surfaceHighlight }
 }))

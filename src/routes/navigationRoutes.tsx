@@ -6,7 +6,7 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen'
 import SignUpScreen from '../screens/AuthScreens/SignUpScreen'
 import MainSwitch from './MainSwitch'
 import { GlobalStyles } from '../utils/globalStyles'
-import InvoicesClientScreen from '../screens/SharedScreens/InvoicesClientScreen'
+import InvoiceSingleScreen from '../screens/SharedScreens/InvoiceSingleScreen'
 import LandingScreen from 'screens/LandingScreens/HomeScreen'
 import PricingScreen from 'screens/LandingScreens/PricingScreen'
 import PortfolioShareScreen from 'screens/PortfolioShareScreen'
@@ -59,12 +59,9 @@ const AppRoutes = () => {
       <AssetUploadProvider>
         <ToastProvider>
           <Switch>
+            <Route path='/invoice-share' component={InvoiceSingleScreen} />
             <Route
-              path='/clientInvoices/:id/:accId/'
-              component={InvoicesClientScreen}
-            />
-            <Route
-              path='/portfolioShare/:id'
+              path='/portfolio-share/:shareId'
               component={PortfolioShareScreen}
             />
             {AuthRoutes}

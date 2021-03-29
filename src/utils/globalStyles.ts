@@ -648,6 +648,13 @@ export const useGlobalStyles = makeStyles((theme) => ({
     },
     // Buttons
 
+    // Border
+    '.borderTop': {
+      borderTopWidth: 1,
+      borderTopStyle: 'solid',
+      borderTopColor: theme.palette.border
+    },
+
     // Color
     '.lightGrey': { color: theme.palette.grey[100] },
     //Color

@@ -17,6 +17,8 @@ import { InvoiceTypes } from 'utils/enums'
 import { EditText } from 'components/Common/EditText'
 import { MilestoneProps } from '../InvoiceModal'
 import { useTheme } from '@material-ui/core/styles'
+import { numberWithCommas } from 'utils'
+import clsx from 'clsx'
 
 type InvoiceStepProps = {
   project: Project
@@ -264,64 +266,64 @@ const InvoiceStepTwo = ({
           </Grid>
           <Grid className={classes.detailsWrapper}>
             <Grid container className={classes.section}>
-              <Grid item sm={3}>
+              <Grid item xs={3}>
                 <Typography className={classes.textField} variant='body1'>
                   Budget
                 </Typography>
               </Grid>
-              <Grid item sm={3}>
+              <Grid item xs={3}>
                 <EditText
                   label={'Project Budget'}
                   type={'text'}
                   onChange={(e: ChangeEvent) =>
                     handleChange(e)('campaignBudget')
                   }
-                  value={project.campaignBudget}
+                  value={
+                    currencySymbol + numberWithCommas(project.campaignBudget)
+                  }
                   isEditing={edit.invoiceDetails}
                 />
               </Grid>
             </Grid>
 
             <Grid container className={classes.section}>
-              <Grid item sm={3}>
+              <Grid item xs={3}>
                 <Typography className={classes.textField} variant='body1'>
                   Expenses
                 </Typography>
               </Grid>
-              <Grid item sm={3}>
+              <Grid item xs={3}>
                 <EditText
                   label={'Project Expenses'}
                   type={'text'}
                   onChange={(e: ChangeEvent) =>
                     handleChange(e)('campaignExpenses')
                   }
-                  value={project.campaignExpenses}
+                  value={
+                    currencySymbol + numberWithCommas(project.campaignExpenses)
+                  }
                   isEditing={edit.invoiceDetails}
                 />
               </Grid>
             </Grid>
 
-            <AppDivider
-              spacing={1}
-              className={classes.amountDivider}
-              style={{ maxWidth: 350 }}
-            />
-
             <Grid container>
-              <Grid item sm={3}>
+              <Grid item xs={3}>
                 <Typography
-                  className={`${classes.textField} ${classes.totalAmount}`}
+                  className={`${classes.textField} ${classes.totalAmount} ${classes.fullPrice}`}
                   variant='body1'>
                   Total Due
                 </Typography>
               </Grid>
-              <Grid item sm={3}>
+              <Grid item xs={3}>
                 <Typography
-                  className={`${classes.textField} ${classes.totalAmount}`}
+                  className={`${classes.textField} ${classes.totalAmount} ${classes.fullPrice}`}
                   variant='body1'>
-                  $
-                  {Number(project.campaignBudget) -
-                    Number(project.campaignExpenses)}
+                  {currencySymbol}
+                  {numberWithCommas(
+                    Number(project.campaignBudget) -
+                      Number(project.campaignExpenses)
+                  )}
                 </Typography>
               </Grid>
             </Grid>
@@ -356,7 +358,6 @@ const InvoiceStepTwo = ({
                       disabled={mile.isPaid}
                       onChange={() => handleMilestone(mile)}
                       checked={mile.check}
-                      defaultChecked={true}
                       checkedIcon={
                         <div
                           className={classes.checkBoxIcon}
@@ -425,6 +426,7 @@ const InvoiceStepTwo = ({
   )
 }
 const useStyles = makeStyles((theme) => ({
+  fullPrice: { fontWeight: 'bold' },
   milestoneAmountContainer: {
     marginTop: theme.spacing(2),
     marginRight: theme.spacing(1)

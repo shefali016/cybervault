@@ -17,7 +17,6 @@ import ManageAccountScreen from 'screens/AccountScreens/ManageAccountScreen'
 import BrandingScreen from 'screens/AccountScreens/BrandingScreen'
 import SecurityScreen from 'screens/SharedScreens/SecurityScreen'
 import InvoicesScreen from 'screens/SharedScreens/InvoicesScreen'
-import InvoicesClientScreen from 'screens/SharedScreens/InvoicesClientScreen'
 import PaymentMethodsScreen from 'screens/Stripe/PaymentMethodsScreen'
 import BillingHistoryScreen from 'screens/Stripe/BillingHistoryScreen'
 import ClientsScreen from 'screens/DashboardScreens/ClientsScreen'
@@ -379,10 +378,6 @@ const MainScreen = ({
             <Route path='/security' component={SecurityScreen} />
             <Route path='/invoices' component={InvoicesScreen} />
             <Route path='/clients' component={ClientsScreen} />
-            <Route
-              path='/clientInvoices/:accId/:id'
-              component={InvoicesClientScreen}
-            />
             <Route
               path='/portfolio'
               component={PortfoliosScreen}

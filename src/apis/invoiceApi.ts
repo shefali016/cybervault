@@ -1,13 +1,46 @@
-import * as Types from '../utils/Interface'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
+import {
+  Invoice,
+  Account,
+  Project,
+  InvoiceShare,
+  InvoiceConversation
+} from '../utils/Interface'
+
+export const getInvoiceShare = async (shareId: string) => {
+  const doc = await firebase
+    .firestore()
+    .collection('InvoiceShares')
+    .doc(shareId)
+    .get()
+
+  const invoiceShare = doc.data() as InvoiceShare | undefined
+
+  if (invoiceShare) {
+    await firebase
+      .firestore()
+      .collection('InvoiceShares')
+      .doc(shareId)
+      .update({ isViewed: true })
+  }
+
+  return invoiceShare
+}
 
 export const newInvoice = async (
-  account: Types.Account,
-  project: Types.Project,
-  invoice: Types.Invoice
-) => {
+  account: Account,
+  project: Project,
+  invoice: Invoice,
+  invoiceShare: InvoiceShare
+): Promise<Invoice> => {
+  await firebase
+    .firestore()
+    .collection('InvoiceShares')
+    .doc(invoiceShare.id)
+    .set(invoiceShare)
+
   await firebase
     .firestore()
     .collection('AccountData')
@@ -18,7 +51,7 @@ export const newInvoice = async (
 
   return invoice
 }
-export const getAllInvoices = async (account: Types.Account) => {
+export const getAllInvoices = async (account: Account) => {
   let allInvoices: Array<{}> = []
   let data: any = await firebase
     .firestore()
@@ -41,13 +74,17 @@ export const getInvoice = async (accountId: string, invoiceId: string) => {
     .collection('Invoices')
     .doc(`${invoiceId}`)
     .get()
-  return data.data()
+  const invoice: Invoice | undefined = data.data()
+  if (!invoice) {
+    throw Error('missing data')
+  }
+  return invoice
 }
 
 export const sendRevisionRequest = async (
   accountId: string,
   invoiceId: string,
-  conversation: Types.InvoiceConversation
+  conversation: InvoiceConversation
 ) => {
   await firebase
     .firestore()
@@ -93,4 +130,16 @@ export const updateInvoice = async (
     .doc(`${invoiceId}`)
     .update(invoiceData)
   return invoiceData
+}
+
+export const deleteInvoice = async (account: Account, invoice: Invoice) => {
+  const res = await firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Invoices')
+    .doc(invoice.id)
+    .delete()
+  console.log('DELETED', account, invoice)
+  return res
 }

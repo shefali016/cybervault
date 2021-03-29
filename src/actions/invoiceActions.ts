@@ -1,16 +1,19 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
+import { Invoice } from '../utils/Interface'
 
 export function generateNewInvoiceRequest(
   account: Types.Account,
   project: Types.Project,
-  invoice: Types.Invoice
+  invoice: Types.Invoice,
+  invoiceShare: Types.InvoiceShare
 ) {
   return {
     type: ActionTypes.NEW_INVOICE_REQUEST,
     account,
     project,
-    invoice
+    invoice,
+    invoiceShare
   }
 }
 export function generateNewInvoiceSuccess(invoice: Types.Invoice) {
@@ -52,10 +55,10 @@ export function getInvoiceRequest(accountId: string, invoiceId: string) {
     invoiceId
   }
 }
-export function getInvoiceSuccess(invoicesData: Array<Types.Invoice>) {
+export function getInvoiceSuccess(invoice: Invoice) {
   return {
     type: ActionTypes.GET_INVOICE_SUCCESS,
-    payload: invoicesData
+    invoice
   }
 }
 export function getInvoiceError(error: string) {
@@ -143,3 +146,16 @@ export function payInvoiceError(error: string) {
     error
   }
 }
+
+export const requestDeleteInvoice = (invoice: Invoice) => ({
+  type: ActionTypes.DELETE_INVOICE,
+  invoice
+})
+export const deleteInvoiceSuccess = (invoiceId: string) => ({
+  type: ActionTypes.DELETE_INVOICE_SUCCESS,
+  invoiceId
+})
+export const deleteInvoiceFailure = (error: string) => ({
+  type: ActionTypes.DELETE_INVOICE_FAILURE,
+  error
+})

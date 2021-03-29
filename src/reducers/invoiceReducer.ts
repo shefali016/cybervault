@@ -14,7 +14,10 @@ import {
   GET_ALL_INVOICE_CONVERSATION_REQUEST,
   GET_ALL_INVOICE_CONVERSATION_ERROR,
   GET_ALL_INVOICE_CONVERSATION_SUCCESS,
-  PAY_INVOICE_SUCCESS
+  PAY_INVOICE_SUCCESS,
+  DELETE_INVOICE,
+  DELETE_INVOICE_SUCCESS,
+  DELETE_INVOICE_FAILURE
 } from 'actions/actionTypes'
 import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
@@ -39,12 +42,17 @@ export type State = {
   revisionLoading: boolean
   revisionSuccess: boolean
   revisionError: null | string
+  deleteSuccess: boolean
+  deleteError: string | null
+  deletingInvoice: string | null
 }
 
 export type Action = {
   type: string
   payload: any
   invoiceId: string
+  invoice: Invoice
+  error: string
 }
 
 const initialState = {
@@ -67,7 +75,10 @@ const initialState = {
   invoiceConversationSuccess: false,
   invoiceConversationError: null,
   invoiceConversationData: {},
-  cache: {}
+  cache: {},
+  deleteSuccess: false,
+  deleteError: null,
+  deletingInvoice: null
 }
 
 const generateNewInvoiceRequest = (state: State, action: Action) => ({
@@ -133,8 +144,8 @@ const getInvoiceSuccess = (state: State, action: Action) => ({
   getInvoiceLoading: false,
   getInvoiceSuccess: true,
   getInvoiceError: false,
-  invoiceData: action.payload,
-  cache: addToCache(state.cache, action.payload)
+  invoiceData: action.invoice,
+  cache: addToCache(state.cache, action.invoice)
 })
 
 //
@@ -197,6 +208,28 @@ const payInvoiceSuccess = (state: State, action: Action) => {
   }
 }
 
+const deleteInvoice = (state: State, action: Action) => ({
+  ...state,
+  deletingInvoice: action.invoice.id,
+  deleteError: null,
+  deleteSuccess: false
+})
+
+const deleteInvoiceSuccess = (state: State, action: Action) => ({
+  ...state,
+  deleteSuccess: true,
+  deletingInvoice: null,
+  allInvoicesData: state.allInvoicesData.filter(
+    (invoice: Invoice) => invoice.id !== action.invoiceId
+  )
+})
+
+const deleteInvoiceFailure = (state: State, action: Action) => ({
+  ...state,
+  deleteError: action.error,
+  deletingInvoice: null
+})
+
 const invoiceReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_INVOICE_REQUEST:
@@ -231,6 +264,12 @@ const invoiceReducer = (state = initialState, action: Action) => {
       return getAllInvoiceConversationError(state, action)
     case PAY_INVOICE_SUCCESS:
       return payInvoiceSuccess(state, action)
+    case DELETE_INVOICE:
+      return deleteInvoice(state, action)
+    case DELETE_INVOICE_SUCCESS:
+      return deleteInvoiceSuccess(state, action)
+    case DELETE_INVOICE_FAILURE:
+      return deleteInvoiceFailure(state, action)
     default:
       return state
   }

@@ -44,15 +44,34 @@ const mapState = (state: ReduxState): Props => ({
 
 export default connect(mapState)(ToastHandler)
 
+const genericFailureMessage = 'Please try again or contact support.'
+
 const stripeState = (state: ReduxState) => state.stripe
 const authState = (state: ReduxState) => state.auth
 const portfolioState = (state: ReduxState) => state.portfolio
 const clientsState = (state: ReduxState) => state.clients
 const projectState = (state: ReduxState) => state.project
+const invoiceState = (state: ReduxState) => state.invoice
 
 const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
-  [stripeState, authState, portfolioState, clientsState, projectState],
-  (stripe, auth, portfolio, clients, projects) => {
+  [
+    stripeState,
+    authState,
+    portfolioState,
+    clientsState,
+    projectState,
+    invoiceState
+  ],
+  (stripe, auth, portfolio, clients, projects, invoice) => {
+    const invoiceToasts = [
+      {
+        error:
+          !!invoice.deleteError &&
+          `Failed to delete invoice. ${genericFailureMessage}`,
+        success: !!invoice.deleteSuccess && 'Invoice deleted successfully'
+      }
+    ]
+
     const stripeToasts = [
       {
         error:
@@ -136,7 +155,8 @@ const toastSelector = createSelector<ReduxState, any, Array<ToastState>>(
       ...authToasts,
       ...portfolioToasts,
       ...clientsToasts,
-      ...projectToasts
+      ...projectToasts,
+      ...invoiceToasts
     ]
   }
 )

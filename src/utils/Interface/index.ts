@@ -511,7 +511,7 @@ export type InvoiceUserInfo = {
 
 export type Invoice = {
   id: string // Using generateId function
-  dateCreated: Date | string
+  dateCreated: number
   projectName: string
   datePaid: Date | null
   projectId: string // Id of the project being invoiced
@@ -523,6 +523,15 @@ export type Invoice = {
   status: InvoiceStatuses
   conversation?: Array<InvoiceConversation>
   type: InvoiceTypes
+}
+
+export type InvoiceShare = {
+  accountId: string
+  invoiceId: string
+  isViewed: boolean
+  createdAt: number
+  id: string
+  title: string
 }
 
 export type ProjectStatus =

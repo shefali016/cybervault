@@ -12,6 +12,7 @@ import { FullScreenLoader } from 'components/Common/Loading/FullScreenLoader'
 import Dashboard from './DashboardSwitch'
 import PortfolioSingleScreen from 'screens/DashboardScreens/PortfolioSingleScreen'
 import ProjectSingleScreen from 'screens/DashboardScreens/ProjectSingleScreen'
+import InvoiceSingleScreen from 'screens/SharedScreens/InvoiceSingleScreen'
 import { getUsedStorage } from 'actions/account'
 import { getAllClientsRequest } from 'actions/clientActions'
 import { getAllProjects } from 'actions/projectActions'
@@ -72,6 +73,7 @@ const MainSwitch = ({
     <Switch>
       <Route path='/portfolio/:id' component={PortfolioSingleScreen} />
       <Route path='/project/:id' component={ProjectSingleScreen} />
+      <Route path='/invoice/:id/:accId' component={InvoiceSingleScreen} />
       <Route path='/' component={Dashboard} />
     </Switch>
   )

@@ -13,7 +13,8 @@ import {
   Account,
   Client,
   MailTemplate,
-  Mail
+  Mail,
+  InvoiceShare
 } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
@@ -28,6 +29,7 @@ import { useTheme } from '@material-ui/core/styles'
 import NewProjectFooter from 'components/Projects/NewProjectFooter'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
 import { getProjects } from 'apis/projectRequest'
+import { sendMail } from 'apis/mails'
 
 type InvoiceProps = {
   onRequestClose: () => void
@@ -72,7 +74,6 @@ const InvoiceData = ({
     [projects]
   )
   const invoiceData = useSelector((state: ReduxState) => state.invoice)
-  const mailData = useSelector((state: ReduxState) => state.mail)
 
   const modalContentRef = useRef<HTMLDivElement>(null)
   const toastContext = useContext(ToastContext)
@@ -101,8 +102,8 @@ const InvoiceData = ({
 
   const [milestones, setMilestones] = useState(
     projectData && projectData.milestones
-      ? projectData.milestones.map((mile) => {
-          return { ...mile, check: true }
+      ? projectData.milestones.map((mile, i) => {
+          return { ...mile, check: !!mile.isPaid }
         })
       : []
   )
@@ -182,13 +183,13 @@ const InvoiceData = ({
     }
   }
 
-  const handleSendInvoice = (invoiceId: string) => {
+  const handleSendInvoice = (invoiceId: string, invoiceShare: InvoiceShare) => {
     if (!(projectData && clientData)) {
       return validateSending()
     }
     const invoice = {
       id: invoiceId, // Using generateId function
-      dateCreated: new Date().toLocaleString(),
+      dateCreated: Date.now(),
       datePaid: null,
       projectId: projectData.id, // Id of the project being invoiced
       accountId: account.id,
@@ -207,10 +208,12 @@ const InvoiceData = ({
       projectName: projectData.campaignName,
       type: invoiceType
     }
-    dispatch(generateNewInvoiceRequest(account, projectData, invoice))
+    dispatch(
+      generateNewInvoiceRequest(account, projectData, invoice, invoiceShare)
+    )
   }
 
-  const handleSendMail = () => {
+  const handleSendMail = async () => {
     if (!(projectData && clientData)) {
       return validateSending()
     }
@@ -221,6 +224,15 @@ const InvoiceData = ({
       return toastContext.showToast({
         title: 'Cannot send invoice. No price has been added.'
       })
+    }
+
+    const invoiceShare: InvoiceShare = {
+      accountId: account.id,
+      invoiceId: invoiceId,
+      isViewed: false,
+      createdAt: Date.now(),
+      id: generateUid(),
+      title: `${projectData.campaignName} invoice`
     }
 
     const mailPayload: Mail = {
@@ -234,22 +246,21 @@ const InvoiceData = ({
         userEmail: userInfo.email,
         amount: invoiceAmount,
         subject: "Creator's Cloud Invoice",
-        link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}`
+        link: `${window.location.origin}/invoice-share/${invoiceShare.id}`
       }
     }
-    dispatch(sendEmailRequest(mailPayload))
+
+    try {
+      await sendMail(mailPayload)
+
+      handleSendInvoice(invoiceId, invoiceShare)
+    } catch (error) {
+      toastContext.showToast({
+        title: 'Failed to send invoice. Please try again or contact support.'
+      })
+    }
   }
 
-  useOnChange(mailData.success, (success) => {
-    if (success) {
-      handleSendInvoice(mailData.mailData.data.invoiceId)
-    }
-  })
-  useOnChange(mailData.error, (error) => {
-    if (!!error) {
-      toastContext.showToast({ title: 'Failed to send invoice' })
-    }
-  })
   useOnChange(invoiceData.success, (success) => {
     if (success) {
       setCurrentStep((step) => step + 1)
@@ -286,7 +297,7 @@ const InvoiceData = ({
   const handleProjectSelect = (project: Project) => {
     setMilestones(
       project.milestones.map((mile) => {
-        return { ...mile, check: true }
+        return { ...mile, check: mile.isPaid }
       })
     )
     const client = clientCache[project.clientId]

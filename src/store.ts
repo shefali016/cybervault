@@ -8,6 +8,7 @@ import { authTransform } from './reducers/authReducer'
 import { projectTransform } from 'reducers/projectReducer'
 import { clientTransform } from 'reducers/clientReducer'
 import { portfolioTransform } from 'reducers/portfoliosReducer'
+import { invoiceTransform } from 'reducers/invoiceReducer'
 import logger from 'redux-logger'
 import { stripeTransform } from 'reducers/stripeReducer'
 
@@ -32,7 +33,8 @@ const persistConfig = {
     projectTransform,
     stripeTransform,
     clientTransform,
-    portfolioTransform
+    portfolioTransform,
+    invoiceTransform
   ]
 }
 
