@@ -11,7 +11,6 @@ type Props = {
 
 export const AppDivider = ({ className, spacing = 5, style }: Props) => {
   const classes = useStyles(spacing)
-  const theme = useTheme()
   return <Divider className={clsx(classes.divider, className)} style={style} />
 }
 

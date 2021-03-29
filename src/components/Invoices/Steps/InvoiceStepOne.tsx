@@ -40,7 +40,11 @@ const InvoiceStepOne = ({
       <Grid item className={classes.imageWrapper}>
         <ClientLogo logo={client.logo} />
       </Grid>
-      <Grid container justify='center' className={classes.wrapper}>
+      <Grid
+        container
+        justify='center'
+        alignItems='center'
+        className={classes.wrapper}>
         <Grid item sm={5} className={classes.wrapperBorder}>
           <img src={InvoiceLogo} className={classes.icon} />
           <Typography className={`${classes.heading}`}>
@@ -84,16 +88,18 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -theme.spacing(2),
     paddingBottom: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    [theme.breakpoints.down('sm')]: { marginTop: theme.spacing(2) }
   },
   wrapperBorder: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       borderRight: `1px solid ${theme.palette.grey[500]}`
     }
   },
   wrapper: {
     textAlign: 'center',
-    padding: '32px 0'
+    padding: '32px 0',
+    [theme.breakpoints.down('sm')]: { flexDirection: 'column', display: 'flex' }
   },
   heading: {
     fontWeight: BOLD,

@@ -36,10 +36,11 @@ type InvoiceProps = {
   userInfo: any
   onCreateProject: () => void
 }
-type MilestoneProps = {
+export type MilestoneProps = {
   id: string
   title: string
   payment: number
+  isPaid: boolean
   check: boolean
 }
 
@@ -51,6 +52,8 @@ const InvoiceData = ({
   onCreateProject
 }: InvoiceProps) => {
   const theme = useTheme()
+
+  const currencySymbol = account.region?.currencySymbol || '$'
 
   const dispatch = useDispatch()
   const clientState: {
@@ -144,17 +147,6 @@ const InvoiceData = ({
     }
   }, [])
 
-  useEffect(() => {
-    if (project && (!projectData || projectData.milestones)) {
-      setProjectData(project)
-      setMilestones(
-        project.milestones.map((mile) => {
-          return { ...mile, check: true }
-        })
-      )
-    }
-  }, [project])
-
   const getFullAmount = () => {
     return projectData
       ? Number(projectData.campaignBudget) -
@@ -163,8 +155,8 @@ const InvoiceData = ({
   }
   const getAmountByMilestone = () => {
     let cost = 0
-    milestones.forEach((mile) => {
-      if (mile.check) {
+    milestones.forEach((mile: MilestoneProps) => {
+      if (mile.check && !mile.isPaid) {
         cost = cost + Number(mile.payment)
       }
     })
@@ -173,7 +165,7 @@ const InvoiceData = ({
 
   const invoiceAmount: number = useMemo(
     invoiceType === InvoiceTypes.FULL ? getFullAmount : getAmountByMilestone,
-    [invoiceType]
+    [invoiceType, milestones]
   )
 
   const validateSending = () => {
@@ -202,9 +194,14 @@ const InvoiceData = ({
       accountId: account.id,
       clientId: clientData.id,
       price: invoiceAmount,
-      milestones: milestones.filter((mile) => {
-        return mile.check === true
-      }), // will contain milestones being invoiced or null if invoicing total amount
+      milestones: milestones
+        .filter((mile: MilestoneProps) => {
+          return !mile.isPaid && mile.check === true
+        })
+        .map((m) => {
+          const { check: _, ...milestone } = m
+          return milestone
+        }), // will contain milestones being invoiced or null if invoicing total amount
       isPaid: false,
       status: InvoiceStatuses.PENDING, // has client paid invoice or not
       projectName: projectData.campaignName,
@@ -222,7 +219,7 @@ const InvoiceData = ({
 
     if (!invoiceAmount) {
       return toastContext.showToast({
-        title: 'Cannot send as this invoice is invalid'
+        title: 'Cannot send invoice. No price has been added.'
       })
     }
 
@@ -236,7 +233,7 @@ const InvoiceData = ({
         invoiceId,
         userEmail: userInfo.email,
         amount: invoiceAmount,
-        subject: 'Creator Cloud Invoice',
+        subject: "Creator's Cloud Invoice",
         link: `${window.location.origin}/clientInvoices/${invoiceId}/${account.id}`
       }
     }
@@ -372,6 +369,7 @@ const InvoiceData = ({
             headerTitle={'Invoice'}
             invoiceType={invoiceType}
             handleSendInvoice={handleSendMail}
+            invoiceAmount={invoiceAmount}
             edit={edit}
             handleEdit={handleEdit}
             handleSave={handleSave}
@@ -383,6 +381,7 @@ const InvoiceData = ({
             client={clientData}
             onUpdateClient={handleUpdateClient}
             onUpdateProject={handleUpdateProject}
+            currencySymbol={currencySymbol}
           />
         )
       case 3:
@@ -391,7 +390,7 @@ const InvoiceData = ({
             project={projectData}
             handleDoneClick={handleDoneClick}
             invoiceAmount={invoiceAmount}
-            currencySymbol={account.region?.currencySymbol || '$'}
+            currencySymbol={currencySymbol}
             client={clientData}
           />
         )

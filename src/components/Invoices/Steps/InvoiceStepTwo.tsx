@@ -15,6 +15,8 @@ import { AppDivider } from 'components/Common/Core/AppDivider'
 import { ToastContext } from 'context/Toast'
 import { InvoiceTypes } from 'utils/enums'
 import { EditText } from 'components/Common/EditText'
+import { MilestoneProps } from '../InvoiceModal'
+import { useTheme } from '@material-ui/core/styles'
 
 type InvoiceStepProps = {
   project: Project
@@ -33,6 +35,8 @@ type InvoiceStepProps = {
   client: Client
   onUpdateProject: () => void
   onUpdateClient: () => void
+  invoiceAmount: number
+  currencySymbol: string
 }
 enum EditTypes {
   CLIENT_DETAILS = 'clientDetails',
@@ -45,12 +49,6 @@ type editType = {
   invoiceDetails: boolean
   projectDetails: boolean
   milestoneDetails: boolean
-}
-type MilestoneProps = {
-  id: string
-  title: string
-  payment: number
-  check: boolean
 }
 
 const InvoiceStepTwo = ({
@@ -67,9 +65,12 @@ const InvoiceStepTwo = ({
   milestones,
   client,
   onUpdateProject,
-  onUpdateClient
+  onUpdateClient,
+  invoiceAmount,
+  currencySymbol
 }: InvoiceStepProps) => {
   const classes = useStyles()
+  const theme = useTheme()
   const toastContext = useContext(ToastContext)
 
   const handleClick = () => {
@@ -332,36 +333,59 @@ const InvoiceStepTwo = ({
         <div className={classes.mainWrapper}>
           <Grid container alignItems='center'>
             <Typography className={classes.subHeading} variant='body1'>
-              Milestone Details:
+              Milestones:
             </Typography>
 
             {renderEditSaveButton(EditTypes.MILESTONE_DETAILS)}
           </Grid>
-          <Grid className={classes.detailsWrapper}>
+          <Grid
+            container
+            className={classes.detailsWrapper}
+            style={{ marginTop: 15 }}>
             {milestones.map((mile: MilestoneProps) => {
               return (
-                <Grid container alignItems='center' spacing={2} key={mile.id}>
-                  <Grid item sm={1}>
+                <Grid
+                  container
+                  alignItems='center'
+                  spacing={2}
+                  key={mile.id}
+                  className={classes.milestoneItem}
+                  onClick={() => handleMilestone(mile)}>
+                  <Grid item xs={1} style={{ minWidth: 60 }}>
                     <Checkbox
+                      disabled={mile.isPaid}
                       onChange={() => handleMilestone(mile)}
                       checked={mile.check}
                       defaultChecked={true}
                       checkedIcon={
-                        <div className={classes.checkBoxIcon}>
-                          <CheckIcon className={classes.checkIcon} />
+                        <div
+                          className={classes.checkBoxIcon}
+                          style={
+                            mile.isPaid
+                              ? { background: theme.palette.success.main }
+                              : {}
+                          }>
+                          <CheckIcon
+                            className={classes.checkIcon}
+                            style={
+                              mile.isPaid
+                                ? { color: theme.palette.common.white }
+                                : {}
+                            }
+                          />
                         </div>
                       }
                       icon={<div className={classes.checkBoxIcon}></div>}
                     />
                   </Grid>
-                  <Grid item sm={4}>
+                  <Grid item className={'flex'}>
                     <EditText
                       type={'text'}
                       onChange={(e: ChangeEvent) =>
                         handleMileChange(mile.id, 'title', e)
                       }
                       value={mile.title}
-                      isEditing={edit.milestoneDetails}
+                      isEditing={!mile.isPaid && edit.milestoneDetails}
                     />
                   </Grid>
                   <Grid item sm={2}>
@@ -370,13 +394,23 @@ const InvoiceStepTwo = ({
                       onChange={(e: ChangeEvent) =>
                         handleMileChange(mile.id, 'payment', e)
                       }
-                      value={mile.payment}
-                      isEditing={edit.milestoneDetails}
+                      value={currencySymbol + mile.payment}
+                      isEditing={!mile.isPaid && edit.milestoneDetails}
+                      titleClassName={classes.milestonePrice}
                     />
                   </Grid>
                 </Grid>
               )
             })}
+            <Grid container justify='flex-end'>
+              <Grid item className={classes.milestoneAmountContainer}>
+                <Typography variant='h4' className={'bold'}>
+                  {currencySymbol}
+                  {invoiceAmount}
+                </Typography>
+                <Typography variant='subtitle1'>Invoice amount</Typography>
+              </Grid>
+            </Grid>
           </Grid>
         </div>
       )}
@@ -391,6 +425,21 @@ const InvoiceStepTwo = ({
   )
 }
 const useStyles = makeStyles((theme) => ({
+  milestoneAmountContainer: {
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(1)
+  },
+  milestoneItem: {
+    background: theme.palette.grey[100],
+    borderRadius: 40,
+    marginBottom: 12,
+    cursor: 'pointer'
+  },
+  milestonePrice: {
+    padding: 3,
+    fontWeight: 'bold',
+    flex: 0
+  },
   divider: {
     backgroundColor: `${theme.palette.grey[300]} !important`
   },
@@ -421,7 +470,12 @@ const useStyles = makeStyles((theme) => ({
   },
   detailsWrapper: {
     paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(3)
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1)
+    }
   },
   textField: {},
   mainWrapper: {
