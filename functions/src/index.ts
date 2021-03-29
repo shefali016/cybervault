@@ -8,6 +8,7 @@ import templates from './sendGridTemplates.json'
 import config from './config.json'
 import axios from 'axios'
 import os from 'os'
+import { InvoiceStatuses } from './utils/enums'
 var ffmpeg = require('fluent-ffmpeg')
 
 const fs = require('fs')
@@ -196,6 +197,45 @@ export const handlePortfolioShareViewed = functions.firestore
           title: `Your ${newShare.title} portfolio has been viewed.`,
           isRead: false
         }
+        return admin
+          .firestore()
+          .collection('AccountData')
+          .doc(newShare.accountId)
+          .collection('Notifications')
+          .doc(id)
+          .set(notification)
+      }
+      return true
+    } catch (error) {
+      console.log(error, 'error occurs')
+      return false
+    }
+  })
+
+export const handleInvoiceShareViewed = functions.firestore
+  .document(`InvoiceShares/{id}`)
+  .onWrite(async (change) => {
+    try {
+      let newShare = change.after.data()
+      let oldShare = change.before.data()
+      if (oldShare && newShare && !oldShare.isViewed && newShare.isViewed) {
+        const id = generateUid()
+        const notification = {
+          id,
+          type: 'invoiceViewed',
+          createdAt: Date.now(),
+          title: `Your ${newShare.title} has been viewed.`,
+          isRead: false
+        }
+
+        await admin
+          .firestore()
+          .collection('AccountData')
+          .doc(newShare.accountId)
+          .collection('Invoices')
+          .doc(newShare.invoiceId)
+          .update({ status: InvoiceStatuses.VIEWED })
+
         return admin
           .firestore()
           .collection('AccountData')
