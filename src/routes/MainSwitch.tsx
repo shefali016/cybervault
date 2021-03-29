@@ -16,6 +16,7 @@ import InvoiceSingleScreen from 'screens/SharedScreens/InvoiceSingleScreen'
 import { getUsedStorage } from 'actions/account'
 import { getAllClientsRequest } from 'actions/clientActions'
 import { getAllProjects } from 'actions/projectActions'
+import { requestGetNotifications } from 'actions/notification'
 
 type DispatchProps = {
   createNewProject: (project: Project) => void
@@ -25,6 +26,7 @@ type DispatchProps = {
   getStorage: () => void
   getClients: () => void
   getProjects: () => void
+  getNotifications: () => void
 }
 type StateProps = {
   userRestored: boolean
@@ -48,7 +50,8 @@ const MainSwitch = ({
   user,
   account,
   getClients,
-  getProjects
+  getProjects,
+  getNotifications
 }: Props) => {
   useEffect(() => {
     if (!userRestored) {
@@ -63,6 +66,7 @@ const MainSwitch = ({
     getStorage()
     getClients()
     getProjects()
+    getNotifications()
   }, [])
 
   if (!(userRestored && accountRestored && customerRestored)) {
@@ -97,7 +101,8 @@ const mapDispatchToProps: DispatchProps = {
   getCustomer: () => getCustomer(),
   getStorage: () => getUsedStorage(),
   getClients: () => getAllClientsRequest(),
-  getProjects: () => getAllProjects()
+  getProjects: () => getAllProjects(),
+  getNotifications: () => requestGetNotifications()
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainSwitch)

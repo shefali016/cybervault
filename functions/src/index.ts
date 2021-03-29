@@ -73,7 +73,7 @@ const getDetails = (path: string) => {
 
 export const httpsRequests = functions.runWith(runtimeOpts).https.onRequest(app)
 
-export const myFunction = functions.firestore
+export const handleProjectInvoice = functions.firestore
   .document(`AccountData/{accountId}/Invoices/{invoiceId}`)
   .onWrite((change, context) => {
     try {

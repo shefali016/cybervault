@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga'
 import * as ActionTypes from '../actions/actionTypes'
 import * as AccountApis from '../apis/account'
 import * as AccountActions from '../actions/account'
-import { Account } from '../utils/Interface'
+import { Account, Storage } from '../utils/Interface'
 import { ReduxState } from 'reducers/rootReducer'
 import { listenToStorage } from '../apis/account'
 
@@ -29,14 +29,14 @@ function* getAccount({ id }: Params) {
 
 function* listenToStorageSaga() {
   try {
-    const accountId = yield select((state) => state.auth.account.id)
+    const accountId: string = yield select((state) => state.auth.account.id)
 
     const listener = eventChannel((emit) => {
       return listenToStorage(accountId, emit)
     })
 
     while (true) {
-      const storage = yield take(listener)
+      const storage: Storage = yield take(listener)
       yield put(AccountActions.getUsedStorageSuccess(storage))
     }
   } catch (error: any) {

@@ -676,3 +676,11 @@ export type AssetUpload = {
   status: UploadStatuses
   progress: number
 }
+
+export type CloudNotification = {
+  id: string
+  type: string
+  createdAt: number
+  title: string
+  isRead: boolean
+}
