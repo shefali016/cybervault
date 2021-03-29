@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext, useEffect, useMemo } from 'react'
-import { useSelector, useDispatch, connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { POSITION_ABSOLUTE } from 'utils/constants/stringConstants'
 import InvoiceStepOne from './Steps/InvoiceStepOne'
 import { generateUid } from '../../utils'
@@ -12,23 +12,21 @@ import {
   Project,
   Account,
   Client,
-  MailTemplate,
   Mail,
-  InvoiceShare
+  InvoiceShare,
+  Invoice
 } from '../../utils/Interface'
 import InvoiceStepTwo from './Steps/InvoiceStepTwo'
 import InvoiceStepThree from './Steps/InvoiceStepThree'
 import { getAllProjects } from '../../actions/projectActions'
 import { useOnChange } from 'utils/hooks'
 import { InvoiceStatuses, InvoiceTypes } from 'utils/enums'
-import { sendEmailRequest } from '../../actions/mails'
 import sendGridTemplates from '../../sendGridTemplates.json'
 import { ProjectSelect } from 'components/Projects/ProjectSelect'
 import { Typography } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles'
 import NewProjectFooter from 'components/Projects/NewProjectFooter'
 import { GradiantButton } from 'components/Common/Button/GradiantButton'
-import { getProjects } from 'apis/projectRequest'
 import { sendMail } from 'apis/mails'
 
 type InvoiceProps = {
@@ -169,7 +167,7 @@ const InvoiceData = ({
     [invoiceType, milestones]
   )
 
-  const validateSending = () => {
+  const handleSendInvoice = async () => {
     if (!projectData) {
       return toastContext.showToast({
         title: 'Choose a project before incoiving'
@@ -181,50 +179,20 @@ const InvoiceData = ({
         title: 'Please wait to invoice.'
       })
     }
-  }
 
-  const handleSendInvoice = (invoiceId: string, invoiceShare: InvoiceShare) => {
-    if (!(projectData && clientData)) {
-      return validateSending()
+    if (!account.region?.currencyCode) {
+      return toastContext.showToast({
+        title: 'Select a curreny for your invoice.'
+      })
     }
-    const invoice = {
-      id: invoiceId, // Using generateId function
-      createdAt: Date.now(),
-      datePaid: null,
-      projectId: projectData.id, // Id of the project being invoiced
-      accountId: account.id,
-      clientId: clientData.id,
-      price: invoiceAmount,
-      milestones: milestones
-        .filter((mile: MilestoneProps) => {
-          return !mile.isPaid && mile.check === true
-        })
-        .map((m) => {
-          const { check: _, ...milestone } = m
-          return milestone
-        }), // will contain milestones being invoiced or null if invoicing total amount
-      isPaid: false,
-      status: InvoiceStatuses.PENDING, // has client paid invoice or not
-      projectName: projectData.campaignName,
-      type: invoiceType
-    }
-    dispatch(
-      generateNewInvoiceRequest(account, projectData, invoice, invoiceShare)
-    )
-  }
-
-  const handleSendMail = async () => {
-    if (!(projectData && clientData)) {
-      return validateSending()
-    }
-
-    const invoiceId = generateUid()
 
     if (!invoiceAmount) {
       return toastContext.showToast({
         title: 'Cannot send invoice. No price has been added.'
       })
     }
+
+    const invoiceId = generateUid()
 
     const invoiceShare: InvoiceShare = {
       accountId: account.id,
@@ -245,15 +213,41 @@ const InvoiceData = ({
         invoiceId,
         userEmail: userInfo.email,
         amount: invoiceAmount,
+        currencySymbol,
         subject: "Creator's Cloud Invoice",
         link: `${window.location.origin}/invoicing/${invoiceShare.id}`
       }
     }
 
+    const invoice: Invoice = {
+      id: invoiceId, // Using generateId function
+      createdAt: Date.now(),
+      datePaid: null,
+      projectId: projectData.id, // Id of the project being invoiced
+      accountId: account.id,
+      clientId: clientData.id,
+      price: invoiceAmount,
+      milestones: milestones
+        .filter((mile: MilestoneProps) => {
+          return !mile.isPaid && mile.check === true
+        })
+        .map((m) => {
+          const { check: _, ...milestone } = m
+          return milestone
+        }), // will contain milestones being invoiced or null if invoicing total amount
+      isPaid: false,
+      status: InvoiceStatuses.PENDING, // has client paid invoice or not
+      projectName: projectData.campaignName,
+      type: invoiceType,
+      currencySymbol,
+      currencyCode: account.region.currencyCode
+    }
+
     try {
       await sendMail(mailPayload)
-
-      handleSendInvoice(invoiceId, invoiceShare)
+      dispatch(
+        generateNewInvoiceRequest(account, projectData, invoice, invoiceShare)
+      )
     } catch (error) {
       toastContext.showToast({
         title: 'Failed to send invoice. Please try again or contact support.'
@@ -379,7 +373,7 @@ const InvoiceData = ({
             project={projectData}
             headerTitle={'Invoice'}
             invoiceType={invoiceType}
-            handleSendInvoice={handleSendMail}
+            handleSendInvoice={handleSendInvoice}
             invoiceAmount={invoiceAmount}
             edit={edit}
             handleEdit={handleEdit}

@@ -165,7 +165,7 @@ const SideBarComponent = (props: Props) => {
       <Button
         className={clsx(
           classes.appIconContainer,
-          open ? classes.appIconHidden : ''
+          open ? classes.appIconHidden : classes.appIconVisible
         )}
         onClick={() => setOpen(!open)}>
         <PolymerSharpIcon className={classes.appIcon} />
@@ -263,7 +263,8 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.secondary,
     borderRightColor: theme.palette.background.surface,
-    width: SIDE_DRAWER_WIDTH
+    width: SIDE_DRAWER_WIDTH,
+    zIndex: 2000
   },
   drawerOpen: {
     width: SIDE_DRAWER_WIDTH,
@@ -290,15 +291,22 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     backgroundColor: theme.palette.background.surfaceHighlight
   },
-  appIconHidden: { opacity: 0 },
+  appIconHidden: {
+    opacity: 0,
+    transition: theme.transitions.create(['opacity'], { duration: 100 })
+  },
+  appIconVisible: {
+    opacity: 1,
+    transition: theme.transitions.create(['opacity'], { duration: 1000 })
+  },
   appIconContainer: {
-    transition: theme.transitions.create(['opacity'], { duration: 100 }),
     height: theme.spacing(7),
     backgroundColor: theme.palette.background.secondary,
     borderRadius: 0,
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.background.surface
+    borderBottomColor: theme.palette.background.surface,
+    zIndex: 1500
   },
   appIcon: {
     color: theme.palette.primary.light,

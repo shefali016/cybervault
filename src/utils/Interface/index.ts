@@ -523,6 +523,8 @@ export type Invoice = {
   status: InvoiceStatuses
   conversation?: Array<InvoiceConversation>
   type: InvoiceTypes
+  currencySymbol: string
+  currencyCode: string
 }
 
 export type InvoiceShare = {

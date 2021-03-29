@@ -4,6 +4,7 @@ import InvoiceIcon from '@material-ui/icons/Receipt'
 import { AppTable } from 'components/Common/Core/AppTable'
 import { InvoiceStatusIndicator } from './InvoiceStatusIndicator'
 import { makeStyles } from '@material-ui/core/styles'
+import moment from 'moment'
 
 const headerCells = [
   { title: 'Project Name', key: 'name' },
@@ -39,8 +40,14 @@ export const InvoicesTable = ({
         rows.push({
           row: [
             { title: inv.projectName, key: `${inv.id}projectName` },
-            { title: `${inv.price}`, key: `${inv.id}price` },
-            { title: `${inv.createdAt}`, key: `${inv.id}date` },
+            {
+              title: `${inv.currencySymbol}${inv.price.toFixed(2)}`,
+              key: `${inv.id}price`
+            },
+            {
+              title: moment(inv.createdAt).format('YYYY-MM-DD'),
+              key: `${inv.id}date`
+            },
             {
               renderer: () => (
                 <div
