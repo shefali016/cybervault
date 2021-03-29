@@ -309,9 +309,11 @@ export const FeatureAssetList = ({
             className={classes.smallSwitchButton}
           />
         </div>
-        <div className={classes.assetPickerContainer}>
-          {renderAssetPicker()}
-        </div>
+        {assets.length > 0 && (
+          <div className={classes.assetPickerContainer}>
+            {renderAssetPicker()}
+          </div>
+        )}
       </div>
     </div>
   )
@@ -334,17 +336,17 @@ const useStyles = makeStyles((theme) => ({
 
   largeSwitchButton: { [theme.breakpoints.down('sm')]: { display: 'none' } },
   smallSwitchContainer: {
-    display: 'inline-flex',
-    gap: 10,
-    paddingTop: theme.spacing(3)
-  },
-  smallSwitchButton: {
     [theme.breakpoints.down('sm')]: {
-      display: 'flex',
-      justifyContent: 'center',
-      flex: 1
+      display: 'inline-flex',
+      gap: 10,
+      paddingTop: theme.spacing(3)
     },
     display: 'none'
+  },
+  smallSwitchButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    flex: 1
   },
 
   imgPlaceholder: { background: theme.palette.background.surface },

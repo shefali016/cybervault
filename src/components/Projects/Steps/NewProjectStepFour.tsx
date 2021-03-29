@@ -1,11 +1,6 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core'
-import {
-  PRIMARY_COLOR,
-  TRANSPARENT,
-  PRIMARY_DARK_COLOR,
-  GREY_COLOR
-} from 'utils/constants/colorsConstants'
+import React, { useMemo, useContext } from 'react'
+import { makeStyles, Typography } from '@material-ui/core'
+import { TRANSPARENT, GREY_COLOR } from 'utils/constants/colorsConstants'
 import {
   BOLD,
   CENTER,
@@ -23,18 +18,22 @@ import AppTextField from '../../Common/Core/AppTextField'
 import NewProjectFooter from '../NewProjectFooter'
 import { InputChangeEvent } from '../../../utils/Interface'
 import AddMoreButton from '../../Common/Button/MoreButton'
-import { generateUid } from '../../../utils'
+import { generateUid, numberWithCommas } from '../../../utils'
 import CloseButton from '../../Common/Button/CloseButton'
+import { useTheme } from '@material-ui/core/styles'
+import { ToastContext } from 'context/Toast'
 
 const NewProjectStepFour = (props: any) => {
   const isTablet = useTabletLayout()
   const classes = useStyles()
-  const { projectData, setProjectData, currentStep, haveError } = props
+  const theme = useTheme()
+  const toastContext = useContext(ToastContext)
+  const { projectData, setProjectData, currentStep, haveError, account } = props
 
   const addMilestone = () => {
     const milestones: Array<Milestone> = [
       ...projectData.milestones,
-      { id: generateUid(), title: '', cost: 0 }
+      { id: generateUid(), title: '', payment: 0 }
     ]
     setProjectData({ ...projectData, milestones })
   }
@@ -55,6 +54,35 @@ const NewProjectStepFour = (props: any) => {
       (expense: Milestone) => expense.id !== id
     )
     setProjectData({ ...projectData, milestones })
+  }
+
+  const totalMilestoneCost = useMemo(() => {
+    return projectData.milestones.reduce(
+      (acc: number, milestone: Milestone) => acc + Number(milestone.payment),
+      0
+    )
+  }, [projectData.milestones])
+
+  const validateMilestones = () => {
+    if (totalMilestoneCost > projectData.campaignBudget) {
+      toastContext.showToast({
+        title: 'Your milestones exeed the project budget.'
+      })
+      return false
+    }
+    return true
+  }
+
+  const handleNext = () => {
+    if (validateMilestones()) {
+      props.onNext()
+    }
+  }
+
+  const handleUpdate = () => {
+    if (validateMilestones()) {
+      props.onUpdate()
+    }
   }
 
   const renderMilstone = (data: Milestone, index: number) => {
@@ -129,11 +157,25 @@ const NewProjectStepFour = (props: any) => {
           subtitle={'Get paid upon completion of each task or date.'}
         />
       )}
+      <div className={classes.budgetContainer}>
+        <Typography variant='h6'>Remaining budget</Typography>
+        <Typography
+          variant='h4'
+          style={
+            totalMilestoneCost > projectData.campaignBudget
+              ? { color: theme.palette.error.main }
+              : {}
+          }
+          color='inherit'>
+          {account.region.currencySymbol}
+          {numberWithCommas(projectData.campaignBudget - totalMilestoneCost)}
+        </Typography>
+      </div>
       {renderMiddleView()}
       <NewProjectFooter
         onBack={props.onBack}
-        onNext={props.onNext}
-        onUpdate={props.onUpdate}
+        onNext={handleNext}
+        onUpdate={handleUpdate}
         title={'Step 4 of 5'}
         isEdit={props.isEdit}
         projectData={projectData}
@@ -144,6 +186,7 @@ const NewProjectStepFour = (props: any) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  budgetContainer: { paddingBottom: theme.spacing(2) },
   container: {
     display: FLEX,
     flex: 1,

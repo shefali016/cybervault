@@ -32,7 +32,9 @@ export default function validate(
       break
     case 3:
       if (
+        !projectData.campaignBudget ||
         invalidString(projectData.campaignBudget.toString()) ||
+        !projectData.campaignExpenses ||
         invalidString(projectData.campaignExpenses.toString()) ||
         !!projectData.expenses.find(
           ({ title, cost }: Expense) =>

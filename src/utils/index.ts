@@ -2,7 +2,9 @@ import { Theme } from '@material-ui/core/styles'
 import { ProjectStatuses } from './enums'
 import { Project } from './Interface'
 
-
+export const numberWithCommas = (x: number) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
 
 export const addArrayToCache = (
   cache: {},

@@ -23,10 +23,22 @@ import { ProjectFilters, ProjectStatuses } from 'utils/enums'
 import InvoiceIcon from '@material-ui/icons/Receipt'
 import { WIDGET_ITEM_HEIGHT } from 'utils/globalStyles'
 import { ReduxState } from 'reducers/rootReducer'
+import { useOnChange } from 'utils/hooks'
 
 const HomeScreen = (props: any) => {
   useEffect(() => {
     props.getClientsRequest()
+    loadProjects()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useOnChange(props.updateProjectSuccess, (success: boolean) => {
+    if (success) {
+      loadProjects()
+    }
+  })
+
+  const loadProjects = () => {
     props.getProjects(
       {
         where: ['status', '==', ProjectStatuses.PROGRESS],
@@ -34,8 +46,8 @@ const HomeScreen = (props: any) => {
       },
       ProjectFilters.ACTIVE
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }
+
   const classes = useStyles()
   const theme = useTheme()
 
@@ -123,7 +135,8 @@ const mapStateToProps = (state: ReduxState) => ({
   ),
   userData: state.auth,
   clients: state.clients.clientsData,
-  deletingProjectId: state.project.deletingId
+  deletingProjectId: state.project.deletingId,
+  updateProjectSuccess: state.project.updateProjectSuccess
 })
 const mapDispatchToProps = (dispatch: any) => ({
   getProjects: (params: GetProjectParams, filter: ProjectFilters) => {

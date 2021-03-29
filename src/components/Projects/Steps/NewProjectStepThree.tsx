@@ -124,12 +124,10 @@ const NewProjectStepThree = (props: any) => {
           <div className={'input-row'} style={{ marginBottom: 30 }}>
             <div style={{ flex: 1, marginRight: leftInputMargin }}>
               <AppTextField
-                error={
-                  haveError && projectData.campaignBudget === '' ? true : false
-                }
+                error={haveError && !projectData.campaignBudget ? true : false}
                 type={'number'}
                 label={'Campaign Budget'}
-                value={projectData.campaignBudget}
+                value={projectData.campaignBudget || ''}
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e, 'campaignBudget')
                 }
@@ -138,13 +136,11 @@ const NewProjectStepThree = (props: any) => {
             <div style={{ flex: 1 }}>
               <AppTextField
                 error={
-                  haveError && projectData.campaignExpenses === ''
-                    ? true
-                    : false
+                  haveError && !projectData.campaignExpenses ? true : false
                 }
                 type={'number'}
                 label={'Campaign Expenses'}
-                value={projectData.campaignExpenses}
+                value={projectData.campaignExpenses || ''}
                 onChange={(e: InputChangeEvent) =>
                   handleInputChange(e, 'campaignExpenses')
                 }

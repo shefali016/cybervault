@@ -22,6 +22,7 @@ type Props = {
   labelFocusedClassName?: string
   autoFocus?: boolean
   errorMessage?: string | undefined
+  onFocus?: () => void
 }
 
 const AppTextField = (
@@ -43,7 +44,8 @@ const AppTextField = (
     labelClassName = '',
     labelFocusedClassName = '',
     autoFocus,
-    errorMessage
+    errorMessage,
+    onFocus
   }: Props,
   ref: any
 ) => {
@@ -67,6 +69,7 @@ const AppTextField = (
   return (
     <React.Fragment>
       <TextField
+        onFocus={onFocus}
         autoFocus={autoFocus}
         inputRef={ref}
         onKeyDown={onKeyDown}

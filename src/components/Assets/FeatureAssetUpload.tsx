@@ -63,7 +63,9 @@ export const FeatureAssetUpload = (props: AssetUploadDisplayProps) => {
           />
         </div>
         {!disableUpload && !!onUpload && (
-          <div className={clsx(classes.uploader, uploaderClassName)}>
+          <div
+            className={clsx(classes.uploader, uploaderClassName)}
+            style={{ marginTop: assetIds && assetIds.length ? -180 : 0 }}>
             <DragAndDropUploader
               onSubmit={onUpload}
               isLoading={isLoading}
@@ -104,9 +106,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     paddingLeft: theme.spacing(6),
     [theme.breakpoints.down('md')]: {
+      marginTop: `0 !important`,
       paddingLeft: 0,
       padding: 0,
-      paddingTop: theme.spacing(5)
+      paddingTop: theme.spacing(3)
     }
   },
   title: { marginBottom: theme.spacing(3), color: theme.palette.text.meta }
