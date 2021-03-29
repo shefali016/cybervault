@@ -189,7 +189,7 @@ const InvoiceData = ({
     }
     const invoice = {
       id: invoiceId, // Using generateId function
-      dateCreated: Date.now(),
+      createdAt: Date.now(),
       datePaid: null,
       projectId: projectData.id, // Id of the project being invoiced
       accountId: account.id,

@@ -3,7 +3,6 @@ import {
   call,
   put,
   select,
-  take,
   takeLatest,
   takeEvery
 } from 'redux-saga/effects'
@@ -25,7 +24,7 @@ import {
   getProjectsSuccess,
   getProjectsFailure
 } from '../actions/projectActions'
-import { Account, Project } from '../utils/Interface'
+import { Account, Asset, Project } from '../utils/Interface'
 import * as ActionTypes from '../actions/actionTypes'
 import {
   createNewProjectRequest,
@@ -37,24 +36,26 @@ import {
 } from '../apis/projectRequest'
 import { ReduxState } from 'reducers/rootReducer'
 import { deleteAsset, getAllAssets } from 'apis/assets'
-import { GetProjectParams } from 'utils/Interface/api'
+import { GetParams } from 'utils/Interface/api'
 import { ProjectFilters } from 'utils/enums'
 
 type Params = { newProjectData: Project; type: string; account: Account }
-type GetParams = {
+type ActionParams = {
   type: string
   projectId: string
   assetId: string
   projectdata: Project
   accountId: string
-  params: Partial<GetProjectParams>
+  params: Partial<GetParams>
   filter: ProjectFilters
 }
 
 function* createNewProject({ newProjectData }: Params) {
   try {
-    const account = yield select((state: ReduxState) => state.auth.account)
-    const response = yield call(
+    const account: Account = yield select(
+      (state: ReduxState) => state.auth.account
+    )
+    const response: Project = yield call(
       createNewProjectRequest,
       newProjectData,
       account
@@ -67,27 +68,27 @@ function* createNewProject({ newProjectData }: Params) {
 
 function* getAllProjectsSaga() {
   try {
-    const account = yield select((state) => state.auth.account)
-    const response = yield call(getAllProjects, account)
+    const account: Account = yield select((state) => state.auth.account)
+    const response: Project[] = yield call(getAllProjects, account)
     yield put(getAllProjectsSuccess(response))
   } catch (error: any) {
     yield put(getAllProjectsFailure(error?.message || 'default'))
   }
 }
 
-function* getProjectsSaga({ params, filter }: GetParams) {
+function* getProjectsSaga({ params, filter }: ActionParams) {
   try {
-    const account = yield select((state) => state.auth.account)
-    const response = yield call(getProjects, account, params)
+    const account: Account = yield select((state) => state.auth.account)
+    const response: Project[] = yield call(getProjects, account, params)
     yield put(getProjectsSuccess(response, filter))
   } catch (error) {
     yield put(getProjectsFailure(error?.message || 'default', filter))
   }
 }
 
-function* getProjectDetails({ projectId, accountId }: GetParams) {
+function* getProjectDetails({ projectId, accountId }: ActionParams) {
   try {
-    const response = yield call(getProject, accountId, projectId)
+    const response: Project = yield call(getProject, accountId, projectId)
 
     yield put(getProjectDetailsSuccess(response ? response : {}))
   } catch (error: any) {
@@ -95,9 +96,9 @@ function* getProjectDetails({ projectId, accountId }: GetParams) {
   }
 }
 
-function* updateProjectDetails({ projectdata }: GetParams) {
+function* updateProjectDetails({ projectdata }: ActionParams) {
   try {
-    const account = yield select((state) => state.auth.account)
+    const account: Account = yield select((state) => state.auth.account)
     yield call(updateProjectDetailsRequest, account, projectdata)
     yield put(updateProjectDetailsSuccess(projectdata))
   } catch (error: any) {
@@ -105,9 +106,9 @@ function* updateProjectDetails({ projectdata }: GetParams) {
   }
 }
 
-function* deletingProjectSaga({ projectId }: GetParams) {
+function* deletingProjectSaga({ projectId }: ActionParams) {
   try {
-    const account = yield select((state) => state.auth.account)
+    const account: Account = yield select((state) => state.auth.account)
     yield call(deleteProject, projectId, account)
     yield put(deleteProjectSuccess(projectId))
   } catch (error: any) {
@@ -117,17 +118,17 @@ function* deletingProjectSaga({ projectId }: GetParams) {
 
 function* getAllAssetList() {
   try {
-    const accountId = yield select((state) => state.auth.account.id)
-    const assetList = yield call(getAllAssets, accountId)
+    const accountId: string = yield select((state) => state.auth.account.id)
+    const assetList: Asset[] = yield call(getAllAssets, accountId)
     yield put(getAssetListSuccess(assetList))
   } catch (error: any) {
     yield put(getAssetListFailure(error?.message || 'default'))
   }
 }
 
-function* deleteAssetData({ assetId }: GetParams) {
+function* deleteAssetData({ assetId }: ActionParams) {
   try {
-    const accountId = yield select((state) => state.auth.account.id)
+    const accountId: string = yield select((state) => state.auth.account.id)
     yield call(deleteAsset, accountId, assetId)
     yield put(deleteAssetSuccess(assetId))
   } catch (error: any) {

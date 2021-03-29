@@ -60,7 +60,11 @@ export const ProjectsScreen = (props: any) => {
 
   const loadProjects = () => {
     props.getProjects(
-      { orderBy: orderBy.value, where: where.value },
+      {
+        orderBy: orderBy.value,
+        order: orderBy.value === 'createdAt' ? 'desc' : 'asc',
+        where: where.value
+      },
       ProjectFilters.ALL
     )
   }

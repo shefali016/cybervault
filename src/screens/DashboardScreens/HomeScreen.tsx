@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { deleteProjectRequest, getProjects } from '../../actions/projectActions'
-import { getAllClientsRequest } from '../../actions/clientActions'
 import { Typography } from '@material-ui/core'
 import { ProjectCard } from '../../components/Cards/ProjectCard'
-import UnpaidInvoices from '../../components/Cards/UnpaidInvoices'
+import UnpaidInvoice from '../../components/Cards/UnpaidInvoices'
 import PendingInvoices from '../../components/Cards/PendingInvoices'
 import IncomeThisMonth from '../../components/Cards/IncomeThisMonth'
 import ProjectCount from '../../components/Cards/ProjectCount'
@@ -12,23 +11,58 @@ import ProfitsExpenses from '../../components/Cards/ProfitsExpenses'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { COLUMN } from 'utils/constants/stringConstants'
 import Widget from '../../components/Common/Widget'
-import { getWidgetCardHeight } from '../../utils'
-import * as Types from '../../utils/Interface'
+import {
+  Account,
+  Invoice,
+  Project,
+  User,
+  Client,
+  ProjectCache,
+  ClientCache
+} from 'utils/Interface'
 import clsx from 'clsx'
 import { EmptyIcon } from 'components/EmptyIcon'
 import ProjectIcon from '@material-ui/icons/Collections'
-import { GetProjectParams } from 'utils/Interface/api'
-import { activeProjects } from 'utils/selectors'
-import { ProjectFilters, ProjectStatuses } from 'utils/enums'
+import { GetParams } from 'utils/Interface/api'
+import { activeProjects, filteredInvoices } from 'utils/selectors'
+import {
+  InvoiceFilters,
+  InvoiceStatuses,
+  ProjectFilters,
+  ProjectStatuses
+} from 'utils/enums'
 import InvoiceIcon from '@material-ui/icons/Receipt'
 import { WIDGET_ITEM_HEIGHT } from 'utils/globalStyles'
 import { ReduxState } from 'reducers/rootReducer'
 import { useOnChange } from 'utils/hooks'
+import { getInvoices } from 'actions/invoiceActions'
 
-const HomeScreen = (props: any) => {
+type DispatchProps = {
+  getProjects: (params: GetParams, filter: ProjectFilters) => void
+  deleteProject: (projectId: string) => void
+  getInvoices: (params: GetParams, filter: InvoiceFilters) => void
+}
+
+type StateProps = {
+  newProjectData: Project
+  activeProjects: Project[]
+  activeProjectsLoading: boolean
+  unpaidInvoices: Invoice[]
+  user: User
+  account: Account
+  clients: Client[]
+  deletingProjectId: string | null
+  updateProjectSuccess: boolean
+  projectCache: ProjectCache
+  clientCache: ClientCache
+}
+
+type Props = { history: any } & StateProps & DispatchProps
+
+const HomeScreen = (props: Props) => {
   useEffect(() => {
-    props.getClientsRequest()
     loadProjects()
+    loadUpaidInvoices()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -48,11 +82,23 @@ const HomeScreen = (props: any) => {
     )
   }
 
+  const loadUpaidInvoices = () => {
+    props.getInvoices(
+      {
+        where: ['status', '!=', InvoiceStatuses.PAID]
+      },
+      InvoiceFilters.UNPAID
+    )
+  }
+
   const classes = useStyles()
   const theme = useTheme()
 
-  const handleProjectClick = (project: Types.Project) =>
+  const handleProjectClick = (project: Project) =>
     props.history.push(`/project/${project.id}`)
+
+  const handleInvoiceClick = (invoice: Invoice) =>
+    props.history.push(`/invoice/${invoice.id}/${props.account.id}`)
 
   return (
     <div className='screenContainer'>
@@ -78,8 +124,8 @@ const HomeScreen = (props: any) => {
                 paddingRight: theme.spacing(3)
               }}
               onClick={handleProjectClick}
-              account={props.userData.account}
-              userInfo={props.userData.user}
+              account={props.account}
+              userInfo={props.user}
               onDelete={props.deleteProject}
               deletingId={props.deletingProjectId}
             />
@@ -106,12 +152,15 @@ const HomeScreen = (props: any) => {
 
         <Widget
           title={'Unpaid Invoices'}
-          data={[]}
-          renderItem={(item) => (
-            <UnpaidInvoices
-              projectDetails={item}
-              key={`unpaid-invoices-${item.id}`}
+          data={props.unpaidInvoices}
+          renderItem={(invoice: Invoice) => (
+            <UnpaidInvoice
+              invoice={invoice}
+              key={`unpaid-invoices-${invoice.id}`}
               style={{ paddingRight: theme.spacing(3) }}
+              projectCache={props.projectCache}
+              clientCache={props.clientCache}
+              onClick={handleInvoiceClick}
             />
           )}
           EmptyComponent={
@@ -133,21 +182,25 @@ const mapStateToProps = (state: ReduxState) => ({
   activeProjectsLoading: state.project.loadingFilters.has(
     ProjectFilters.ACTIVE
   ),
-  userData: state.auth,
+  unpaidInvoices: filteredInvoices(state, { filter: InvoiceFilters.UNPAID }),
+  user: state.auth.user as User,
+  account: state.auth.account as Account,
   clients: state.clients.clientsData,
   deletingProjectId: state.project.deletingId,
-  updateProjectSuccess: state.project.updateProjectSuccess
+  updateProjectSuccess: state.project.updateProjectSuccess,
+  projectCache: state.project.projectCache,
+  clientCache: state.clients.cache
 })
+
 const mapDispatchToProps = (dispatch: any) => ({
-  getProjects: (params: GetProjectParams, filter: ProjectFilters) => {
+  getProjects: (params: GetParams, filter: ProjectFilters) => {
     return dispatch(getProjects(params, filter))
-  },
-  getClientsRequest: () => {
-    return dispatch(getAllClientsRequest())
   },
   deleteProject: (projectId: string) => {
     return dispatch(deleteProjectRequest(projectId))
-  }
+  },
+  getInvoices: (params: GetParams, filter: InvoiceFilters) =>
+    dispatch(getInvoices(params, filter))
 })
 
 const useStyles = makeStyles((theme) => ({

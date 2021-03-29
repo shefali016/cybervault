@@ -8,6 +8,8 @@ import {
   InvoiceShare,
   InvoiceConversation
 } from '../utils/Interface'
+import { GetParams } from 'utils/Interface/api'
+import { constructGetDocsApi } from './utils'
 
 export const getInvoiceShare = async (shareId: string) => {
   const doc = await firebase
@@ -140,6 +142,15 @@ export const deleteInvoice = async (account: Account, invoice: Invoice) => {
     .collection('Invoices')
     .doc(invoice.id)
     .delete()
-  console.log('DELETED', account, invoice)
   return res
+}
+
+export const getInvoices = async (account: Account, params: GetParams) => {
+  const query = firebase
+    .firestore()
+    .collection('AccountData')
+    .doc(account.id)
+    .collection('Invoices')
+  const res = await constructGetDocsApi(query, params).get()
+  return res.docs.map((doc: any) => doc.data() as Invoice | undefined)
 }

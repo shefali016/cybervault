@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTheme } from '@material-ui/core/styles'
 import { InvoiceStatuses } from 'utils/enums'
-import { InvoiceStatus } from 'utils/Interface'
 
 export const InvoiceStatusIndicator = ({
   status,
@@ -9,7 +8,7 @@ export const InvoiceStatusIndicator = ({
   className,
   style = {}
 }: {
-  status: InvoiceStatus
+  status: InvoiceStatuses
   size?: number
   className?: string
   style?: {}

@@ -24,7 +24,7 @@ type Props = {
   account: Account
   userInfo: User
   onDelete: (projectId: string) => void
-  deletingId?: string
+  deletingId: string | null
   className?: string
 }
 

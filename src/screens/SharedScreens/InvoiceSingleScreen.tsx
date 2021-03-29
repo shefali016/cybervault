@@ -301,8 +301,7 @@ const InvoicesClientScreen = (props: Props) => {
     </Grid>
   )
 
-  const handleBack = () =>
-    props.history.push(isAccountOwner ? '/invoices' : '/')
+  const handleBack = () => props.history.goBack()
 
   const renderHeader = () => {
     return (

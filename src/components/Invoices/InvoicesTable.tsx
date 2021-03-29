@@ -40,7 +40,7 @@ export const InvoicesTable = ({
           row: [
             { title: inv.projectName, key: `${inv.id}projectName` },
             { title: `${inv.price}`, key: `${inv.id}price` },
-            { title: `${inv.dateCreated}`, key: `${inv.id}date` },
+            { title: `${inv.createdAt}`, key: `${inv.id}date` },
             {
               renderer: () => (
                 <div

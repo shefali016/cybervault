@@ -1,12 +1,9 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
-import { GetProjectParams } from 'utils/Interface/api'
+import { GetParams } from 'utils/Interface/api'
 import { ProjectFilters } from 'utils/enums'
 
-export const getProjects = (
-  params: GetProjectParams,
-  filter: ProjectFilters
-) => ({
+export const getProjects = (params: GetParams, filter: ProjectFilters) => ({
   type: ActionTypes.GET_PROJECTS,
   params,
   filter

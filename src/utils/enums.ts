@@ -59,6 +59,10 @@ export enum ProjectFilters {
   ARCHIVED = 'archived'
 }
 
+export enum InvoiceFilters {
+  UNPAID = 'paid'
+}
+
 export enum ColorThemes {
   LIGHT = 'light',
   DARK = 'dark'

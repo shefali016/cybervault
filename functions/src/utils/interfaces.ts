@@ -337,7 +337,7 @@ export type InvoiceUserInfo = {
 
 export type Invoice = {
   id: String // Using generateId function
-  dateCreated: Date | string
+  createdAt: number
   datePaid: Date | null
   projectId: string // Id of the project being invoiced
   price: number // Amount that the client must pay

@@ -17,12 +17,17 @@ import {
   PAY_INVOICE_SUCCESS,
   DELETE_INVOICE,
   DELETE_INVOICE_SUCCESS,
-  DELETE_INVOICE_FAILURE
+  DELETE_INVOICE_FAILURE,
+  GET_INVOICES,
+  GET_INVOICES_SUCCESS,
+  GET_INVOICES_ERROR
 } from 'actions/actionTypes'
+import { Set, Map } from 'immutable'
 import { createTransform } from 'redux-persist'
 import { addArrayToCache, addToCache } from 'utils'
-import { InvoiceStatuses } from 'utils/enums'
+import { InvoiceFilters, InvoiceStatuses } from 'utils/enums'
 import { Invoice, InvoiceConversation } from '../utils/Interface'
+import { reduceFilterArray } from './utils'
 
 export type State = {
   loading: boolean
@@ -45,6 +50,8 @@ export type State = {
   deleteSuccess: boolean
   deleteError: string | null
   deletingInvoice: string | null
+  loadingFilters: Set<string>
+  filteredIds: Map<string, string[]>
 }
 
 export type Action = {
@@ -53,6 +60,8 @@ export type Action = {
   invoiceId: string
   invoice: Invoice
   error: string
+  filter: string
+  invoices: Invoice[]
 }
 
 const initialState = {
@@ -78,7 +87,9 @@ const initialState = {
   cache: {},
   deleteSuccess: false,
   deleteError: null,
-  deletingInvoice: null
+  deletingInvoice: null,
+  loadingFilters: Set<InvoiceFilters>(),
+  filteredIds: Map<InvoiceFilters, string[]>()
 }
 
 const generateNewInvoiceRequest = (state: State, action: Action) => ({
@@ -230,6 +241,27 @@ const deleteInvoiceFailure = (state: State, action: Action) => ({
   deletingInvoice: null
 })
 
+const getInvoices = (state: State, action: Action) => ({
+  ...state,
+  loadingFilters: state.loadingFilters.add(action.filter)
+})
+const getInvoicesSuccess = (state: State, action: Action) => {
+  const { ids, cache } = reduceFilterArray(action.invoices)
+  return {
+    ...state,
+    loadingFilters: state.loadingFilters.remove(action.filter),
+    cache: { ...state.cache, ...cache },
+    filteredIds: state.filteredIds.set(action.filter, ids)
+  }
+}
+const getInvoicesFailure = (state: State, action: Action) => {
+  return {
+    ...state,
+    loadingFilters: state.loadingFilters.remove(action.filter),
+    loadingFilterError: action.error
+  }
+}
+
 const invoiceReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case NEW_INVOICE_REQUEST:
@@ -270,6 +302,12 @@ const invoiceReducer = (state = initialState, action: Action) => {
       return deleteInvoiceSuccess(state, action)
     case DELETE_INVOICE_FAILURE:
       return deleteInvoiceFailure(state, action)
+    case GET_INVOICES:
+      return getInvoices(state, action)
+    case GET_INVOICES_SUCCESS:
+      return getInvoicesSuccess(state, action)
+    case GET_INVOICES_ERROR:
+      return getInvoicesFailure(state, action)
     default:
       return state
   }

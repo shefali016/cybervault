@@ -12,6 +12,7 @@ import {
 import * as StripeApis from '../apis/stripe'
 import { InvoiceStatuses } from '../utils/enums'
 import { ReduxState } from 'reducers/rootReducer'
+import { GetParams } from 'utils/Interface/api'
 
 type Params = {
   account: Account
@@ -26,6 +27,8 @@ type Params = {
   stripeAccountId: string
   transactionFee: number
   invoiceShare: InvoiceShare
+  filter: string
+  params: GetParams
 }
 
 function* invoiceRequest({ account, project, invoice, invoiceShare }: Params) {
@@ -141,6 +144,22 @@ function* deleteInvoice({ invoice }: Params) {
   }
 }
 
+function* getInvoices({ params, filter }: Params) {
+  try {
+    const account: Account = yield select(
+      (state: ReduxState) => state.auth.account
+    )
+    const invoices: Invoice[] = yield call(
+      InvoiceApis.getInvoices,
+      account,
+      params
+    )
+    yield put(InvoiceActions.getInvoicesSuccess(invoices, filter))
+  } catch (error) {
+    yield put(InvoiceActions.getInvoicesFailure(error || 'default', filter))
+  }
+}
+
 function* watchRequests() {
   yield takeLatest(ActionTypes.NEW_INVOICE_REQUEST, invoiceRequest)
   yield takeLatest(ActionTypes.GET_ALL_INVOICE_REQUEST, getAllInvoice)
@@ -152,6 +171,7 @@ function* watchRequests() {
   )
   yield takeLatest(ActionTypes.PAY_INVOICE, payInvoice)
   yield takeLatest(ActionTypes.DELETE_INVOICE, deleteInvoice)
+  yield takeLatest(ActionTypes.GET_INVOICES, getInvoices)
 }
 
 export default function* sagas() {

@@ -1,6 +1,7 @@
 import * as ActionTypes from './actionTypes'
 import * as Types from '../utils/Interface'
 import { Invoice } from '../utils/Interface'
+import { GetParams } from 'utils/Interface/api'
 
 export function generateNewInvoiceRequest(
   account: Types.Account,
@@ -158,4 +159,20 @@ export const deleteInvoiceSuccess = (invoiceId: string) => ({
 export const deleteInvoiceFailure = (error: string) => ({
   type: ActionTypes.DELETE_INVOICE_FAILURE,
   error
+})
+
+export const getInvoices = (params: GetParams, filter: string) => ({
+  type: ActionTypes.GET_INVOICES,
+  params,
+  filter
+})
+export const getInvoicesSuccess = (invoices: Invoice[], filter: string) => ({
+  type: ActionTypes.GET_INVOICES_SUCCESS,
+  invoices,
+  filter
+})
+export const getInvoicesFailure = (error: string, filter: string) => ({
+  type: ActionTypes.GET_INVOICES_ERROR,
+  error,
+  filter
 })

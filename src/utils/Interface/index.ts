@@ -511,7 +511,7 @@ export type InvoiceUserInfo = {
 
 export type Invoice = {
   id: string // Using generateId function
-  dateCreated: number
+  createdAt: number
   projectName: string
   datePaid: Date | null
   projectId: string // Id of the project being invoiced
@@ -570,6 +570,10 @@ export interface PortfolioFolderCache {
 
 export interface PortfolioCache {
   [id: string]: Portfolio
+}
+
+export type ClientCache = {
+  [id: string]: Client
 }
 
 export interface PortfolioFolder {

@@ -2,7 +2,9 @@ import firebase from 'firebase/app'
 import 'firebase/storage'
 import 'firebase/firestore'
 import { Project, Account } from '../utils/Interface'
-import { GetProjectParams } from 'utils/Interface/api'
+import { GetParams } from 'utils/Interface/api'
+import { constructGetDocsApi } from './utils'
+
 /**
  * @deleteProject
  */
@@ -53,31 +55,15 @@ export const getAllProjects = async (account: Account) => {
 
 export const getProjects = async (
   account: Account,
-  params: Partial<GetProjectParams>
+  params: Partial<GetParams>
 ) => {
-  const { limit, orderBy, startAt, endAt, where } = params
-
   let query: any = firebase
     .firestore()
     .collection('AccountData')
     .doc(account.id)
     .collection('Projects')
 
-  if (orderBy) {
-    query = query.orderBy(orderBy)
-  }
-
-  if (where) {
-    query = query.where(...where)
-  }
-
-  if (limit) {
-    query = query.limit(limit)
-  }
-
-  console.log(orderBy)
-
-  let data: any = await query.get()
+  let data: any = await constructGetDocsApi(query, params).get()
 
   return data.docs.map((doc: any) => doc.data())
 }
