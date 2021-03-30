@@ -1,13 +1,12 @@
 import RichTextEditor from 'react-rte'
 import { useState } from 'react'
-import classes from '*.module.css'
 import { makeStyles } from '@material-ui/core/styles'
 import { useOnChange } from '../../../utils/hooks'
 
 type editorProps = {
   handleTextChange: (val: string) => void
   placeholder: string
-  resetValue: Boolean
+  resetValue: boolean
 }
 
 const Editor = ({ handleTextChange, placeholder, resetValue }: editorProps) => {
@@ -19,7 +18,7 @@ const Editor = ({ handleTextChange, placeholder, resetValue }: editorProps) => {
       handleTextChange(value.toString('html'))
     }
   }
-  useOnChange(resetValue, (success: string | null) => {
+  useOnChange(resetValue, (success) => {
     if (success) {
       setValue(RichTextEditor.createEmptyValue())
     }

@@ -44,7 +44,6 @@ type DispatchProps = {
 }
 
 type StateProps = {
-  newProjectData: Project
   activeProjects: Project[]
   activeProjectsLoading: boolean
   unpaidInvoices: Invoice[]
@@ -177,7 +176,6 @@ const HomeScreen = (props: Props) => {
 }
 
 const mapStateToProps = (state: ReduxState) => ({
-  newProjectData: state.project.newProjectData,
   activeProjects: activeProjects(state),
   activeProjectsLoading: state.project.loadingFilters.has(
     ProjectFilters.ACTIVE

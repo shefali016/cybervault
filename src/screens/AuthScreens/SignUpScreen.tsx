@@ -74,7 +74,7 @@ export const SignUpScreen = (props: any) => {
         </Typography>
         <ReactLoading
           type={props.loading ? 'bubbles' : 'blank'}
-          color={'#fff'}
+          color={theme.palette.primary.main}
         />
         <div style={{ maxWidth: 400, marginBottom: theme.spacing(4) }}>
           <AppTextField

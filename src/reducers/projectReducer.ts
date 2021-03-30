@@ -34,12 +34,12 @@ import * as Types from '../utils/Interface'
 import { Asset, Project, ProjectCache } from '../utils/Interface'
 
 export type State = {
-  projectData: any
+  projectData: Project | null
   filteredIds: { [key in ProjectFilters]: Array<string> }
   loadingFilters: Set<ProjectFilters>
   success: boolean
   error: string | null
-  newProjectData: any
+  newProjectData: Project | null
   isLoading: boolean
   allProjectsData: Types.AllProjects
   updateLoading: boolean
@@ -49,7 +49,7 @@ export type State = {
   updateProjectSuccess: boolean
   projectCache: ProjectCache
   // Assets
-  allAssetList: Array<Types.Asset> | any
+  allAssetList: Array<Types.Asset>
   assetLoading: boolean
   assetError: null | string
   assetSuccess: boolean
@@ -97,7 +97,7 @@ const initialState = {
   updateProjectFailure: null,
   projectCache: Map<string, Project>(),
   // Assets
-  allAssetList: null,
+  allAssetList: [],
   assetLoading: false,
   assetSuccess: false,
   assetError: null,
@@ -386,7 +386,7 @@ const projectReducer = (state: State = initialState, action: Action) => {
 
 export const projectTransform = createTransform(
   (inboundState: State) => {
-    return initialState
+    return inboundState
   },
   (outboundState: State) => ({
     ...initialState,

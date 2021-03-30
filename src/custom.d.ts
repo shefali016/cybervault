@@ -3,3 +3,4 @@ declare module '*.svg' {
   export default content
 }
 declare module 'moment'
+declare module 'redux-persist-transform-immutable'

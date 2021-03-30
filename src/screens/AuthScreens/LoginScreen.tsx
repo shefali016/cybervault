@@ -107,7 +107,10 @@ export const LoginScreen = ({
         <Typography variant={'h5'} style={{ marginTop: theme.spacing(2) }}>
           Welcome
         </Typography>
-        <ReactLoading type={loading ? 'bubbles' : 'blank'} color={'#fff'} />
+        <ReactLoading
+          type={loading ? 'bubbles' : 'blank'}
+          color={theme.palette.primary.main}
+        />
         <div style={{ maxWidth: 400, marginBottom: theme.spacing(4) }}>
           <AppTextField
             label='Email'

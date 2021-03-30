@@ -72,7 +72,6 @@ type DispatchProps = {
 type StateProps = {
   user: User
   isLoggedIn: boolean
-  newProjectData: Project
   projectDetails: Project
   projectCache: ProjectCache
   isProjectDetailsLoading: boolean
@@ -420,7 +419,6 @@ const EditProjectScreen = (
 const mapStateToProps = (state: any) => ({
   user: state.auth.user as Types.User,
   isLoggedIn: state.auth.isLoggedIn,
-  newProjectData: state.project.projectData,
   projectDetails: state.project.projectDetails,
   projectCache: state.project.projectCache,
   isProjectDetailsLoading: state.project.isProjectDetailsLoading,

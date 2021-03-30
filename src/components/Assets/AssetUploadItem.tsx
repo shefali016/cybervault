@@ -5,6 +5,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { AppIconButton } from 'components/Common/Core/AppIconButton'
 import clsx from 'clsx'
+import { UploadStatuses } from 'utils/enums'
 
 type Props = {
   upload: AssetUpload
@@ -44,7 +45,12 @@ export const AssetUploadItem = ({ upload, lastItem, onDelete }: Props) => {
           style={{
             height,
             width: `calc(100% * (${progress} / 100))`,
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor:
+              status === UploadStatuses.FAILED
+                ? theme.palette.error.main
+                : progress === 100
+                ? theme.palette.success.main
+                : theme.palette.primary.main,
             borderRadius: 5
           }}
         />

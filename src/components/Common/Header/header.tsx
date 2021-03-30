@@ -12,7 +12,6 @@ import LightDarkThemeButton from 'components/Common/Button/LightDarkThemeButton'
 import { NotificationButton } from 'components/Notification/NotificationButton'
 import { NotificationList } from 'components/Notification/NotificationList'
 import clsx from 'clsx'
-import * as _ from 'underscore'
 
 type Props = {
   isNotificationIcon?: boolean

@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { persistStore, persistReducer } from 'redux-persist'
+import immutableTransform from 'redux-persist-transform-immutable'
 import storage from 'redux-persist/lib/storage'
 import rootReducer from 'reducers/rootReducer'
 import rootSagas from 'sagas/rootSaga'
@@ -26,9 +27,10 @@ const composeEnhancers =
     : compose
 
 const persistConfig = {
-  key: 'root',
+  key: 'root1',
   storage,
   transforms: [
+    immutableTransform(),
     authTransform,
     projectTransform,
     stripeTransform,

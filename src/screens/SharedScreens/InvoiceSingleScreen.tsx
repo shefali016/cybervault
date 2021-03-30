@@ -219,7 +219,7 @@ const InvoicesClientScreen = (props: Props) => {
     setMessage(val)
   }
 
-  useOnChange(revisionSuccess, (success: string | null) => {
+  useOnChange(revisionSuccess, (success) => {
     if (success && ownerUser && client) {
       const mailPayload = {
         to: isAccountOwner ? ownerUser.email : client.email,
