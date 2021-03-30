@@ -5,11 +5,11 @@ import { WatermarkStyles } from '../../utils/enums'
 
 const MENU_ITEMS: Array<Item> = [
   {
-    value: WatermarkStyles.single,
+    value: WatermarkStyles.SINGLE,
     title: 'Single center'
   },
   {
-    value: WatermarkStyles.repeat,
+    value: WatermarkStyles.REPEAT,
     title: 'Repeated across image'
   }
 ]
@@ -30,7 +30,7 @@ const WatermarkStyleSelect = ({
       className={className}
       items={MENU_ITEMS}
       value={
-        watermarkStyle !== undefined ? watermarkStyle : WatermarkStyles.single
+        watermarkStyle !== undefined ? watermarkStyle : WatermarkStyles.SINGLE
       }
       onChange={(event: any) => {
         onChange(event.target.value as WatermarkStyle)

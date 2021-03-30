@@ -113,7 +113,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
         if (!err) {
           const url = data.Location
 
-          const assetFile = await getAssetFile(asset, file, url)
+          const assetFile = await createAssetFile(asset, file, url)
 
           asset.files.push(assetFile)
           await addAsset(account.id, asset)
@@ -134,7 +134,7 @@ export const AssetUploadProvider = ({ children, account }: Props) => {
     }
   }
 
-  const getAssetFile = (
+  const createAssetFile = (
     asset: Asset,
     file: File,
     url: string

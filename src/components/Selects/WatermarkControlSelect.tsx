@@ -5,19 +5,19 @@ import { WatermarkControls } from '../../utils/enums'
 
 const MENU_ITEMS: Array<Item> = [
   {
-    value: WatermarkControls.all,
+    value: WatermarkControls.ALL,
     title: 'Invoices and portfolios'
   },
   {
-    value: WatermarkControls.portfolios,
+    value: WatermarkControls.PORTFOLIO,
     title: 'Only portfolios'
   },
   {
-    value: WatermarkControls.invoices,
+    value: WatermarkControls.INVOICES,
     title: 'Only invoices'
   },
   {
-    value: WatermarkControls.none,
+    value: WatermarkControls.NONE,
     title: "Don't use watermarks"
   }
 ]
@@ -40,7 +40,7 @@ const WatermarkControlSelect = ({
       value={
         watermarkControl !== undefined
           ? watermarkControl
-          : WatermarkControls.all
+          : WatermarkControls.ALL
       }
       onChange={(event: any) => {
         onChange(event.target.value as WatermarkControl)

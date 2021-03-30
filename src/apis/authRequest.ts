@@ -141,9 +141,9 @@ export const createAccount = (
       payoutsEnabled: false
     },
     settings: {
-      sharingPrivacy: SharingPrivacies.strict,
-      watermarkStyle: WatermarkStyles.single,
-      watermarkControl: WatermarkControls.all
+      sharingPrivacy: SharingPrivacies.STRICT,
+      watermarkStyle: WatermarkStyles.SINGLE,
+      watermarkControl: WatermarkControls.ALL
     },
     branding: {
       email: {

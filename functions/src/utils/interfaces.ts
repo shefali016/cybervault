@@ -291,7 +291,10 @@ export type AssetFile = {
   width: number
   height: number
   size: number
+  isWatermarked?: boolean
   conversion?: MediaConvertParams
+  codec?: string
+  mime: string
   status?: 'complete' | 'failed ' | 'pending'
 }
 

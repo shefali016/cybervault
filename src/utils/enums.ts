@@ -1,18 +1,18 @@
 export enum SharingPrivacies {
-  open,
-  strict
+  OPEN = 'Open',
+  STRICT = 'Strict'
 }
 
 export enum WatermarkStyles {
-  single,
-  repeat
+  SINGLE = 'Single',
+  REPEAT = 'Repeat'
 }
 
 export enum WatermarkControls {
-  none,
-  all,
-  invoices,
-  portfolios
+  NONE = 'none',
+  ALL = 'all',
+  INVOICES = 'invoices',
+  PORTFOLIO = 'portfolio'
 }
 
 export enum SubscriptionTypes {

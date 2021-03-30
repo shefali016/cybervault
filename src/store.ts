@@ -27,16 +27,16 @@ const composeEnhancers =
     : compose
 
 const persistConfig = {
-  key: 'root1',
+  key: 'v1',
   storage,
   transforms: [
-    immutableTransform(),
     authTransform,
     projectTransform,
     stripeTransform,
     clientTransform,
     portfolioTransform,
-    invoiceTransform
+    invoiceTransform,
+    immutableTransform(),
   ]
 }
 

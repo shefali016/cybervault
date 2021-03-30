@@ -5,11 +5,11 @@ import { SharingPrivacies } from '../../utils/enums'
 
 const MENU_ITEMS: Array<Item> = [
   {
-    value: SharingPrivacies.open,
+    value: SharingPrivacies.OPEN,
     title: 'Anyone can download and view'
   },
   {
-    value: SharingPrivacies.strict,
+    value: SharingPrivacies.STRICT,
     title: 'Only invited clients can download and view'
   }
 ]
@@ -25,7 +25,7 @@ const SharingPrivacySelect = ({ onChange, privacy, className }: Props) => {
     <AppSelect
       className={className}
       items={MENU_ITEMS}
-      value={privacy !== undefined ? privacy : SharingPrivacies.strict}
+      value={privacy !== undefined ? privacy : SharingPrivacies.STRICT}
       onChange={(event: any) => {
         onChange(event.target.value)
       }}

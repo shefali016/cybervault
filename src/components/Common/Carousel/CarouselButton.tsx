@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 import ArrowLeft from '@material-ui/icons/ArrowLeft'
 import clsx from 'clsx'
+import { ColorThemes } from 'utils/enums'
 
 type Props = {
   direction: 'right' | 'left'
@@ -47,13 +48,19 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: 'center',
     maxHeight: 300,
     cursor: 'pointer',
-    background: 'rgba(0,0,0,0.08)',
+    background:
+      theme.palette.colorTheme === ColorThemes.LIGHT
+        ? 'rgba(0,0,0,0.08)'
+        : 'rgba(0,0,0,0.2)',
     display: 'flex',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
     height: '100%',
     '&:hover': {
-      background: 'rgba(0,0,0,0.1)'
+      background:
+        theme.palette.colorTheme === ColorThemes.LIGHT
+          ? 'rgba(0,0,0,0.18)'
+          : 'rgba(0,0,0,0.3)'
     },
     transition: theme.transitions.create(['background'])
   }

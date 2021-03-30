@@ -27,14 +27,14 @@ export type SubscriptionDuration =
   | SubscriptionDurations.MONTHLY
 
 export type WatermarkControl =
-  | WatermarkControls.none
-  | WatermarkControls.portfolios
-  | WatermarkControls.invoices
-  | WatermarkControls.all
+  | WatermarkControls.NONE
+  | WatermarkControls.PORTFOLIO
+  | WatermarkControls.INVOICES
+  | WatermarkControls.ALL
 
-export type WatermarkStyle = WatermarkStyles.single | WatermarkStyles.repeat
+export type WatermarkStyle = WatermarkStyles.SINGLE | WatermarkStyles.REPEAT
 
-export type SharingPrivacy = SharingPrivacies.open | SharingPrivacies.strict
+export type SharingPrivacy = SharingPrivacies.OPEN | SharingPrivacies.STRICT
 
 export type Region = {
   code: string
@@ -463,7 +463,11 @@ export type AssetFile = {
   url: string
   width: number
   height: number
-  status?: string
+  size: number
+  isWatermarked?: boolean
+  codec?: string
+  mime: string
+  status?: 'complete' | 'failed ' | 'pending'
 }
 
 export type Project = {
