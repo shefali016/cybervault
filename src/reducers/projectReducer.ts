@@ -306,7 +306,11 @@ const deleteAssetSuccess = (state: State, action: Action) => {
       (asset: Asset) => asset.id !== action.assetId
     ),
     projectCache: action.projectId
-      ? state.projectCache.delete(action.projectId)
+      ? state.projectCache.update(action.projectId, (project: Project) => ({
+          ...project,
+          videos: project.videos.filter((id) => id !== action.assetId),
+          images: project.images.filter((id) => id !== action.assetId)
+        }))
       : state.projectCache,
     deleteAssetSuccess: true
   }
