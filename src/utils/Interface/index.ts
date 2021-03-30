@@ -466,7 +466,6 @@ export type AssetFile = {
   size: number
   isWatermarked?: boolean
   codec?: string
-  mime: string
   status?: 'complete' | 'failed ' | 'pending'
 }
 

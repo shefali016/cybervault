@@ -294,7 +294,6 @@ export type AssetFile = {
   isWatermarked?: boolean
   conversion?: MediaConvertParams
   codec?: string
-  mime: string
   status?: 'complete' | 'failed ' | 'pending'
 }
 
